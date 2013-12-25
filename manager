@@ -23,5 +23,6 @@ if (file_exists($file)) {
 
 $app = new ManagerTools\Application();
 $app->setCwd(__DIR__);
+$app->readParameters();
 $app->add(new ManagerTools\Command\PullRequestCommand());
 $app->run();

@@ -12,10 +12,12 @@
 namespace ManagerTools;
 
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
 {
     protected $cwd;
+    protected $parameters;
 
     public function setCwd($cwd)
     {
@@ -25,5 +27,17 @@ class Application extends BaseApplication
     public function getCwd()
     {
         return $this->cwd;
+    }
+
+    public function readParameters()
+    {
+        $yaml = new Yaml();
+        $parsed = $yaml->parse($this->getCwd().'/parameters.yml');
+        $this->parameters = $parsed['parameters'];
+    }
+
+    public function getParameter($key)
+    {
+        return $this->parameters[$key];
     }
 }
