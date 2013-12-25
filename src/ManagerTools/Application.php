@@ -2,7 +2,9 @@
 
 namespace ManagerTools;
 
-class Application
+use Symfony\Component\Console\Application as BaseApplication;
+
+class Application extends BaseApplication
 {
 
 }
