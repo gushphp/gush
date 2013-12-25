@@ -6,7 +6,7 @@ use Managertools\Model\BufferedOutput;
 use Managertools\Model\Question;
 use Managertools\Model\Questionary;
 use ManagerTools\Model\SymfonyQuestionary;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,13 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
-class PullRequestCommand extends ContainerAwareCommand
+class PullRequestCommand extends Command
 {
     protected $workDir;
 
     protected function configure()
     {
-        $this->setName('dbu:pr')
+        $this->setName('pr')
             ->setDescription('Pull request command')
         ;
     }
@@ -33,7 +33,7 @@ class PullRequestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->workDir = $this->getContainer()->getParameter('kernel.root_dir').'/../vendor/symfony/symfony';
+        $this->workDir = $this->getApplication()->getCwd();
         $tableString = $this->getGithubTableString($output);
         $prNumber = $this->postPullRequest($output, $tableString);
     }
@@ -47,7 +47,7 @@ class PullRequestCommand extends ContainerAwareCommand
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
 
-        /** @var \Dbu\DashboardBundle\Model\Question[] $questions */
+        /** @var \ManagerTools\Model\Question[] $questions */
         $questionary = new SymfonyQuestionary();
 
         $answers = array();

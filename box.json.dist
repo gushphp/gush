@@ -13,7 +13,7 @@
         }
     ],
     "git-version": "package_version",
-    "main": "bin/console",
+    "main": "manager",
     "output": "manager.phar",
     "stub": true
 }
