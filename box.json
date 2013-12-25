@@ -1,0 +1,19 @@
+{
+    "alias": "manager.phar",
+    "chmod": "0755",
+    "directories": ["src"],
+    "files": [
+        "LICENSE"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["tests"],
+            "in": "vendor"
+        }
+    ],
+    "git-version": "package_version",
+    "main": "bin/console",
+    "output": "manager.phar",
+    "stub": true
+}
