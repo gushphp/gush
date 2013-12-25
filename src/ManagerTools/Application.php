@@ -11,6 +11,8 @@
 
 namespace ManagerTools;
 
+use Github\Client;
+use Github\HttpClient\CachedHttpClient;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Yaml\Yaml;
 
@@ -57,6 +59,15 @@ class Application extends BaseApplication
 
     private function buildGithubClient()
     {
-        
+         $cachedClient = new CachedHttpClient(array(
+             'cache_dir' => '/tmp/github-api-cache',
+         ));
+
+        $this->githubClient = new Client($cachedClient);
+        $this->githubClient->authenticate(
+            $this->parameters['github.username'],
+            $this->parameters['github.password'],
+            'http_password'
+        );
     }
 }
