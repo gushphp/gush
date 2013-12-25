@@ -1,0 +1,3 @@
+parameters:
+        github.username: username
+        github.password: userpassword
