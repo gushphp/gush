@@ -10,10 +10,10 @@
     ],
     "require": {
         "symfony/console": "2.3.*",
-        "knplabs/github-api": "dev-master@dev",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "stil/phoebe": "dev-master@dev",
-        "raulfraile/ladybug-bundle": "~1.0"
+        "knplabs/github-api": "dev-master",
+        "incenteev/composer-parameter-handler": "dev-master",
+        "stil/phoebe": "dev-master",
+        "raulfraile/ladybug-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
