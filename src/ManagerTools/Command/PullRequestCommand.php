@@ -2,10 +2,10 @@
 
 namespace ManagerTools\Command;
 
-use Dbu\DashboardBundle\Model\BufferedOutput;
-use Dbu\DashboardBundle\Model\Question;
-use Dbu\DashboardBundle\Model\Questionary;
-use Dbu\DashboardBundle\Model\SymfonyQuestionary;
+use Managertools\Model\BufferedOutput;
+use Managertools\Model\Question;
+use Managertools\Model\Questionary;
+use ManagerTools\Model\SymfonyQuestionary;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
