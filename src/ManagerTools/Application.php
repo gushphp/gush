@@ -18,6 +18,15 @@ class Application extends BaseApplication
 {
     protected $cwd;
     protected $parameters;
+    protected $githubClient;
+
+    public function __construct()
+    {
+        $this->readParameters();
+        $this->buildGithubClient();
+
+        parent::__construct();
+    }
 
     public function setCwd($cwd)
     {
@@ -29,15 +38,25 @@ class Application extends BaseApplication
         return $this->cwd;
     }
 
-    public function readParameters()
+    public function getParameter($key)
+    {
+        return $this->parameters[$key];
+    }
+
+    public function getGithubClient()
+    {
+        return $this->githubClient;
+    }
+
+    private function readParameters()
     {
         $yaml = new Yaml();
         $parsed = $yaml->parse($this->getCwd().'/parameters.yml');
         $this->parameters = $parsed['parameters'];
     }
 
-    public function getParameter($key)
+    private function buildGithubClient()
     {
-        return $this->parameters[$key];
+        
     }
 }

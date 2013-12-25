@@ -143,7 +143,7 @@ class PullRequestCommand extends Command
         }
 
         /** @var \Github\Client $client */
-        $client = $this->getContainer()->get('dbu_gh_collector.github.client');
+        $client = $this->getApplication()->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
             ->create($vendorName, $repoName, array(
@@ -152,9 +152,8 @@ class PullRequestCommand extends Command
                     'title' => $title,
                     'body'  => $description
                 )
-            );
-
-        ladybug_dump($pullRequest);
+            )
+        ;
 
         return $pullRequest;
     }
