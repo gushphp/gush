@@ -1,12 +1,15 @@
 {
     "name": "cordoval/manager-tools",
     "description": "github maintainer manager tools",
-    "autoload": {
-        "psr-0": { "": "src/" }
-    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "cordoval",
+            "email": "cordoval@gmail.com"
+        }
+    ],
     "require": {
-        "php": ">=5.3.3",
-        "symfony/symfony": "2.3.*",
+        "symfony/console": "2.3.*",
         "knplabs/github-api": "1.2.*@dev",
         "incenteev/composer-parameter-handler": "~2.0",
         "stil/phoebe": "dev-master",
@@ -28,5 +31,8 @@
             "file": "parameters.yml",
             "keep-outdated": true
         }
+    },
+    "autoload": {
+        "psr-0": { "": "src" }
     }
 }
