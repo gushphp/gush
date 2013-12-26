@@ -14,7 +14,6 @@ namespace ManagerTools;
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
@@ -45,7 +44,7 @@ class Application extends BaseApplication
     {
         $yaml = new Yaml();
         if (!file_exists(getcwd().'/parameters.yml')) {
-            throw new \Exception('please provide a parameters.yml on project root directory');
+            throw new \Exception('Please provide a parameters.yml on project root directory');
         }
 
         $parsed = $yaml->parse(getcwd().'/parameters.yml');
