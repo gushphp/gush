@@ -22,23 +22,12 @@ class Application extends BaseApplication
     protected $parameters;
     protected $githubClient;
 
-    public function __construct($cwd)
+    public function __construct()
     {
-        $this->setCwd($cwd);
         $this->readParameters();
         $this->buildGithubClient();
 
         parent::__construct();
-    }
-
-    public function setCwd($cwd)
-    {
-        $this->cwd = $cwd;
-    }
-
-    public function getCwd()
-    {
-        return $this->cwd;
     }
 
     public function getParameter($key)
