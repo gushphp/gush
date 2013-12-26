@@ -25,8 +25,6 @@ use Symfony\Component\Process\ProcessBuilder;
 
 class PullRequestCommand extends Command
 {
-    protected $workDir;
-
     protected function configure()
     {
         $this->setName('pr')
@@ -42,7 +40,6 @@ class PullRequestCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->workDir = $this->getApplication()->getCwd();
         $tableString = $this->getGithubTableString($output);
         $prNumber = $this->postPullRequest($output, $tableString);
     }
@@ -162,7 +159,7 @@ class PullRequestCommand extends Command
     {
         $builder = new ProcessBuilder($command);
         $builder
-            ->setWorkingDirectory($this->workDir)
+            ->setWorkingDirectory(getcwd())
             ->setTimeout(3600)
         ;
         $process = $builder->getProcess();
@@ -183,7 +180,7 @@ class PullRequestCommand extends Command
 
     protected function extractBranchName()
     {
-        $process = new Process('git branch | grep "*" | cut -d " " -f 2', $this->workDir);
+        $process = new Process('git branch | grep "*" | cut -d " " -f 2', getcwd());
         $process->run();
 
         return trim($process->getOutput());
@@ -191,7 +188,7 @@ class PullRequestCommand extends Command
 
     protected function getRepoName()
     {
-        $process = new Process('git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1', $this->workDir);
+        $process = new Process('git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1', getcwd());
         $process->run();
 
         return trim($process->getOutput());
