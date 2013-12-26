@@ -3,3 +3,8 @@ vendor
 parameters.yml
 manager.phar
 box.json
+
+/.sculpin
+/output_dev
+/sculpin.lock
+/source
