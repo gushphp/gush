@@ -23,4 +23,7 @@ if (file_exists($file)) {
 
 $app = new ManagerTools\Application(__DIR__);
 $app->add(new ManagerTools\Command\PullRequestCommand());
+$app->add(new ManagerTools\Command\ReleaseCreateCommand());
+$app->add(new ManagerTools\Command\ReleaseListCommand());
+$app->add(new ManagerTools\Command\ReleaseRemoveCommand());
 $app->run();
