@@ -29,7 +29,6 @@ class ReleaseRemoveCommand extends Command
         $this->addArgument('org', InputArgument::REQUIRED, 'Name of GITHub organization');
         $this->addArgument('repo', InputArgument::REQUIRED, 'Name of GITHub repository');
         $this->addArgument('id', InputArgument::REQUIRED, 'ID of release');
-
     }
 
     /**
@@ -45,6 +44,10 @@ class ReleaseRemoveCommand extends Command
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
 
+        if ($input->getOption('id-by-name')) {
+            $id = $this->getIdForName($repo, $org, $id);
+        }
+
         $output->writeln(sprintf(
             '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s', 
             $id, $org, $repo
@@ -53,4 +56,3 @@ class ReleaseRemoveCommand extends Command
         $release = $client->api('repo')->releases()->remove($org, $repo, $id);
     }
 }
-

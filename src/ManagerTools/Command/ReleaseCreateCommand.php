@@ -37,7 +37,7 @@ class ReleaseCreateCommand extends Command
         $this->addOption('asset-file', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Assets to include in this release');
         $this->addOption('asset-name', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Names corresponding to asset-files');
         $this->addOption('asset-content-type', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Content types corresponding to asset-files (default to application/zip');
-
+        $this->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name');
     }
 
     /**
@@ -56,6 +56,10 @@ class ReleaseCreateCommand extends Command
         $assetFiles = $input->getOption('asset-file');
         $assetNames = $input->getOption('asset-name');
         $assetContentTypes = $input->getOption('asset-content-type');
+
+        if ($input->getOption('replace')) {
+            $this->removeExisting($output, $client, $org, $repo, $tag);
+        }
 
         // validate assets
         foreach ($assetFiles as $assetFile) {
@@ -103,6 +107,25 @@ class ReleaseCreateCommand extends Command
             $client->api('repo')->releases()->assets()->create(
                 $org, $repo, $release['id'], $assetName, $assetContentType, $content
             );
+        }
+    }
+
+    protected function removeExisting($output, $client, $org, $repo, $tag)
+    {
+        $releases = $client->api('repo')->releases()->all($org, $repo);
+        $id = null;
+
+        foreach ($releases as $release) {
+            if ($tag == $release['tag_name']) {
+                $id = $release['id'];
+            }
+        }
+
+        if ($id) {
+            $output->writeln(sprintf(
+                '<info>Removing existing release with tag </info>%s (id: %s)', $tag, $id
+            ));
+            $client->api('repo')->releases()->remove($org, $repo, $id);
         }
     }
 }
