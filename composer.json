@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=5.4",
         "symfony/console": "~2.3",
         "symfony/process": "~2.3",
         "knplabs/github-api": "dev-master",
