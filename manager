@@ -21,7 +21,7 @@ if (file_exists($file)) {
     exit(1);
 }
 
-$app = new ManagerTools\Application(__DIR__);
+$app = new ManagerTools\Application();
 $app->add(new ManagerTools\Command\PullRequestCommand());
 $app->add(new ManagerTools\Command\ReleaseCreateCommand());
 $app->add(new ManagerTools\Command\ReleaseListCommand());

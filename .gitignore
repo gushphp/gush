@@ -1,7 +1,7 @@
 composer.lock
 vendor
 parameters.yml
-manager.phar
+gh.phar
 box.json
 
 /.sculpin

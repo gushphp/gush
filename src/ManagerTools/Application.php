@@ -22,23 +22,12 @@ class Application extends BaseApplication
     protected $parameters;
     protected $githubClient;
 
-    public function __construct($cwd)
+    public function __construct()
     {
-        $this->setCwd($cwd);
         $this->readParameters();
         $this->buildGithubClient();
 
         parent::__construct();
-    }
-
-    public function setCwd($cwd)
-    {
-        $this->cwd = $cwd;
-    }
-
-    public function getCwd()
-    {
-        return $this->cwd;
     }
 
     public function getParameter($key)
@@ -54,7 +43,11 @@ class Application extends BaseApplication
     private function readParameters()
     {
         $yaml = new Yaml();
-        $parsed = $yaml->parse($this->getCwd().'/parameters.yml');
+        if (!file_exists(getcwd().'/parameters.yml')) {
+            throw new \Exception('Please provide a parameters.yml on project root directory');
+        }
+
+        $parsed = $yaml->parse(getcwd().'/parameters.yml');
         $this->parameters = $parsed['parameters'];
     }
 
