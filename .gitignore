@@ -1,6 +1,6 @@
 composer.lock
-vendor
-parameters.yml
+vendor/
+/.manager-tools.yml
 gh.phar
 box.json
 

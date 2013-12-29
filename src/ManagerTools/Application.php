@@ -13,13 +13,19 @@ namespace ManagerTools;
 
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
+use ManagerTools\Exception\FileNotFoundException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
 {
-    protected $cwd;
+    /**
+     * @var array Array of paratemers
+     */
     protected $parameters;
+    /**
+     * @var \Github\Client The Github Client
+     */
     protected $githubClient;
 
     public function __construct()
@@ -30,31 +36,64 @@ class Application extends BaseApplication
         parent::__construct();
     }
 
+    /**
+     * @param mixed $key
+     * @return mixed
+     */
     public function getParameter($key)
     {
         return $this->parameters[$key];
     }
 
+    /**
+     * @return \Github\Client
+     */
     public function getGithubClient()
     {
         return $this->githubClient;
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     private function readParameters()
     {
-        $yaml = new Yaml();
-        if (!file_exists(getcwd().'/parameters.yml')) {
-            throw new \Exception('Please provide a parameters.yml on project root directory');
+        $filename = getcwd().'/.manager-tools.yml';
+
+        if (!file_exists($filename)) {
+            throw new FileNotFoundException(
+                'The \'.manager-tools.yml\' doest not exists, please configure it.'
+            );
         }
 
-        $parsed = $yaml->parse(getcwd().'/parameters.yml');
+        $yaml = new Yaml();
+        $parsed = $yaml->parse($filename);
         $this->parameters = $parsed['parameters'];
     }
 
+    /**
+     * Creates the Github Client and authenticates the user for future requests
+     *
+     * @throws \RuntimeException
+     */
     private function buildGithubClient()
     {
+        $cacheFolder = $this->parameters['github.cache_folder'];
+
+        if (!file_exists($cacheFolder)) {
+            throw new \RuntimeException(
+                sprintf('The cache folder \'%s\' does not exists. Please create it.',$cacheFolder)
+            );
+        }
+
+        if (!is_writable($cacheFolder)) {
+            throw new \RuntimeException(
+                sprintf('The cache folder \'%s\' is not writable. Please change it\'s permissions',$cacheFolder)
+            );
+        }
+
         $cachedClient = new CachedHttpClient(array(
-            'cache_dir' => '/tmp/github-api-cache'
+            'cache_dir' => $cacheFolder
         ));
 
         $this->githubClient = new Client($cachedClient);

@@ -11,11 +11,10 @@
 
 namespace ManagerTools\Command;
 
-use Managertools\Model\BufferedOutput;
-use Managertools\Model\Question;
-use Managertools\Model\Questionary;
+use ManagerTools\Model\BufferedOutput;
+use ManagerTools\Model\Question;
+use ManagerTools\Model\Questionary;
 use ManagerTools\Model\SymfonyQuestionary;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,8 +22,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
-class PullRequestCommand extends Command
+class PullRequestCommand extends BaseCommand
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this->setName('pr')
@@ -33,10 +35,7 @@ class PullRequestCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -111,12 +110,17 @@ class PullRequestCommand extends Command
         return $table;
     }
 
-    protected function postPullRequest($output, $description)
+    /**
+     * @param OutputInterface $output
+     * @param string          $description
+     * @return mixed
+     */
+    protected function postPullRequest(OutputInterface $output, $description)
     {
-        $username = $this->getApplication()->getParameter('github.nickname');
+        $username = $this->getParameter('github.nickname');
         $repoName = $this->getRepoName();
         $branchName = $this->extractBranchName();
-        $vendorName = 'cordoval';//;
+        $vendorName = 'cordoval';
         $baseBranch = 'cordoval/master';// $vendorName.'/'.$ref;
         $title = 'sample';
 
@@ -139,8 +143,7 @@ class PullRequestCommand extends Command
             $this->runItem($explodedCommand = explode(' ', $command['line']), $command['allow_failures']);
         }
 
-        /** @var \Github\Client $client */
-        $client = $this->getApplication()->getGithubClient();
+        $client = $this->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
             ->create($vendorName, $repoName, array(
@@ -155,6 +158,11 @@ class PullRequestCommand extends Command
         return $pullRequest;
     }
 
+    /**
+     * @param array $command
+     * @param bool $allowFailures
+     * @throws \RuntimeException
+     */
     protected function runItem(array $command, $allowFailures = false)
     {
         $builder = new ProcessBuilder($command);
