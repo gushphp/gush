@@ -30,7 +30,6 @@ class ReleaseRemoveCommand extends BaseCommand
         ;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -42,7 +41,7 @@ class ReleaseRemoveCommand extends BaseCommand
         $org = $input->getArgument('org');
 
         $output->writeln(sprintf(
-            '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s', 
+            '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s',
             $id, $org, $repo
         ));
 

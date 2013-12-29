@@ -22,7 +22,7 @@ class Question
     public function __construct($statement)
     {
         $this->statement = $statement;
-        $this->validator = function($answer) {
+        $this->validator = function ($answer) {
             return $answer;
         };
         $this->default = null;

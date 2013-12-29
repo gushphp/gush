@@ -44,7 +44,7 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
-     * @param OutputInterface $output
+     * @param  OutputInterface $output
      * @return string
      */
     protected function getGithubTableString(OutputInterface $output)
@@ -87,7 +87,7 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
-     * @param Questionary $questionary
+     * @param  Questionary $questionary
      * @return TableHelper
      */
     protected function getMarkdownTableHelper(Questionary $questionary)
@@ -111,8 +111,8 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
-     * @param OutputInterface $output
-     * @param string          $description
+     * @param  OutputInterface $output
+     * @param  string          $description
      * @return mixed
      */
     protected function postPullRequest(OutputInterface $output, $description)
@@ -159,8 +159,8 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
-     * @param array $command
-     * @param bool $allowFailures
+     * @param  array             $command
+     * @param  Boolean           $allowFailures
      * @throws \RuntimeException
      */
     protected function runItem(array $command, $allowFailures = false)

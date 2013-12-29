@@ -37,7 +37,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param mixed $key
+     * @param  mixed $key
      * @return mixed
      */
     public function getParameter($key)
@@ -54,7 +54,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @throws FileNotFoundException
+     * @throws \ManagerTools\Exception\FileNotFoundException
      */
     private function readParameters()
     {
@@ -62,7 +62,7 @@ class Application extends BaseApplication
 
         if (!file_exists($filename)) {
             throw new FileNotFoundException(
-                'The \'.manager-tools.yml\' doest not exists, please configure it.'
+                'The \'.manager-tools.yml\' doest not exist, please configure it.'
             );
         }
 
@@ -82,13 +82,13 @@ class Application extends BaseApplication
 
         if (!file_exists($cacheFolder)) {
             throw new \RuntimeException(
-                sprintf('The cache folder \'%s\' does not exists. Please create it.',$cacheFolder)
+                sprintf('The cache folder \'%s\' does not exist. Please create it.', $cacheFolder)
             );
         }
 
         if (!is_writable($cacheFolder)) {
             throw new \RuntimeException(
-                sprintf('The cache folder \'%s\' is not writable. Please change it\'s permissions',$cacheFolder)
+                sprintf('The cache folder \'%s\' is not writable. Please change it\'s permissions', $cacheFolder)
             );
         }
 
