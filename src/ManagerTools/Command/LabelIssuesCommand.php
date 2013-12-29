@@ -11,6 +11,7 @@
 
 namespace ManagerTools\Command;
 
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,8 +57,6 @@ class LabelIssuesCommand extends BaseCommand
 
             if (file_exists($filename)) {
                 $params['since'] = date('"Y-m-d\TH:i:s\Z"', filemtime($filename));
-                // remove the file in order to update is date
-                unlink($filename);
             }
 
             touch($filename);
@@ -67,20 +66,37 @@ class LabelIssuesCommand extends BaseCommand
         $issues = $client->api('issue')->all($organization, $repository, $params);
         $labels = $client->api('issue')->labels()->all($organization, $repository);
 
+        if (!$issues) {
+            $new = $input->getOption('new') ? 'new ' : '';
+            $output->writeln(sprintf('<error>No %sissues/pull requests founded</error>', $new));
+            return;
+        }
+
+        if (!$labels) {
+            $output->writeln('<error>No Labels founded.</error>');
+            return;
+        }
+
+        // we only need the labels name
         $labelsName = [];
         foreach ($labels as $label) {
             $labelsName[] = $label['name'];
         }
 
-        if (!$issues) {
-            $new = $input->getOption('new') ? 'new ' : '';
-            $output->writeln(sprintf('<comment>No %sissues/pull requests founded</comment>', $new));
-            return;
-        }
-
         $issueTitleFormat = '<comment>[<info>#%s</info>] %s</comment>';
 
+        $isOnlyPullRequest = $input->getOption('pull-requests') && !$input->getOption('issues');
+        $isOnlyIssue = $input->getOption('issues') && !$input->getOption('pull-requests');
+
         foreach ($issues as $issue) {
+            if ($isOnlyPullRequest && !isset($issue['pull_request'])) {
+                continue;
+            }
+
+            if ($isOnlyIssue && isset($issue['pull_request'])) {
+                continue;
+            }
+
             $output->writeln(sprintf($issueTitleFormat, $issue['number'], $issue['title']));
             $this->showLabels($output, $labelsName);
 
@@ -92,7 +108,7 @@ class LabelIssuesCommand extends BaseCommand
                 return $label;
             };
 
-            // ask and validate the answer
+            /** @var DialogHelper $dialog */
             $dialog = $this->getApplication()->getHelperSet()->get('dialog');
             $label = $dialog->askAndValidate(
                 $output,
@@ -108,6 +124,12 @@ class LabelIssuesCommand extends BaseCommand
         }
     }
 
+    /**
+     * Outputs the Labels
+     *
+     * @param OutputInterface $output
+     * @param array           $labels
+     */
     private function showLabels(OutputInterface $output, array $labels)
     {
         /** @var TableHelper $table */
