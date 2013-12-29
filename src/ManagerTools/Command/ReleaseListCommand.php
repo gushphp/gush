@@ -11,34 +11,30 @@
 
 namespace ManagerTools\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
-class ReleaseListCommand extends Command
+class ReleaseListCommand extends BaseCommand
 {
-    protected $workDir;
-
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this->setName('release:list')
-            ->setDescription('List releases')
-            ;
-        $this->addArgument('org', InputArgument::REQUIRED, 'Name of GITHub organization');
-        $this->addArgument('repo', InputArgument::REQUIRED, 'Name of GITHub repository');
+            ->setDescription('List of the releases')
+            ->addArgument('org', InputArgument::REQUIRED, 'Name of the GitHub organization')
+            ->addArgument('repo', InputArgument::REQUIRED, 'Name of the GitHub repository')
+        ;
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $client = $this->getApplication()->getGithubClient();
+        $client = $this->getGithubClient();
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
 
@@ -50,7 +46,7 @@ class ReleaseListCommand extends Command
         foreach ($releases as $release) {
             $table->addRow(array(
                 $release['id'],
-                $release['name'] ? : 'not set',
+                $release['name'] ? $release['name'] : 'not set',
                 $release['tag_name'],
                 $release['target_commitish'],
                 $release['draft'] ? 'yes': 'no',

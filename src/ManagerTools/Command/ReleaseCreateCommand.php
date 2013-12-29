@@ -11,40 +11,42 @@
 
 namespace ManagerTools\Command;
 
-use Symfony\Component\Console\Command\Command;
+use ManagerTools\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class ReleaseCreateCommand extends Command
+class ReleaseCreateCommand extends BaseCommand
 {
     protected $workDir;
 
     protected function configure()
     {
         $this->setName('release:create')
-            ->setDescription('Create Release')
-            ;
-        $this->addArgument('org', InputArgument::REQUIRED, 'Name of GITHub organization');
-        $this->addArgument('repo', InputArgument::REQUIRED, 'Name of GITHub repository');
-        $this->addArgument('tag', InputArgument::REQUIRED, 'Tag of release');
-        $this->addOption('target-commitish', null, InputOption::VALUE_REQUIRED, 'Commitish/ref to create tag from');
-        $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of release');
-        $this->addOption('body', null, InputOption::VALUE_REQUIRED, 'Description of release');
-        $this->addOption('draft', null, InputOption::VALUE_NONE, 'Specify to create an unpublished release');
-        $this->addOption('prerelease', null, InputOption::VALUE_NONE, 'Specify to create a pre-release, ommit for full release');
-        $this->addOption('asset-file', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Assets to include in this release');
-        $this->addOption('asset-name', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Names corresponding to asset-files');
-        $this->addOption('asset-content-type', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Content types corresponding to asset-files (default to application/zip');
-        $this->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name');
+            ->setDescription('Create a new Release')
+            ->addArgument('org', InputArgument::REQUIRED, 'Name of the GitHub organization')
+            ->addArgument('repo', InputArgument::REQUIRED, 'Name of the GitHub repository')
+            ->addArgument('tag', InputArgument::REQUIRED, 'Tag of the release')
+            ->addOption('target-commitish', null, InputOption::VALUE_REQUIRED, 'Commitish/ref to create the tag from')
+            ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of the release')
+            ->addOption('body', null, InputOption::VALUE_REQUIRED, 'Description of the release')
+            ->addOption('draft', null, InputOption::VALUE_NONE, 'Specify to create an unpublished release')
+            ->addOption('prerelease', null, InputOption::VALUE_NONE, 'Specify to create a pre-release, omit for full release')
+            ->addOption('asset-file', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Assets to include in this release')
+            ->addOption('asset-name', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Names corresponding to asset-files')
+            ->addOption('asset-content-type', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Content types corresponding to asset-files (default: application/zip)')
+            ->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name')
+        ;
     }
 
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return integer
+     * @return null
+     *
+     * @throws \ManagerTools\Exception\FileNotFoundException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -64,16 +66,18 @@ class ReleaseCreateCommand extends Command
         // validate assets
         foreach ($assetFiles as $assetFile) {
             if (!file_exists($assetFile)) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Asset "%s" does not exist', $assetFile
-                ));
+                throw new FileNotFoundException(sprintf('Asset "%s" does not exist', $assetFile));
             }
         }
 
-        $output->writeln(sprintf(
-            '<info>Creating release for </info>%s<info> on </info>%s<info>/</info>%s', 
-            $tag, $org, $repo
-        ));
+        $output->writeln(
+            sprintf(
+                '<info>Creating release for </info>%s<info> on </info>%s<info>/</info>%s',
+                $tag,
+                $org,
+                $repo
+            )
+        );
 
         $release = $client->api('repo')->releases()->create($org, $repo, array(
             'tag_name' => $input->getArgument('tag'),
@@ -110,7 +114,7 @@ class ReleaseCreateCommand extends Command
         }
     }
 
-    protected function removeExisting($output, $client, $org, $repo, $tag)
+    protected function removeExisting(OutputInterface $output, $client, $org, $repo, $tag)
     {
         $releases = $client->api('repo')->releases()->all($org, $repo);
         $id = null;
@@ -122,9 +126,7 @@ class ReleaseCreateCommand extends Command
         }
 
         if ($id) {
-            $output->writeln(sprintf(
-                '<info>Removing existing release with tag </info>%s (id: %s)', $tag, $id
-            ));
+            $output->writeln(sprintf('<info>Removing existing release with tag </info>%s (id: %s)', $tag, $id));
             $client->api('repo')->releases()->remove($org, $repo, $id);
         }
     }

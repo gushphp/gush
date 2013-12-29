@@ -11,42 +11,35 @@
 
 namespace ManagerTools\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
-class ReleaseRemoveCommand extends Command
+class ReleaseRemoveCommand extends BaseCommand
 {
-    protected $workDir;
-
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this->setName('release:delete')
             ->setDescription('Remove release')
-            ;
-        $this->addArgument('org', InputArgument::REQUIRED, 'Name of GITHub organization');
-        $this->addArgument('repo', InputArgument::REQUIRED, 'Name of GITHub repository');
-        $this->addArgument('id', InputArgument::REQUIRED, 'ID of release');
+            ->addArgument('org', InputArgument::REQUIRED, 'Name of GitHub organization')
+            ->addArgument('repo', InputArgument::REQUIRED, 'Name of the GitHub repository')
+            ->addArgument('id', InputArgument::REQUIRED, 'ID of the release')
+        ;
     }
 
+
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $client = $this->getApplication()->getGithubClient();
+        $client = $this->getGithubClient();
         $id = $input->getArgument('id');
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
-
-        if ($input->getOption('id-by-name')) {
-            $id = $this->getIdForName($repo, $org, $id);
-        }
 
         $output->writeln(sprintf(
             '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s', 

@@ -10,16 +10,16 @@
  * with this source code in the file LICENSE.
  */
 
-$vendorDir = __DIR__.'/vendor';
+$vendorDir = __DIR__.'/../vendor';
 
-$file = $vendorDir.'/autoload.php';
+$filename = $vendorDir.'/autoload.php';
 
-if (file_exists($file)) {
-    $autoload = require_once $file;
-} else {
-    echo 'Cannot find the vendor directory, have you executed composer install?';
+if (!file_exists($filename)) {
+    echo 'Cannot find the vendor directory, have you executed composer install command?';
     exit(1);
 }
+
+require_once $filename;
 
 $app = new ManagerTools\Application();
 $app->add(new ManagerTools\Command\PullRequestCommand());

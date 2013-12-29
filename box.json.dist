@@ -1,7 +1,7 @@
 {
     "alias": "gh.phar",
     "chmod": "0755",
-    "directories": ["src"],
+    "directories": ["src", "bin"],
     "files": [
         "LICENSE"
     ],
@@ -10,10 +10,15 @@
             "name": "*.php",
             "exclude": ["tests"],
             "in": "vendor"
+        },
+        {
+            "name": "*.pem",
+            "name": "*.pem.*",
+            "in": "vendor/guzzle/guzzle/src/Guzzle/Http/Resources"
         }
     ],
     "git-version": "package_version",
-    "main": "manager",
+    "main": "bin/manager",
     "output": "gh.phar",
     "stub": true
 }
