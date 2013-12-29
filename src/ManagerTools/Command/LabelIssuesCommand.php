@@ -48,12 +48,20 @@ class LabelIssuesCommand extends BaseCommand
         $organization = $input->getArgument('org');
         $repository = $input->getArgument('repo');
 
+        $isOnlyPullRequest = $input->getOption('pull-requests') && !$input->getOption('issues');
+        $isOnlyIssue = $input->getOption('issues') && !$input->getOption('pull-requests');
+
         $params = [
             "state" => "open"
         ];
 
         if ($input->getOption('new')) {
-            $filename = $this->getParameter('github.cache_folder') . '/.last_issue_update';
+            $filename = sprintf(
+                $this->getParameter('github.cache_folder') . '/.last_%s-%s_%s_sync',
+                $organization,
+                $repository,
+                $input->getOption('pull-requests') ? 'pr' : 'issues'
+            );
 
             if (file_exists($filename)) {
                 $params['since'] = date('"Y-m-d\TH:i:s\Z"', filemtime($filename));
@@ -84,9 +92,6 @@ class LabelIssuesCommand extends BaseCommand
         }
 
         $issueTitleFormat = '<comment>[<info>#%s</info>] %s</comment>';
-
-        $isOnlyPullRequest = $input->getOption('pull-requests') && !$input->getOption('issues');
-        $isOnlyIssue = $input->getOption('issues') && !$input->getOption('pull-requests');
 
         foreach ($issues as $issue) {
             if ($isOnlyPullRequest && !isset($issue['pull_request'])) {
