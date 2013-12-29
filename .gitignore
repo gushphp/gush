@@ -1,8 +1,8 @@
-composer.lock
-vendor/
+/composer.lock
+/vendor
 /.manager-tools.yml
-gh.phar
-box.json
+/gh.phar
+/box.json
 
 /.sculpin
 /output_dev

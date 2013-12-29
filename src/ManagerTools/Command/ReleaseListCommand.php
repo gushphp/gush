@@ -46,7 +46,7 @@ class ReleaseListCommand extends BaseCommand
         foreach ($releases as $release) {
             $table->addRow(array(
                 $release['id'],
-                $release['name'] ? $release['name'] : 'not set',
+                $release['name'] ? : 'not set',
                 $release['tag_name'],
                 $release['target_commitish'],
                 $release['draft'] ? 'yes': 'no',

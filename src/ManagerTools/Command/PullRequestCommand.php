@@ -160,7 +160,7 @@ class PullRequestCommand extends BaseCommand
 
     /**
      * @param array $command
-     * @param bool $allowFailures
+     * @param Boolean $allowFailures
      * @throws \RuntimeException
      */
     protected function runItem(array $command, $allowFailures = false)
