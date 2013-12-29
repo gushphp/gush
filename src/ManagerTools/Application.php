@@ -37,7 +37,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param mixed $key
+     * @param  mixed $key
      * @return mixed
      */
     public function getParameter($key)

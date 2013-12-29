@@ -11,10 +11,9 @@
 
 namespace ManagerTools\Exception;
 
-
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
 class FileNotFoundException extends \RuntimeException
 {
-} 
+}

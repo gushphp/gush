@@ -59,5 +59,3 @@ class ReleaseListCommand extends BaseCommand
         $table->render($output);
     }
 }
-
-

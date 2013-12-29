@@ -31,11 +31,11 @@ class BaseCommand extends Command
     /**
      * Gets a specific parameter
      *
-     * @param mixed $key
+     * @param  mixed $key
      * @return mixed
      */
     public function getParameter($key)
     {
         return $this->getApplication()->getParameter($key);
     }
-} 
+}
