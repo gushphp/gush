@@ -1,6 +1,6 @@
 ## Manager Tools
 
-### What it is
+### What is this?
 
 Manager Tools is an app console whose intention is to automate common maintainer tasks.
 
