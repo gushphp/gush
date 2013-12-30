@@ -54,7 +54,7 @@ class IssueListMilestonesCommand extends BaseCommand
         $table->setVerticalBorderChar('');
 
         foreach ($milestones as $label) {
-            $table->addRow(array($label['name']));
+            $table->addRow(array($label['title']));
         }
 
         $table->render($output);
