@@ -103,11 +103,15 @@ class LabelIssuesCommand extends BaseCommand
             }
 
             $output->writeln(sprintf($issueTitleFormat, $issue['number'], $issue['title']));
+            $output->writeln('<info>current labels:</info> ' . $this->getIssueLabels($issue));
             $this->showLabels($output, $labelsName);
 
             $validation = function ($label) use ($labelsName) {
-                if (!in_array($label, array_values($labelsName))) {
-                    throw new \InvalidArgumentException(sprintf('Label "%s" is invalid.', $label));
+                $labels = explode(',', $label);
+                foreach ($labels as $item) {
+                    if (!in_array($item, array_values($labelsName))) {
+                        throw new \InvalidArgumentException(sprintf('Label "%s" is invalid.', $item));
+                    }
                 }
 
                 return $label;
@@ -117,7 +121,7 @@ class LabelIssuesCommand extends BaseCommand
             $dialog = $this->getApplication()->getHelperSet()->get('dialog');
             $label = $dialog->askAndValidate(
                 $output,
-                '<comment>Label?</comment> ',
+                '<comment>Label(s)?</comment> ',
                 $validation,
                 false,
                 null,
@@ -125,7 +129,7 @@ class LabelIssuesCommand extends BaseCommand
             );
 
             // update the issue
-            $client->api('issue')->update($organization, $repository, $issue['number'], array('labels' => $label));
+            $client->api('issue')->update($organization, $repository, $issue['number'], array('labels' => explode(',', $label)));
         }
     }
 
@@ -142,8 +146,24 @@ class LabelIssuesCommand extends BaseCommand
         $table->setLayout(TableHelper::LAYOUT_BORDERLESS);
         $table->setHorizontalBorderChar('');
 
-        $table->setRow(null, $labels);
+        $table->setRows(array_chunk($labels,3));
 
         $table->render($output);
+    }
+
+    /**
+     * Retrieves the labels assigned to a given Issue
+     *
+     * @param array   $issue The issue
+     * @return string
+     */
+    private function getIssueLabels(array $issue)
+    {
+        $labels = [];
+        foreach ($issue['labels'] as $label) {
+            $labels[] = $label['name'];
+        }
+
+        return count($labels) ? join(', ', $labels) : 'N/A';
     }
 }
