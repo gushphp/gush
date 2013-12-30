@@ -44,6 +44,7 @@ class IssueListLabelsCommand extends BaseCommand
         $repository = $input->getArgument('repo');
 
         $client = $this->getGithubClient();
+
         $labels = $client->api('issue')->labels()->all($organization, $repository);
 
         /** @var TableHelper $table */
