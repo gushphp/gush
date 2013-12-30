@@ -81,9 +81,7 @@ class Application extends BaseApplication
         $cacheFolder = $this->parameters['github.cache_folder'];
 
         if (!file_exists($cacheFolder)) {
-            throw new \RuntimeException(
-                sprintf('The cache folder \'%s\' does not exist. Please create it.', $cacheFolder)
-            );
+            touch($cacheFolder);
         }
 
         if (!is_writable($cacheFolder)) {
