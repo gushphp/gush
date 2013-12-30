@@ -119,7 +119,7 @@ class PullRequestCommand extends BaseCommand
     {
         $username = $this->getParameter('github.nickname');
         $repoName = $this->getRepoName();
-        $branchName = $this->gettBranchName();
+        $branchName = $this->getBranchName();
         $vendorName = 'cordoval';
         $baseBranch = 'cordoval/master';// $vendorName.'/'.$ref;
         $title = 'sample';
