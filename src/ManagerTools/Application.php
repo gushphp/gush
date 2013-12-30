@@ -81,7 +81,7 @@ class Application extends BaseApplication
         $cacheFolder = $this->parameters['github.cache_folder'];
 
         if (!file_exists($cacheFolder)) {
-            touch($cacheFolder);
+            mkdir($cacheFolder, 0777, true);
         }
 
         if (!is_writable($cacheFolder)) {
