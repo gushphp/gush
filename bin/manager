@@ -21,9 +21,19 @@ if (!file_exists($filename)) {
 
 require_once $filename;
 
+$process = new Symfony\Component\Process\Process('git --version', getcwd());
+$process->run();
+
+if (!$process->isSuccessful()) {
+    throw new \RuntimeException('Git is required.');
+}
+
 $app = new ManagerTools\Application();
 $app->add(new ManagerTools\Command\PullRequestCommand());
 $app->add(new ManagerTools\Command\ReleaseCreateCommand());
 $app->add(new ManagerTools\Command\ReleaseListCommand());
 $app->add(new ManagerTools\Command\ReleaseRemoveCommand());
+$app->add(new ManagerTools\Command\IssueListLabelsCommand());
+$app->add(new ManagerTools\Command\IssueListMilestonesCommand());
+$app->add(new ManagerTools\Command\LabelIssuesCommand());
 $app->run();

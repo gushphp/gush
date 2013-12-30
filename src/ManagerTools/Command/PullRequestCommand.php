@@ -119,7 +119,7 @@ class PullRequestCommand extends BaseCommand
     {
         $username = $this->getParameter('github.nickname');
         $repoName = $this->getRepoName();
-        $branchName = $this->extractBranchName();
+        $branchName = $this->getBranchName();
         $vendorName = 'cordoval';
         $baseBranch = 'cordoval/master';// $vendorName.'/'.$ref;
         $title = 'sample';
@@ -184,21 +184,5 @@ class PullRequestCommand extends BaseCommand
         if (!$process->isSuccessful() && !$allowFailures) {
             throw new \RuntimeException($process->getErrorOutput());
         }
-    }
-
-    protected function extractBranchName()
-    {
-        $process = new Process('git branch | grep "*" | cut -d " " -f 2', getcwd());
-        $process->run();
-
-        return trim($process->getOutput());
-    }
-
-    protected function getRepoName()
-    {
-        $process = new Process('git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1', getcwd());
-        $process->run();
-
-        return trim($process->getOutput());
     }
 }
