@@ -17,6 +17,7 @@ use ManagerTools\Model\Questionary;
 use ManagerTools\Model\SymfonyQuestionary;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,6 +31,8 @@ class PullRequestCommand extends BaseCommand
         $this
             ->setName('pr')
             ->setDescription('Pull request command')
+            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
+            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -39,7 +42,7 @@ class PullRequestCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tableString = $this->getGithubTableString($output);
-        $prNumber = $this->postPullRequest($output, $tableString);
+        $prNumber = $this->postPullRequest($input, $output, $tableString);
     }
 
     /**
@@ -110,12 +113,16 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
+     * @param InputInterface $input
      * @param  OutputInterface $output
-     * @param  string          $description
+     * @param  string $description
      * @return mixed
      */
-    protected function postPullRequest(OutputInterface $output, $description)
+    protected function postPullRequest(InputInterface $input, OutputInterface $output, $description)
     {
+        $repo = $input->getArgument('repo');
+        $org = $input->getArgument('org');
+
         $github = $this->getParameter('github');
         $username = $github['username'];
         $repoName = $this->getRepoName();
