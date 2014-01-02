@@ -11,6 +11,7 @@
 
 namespace ManagerTools\Command;
 
+use Github\Client;
 use ManagerTools\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,8 +27,7 @@ class ReleaseCreateCommand extends BaseCommand
         $this->setName('release:create')
             ->setDescription('Create a new Release')
             ->addArgument('tag', InputArgument::REQUIRED, 'Tag of the release')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
+
             ->addOption('target-commitish', null, InputOption::VALUE_REQUIRED, 'Commitish/ref to create the tag from')
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of the release')
             ->addOption('body', null, InputOption::VALUE_REQUIRED, 'Description of the release')
@@ -114,7 +114,7 @@ class ReleaseCreateCommand extends BaseCommand
         }
     }
 
-    protected function removeExisting(OutputInterface $output, $client, $org, $repo, $tag)
+    protected function removeExisting(OutputInterface $output, Client $client, $org, $repo, $tag)
     {
         $releases = $client->api('repo')->releases()->all($org, $repo);
         $id = null;
