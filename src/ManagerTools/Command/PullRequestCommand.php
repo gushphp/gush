@@ -27,7 +27,8 @@ class PullRequestCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->setName('pr')
+        $this
+            ->setName('pr')
             ->setDescription('Pull request command')
         ;
     }

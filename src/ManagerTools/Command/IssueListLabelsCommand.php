@@ -28,7 +28,8 @@ class IssueListLabelsCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->setName('issues:list:labels')
+        $this
+            ->setName('issues:list:labels')
             ->setDescription('List of the issue\'s labels')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())

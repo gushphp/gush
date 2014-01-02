@@ -35,7 +35,8 @@ class ConfigureCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->setName('configure')
+        $this
+            ->setName('configure')
             ->setDescription('Configure the github credentials and the cache folder')
         ;
     }

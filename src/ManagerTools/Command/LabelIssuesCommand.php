@@ -30,7 +30,8 @@ class LabelIssuesCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->setName('label')
+        $this
+            ->setName('label')
             ->setDescription('Label issues/pull requests of a repository')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())

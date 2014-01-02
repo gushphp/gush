@@ -28,7 +28,8 @@ class IssueListMilestonesCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->setName('issues:list:milestones')
+        $this
+            ->setName('issues:list:milestones')
             ->setDescription('List of the issue\'s milestones')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())

@@ -24,7 +24,8 @@ class ReleaseCreateCommand extends BaseCommand
 
     protected function configure()
     {
-        $this->setName('release:create')
+        $this
+            ->setName('release:create')
             ->setDescription('Create a new Release')
             ->addArgument('tag', InputArgument::REQUIRED, 'Tag of the release')
 
