@@ -1,3 +1,5 @@
+/bin/*
+!/bin/manager
 /composer.lock
 /vendor
 /gh.phar
