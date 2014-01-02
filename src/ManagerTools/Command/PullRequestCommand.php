@@ -120,8 +120,16 @@ class PullRequestCommand extends BaseCommand
         $username = $github['username'];
         $repoName = $this->getRepoName();
         $branchName = $this->getBranchName();
-        $vendorName = 'cordoval';
-        $baseBranch = 'cordoval:master';
+
+        // provided via the command line argument
+        // or defaults to master or main/default branch from github api
+        $prToBranch = ;
+
+        // fetch here origin vendorname from git
+        // or provided via the command line argument
+        $originVendorName = ;
+
+        // hard coded now but possibly prompt QA or default to single commit message
         $title = 'sample';
 
         $commands = array(
@@ -146,8 +154,8 @@ class PullRequestCommand extends BaseCommand
         $client = $this->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
-            ->create($vendorName, $repoName, array(
-                    'base'  => $baseBranch,
+            ->create($originVendorName, $repoName, array(
+                    'base'  => $username.':'.$prToBranch,
                     'head'  => $username.':'.$branchName,
                     'title' => $title,
                     'body'  => $description
