@@ -13,27 +13,58 @@ namespace ManagerTools;
 
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
+use ManagerTools\Command\ConfigureCommand;
+use ManagerTools\Command\IssueListLabelsCommand;
+use ManagerTools\Command\IssueListMilestonesCommand;
+use ManagerTools\Command\LabelIssuesCommand;
+use ManagerTools\Command\PullRequestCommand;
+use ManagerTools\Command\ReleaseCreateCommand;
+use ManagerTools\Command\ReleaseListCommand;
+use ManagerTools\Command\ReleaseRemoveCommand;
 use ManagerTools\Exception\FileNotFoundException;
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
 {
     /**
-     * @var array Array of paratemers
+     * @var Config $config The configuration file
      */
-    protected $parameters;
+    protected $config;
     /**
-     * @var \Github\Client The Github Client
+     * @var \Github\Client $githubClient The Github Client
      */
     protected $githubClient;
+    protected $parameters;
 
     public function __construct()
     {
-        $this->readParameters();
-        $this->buildGithubClient();
-
         parent::__construct();
+
+        $this->add(new PullRequestCommand());
+        $this->add(new ReleaseCreateCommand());
+        $this->add(new ReleaseListCommand());
+        $this->add(new ReleaseRemoveCommand());
+        $this->add(new IssueListLabelsCommand());
+        $this->add(new IssueListMilestonesCommand());
+        $this->add(new LabelIssuesCommand());
+        $this->add(new ConfigureCommand());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
+    {
+        if ('configure' !== $this->getCommandName($input)) {
+            $this->readParameters();
+            $this->githubClient = $this->buildGithubClient();
+        }
+
+        parent::doRunCommand($command, $input, $output);
     }
 
     /**
@@ -53,52 +84,46 @@ class Application extends BaseApplication
         return $this->githubClient;
     }
 
-    /**
-     * @throws \ManagerTools\Exception\FileNotFoundException
-     */
     private function readParameters()
     {
-        $filename = getcwd().'/.manager-tools.yml';
+        $this->config = Factory::createConfig();
 
-        if (!file_exists($filename)) {
+        $localFilename = $this->config->get('home').'/.manager-tools.yml';
+
+        if (!file_exists($localFilename)) {
             throw new FileNotFoundException(
-                'The \'.manager-tools.yml\' doest not exist, please configure it.'
+                'The \'.manager-tools.yml\' doest not exist, please run the \'configure\' command.'
             );
         }
 
-        $yaml = new Yaml();
-        $parsed = $yaml->parse($filename);
-        $this->parameters = $parsed['parameters'];
+        try {
+            $yaml = new Yaml();
+            $parsed = $yaml->parse($localFilename);
+            $this->config->merge($parsed['parameters']);
+
+            if (!$this->config->isValid()) {
+                throw new \RuntimeException('The \'.manager-tools.yml\' is not properly configured. Please run the \'configure\' command.');
+            }
+        } catch (\Exception $e) {
+            throw new \RuntimeException("{$e->getMessage()}.\nPlease run 'configure' command.");
+        }
     }
 
-    /**
-     * Creates the Github Client and authenticates the user for future requests
-     *
-     * @throws \RuntimeException
-     */
     private function buildGithubClient()
     {
-        $cacheFolder = $this->parameters['github.cache_folder'];
-
-        if (!file_exists($cacheFolder)) {
-            mkdir($cacheFolder, 0777, true);
-        }
-
-        if (!is_writable($cacheFolder)) {
-            throw new \RuntimeException(
-                sprintf('The cache folder \'%s\' is not writable. Please change it\'s permissions', $cacheFolder)
-            );
-        }
-
         $cachedClient = new CachedHttpClient(array(
-            'cache_dir' => $cacheFolder
+            'cache_dir' => $this->config->get('cache-dir')
         ));
 
-        $this->githubClient = new Client($cachedClient);
-        $this->githubClient->authenticate(
-            $this->parameters['github.username'],
-            $this->parameters['github.password'],
-            'http_password'
+        $githubCredentials = $this->config->get('github');
+
+        $githubClient = new Client($cachedClient);
+        $githubClient->authenticate(
+            $githubCredentials['username'],
+            $githubCredentials['password'],
+            Client::AUTH_HTTP_PASSWORD
         );
+
+        return $githubClient;
     }
 }

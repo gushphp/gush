@@ -57,7 +57,8 @@ class LabelIssuesCommand extends BaseCommand
 
         if ($input->getOption('new')) {
             $filename = sprintf(
-                $this->getParameter('github.cache_folder') . '/.last_%s-%s_%s_sync',
+                '%s/.last_%s-%s_%s_sync',
+                $this->getParameter('cache-dir'),
                 $organization,
                 $repository,
                 $input->getOption('pull-requests') ? 'pr' : 'issues'
