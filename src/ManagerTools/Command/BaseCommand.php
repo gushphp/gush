@@ -37,7 +37,9 @@ class BaseCommand extends Command
      */
     public function getParameter($key)
     {
-        return $this->getApplication()->getParameter($key);
+        $config = $this->getApplication()->getConfig();
+
+        return $config->get($key);
     }
 
     /**

@@ -38,7 +38,6 @@ class Application extends BaseApplication
      * @var \Github\Client $githubClient The Github Client
      */
     protected $githubClient;
-    protected $parameters;
 
     public function __construct()
     {
@@ -65,15 +64,6 @@ class Application extends BaseApplication
         }
 
         parent::doRunCommand($command, $input, $output);
-    }
-
-    /**
-     * @param  mixed $key
-     * @return mixed
-     */
-    public function getParameter($key)
-    {
-        return $this->parameters[$key];
     }
 
     /**
@@ -125,5 +115,10 @@ class Application extends BaseApplication
         );
 
         return $githubClient;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 }
