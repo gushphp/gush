@@ -24,9 +24,9 @@ class ReleaseRemoveCommand extends BaseCommand
     {
         $this->setName('release:delete')
             ->setDescription('Remove release')
-            ->addArgument('org', InputArgument::REQUIRED, 'Name of GitHub organization')
-            ->addArgument('repo', InputArgument::REQUIRED, 'Name of the GitHub repository')
             ->addArgument('id', InputArgument::REQUIRED, 'ID of the release')
+            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
+            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 

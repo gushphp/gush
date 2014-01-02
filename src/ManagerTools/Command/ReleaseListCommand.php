@@ -24,8 +24,8 @@ class ReleaseListCommand extends BaseCommand
     {
         $this->setName('release:list')
             ->setDescription('List of the releases')
-            ->addArgument('org', InputArgument::REQUIRED, 'Name of the GitHub organization')
-            ->addArgument('repo', InputArgument::REQUIRED, 'Name of the GitHub repository')
+            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
+            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 

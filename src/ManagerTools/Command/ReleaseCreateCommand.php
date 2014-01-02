@@ -25,9 +25,9 @@ class ReleaseCreateCommand extends BaseCommand
     {
         $this->setName('release:create')
             ->setDescription('Create a new Release')
-            ->addArgument('org', InputArgument::REQUIRED, 'Name of the GitHub organization')
-            ->addArgument('repo', InputArgument::REQUIRED, 'Name of the GitHub repository')
             ->addArgument('tag', InputArgument::REQUIRED, 'Tag of the release')
+            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
+            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('target-commitish', null, InputOption::VALUE_REQUIRED, 'Commitish/ref to create the tag from')
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of the release')
             ->addOption('body', null, InputOption::VALUE_REQUIRED, 'Description of the release')
