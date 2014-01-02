@@ -21,6 +21,9 @@ if (!file_exists($filename)) {
 
 require_once $filename;
 
+error_reporting(-1);
+ini_set('display_errors', 1);
+
 $process = new Symfony\Component\Process\Process('git --version', getcwd());
 $process->run();
 

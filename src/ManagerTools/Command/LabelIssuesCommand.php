@@ -31,7 +31,7 @@ class LabelIssuesCommand extends BaseCommand
     protected function configure()
     {
         $this->setName('label')
-            ->setDescription('List of the issue\'s labels')
+            ->setDescription('Label issues/pull requests of a repository')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
@@ -77,11 +77,13 @@ class LabelIssuesCommand extends BaseCommand
         if (!$issues) {
             $new = $input->getOption('new') ? 'new ' : '';
             $output->writeln(sprintf('<error>No %sissues/pull requests founded</error>', $new));
+
             return;
         }
 
         if (!$labels) {
             $output->writeln('<error>No Labels founded.</error>');
+
             return;
         }
 
@@ -154,7 +156,7 @@ class LabelIssuesCommand extends BaseCommand
     /**
      * Retrieves the labels assigned to a given Issue
      *
-     * @param array   $issue The issue
+     * @param  array  $issue The issue
      * @return string
      */
     private function getIssueLabels(array $issue)

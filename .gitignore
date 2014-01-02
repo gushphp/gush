@@ -1,6 +1,5 @@
 /composer.lock
 /vendor
-/.manager-tools.yml
 /gh.phar
 /box.json
 
