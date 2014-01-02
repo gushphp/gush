@@ -32,11 +32,24 @@ if (!$process->isSuccessful()) {
 }
 
 $app = new ManagerTools\Application();
-$app->add(new ManagerTools\Command\PullRequestCommand());
-$app->add(new ManagerTools\Command\ReleaseCreateCommand());
-$app->add(new ManagerTools\Command\ReleaseListCommand());
-$app->add(new ManagerTools\Command\ReleaseRemoveCommand());
-$app->add(new ManagerTools\Command\IssueListLabelsCommand());
-$app->add(new ManagerTools\Command\IssueListMilestonesCommand());
-$app->add(new ManagerTools\Command\LabelIssuesCommand());
+
+// First time the application run will configure the github credentials
+// and create the default structure for cache folder
+if (!file_exists(__DIR__.'/../.first-time-run')) {
+    @file_put_contents(__DIR__.'/../.first-time-run', '');
+
+    $config = ManagerTools\Factory::createConfig();
+    $localFilename = $config->get('home').'/.manager-tools.yml';
+
+    if (file_exists($localFilename)) {
+        $yaml = new Symfony\Component\Yaml\Yaml();
+        $parsed = $yaml->parse($localFilename);
+        $config->merge($parsed['parameters']);
+    }
+
+    if (!$config->isValid()) {
+        $app->run(new Symfony\Component\Console\Input\ArrayInput(['command' => 'configure']));
+    }
+}
+
 $app->run();

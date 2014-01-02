@@ -117,7 +117,8 @@ class PullRequestCommand extends BaseCommand
      */
     protected function postPullRequest(OutputInterface $output, $description)
     {
-        $username = $this->getParameter('github.nickname');
+        $github = $this->getParameter('github');
+        $username = $github['username'];
         $repoName = $this->getRepoName();
         $branchName = $this->getBranchName();
         $vendorName = 'cordoval';
