@@ -13,6 +13,7 @@ namespace ManagerTools\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
@@ -85,5 +86,33 @@ class BaseCommand extends Command
         $process->run();
 
         return trim($process->getOutput());
+    }
+
+    /**
+     * @param  array             $command
+     * @param  Boolean           $allowFailures
+     * @throws \RuntimeException
+     */
+    protected function runItem(array $command, $allowFailures = false)
+    {
+        $builder = new ProcessBuilder($command);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+        ;
+        $process = $builder->getProcess();
+
+        $process->run(function ($type, $buffer) {
+                if (Process::ERR === $type) {
+                    echo 'ERR > ' . $buffer;
+                } else {
+                    echo 'OUT > ' . $buffer;
+                }
+            }
+        );
+
+        if (!$process->isSuccessful() && !$allowFailures) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
     }
 }

@@ -19,8 +19,6 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 class PullRequestCommand extends BaseCommand
 {
@@ -157,33 +155,5 @@ class PullRequestCommand extends BaseCommand
         ;
 
         return $pullRequest;
-    }
-
-    /**
-     * @param  array             $command
-     * @param  Boolean           $allowFailures
-     * @throws \RuntimeException
-     */
-    protected function runItem(array $command, $allowFailures = false)
-    {
-        $builder = new ProcessBuilder($command);
-        $builder
-            ->setWorkingDirectory(getcwd())
-            ->setTimeout(3600)
-        ;
-        $process = $builder->getProcess();
-
-        $process->run(function ($type, $buffer) {
-                if (Process::ERR === $type) {
-                    echo 'ERR > ' . $buffer;
-                } else {
-                    echo 'OUT > ' . $buffer;
-                }
-            }
-        );
-
-        if (!$process->isSuccessful() && !$allowFailures) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
     }
 }
