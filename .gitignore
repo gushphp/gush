@@ -4,6 +4,7 @@
 /vendor
 /gh.phar
 /box.json
+/.first-time-run
 
 /.sculpin
 /output_dev
