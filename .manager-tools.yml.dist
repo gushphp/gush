@@ -1,6 +1,0 @@
-parameters:
-        github.nickname: nickname
-        github.username: username
-        github.password: userpassword
-        github.cache_folder: '/tmp/github-api-cache'
-

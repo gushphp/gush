@@ -10,32 +10,20 @@
     ],
     "require": {
         "php": ">=5.4",
+        "ext-curl": "*",
+        "lib-curl": "*",
         "symfony/console": "~2.3",
         "symfony/process": "~2.3",
+        "symfony/yaml": "~2.3",
         "knplabs/github-api": "dev-master",
-        "incenteev/composer-parameter-handler": "dev-master",
         "stil/phoebe": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "raulfraile/ladybug": "dev-master"
     },
-    "scripts": {
-        "post-install-cmd": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
-        ],
-        "post-update-cmd": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
-        ]
-    },
     "config": {
         "bin-dir": "bin"
-    },
-    "extra": {
-        "incenteev-parameters": {
-            "file": ".manager-tools.yml",
-            "keep-outdated": true
-        }
     },
     "autoload": {
         "psr-0": { "ManagerTools\\": "src" }
