@@ -125,7 +125,6 @@ class PullRequestCommand extends BaseCommand
 
         $github = $this->getParameter('github');
         $username = $github['username'];
-        $repoName = $this->getRepoName();
         $branchName = $this->getBranchName();
 
         // provided via the command line argument
@@ -141,7 +140,7 @@ class PullRequestCommand extends BaseCommand
 
         $commands = array(
             array(
-                'line' => sprintf('git remote add %s git@github.com:%s/%s.git', $username, $username, $repoName),
+                'line' => sprintf('git remote add %s git@github.com:%s/%s.git', $username, $username, $repo),
                 'allow_failures' => true
             ),
             array(
@@ -161,7 +160,7 @@ class PullRequestCommand extends BaseCommand
         $client = $this->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
-            ->create($originVendorName, $repoName, array(
+            ->create($originVendorName, $repo, array(
                     'base'  => $username.':'.$prToBranch,
                     'head'  => $username.':'.$branchName,
                     'title' => $title,
