@@ -122,7 +122,7 @@ class PullRequestCommand extends BaseCommand
         $repoName = $this->getRepoName();
         $branchName = $this->getBranchName();
         $vendorName = 'cordoval';
-        $baseBranch = 'cordoval/master';// $vendorName.'/'.$ref;
+        $baseBranch = 'cordoval:master';
         $title = 'sample';
 
         $commands = array(
@@ -149,7 +149,7 @@ class PullRequestCommand extends BaseCommand
             ->api('pull_request')
             ->create($vendorName, $repoName, array(
                     'base'  => $baseBranch,
-                    'head'  => $username.'/'.$branchName,
+                    'head'  => $username.':'.$branchName,
                     'title' => $title,
                     'body'  => $description
                 )
