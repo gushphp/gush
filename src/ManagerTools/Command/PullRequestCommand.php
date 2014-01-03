@@ -196,7 +196,7 @@ class PullRequestCommand extends BaseCommand
 
     private function appendShamelessPlug($outputString)
     {
-        $outputString .= '\n Sent using [manager-tools](https://github.com/cordoval/manager-tools)';
+        $outputString .= "\n Sent using [manager-tools](https://github.com/cordoval/manager-tools)";
 
         return $outputString;
     }
