@@ -87,7 +87,7 @@ class ConfigureCommand extends BaseCommand
             return $field;
         };
 
-        while (!$isAuthenticated) {
+        while ($isAuthenticated === false) {
             $output->writeln('<comment>Insert your github credentials:</comment>');
             $username = $dialog->askAndValidate(
                 $output,
