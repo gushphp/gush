@@ -15,7 +15,7 @@ $vendorDir = __DIR__.'/../vendor';
 $filename = $vendorDir.'/autoload.php';
 
 if (!file_exists($filename)) {
-    echo 'Cannot find the vendor directory, have you executed composer install command?';
+    echo "Cannot find the vendor directory, have you executed composer install command?\n";
     exit(1);
 }
 
