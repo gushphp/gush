@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * This file is part of the Manager Tools.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+$vendorDir = __DIR__.'/../vendor';
+
+$filename = $vendorDir.'/autoload.php';
+
+if (!file_exists($filename)) {
+    echo 'Cannot find the vendor directory, have you executed composer install command?';
+    exit(1);
+}
+
+require_once $filename;
+
+error_reporting(-1);
+ini_set('display_errors', 1);
+
+$process = new Symfony\Component\Process\Process('git --version', getcwd());
+$process->run();
+
+if (!$process->isSuccessful()) {
+    throw new \RuntimeException('Git is required.');
+}
+
+$app = new ManagerTools\Application();
+
+// First time the application run will configure the github credentials
+// and create the default structure for cache folder
+if (!file_exists(__DIR__.'/../.first-time-run')) {
+    @file_put_contents(__DIR__.'/../.first-time-run', '');
+
+    $config = ManagerTools\Factory::createConfig();
+    $localFilename = $config->get('home').'/.manager-tools.yml';
+
+    if (file_exists($localFilename)) {
+        $yaml = new Symfony\Component\Yaml\Yaml();
+        $parsed = $yaml->parse($localFilename);
+        $config->merge($parsed['parameters']);
+    }
+
+    if (!$config->isValid()) {
+        $app->run(new Symfony\Component\Console\Input\ArrayInput(['command' => 'configure']));
+    }
+}
+
+$app->run();
