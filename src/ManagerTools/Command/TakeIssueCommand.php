@@ -42,8 +42,6 @@ class TakeIssueCommand extends BaseCommand
         $org = $input->getArgument('org');
         $repo = $input->getArgument('repo');
 
-        // mt pull-request:take 12 2.3
-        // first use issue number to fetch title from github
         $client = $this->getGithubClient();
         $issue = $client
             ->api('issue')
@@ -63,7 +61,7 @@ class TakeIssueCommand extends BaseCommand
                 'allow_failures' => true
             ],
             [
-                'line' => sprintf('git checkout %s/%s', $baseBranch),
+                'line' => sprintf('git checkout %s/%s', 'origin', $baseBranch),
                 'allow_failures' => true
             ],
             [
@@ -71,8 +69,6 @@ class TakeIssueCommand extends BaseCommand
                 'allow_failures' => true
             ],
         ];
-
-        // git checkout origin/$baseBranch
 
         $this->runCommands($commands);
     }
