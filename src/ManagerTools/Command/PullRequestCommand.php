@@ -43,7 +43,25 @@ class PullRequestCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tableString = $this->getGithubTableString($output);
-        $prNumber = $this->postPullRequest($input, $output, $tableString);
+
+        /** @var DialogHelper $dialog */
+        $dialog = $this->getHelper('dialog');
+        $validator = function ($answer) {
+            if (empty(trim($answer))) {
+                throw new \RunTimeException('You need to provide a non empty title');
+            }
+            return $answer;
+        };
+        $title = $dialog->askAndValidate(
+            $output,
+            'PR Title:',
+            $validator,
+            false,
+            null,
+            null
+        );
+        $prNumber = $this->postPullRequest($input, $output, $title, $tableString);
+        $output->writeln($prNumber['html_url']);
     }
 
     /**
@@ -114,12 +132,19 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
-     * @param InputInterface $input
+     * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @param  string $description
+     * @param  string          $title
+     * @param  string          $description
+     *
      * @return mixed
      */
-    protected function postPullRequest(InputInterface $input, OutputInterface $output, $description)
+    protected function postPullRequest(
+        InputInterface $input,
+        OutputInterface $output,
+        $title,
+        $description
+    )
     {
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
@@ -128,9 +153,6 @@ class PullRequestCommand extends BaseCommand
         $github = $this->getParameter('github');
         $username = $github['username'];
         $branchName = $this->getBranchName();
-
-        // hard coded now but possibly prompt QA or default to single commit message
-        $title = 'Manager Tools Sample Title (change me)';
 
         $commands = array(
             array(
