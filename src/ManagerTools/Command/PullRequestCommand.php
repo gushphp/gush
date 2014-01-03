@@ -160,24 +160,22 @@ class PullRequestCommand extends BaseCommand
         $username = $github['username'];
         $branchName = $this->getBranchName();
 
-        $commands = array(
-            array(
+        $commands = [
+            [
                 'line' => sprintf('git remote add %s git@github.com:%s/%s.git', $username, $username, $repo),
                 'allow_failures' => true
-            ),
-            array(
+            ],
+            [
                 'line' => 'git remote update',
                 'allow_failures' => false
-            ),
-            array(
+            ],
+            [
                 'line' => sprintf('git push -u %s %s', $username, $branchName),
                 'allow_failures' => false
-            )
-        );
+            ]
+        ];
 
-        foreach ($commands as $command) {
-            $this->runItem($explodedCommand = explode(' ', $command['line']), $command['allow_failures']);
-        }
+        $this->runCommands($commands);
 
         $client = $this->getGithubClient();
         $pullRequest = $client
