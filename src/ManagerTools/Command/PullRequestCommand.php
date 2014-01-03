@@ -14,6 +14,7 @@ namespace ManagerTools\Command;
 use ManagerTools\Model\BufferedOutput;
 use ManagerTools\Model\Question;
 use ManagerTools\Model\Questionary;
+use ManagerTools\Model\SymfonyDocumentationQuestionary;
 use ManagerTools\Model\SymfonyQuestionary;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
@@ -74,7 +75,11 @@ class PullRequestCommand extends BaseCommand
         $dialog = $this->getHelper('dialog');
 
         /** @var \ManagerTools\Model\Question[] $questions */
-        $questionary = new SymfonyQuestionary();
+        if (false === strpos($this->getRepoName(), 'docs')) {
+            $questionary = new SymfonyQuestionary();
+        } else {
+            $questionary = new SymfonyDocumentationQuestionary();
+        }
 
         $answers = array();
         /** @var Question $question */
