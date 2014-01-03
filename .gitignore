@@ -2,7 +2,7 @@
 !/bin/mt
 /composer.lock
 /vendor
-/mt.phar
+/gsh.phar
 /box.json
 /.first-time-run
 
