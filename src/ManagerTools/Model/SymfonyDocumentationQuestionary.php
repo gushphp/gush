@@ -16,8 +16,8 @@ class SymfonyDocumentationQuestionary implements Questionary
     public function getQuestions()
     {
         $questionArray = array(
-            array('Doc fix?', 'yes|no'),
-            array('New docs?', 'yes|no'),
+            array('Doc fix?', 'yes'),
+            array('New docs?', 'no'),
             array('Applies to', '2.3+'),
             array('Fixed tickets', '#000'),
             array('License', 'CC-ASA 3.0 Unported'),
@@ -25,8 +25,10 @@ class SymfonyDocumentationQuestionary implements Questionary
 
         $questions = array();
 
-        foreach ($questionArray as $statement) {
-            $questions[] = new Question($statement);
+        foreach ($questionArray as $question) {
+            $q = new Question($question[0]);
+            $q->setDefault($question[1]);
+            $questions[] = $q;
         }
 
         return $questions;
