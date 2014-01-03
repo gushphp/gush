@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools\Tests;
+namespace Gush\Tests;
 
-use ManagerTools\Factory;
+use Gush\Factory;
 use Symfony\Component\Process\Process;
 
 /**
@@ -20,7 +20,7 @@ use Symfony\Component\Process\Process;
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /** @var string $home */
-    private $home = '/tmp/manager-tools';
+    private $home = '/tmp/gush';
 
     /**
      * @dataProvider provider
@@ -28,7 +28,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateConfigUnixEnv($env, $dir)
     {
-        $home = $this->home.'/.manager_tools';
+        $home = $this->home.'/.gush';
 
         @mkdir($this->home, 0777, true);
 
@@ -53,7 +53,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateConfigWindowsEnv()
     {
         define('PHP_WINDOWS_VERSION_MAJOR', 1);
-        $home = $this->home.'/ManagerTools';
+        $home = $this->home.'/Gush';
 
         @mkdir($this->home, 0777, true);
 
@@ -82,8 +82,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function provider()
     {
         return array(
-            array('MANAGER_TOOLS_HOME', "$this->home/.manager_tools"),
-            array('MANAGER_TOOLS_CACHE_DIR', "$this->home/.manager_tools/cache")
+            array('GUSH_HOME', "$this->home/.gush"),
+            array('GUSH_CACHE_DIR', "$this->home/.gush/cache")
         );
     }
 }

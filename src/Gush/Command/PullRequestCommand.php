@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools\Command;
+namespace Gush\Command;
 
-use ManagerTools\Model\BufferedOutput;
-use ManagerTools\Model\Question;
-use ManagerTools\Model\Questionary;
-use ManagerTools\Model\SymfonyDocumentationQuestionary;
-use ManagerTools\Model\SymfonyQuestionary;
+use Gush\Model\BufferedOutput;
+use Gush\Model\Question;
+use Gush\Model\Questionary;
+use Gush\Model\SymfonyDocumentationQuestionary;
+use Gush\Model\SymfonyQuestionary;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -49,7 +49,8 @@ class PullRequestCommand extends BaseCommand
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
         $validator = function ($answer) {
-            if (empty(trim($answer))) {
+            $answer = trim($answer);
+            if (empty($answer)) {
                 throw new \RunTimeException('You need to provide a non empty title');
             }
             return $answer;
@@ -75,7 +76,7 @@ class PullRequestCommand extends BaseCommand
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
 
-        /** @var \ManagerTools\Model\Question[] $questions */
+        /** @var \Gush\Model\Question[] $questions */
         if (false === strpos($this->getRepoName(), 'docs')) {
             $questionary = new SymfonyQuestionary();
         } else {
@@ -194,7 +195,7 @@ class PullRequestCommand extends BaseCommand
 
     private function appendShamelessPlug($outputString)
     {
-        $outputString .= "\n Sent using [manager-tools](https://github.com/cordoval/manager-tools)";
+        $outputString .= "\n Sent using [Gush](https://github.com/cordoval/gush)";
 
         return $outputString;
     }

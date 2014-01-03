@@ -13,14 +13,14 @@
         >
 
     <testsuites>
-        <testsuite name="ManagerTools Test Suite">
+        <testsuite name="Gush Test Suite">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./src/ManagerTools</directory>
+            <directory>./src/Gush</directory>
         </whitelist>
     </filter>
 </phpunit>

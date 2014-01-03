@@ -1,11 +1,15 @@
 {
     "name": "cordoval/gush",
-    "description": "github maintainer manager tools",
+    "description": "Rapid workflow for Github project maintainers and contributors",
     "license": "MIT",
     "authors": [
         {
             "name": "cordoval",
             "email": "cordoval@gmail.com"
+        },
+        {
+            "name" : "Daniel Gomes",
+            "email": "me@danielcsgomes.com"
         }
     ],
     "require": {
@@ -27,6 +31,6 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-0": { "ManagerTools\\": "src" }
+        "psr-0": { "Gush\\": "src" }
     }
 }
