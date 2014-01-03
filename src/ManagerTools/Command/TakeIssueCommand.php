@@ -11,13 +11,6 @@
 
 namespace ManagerTools\Command;
 
-use ManagerTools\Model\BufferedOutput;
-use ManagerTools\Model\Question;
-use ManagerTools\Model\Questionary;
-use ManagerTools\Model\SymfonyDocumentationQuestionary;
-use ManagerTools\Model\SymfonyQuestionary;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,6 +26,7 @@ class TakeIssueCommand extends BaseCommand
             ->setName('pull-request:take')
             ->setDescription('Take an issue')
             ->addArgument('issueNumber', InputArgument::REQUIRED, 'Number of the issue')
+            ->addArgument('baseBranch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
@@ -43,6 +37,43 @@ class TakeIssueCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $issueNumber = $input->getArgument('issueNumber');
+        $baseBranch = $input->getArgument('baseBranch');
+        $org = $input->getArgument('org');
+        $repo = $input->getArgument('repo');
 
+        // mt pull-request:take 12 2.3
+        // first use issue number to fetch title from github
+        $client = $this->getGithubClient();
+        $issue = $client
+            ->api('issue')
+            ->show($org, $repo, $issueNumber)
+        ;
+
+        $slugTitle = $this
+            ->getSlugifier()
+            ->slugify(
+                $issueNumber.' '.$issue['title']
+            )
+        ;
+
+        $commands = [
+            [
+                'line' => 'git remote update',
+                'allow_failures' => true
+            ],
+            [
+                'line' => sprintf('git checkout %s/%s', $baseBranch),
+                'allow_failures' => true
+            ],
+            [
+                'line' => sprintf('git checkout -b %s', $slugTitle),
+                'allow_failures' => true
+            ],
+        ];
+
+        // git checkout origin/$baseBranch
+
+        $this->runCommands($commands);
     }
 }

@@ -11,6 +11,9 @@
 
 namespace ManagerTools\Command;
 
+use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
+use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
+use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
@@ -113,6 +116,29 @@ class BaseCommand extends Command
 
         if (!$process->isSuccessful() && !$allowFailures) {
             throw new \RuntimeException($process->getErrorOutput());
+        }
+    }
+
+    /**
+     * @return DefaultSlugGenerator
+     */
+    protected function getSlugifier()
+    {
+        return new DefaultSlugGenerator(
+            new TransliteratorCollection(
+                [new LatinTransliterator()]
+            ),
+            []
+        );
+    }
+
+    /**
+     * @param array $commands
+     */
+    protected function runCommands(array $commands)
+    {
+        foreach ($commands as $command) {
+            $this->runItem($explodedCommand = explode(' ', $command['line']), $command['allow_failures']);
         }
     }
 }

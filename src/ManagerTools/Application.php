@@ -21,6 +21,7 @@ use ManagerTools\Command\PullRequestCommand;
 use ManagerTools\Command\ReleaseCreateCommand;
 use ManagerTools\Command\ReleaseListCommand;
 use ManagerTools\Command\ReleaseRemoveCommand;
+use ManagerTools\Command\TakeIssueCommand;
 use ManagerTools\Exception\FileNotFoundException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -43,6 +44,7 @@ class Application extends BaseApplication
     {
         parent::__construct();
 
+        $this->add(new TakeIssueCommand());
         $this->add(new PullRequestCommand());
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
