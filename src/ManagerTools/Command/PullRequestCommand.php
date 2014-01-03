@@ -29,7 +29,7 @@ class PullRequestCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('pr')
+            ->setName('pull-request:table')
             ->setDescription('Pull request command')
             ->addArgument('baseBranch', InputArgument::OPTIONAL, 'Name of the base branch to PR', 'master')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
