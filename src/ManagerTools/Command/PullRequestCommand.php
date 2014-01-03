@@ -44,6 +44,7 @@ class PullRequestCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tableString = $this->getGithubTableString($output);
+        $tableString = $this->appendShamelessPlug($tableString);
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -191,5 +192,12 @@ class PullRequestCommand extends BaseCommand
         ;
 
         return $pullRequest;
+    }
+
+    private function appendShamelessPlug($outputString)
+    {
+        $outputString .= '\n Sent using [manager-tools](https://github.com/cordoval/manager-tools)';
+
+        return $outputString;
     }
 }
