@@ -17,6 +17,7 @@ use ManagerTools\Model\Questionary;
 use ManagerTools\Model\SymfonyQuestionary;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,6 +31,9 @@ class PullRequestCommand extends BaseCommand
         $this
             ->setName('pr')
             ->setDescription('Pull request command')
+            ->addArgument('baseBranch', InputArgument::OPTIONAL, 'Name of the base branch to PR', 'master')
+            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
+            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -39,7 +43,7 @@ class PullRequestCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tableString = $this->getGithubTableString($output);
-        $prNumber = $this->postPullRequest($output, $tableString);
+        $prNumber = $this->postPullRequest($input, $output, $tableString);
     }
 
     /**
@@ -110,23 +114,27 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
+     * @param InputInterface $input
      * @param  OutputInterface $output
-     * @param  string          $description
+     * @param  string $description
      * @return mixed
      */
-    protected function postPullRequest(OutputInterface $output, $description)
+    protected function postPullRequest(InputInterface $input, OutputInterface $output, $description)
     {
+        $repo = $input->getArgument('repo');
+        $org = $input->getArgument('org');
+        $baseBranch = $input->getArgument('baseBranch');
+
         $github = $this->getParameter('github');
         $username = $github['username'];
-        $repoName = $this->getRepoName();
         $branchName = $this->getBranchName();
-        $vendorName = 'cordoval';
-        $baseBranch = 'cordoval:master';
-        $title = 'sample';
+
+        // hard coded now but possibly prompt QA or default to single commit message
+        $title = 'Manager Tools Sample Title (change me)';
 
         $commands = array(
             array(
-                'line' => sprintf('git remote add %s git@github.com:%s/%s.git', $username, $username, $repoName),
+                'line' => sprintf('git remote add %s git@github.com:%s/%s.git', $username, $username, $repo),
                 'allow_failures' => true
             ),
             array(
@@ -146,8 +154,8 @@ class PullRequestCommand extends BaseCommand
         $client = $this->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
-            ->create($vendorName, $repoName, array(
-                    'base'  => $baseBranch,
+            ->create($org, $repo, array(
+                    'base'  => $org.':'.$baseBranch,
                     'head'  => $username.':'.$branchName,
                     'title' => $title,
                     'body'  => $description
