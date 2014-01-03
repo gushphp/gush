@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,10 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools\Command;
+namespace Gush\Command;
 
 use Github\Client;
-use ManagerTools\Exception\FileNotFoundException;
+use Gush\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,7 +47,7 @@ class ReleaseCreateCommand extends BaseCommand
      *
      * @return null
      *
-     * @throws \ManagerTools\Exception\FileNotFoundException
+     * @throws \Gush\Exception\FileNotFoundException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

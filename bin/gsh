@@ -2,7 +2,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -31,15 +31,15 @@ if (!$process->isSuccessful()) {
     throw new \RuntimeException('Git is required.');
 }
 
-$app = new ManagerTools\Application();
+$app = new Gush\Application();
 
 // First time the application run will configure the github credentials
 // and create the default structure for cache folder
 if (!file_exists(__DIR__.'/../.first-time-run')) {
     @file_put_contents(__DIR__.'/../.first-time-run', '');
 
-    $config = ManagerTools\Factory::createConfig();
-    $localFilename = $config->get('home').'/.manager-tools.yml';
+    $config = Gush\Factory::createConfig();
+    $localFilename = $config->get('home').'/.gush.yml';
 
     if (file_exists($localFilename)) {
         $yaml = new Symfony\Component\Yaml\Yaml();

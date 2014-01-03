@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools\Tests;
+namespace Gush\Tests;
 
-use ManagerTools\Config;
+use Gush\Config;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools;
+namespace Gush;
 
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
@@ -27,25 +27,25 @@ class Factory
     public static function createConfig()
     {
         // determine home and cache dirs
-        $home = getenv('MANAGER_TOOLS_HOME');
-        $cacheDir = getenv('MANAGER_TOOLS_CACHE_DIR');
+        $home = getenv('GUSH_HOME');
+        $cacheDir = getenv('GUSH_CACHE_DIR');
         if (!$home) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if (!getenv('APPDATA')) {
-                    throw new \RuntimeException('The APPDATA or MANAGER_TOOLS_HOME environment variable must be set for manager tools to run correctly');
+                    throw new \RuntimeException('The APPDATA or GUSH_HOME environment variable must be set for manager tools to run correctly');
                 }
-                $home = strtr(getenv('APPDATA'), '\\', '/').'/ManagerTools';
+                $home = strtr(getenv('APPDATA'), '\\', '/').'/Gush';
             } else {
                 if (!getenv('HOME')) {
-                    throw new \RuntimeException('The HOME or MANAGER_TOOLS_HOME environment variable must be set for manager tools to run correctly');
+                    throw new \RuntimeException('The HOME or GUSH_HOME environment variable must be set for manager tools to run correctly');
                 }
-                $home = rtrim(getenv('HOME'), '/').'/.manager_tools';
+                $home = rtrim(getenv('HOME'), '/').'/.gush';
             }
         }
         if (!$cacheDir) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if ($cacheDir = getenv('LOCALAPPDATA')) {
-                    $cacheDir .= '/ManagerTools';
+                    $cacheDir .= '/Gush';
                 } else {
                     $cacheDir = $home.'/cache';
                 }

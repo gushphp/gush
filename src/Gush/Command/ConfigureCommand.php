@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,10 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools\Command;
+namespace Gush\Command;
 
 use Github\Client;
-use ManagerTools\Factory;
+use Gush\Factory;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +26,7 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigureCommand extends BaseCommand
 {
     /**
-     * @var \ManagerTools\Config $config
+     * @var \Gush\Config $config
      */
     private $config;
 
@@ -54,7 +54,7 @@ class ConfigureCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filename = $this->config->get('home').'/.manager-tools.yml';
+        $filename = $this->config->get('home').'/.gush.yml';
 
         $yaml = new Yaml();
         $content = ['parameters' => $this->config->raw()];

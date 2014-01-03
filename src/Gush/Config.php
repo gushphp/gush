@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools;
+namespace Gush;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
@@ -54,8 +54,8 @@ class Config
     {
         switch ($key) {
             case 'cache-dir':
-                // convert foo-bar to MANAGER_TOOLS_FOO_BAR and check if it exists since it overrides the local config
-                $env = 'MANAGER_TOOLS_'.strtoupper(strtr($key, '-', '_'));
+                // convert foo-bar to GUSH_FOO_BAR and check if it exists since it overrides the local config
+                $env = 'GUSH_'.strtoupper(strtr($key, '-', '_'));
 
                 return rtrim(getenv($env) ? : $this->config[$key], '/\\');
 

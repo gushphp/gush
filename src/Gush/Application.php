@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Manager Tools.
+ * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -9,20 +9,20 @@
  * with this source code in the file LICENSE.
  */
 
-namespace ManagerTools;
+namespace Gush;
 
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
-use ManagerTools\Command\ConfigureCommand;
-use ManagerTools\Command\IssueListLabelsCommand;
-use ManagerTools\Command\IssueListMilestonesCommand;
-use ManagerTools\Command\LabelIssuesCommand;
-use ManagerTools\Command\PullRequestCommand;
-use ManagerTools\Command\ReleaseCreateCommand;
-use ManagerTools\Command\ReleaseListCommand;
-use ManagerTools\Command\ReleaseRemoveCommand;
-use ManagerTools\Command\TakeIssueCommand;
-use ManagerTools\Exception\FileNotFoundException;
+use Gush\Command\ConfigureCommand;
+use Gush\Command\IssueListLabelsCommand;
+use Gush\Command\IssueListMilestonesCommand;
+use Gush\Command\LabelIssuesCommand;
+use Gush\Command\PullRequestCommand;
+use Gush\Command\ReleaseCreateCommand;
+use Gush\Command\ReleaseListCommand;
+use Gush\Command\ReleaseRemoveCommand;
+use Gush\Command\TakeIssueCommand;
+use Gush\Exception\FileNotFoundException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,11 +80,11 @@ class Application extends BaseApplication
     {
         $this->config = Factory::createConfig();
 
-        $localFilename = $this->config->get('home').'/.manager-tools.yml';
+        $localFilename = $this->config->get('home').'/.gush.yml';
 
         if (!file_exists($localFilename)) {
             throw new FileNotFoundException(
-                'The \'.manager-tools.yml\' doest not exist, please run the \'configure\' command.'
+                'The \'.gush.yml\' doest not exist, please run the \'configure\' command.'
             );
         }
 
@@ -94,7 +94,7 @@ class Application extends BaseApplication
             $this->config->merge($parsed['parameters']);
 
             if (!$this->config->isValid()) {
-                throw new \RuntimeException('The \'.manager-tools.yml\' is not properly configured. Please run the \'configure\' command.');
+                throw new \RuntimeException('The \'.gush.yml\' is not properly configured. Please run the \'configure\' command.');
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("{$e->getMessage()}.\nPlease run 'configure' command.");
