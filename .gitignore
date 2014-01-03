@@ -1,8 +1,8 @@
 /bin/*
-!/bin/manager
+!/bin/mt
 /composer.lock
 /vendor
-/gh.phar
+/mt.phar
 /box.json
 /.first-time-run
 

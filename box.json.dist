@@ -1,5 +1,5 @@
 {
-    "alias": "gh.phar",
+    "alias": "mt.phar",
     "chmod": "0755",
     "directories": ["src", "bin"],
     "files": [
@@ -21,7 +21,7 @@
         }
     ],
     "git-version": "package_version",
-    "main": "bin/manager",
-    "output": "gh.phar",
+    "main": "bin/mt",
+    "output": "mt.phar",
     "stub": true
 }
