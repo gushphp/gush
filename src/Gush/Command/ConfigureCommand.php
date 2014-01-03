@@ -61,7 +61,7 @@ class ConfigureCommand extends BaseCommand
 
         @unlink($filename);
         if (!@file_put_contents($filename, $yaml->dump($content), 0644)) {
-           $output->writeln('<error>It could not save file.</error>');
+            $output->writeln('<error>It could not save file.</error>');
         }
 
         $output->writeln('<info>Configuration saved successfully.</info>');
@@ -87,7 +87,7 @@ class ConfigureCommand extends BaseCommand
             return $field;
         };
 
-        while ($isAuthenticated === false) {
+        while (!$isAuthenticated) {
             $output->writeln('<comment>Insert your github credentials:</comment>');
             $username = $dialog->askAndValidate(
                 $output,
@@ -138,6 +138,10 @@ class ConfigureCommand extends BaseCommand
 
     /**
      * Validates if the credentials are valid
+     *
+     * @param string $username
+     * @param string $password
+     * @return Boolean
      */
     private function isGithubCredentialsValid($username, $password)
     {
@@ -147,6 +151,6 @@ class ConfigureCommand extends BaseCommand
 
         $client->authenticate($username, $password, Client::AUTH_HTTP_PASSWORD);
 
-        return $client->api('authorizations')->all();
+        return (bool)count($client->api('authorizations')->all());
     }
 }
