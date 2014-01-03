@@ -51,7 +51,7 @@ class TakeIssueCommand extends BaseCommand
         $slugTitle = $this
             ->getSlugifier()
             ->slugify(
-                $issueNumber.' '.$issue['title']
+                explode(' ', $issueNumber.' '.$issue['title'])
             )
         ;
 
