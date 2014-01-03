@@ -31,6 +31,7 @@ class PullRequestCommand extends BaseCommand
         $this
             ->setName('pr')
             ->setDescription('Pull request command')
+            ->addArgument('baseBranch', InputArgument::OPTIONAL, 'Name of the base branch to PR', 'master')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
@@ -122,21 +123,14 @@ class PullRequestCommand extends BaseCommand
     {
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
+        $baseBranch = $input->getArgument('baseBranch');
 
         $github = $this->getParameter('github');
         $username = $github['username'];
         $branchName = $this->getBranchName();
 
-        // provided via the command line argument
-        // or defaults to master or main/default branch from github api
-        $prToBranch = ;
-
-        // fetch here origin vendorname from git
-        // or provided via the command line argument
-        $originVendorName = ;
-
         // hard coded now but possibly prompt QA or default to single commit message
-        $title = 'sample';
+        $title = 'Manager Tools Sample Title (change me)';
 
         $commands = array(
             array(
@@ -160,8 +154,8 @@ class PullRequestCommand extends BaseCommand
         $client = $this->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
-            ->create($originVendorName, $repo, array(
-                    'base'  => $username.':'.$prToBranch,
+            ->create($org, $repo, array(
+                    'base'  => $org.':'.$baseBranch,
                     'head'  => $username.':'.$branchName,
                     'title' => $title,
                     'body'  => $description
