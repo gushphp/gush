@@ -78,13 +78,13 @@ class LabelIssuesCommand extends BaseCommand
 
         if (!$issues) {
             $new = $input->getOption('new') ? 'new ' : '';
-            $output->writeln(sprintf('<error>No %sissues/pull requests founded</error>', $new));
+            $output->writeln(sprintf('<error>No %sissues/pull requests found</error>', $new));
 
             return;
         }
 
         if (!$labels) {
-            $output->writeln('<error>No Labels founded.</error>');
+            $output->writeln('<error>No Labels found.</error>');
 
             return;
         }
