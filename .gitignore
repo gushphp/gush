@@ -1,5 +1,5 @@
 /bin/*
-!/bin/mt
+!/bin/gsh
 /composer.lock
 /vendor
 /gsh.phar
