@@ -151,6 +151,6 @@ class ConfigureCommand extends BaseCommand
 
         $client->authenticate($username, $password, Client::AUTH_HTTP_PASSWORD);
 
-        return (bool)count($client->api('authorizations')->all());
+        return is_array($client->api('authorizations')->all());
     }
 }
