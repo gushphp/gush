@@ -27,10 +27,16 @@
         "phpunit/phpunit": "~3.7",
         "raulfraile/ladybug": "dev-master@dev"
     },
+    "minimum-stability": "dev",
     "config": {
         "bin-dir": "bin"
     },
     "autoload": {
         "psr-0": { "Gush\\": "src" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
     }
 }
