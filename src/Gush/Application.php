@@ -28,6 +28,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use Gush\Command\IssueListCommand;
 
 class Application extends BaseApplication
 {
@@ -49,6 +50,7 @@ class Application extends BaseApplication
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
         $this->add(new ReleaseRemoveCommand());
+        $this->add(new IssueListCommand());
         $this->add(new IssueListLabelsCommand());
         $this->add(new IssueListMilestonesCommand());
         $this->add(new LabelIssuesCommand());
