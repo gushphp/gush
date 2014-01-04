@@ -26,7 +26,6 @@
         "phpunit/phpunit": "~3.7",
         "raulfraile/ladybug": "~1.0"
     },
-    "minimum-stability": "dev",
     "config": {
         "bin-dir": "bin"
     },
