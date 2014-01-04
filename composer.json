@@ -20,7 +20,7 @@
         "symfony/process": "~2.3",
         "symfony/yaml": "~2.3",
         "knplabs/github-api": "dev-master@dev",
-        "ddd/slug": "dev-master@dev"
+        "ddd/slug": "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",
