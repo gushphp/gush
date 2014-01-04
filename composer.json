@@ -24,8 +24,8 @@
         "ddd/slug": "dev-master@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
-        "raulfraile/ladybug": "dev-master"
+        "phpunit/phpunit": "~3.7",
+        "raulfraile/ladybug": "dev-master@dev"
     },
     "config": {
         "bin-dir": "bin"
