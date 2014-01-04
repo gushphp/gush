@@ -20,7 +20,7 @@
         "symfony/process": "~2.3",
         "symfony/yaml": "~2.3",
         "knplabs/github-api": "dev-master@dev",
-        "stil/phoebe": "dev-master@dev",
+        "stil/phoebe": "~0.2",
         "ddd/slug": "dev-master@dev"
     },
     "require-dev": {
