@@ -40,6 +40,7 @@ class IssueListCommand extends BaseCommand
             'updated',
         ),
         'directions' => array('asc', 'desc'),
+        'type' => array('pr', 'issue'),
     );
 
     protected function formatEnumDescription($name)
@@ -76,6 +77,7 @@ class IssueListCommand extends BaseCommand
             ->addOption('sort', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('sortFields'))
             ->addOption('direction', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('directions'))
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only issues after this time are displayed.')
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('type'))
         ;
     }
 
@@ -129,6 +131,20 @@ class IssueListCommand extends BaseCommand
 
         $issues = $client->api('issue')->all($organization, $repository, $params);
 
+        // post filter
+        foreach ($issues as $i => $issue) {
+            if ($v = $input->getOption('type')) {
+                $this->validateEnum('type', $v);
+                $isPr = isset($issue['pull_request']['html_url']);
+
+                if ($v == 'pr' && false === $isPr) {
+                    unset($issues[$i]);
+                } elseif ($v == 'issue' && true === $isPr) {
+                    unset($issues[$i]);
+                }
+            }
+        }
+
         /** @var TableHelper $table */
         $table = $this->getApplication()->getHelperSet()->get('table');
         $table->setHeaders(array(
@@ -162,4 +178,3 @@ class IssueListCommand extends BaseCommand
         ));
     }
 }
-
