@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
-class IssueListMilestonesCommand extends BaseCommand
+class IssueMilestoneListCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,7 @@ class IssueListMilestonesCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('issues:list:milestones')
+            ->setName('issue:list:milestones')
             ->setDescription('List of the issue\'s milestones')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())

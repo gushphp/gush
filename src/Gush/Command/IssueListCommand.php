@@ -24,42 +24,24 @@ use Symfony\Component\Console\Input\InputOption;
 class IssueListCommand extends BaseCommand
 {
     protected $enum = array(
-        'filters' => array(
+        'filter' => array(
             'assigned',
             'created',
             'mentioned',
             'subscribed',
             'all',
         ),
-        'states' => array(
+        'state' => array(
             'open',
             'closed',
         ),
-        'sortFields' => array(
+        'sort' => array(
             'created',
             'updated',
         ),
-        'directions' => array('asc', 'desc'),
+        'direction' => array('asc', 'desc'),
         'type' => array('pr', 'issue'),
     );
-
-    protected function formatEnumDescription($name)
-    {
-        return 'One of <comment>' . implode('</comment>, <comment>', $this->enum[$name]) . '</comment>';
-    }
-
-    protected function validateEnum($name, $v)
-    {
-        if (!isset($this->enum[$name])) {
-            throw new \InvalidArgumentException('Unknown enum ' . $name);
-        }
-
-        if (!in_array($v, $this->enum[$name])) {
-            throw new \InvalidArgumentException(
-                'Value must be one of ' . implode(', ', $this->enum[$name]) . ' got "' . $v . '"'
-            );
-        }
-    }
 
     /**
      * {@inheritdoc}
@@ -67,17 +49,31 @@ class IssueListCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('issues:list')
+            ->setName('issue:list')
             ->setDescription('List issues')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Specify a label')
-            ->addOption('filter', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('filters'))
-            ->addOption('state', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('states'))
-            ->addOption('sort', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('sortFields'))
-            ->addOption('direction', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('directions'))
+            ->addOption('filter', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('filter'))
+            ->addOption('state', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('state'))
+            ->addOption('sort', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('sort'))
+            ->addOption('direction', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('direction'))
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only issues after this time are displayed.')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('type'))
+            ->setHelp(<<<HERE
+The <info>%command.name%</info> command lists issues from either the current or the given organization
+and repository:
+
+    <info>$ php %command.full_name%</info>
+    <info>$ php %command.full_name% --filter=created --sort=created --direction=desc --since="6 months ago" --type=pr</info>
+
+All of the parameters provided by the github API are supported:
+
+    http://developer.github.com/v3/issues/#list-issues
+
+With the addition of the <info>--type</info> option which enables you to filter show only pull-requests or only issues.
+HERE
+            )
         ;
     }
 
@@ -93,28 +89,15 @@ class IssueListCommand extends BaseCommand
 
         $params = array();
 
+        foreach(array('state', 'filter', 'sort', 'direction') as $key) {
+            if ($v = $input->getOption($key)) {
+                $this->validateEnum($key, $v);
+                $params[$key] = $v;
+            }
+        }
+
         if ($v = $input->getOption('label')) {
             $params['labels'] = implode(',', $v);
-        }
-
-        if ($v = $input->getOption('state')) {
-            $this->validateEnum('states', $v);
-            $params['state'] = $v;
-        }
-
-        if ($v = $input->getOption('filter')) {
-            $this->validateEnum('filters', $v);
-            $params['filter'] = $v;
-        }
-
-        if ($v = $input->getOption('sort')) {
-            $this->validateEnum('sortFields', $v);
-            $params['sort'] = $v;
-        }
-
-        if ($v = $input->getOption('direction')) {
-            $this->validateEnum('directions', $v);
-            $params['direction'] = $v;
         }
 
         if ($v = $input->getOption('since')) {
@@ -132,10 +115,12 @@ class IssueListCommand extends BaseCommand
         $issues = $client->api('issue')->all($organization, $repository, $params);
 
         // post filter
-        foreach ($issues as $i => $issue) {
+        foreach ($issues as $i => &$issue) {
+            $isPr = isset($issue['pull_request']['html_url']);
+            $issue['_type'] = $isPr ? 'pr' : 'issue';
+
             if ($v = $input->getOption('type')) {
                 $this->validateEnum('type', $v);
-                $isPr = isset($issue['pull_request']['html_url']);
 
                 if ($v == 'pr' && false === $isPr) {
                     unset($issues[$i]);
@@ -148,7 +133,7 @@ class IssueListCommand extends BaseCommand
         /** @var TableHelper $table */
         $table = $this->getApplication()->getHelperSet()->get('table');
         $table->setHeaders(array(
-            '#', 'State', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created'
+            '#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created',
         ));
 
         foreach ($issues as $issue) {
@@ -160,12 +145,13 @@ class IssueListCommand extends BaseCommand
             $table->addRow(array(
                 $issue['number'],
                 $issue['state'],
+                $issue['_type'] == 'pr' ? 'PR' : '',
                 substr($issue['title'], 0, 50) . (strlen($issue['title']) > 50 ? '..' : ''),
                 $issue['user']['login'],
                 $issue['assignee']['login'],
                 $issue['milestone']['title'],
                 implode(',', $labels),
-                date('Y-m-d H:i:s', strtotime($issue['created_at'])),
+                date('Y-m-d', strtotime($issue['created_at'])),
             ));
         }
 

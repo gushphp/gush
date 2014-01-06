@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
-class IssueListLabelsCommand extends BaseCommand
+class IssueLabelListCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,7 @@ class IssueListLabelsCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('issues:list:labels')
+            ->setName('issue:label:list')
             ->setDescription('List of the issue\'s labels')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())

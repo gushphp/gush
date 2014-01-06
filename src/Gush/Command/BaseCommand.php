@@ -23,6 +23,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class BaseCommand extends Command
 {
+    protected $enum = array();
+
     /**
      * Gets the Github's Client
      *
@@ -130,6 +132,40 @@ class BaseCommand extends Command
             ),
             []
         );
+    }
+
+    /**
+     * Return a description for an enumerated value.
+     *
+     * @param string $name - name of enumerated value.
+     *
+     * @return string
+     */
+    protected function formatEnumDescription($name)
+    {
+        return 'One of <comment>' . implode('</comment>, <comment>', $this->enum[$name]) . '</comment>';
+    }
+
+    /**
+     * Check to see if the given value is contained in the named
+     * enum definition.
+     *
+     * @param string $name - name of key in $this->enum array
+     * @param string $v    - value to validate
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function validateEnum($name, $v)
+    {
+        if (!isset($this->enum[$name])) {
+            throw new \InvalidArgumentException('Unknown enum ' . $name);
+        }
+
+        if (!in_array($v, $this->enum[$name])) {
+            throw new \InvalidArgumentException(
+                'Value must be one of ' . implode(', ', $this->enum[$name]) . ' got "' . $v . '"'
+            );
+        }
     }
 
     /**
