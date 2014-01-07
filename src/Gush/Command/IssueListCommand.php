@@ -155,7 +155,7 @@ HERE
                 $issue['number'],
                 $issue['state'],
                 $issue['_type'] == 'pr' ? 'PR' : '',
-                \Gush\Format\truncate($issue['title']),
+                \Gush\Format\FormatterFunctions::truncate($issue['title']),
                 $issue['user']['login'],
                 $issue['assignee']['login'],
                 $issue['milestone']['title'],
