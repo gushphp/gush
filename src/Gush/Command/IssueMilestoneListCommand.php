@@ -50,10 +50,17 @@ class IssueMilestoneListCommand extends BaseCommand
         $tabulator->tabulate(
             $table = $tabulator->createTable(),
             $milestones,
-            function($milestone) { return array($milestone['title']); }
+            $this->getRowBuilderCallback()
         );
         $tabulator->render($output, $table);
 
         return $milestones;
+    }
+
+    private function getRowBuilderCallback()
+    {
+        return function($milestone) {
+            return [$milestone['title']];
+        };
     }
 }
