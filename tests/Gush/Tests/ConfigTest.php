@@ -25,7 +25,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($defaultConfig, $config->raw());
 
-
         $config->merge(array('foo' => 'bar'));
 
         $defaultConfig['foo'] = 'bar';

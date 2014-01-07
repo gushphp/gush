@@ -22,6 +22,7 @@ class ResponseStub
     public function getResponse()
     {
         $response = new Response(200, array(), json_encode($this->returnData));
+
         return $response;
     }
 }

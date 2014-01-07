@@ -11,6 +11,7 @@ class TestHttpClient implements HttpClientInterface
     private function getHash($path, $body, $httpMethod, $headers)
     {
         $hash = md5($path . $body . $httpMethod . serialize($headers));
+
         return $hash;
     }
 

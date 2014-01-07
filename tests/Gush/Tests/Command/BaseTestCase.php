@@ -20,6 +20,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function buildGithubClient()
     {
         $githubClient = new Client($this->httpClient);
+
         return $githubClient;
     }
 
