@@ -11,7 +11,6 @@
 
 namespace Gush\Command;
 
-use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -131,37 +130,38 @@ HERE
             }
         }
 
-        /** @var TableHelper $table */
-        $table = $this->getApplication()->getHelperSet()->get('table');
-        $table->setHeaders(array(
-            '#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created',
-        ));
-
-        foreach ($issues as $issue) {
-            $labels = array();
-            foreach ($issue['labels'] as $label) {
-                $labels[] = $label['name'];
-            }
-
-            $table->addRow(array(
-                $issue['number'],
-                $issue['state'],
-                $issue['_type'] == 'pr' ? 'PR' : '',
-                substr($issue['title'], 0, 50) . (strlen($issue['title']) > 50 ? '..' : ''),
-                $issue['user']['login'],
-                $issue['assignee']['login'],
-                $issue['milestone']['title'],
-                implode(',', $labels),
-                date('Y-m-d', strtotime($issue['created_at'])),
-            ));
-        }
-
-        $table->render($output);
+        $tabulator = $this->getTabulator();
+        $table = $tabulator->createTable();
+        $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created']);
+        $tabulator->tabulate($table, $issues, $this->getRowBuilderCallback());
+        $tabulator->render($output, $table);
 
         $output->writeln('');
         $elapsedtime = microtime(true) - $starttime;
         $output->writeln(sprintf('%s issues in %ss',
             count($issues), number_format($elapsedtime, 2)
         ));
+    }
+
+    private function getRowBuilderCallback()
+    {
+        return function ($issue) {
+            $labels = [];
+            foreach ($issue['labels'] as $label) {
+                $labels[] = $label['name'];
+            }
+
+            return [
+                $issue['number'],
+                $issue['state'],
+                $issue['_type'] == 'pr' ? 'PR' : '',
+                substr($issue['title'], 0, 50).(strlen($issue['title']) > 50 ? '..' : ''),
+                $issue['user']['login'],
+                $issue['assignee']['login'],
+                $issue['milestone']['title'],
+                implode(',', $labels),
+                date('Y-m-d', strtotime($issue['created_at'])),
+            ];
+        };
     }
 }
