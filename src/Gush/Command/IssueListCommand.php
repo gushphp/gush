@@ -89,7 +89,7 @@ HERE
 
         $params = array();
 
-        foreach(array('state', 'filter', 'sort', 'direction') as $key) {
+        foreach (array('state', 'filter', 'sort', 'direction') as $key) {
             if ($v = $input->getOption($key)) {
                 $this->validateEnum($key, $v);
                 $params[$key] = $v;
@@ -159,7 +159,7 @@ HERE
 
         $output->writeln('');
         $elapsedtime = microtime(true) - $starttime;
-        $output->writeln(sprintf('%s issues in %ss', 
+        $output->writeln(sprintf('%s issues in %ss',
             count($issues), number_format($elapsedtime, 2)
         ));
     }
