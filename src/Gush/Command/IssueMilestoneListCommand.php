@@ -59,7 +59,7 @@ class IssueMilestoneListCommand extends BaseCommand
 
     private function getRowBuilderCallback()
     {
-        return function($milestone) {
+        return function ($milestone) {
             return [$milestone['title']];
         };
     }

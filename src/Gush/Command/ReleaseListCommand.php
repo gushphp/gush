@@ -53,7 +53,7 @@ class ReleaseListCommand extends BaseCommand
 
     private function getRowBuilderCallback()
     {
-        return function($release) {
+        return function ($release) {
             return [
                 $release['id'],
                 $release['name'] ? : 'not set',
