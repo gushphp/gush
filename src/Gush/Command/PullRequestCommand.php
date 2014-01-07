@@ -53,6 +53,7 @@ class PullRequestCommand extends BaseCommand
             if (empty($answer)) {
                 throw new \RunTimeException('You need to provide a non empty title');
             }
+
             return $answer;
         };
         $title = $dialog->askAndValidate(
@@ -139,10 +140,10 @@ class PullRequestCommand extends BaseCommand
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
-     * @param  string          $title
-     * @param  string          $description
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $title
+     * @param string          $description
      *
      * @return mixed
      */

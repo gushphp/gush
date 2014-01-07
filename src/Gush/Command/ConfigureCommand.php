@@ -139,8 +139,8 @@ class ConfigureCommand extends BaseCommand
     /**
      * Validates if the credentials are valid
      *
-     * @param string $username
-     * @param string $password
+     * @param  string  $username
+     * @param  string  $password
      * @return Boolean
      */
     private function isGithubCredentialsValid($username, $password)

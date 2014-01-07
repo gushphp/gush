@@ -79,7 +79,7 @@ class Config
     /**
      * Checks whether a setting exists
      *
-     * @param  string $key
+     * @param  string  $key
      * @return Boolean
      */
     public function has($key)
