@@ -1,19 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Gush\Test\HttpClient;
 
 use Github\HttpClient\HttpClientInterface;
 
+/**
+ * @author Daniel T Leech <dantleech@gmail.com>
+ */
 class TestHttpClient implements HttpClientInterface
 {
     protected $stubs;
-
-    private function getHash($path, $body, $httpMethod, $headers)
-    {
-        $hash = md5($path . $body . $httpMethod . serialize($headers));
-
-        return $hash;
-    }
 
     public function when($path, $body = null, $httpMethod = 'GET', array $headers = array())
     {
@@ -125,5 +130,10 @@ class TestHttpClient implements HttpClientInterface
      */
     public function authenticate($tokenOrLogin, $password, $authMethod)
     {
+    }
+
+    private function getHash($path, $body, $httpMethod, $headers)
+    {
+        return md5($path.$body.$httpMethod.serialize($headers));
     }
 }

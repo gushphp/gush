@@ -1,9 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Gush\Test\HttpClient;
 
 use Guzzle\Http\Message\Response;
 
+/**
+ * @author Daniel T Leech <dantleech@gmail.com>
+ */
 class ResponseStub
 {
     protected $client;
@@ -21,8 +33,6 @@ class ResponseStub
 
     public function getResponse()
     {
-        $response = new Response(200, array(), json_encode($this->returnData));
-
-        return $response;
+        return new Response(200, array(), json_encode($this->returnData));
     }
 }

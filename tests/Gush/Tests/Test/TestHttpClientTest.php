@@ -1,9 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Gush\Tests\Test;
 
 use Gush\Test\HttpClient\TestHttpClient;
 
+/**
+ * @author Daniel T Leech <dantleech@gmail.com>
+ */
 class TestHttpClientTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
