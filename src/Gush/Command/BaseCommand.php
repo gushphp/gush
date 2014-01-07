@@ -14,6 +14,7 @@ namespace Gush\Command;
 use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
 use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
+use Gush\Table\Tabulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
@@ -24,6 +25,7 @@ use Symfony\Component\Process\ProcessBuilder;
 class BaseCommand extends Command
 {
     protected $enum = array();
+    protected $tabulator = null;
 
     /**
      * Gets the Github's Client
@@ -176,5 +178,14 @@ class BaseCommand extends Command
         foreach ($commands as $command) {
             $this->runItem($explodedCommand = explode(' ', $command['line']), $command['allow_failures']);
         }
+    }
+
+    protected function getTabulator()
+    {
+        if (null === $this->tabulator) {
+            $this->tabulator = new Tabulator();
+        }
+
+        return $this->tabulator;
     }
 }
