@@ -8,7 +8,7 @@ class ReleaseListCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->with('repos/cordoval/gush/releases', null, 'GET', array('query' => array()))->willReturn(array(
+        $this->httpClient->whenGet('repos/cordoval/gush/releases')->thenReturn(array(
             array(
                 'id' => '123',
                 'name' => 'This is a Release',
@@ -24,15 +24,12 @@ class ReleaseListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new ReleaseListCommand());
         $tester->execute(array());
 
-        $this->assertEquals(<<<HERE
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-| ID  | Name              | Tag      | Commitish | Draft | Prerelease | Created    | Published  |
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-| 123 | This is a Release | Tag name | 123123    | yes   | yes        | 2014-01-05 | 2014-01-05 |
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-
-HERE
-        , $tester->getDisplay()
-        );
+        $this->assertEquals(trim(<<<EOT
+         
+ ID   Name               Tag       Commitish  Draft  Prerelease  Created     Published  
+         
+ 123  This is a Release  Tag name  123123     yes    yes         2014-01-05  2014-01-05 
+EOT
+        ), trim($tester->getDisplay()));
     }
 }

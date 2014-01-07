@@ -14,7 +14,7 @@ class ResponseStub
         $this->client = $client;
     }
 
-    public function willReturn(array $returnData)
+    public function thenReturn(array $returnData)
     {
         $this->returnData = $returnData;
     }

@@ -14,13 +14,38 @@ class TestHttpClient implements HttpClientInterface
         return $hash;
     }
 
-    public function with($path, $body = null, $httpMethod = 'GET', array $headers = array())
+    public function when($path, $body = null, $httpMethod = 'GET', array $headers = array())
     {
         $responseStub = new ResponseStub($this);
         $hash = $this->getHash($path, $body, $httpMethod, $headers);
         $this->stubs[$hash] = $responseStub;
 
         return $responseStub;
+    }
+
+    public function whenGet($path, $parameters = array(), array $headers = array())
+    {
+        return $this->when($path, null, 'GET', array_merge($headers, array('query' => $parameters)));
+    }
+
+    public function whenPost($path, $body = null, array $headers = array())
+    {
+        return $this->when($path, $body, 'POST', $headers);
+    }
+
+    public function whenPatch($path, $body = null, array $headers = array())
+    {
+        return $this->when($path, $body, 'PATCH', $headers);
+    }
+
+    public function whenDelete($path, $body = null, array $headers = array())
+    {
+        return $this->when($path, $body, 'DELETE', $headers);
+    }
+
+    public function whenPut($path, $body, array $headers = array())
+    {
+        return $this->when($path, $body, 'PUT', $headers);
     }
 
     /**
@@ -44,7 +69,7 @@ class TestHttpClient implements HttpClientInterface
      */
     public function patch($path, $body = null, array $headers = array())
     {
-        return $this->request($path, $body, 'POST', $headers);
+        return $this->request($path, $body, 'PATCH', $headers);
     }
 
     /**
@@ -52,7 +77,7 @@ class TestHttpClient implements HttpClientInterface
      */
     public function put($path, $body, array $headers = array())
     {
-        return $this->request($path, $body, 'POST', $headers);
+        return $this->request($path, $body, 'PUT', $headers);
     }
 
     /**
@@ -60,7 +85,7 @@ class TestHttpClient implements HttpClientInterface
      */
     public function delete($path, $body = null, array $headers = array())
     {
-        return $this->request($path, $body, 'POST', $headers);
+        return $this->request($path, $body, 'DELETE', $headers);
     }
 
     /**
