@@ -47,5 +47,7 @@ class ReleaseRemoveCommand extends BaseCommand
         ));
 
         $release = $client->api('repo')->releases()->remove($org, $repo, $id);
+
+        return $release;
     }
 }

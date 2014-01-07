@@ -41,11 +41,20 @@ class ReleaseListCommand extends BaseCommand
 
         $releases = $client->api('repo')->releases()->all($org, $repo);
 
-        $table = $this->getHelper('table');
+        $tabulator = $this->getTabulator();
+        $tabulator->tabulate(
+            $table = $tabulator->createTable(),
+            $releases,
+            $this->getRowBuilderCallback()
+        );
         $table->setHeaders(array('ID', 'Name', 'Tag', 'Commitish', 'Draft', 'Prerelease', 'Created', 'Published'));
+        $tabulator->render($output, $table);
+    }
 
-        foreach ($releases as $release) {
-            $table->addRow(array(
+    private function getRowBuilderCallback()
+    {
+        return function($release) {
+            return [
                 $release['id'],
                 $release['name'] ? : 'not set',
                 $release['tag_name'],
@@ -54,9 +63,7 @@ class ReleaseListCommand extends BaseCommand
                 $release['prerelease'] ? 'yes' : 'no',
                 $release['created_at'],
                 $release['published_at'],
-            ));
-        }
-
-        $table->render($output);
+            ];
+        };
     }
 }
