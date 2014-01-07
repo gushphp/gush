@@ -14,8 +14,9 @@ namespace Gush;
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
 use Gush\Command\ConfigureCommand;
-use Gush\Command\IssueListLabelsCommand;
-use Gush\Command\IssueListMilestonesCommand;
+use Gush\Command\IssueLabelListCommand;
+use Gush\Command\IssueListCommand;
+use Gush\Command\IssueMilestoneListCommand;
 use Gush\Command\LabelIssuesCommand;
 use Gush\Command\PullRequestCommand;
 use Gush\Command\ReleaseCreateCommand;
@@ -38,7 +39,7 @@ class Application extends BaseApplication
     /**
      * @var \Github\Client $githubClient The Github Client
      */
-    protected $githubClient;
+    protected $githubClient = null;
 
     public function __construct()
     {
@@ -49,10 +50,16 @@ class Application extends BaseApplication
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
         $this->add(new ReleaseRemoveCommand());
-        $this->add(new IssueListLabelsCommand());
-        $this->add(new IssueListMilestonesCommand());
+        $this->add(new IssueLabelListCommand());
+        $this->add(new IssueMilestoneListCommand());
+        $this->add(new IssueListCommand());
         $this->add(new LabelIssuesCommand());
         $this->add(new ConfigureCommand());
+    }
+
+    public function setGithubClient(Client $githubClient)
+    {
+        $this->githubClient = $githubClient;
     }
 
     /**
@@ -62,7 +69,10 @@ class Application extends BaseApplication
     {
         if ('configure' !== $this->getCommandName($input)) {
             $this->readParameters();
-            $this->githubClient = $this->buildGithubClient();
+
+            if (null === $this->githubClient) {
+                $this->githubClient = $this->buildGithubClient();
+            }
         }
 
         parent::doRunCommand($command, $input, $output);
