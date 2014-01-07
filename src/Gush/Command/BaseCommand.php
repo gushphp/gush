@@ -150,20 +150,20 @@ class BaseCommand extends Command
      * Check to see if the given value is contained in the named
      * enum definition.
      *
-     * @param string $name - name of key in $this->enum array
-     * @param string $v    - value to validate
+     * @param string $name  - name of key in $this->enum array
+     * @param string $value - value to validate
      *
      * @throws \InvalidArgumentException
      */
-    protected function validateEnum($name, $v)
+    protected function validateEnum($name, $value)
     {
         if (!isset($this->enum[$name])) {
             throw new \InvalidArgumentException('Unknown enum ' . $name);
         }
 
-        if (!in_array($v, $this->enum[$name])) {
+        if (!in_array($value, $this->enum[$name])) {
             throw new \InvalidArgumentException(
-                'Value must be one of ' . implode(', ', $this->enum[$name]) . ' got "' . $v . '"'
+                'Value must be one of ' . implode(', ', $this->enum[$name]) . ' got "' . $value . '"'
             );
         }
     }
