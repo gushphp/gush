@@ -47,7 +47,7 @@ class IssueLabelListCommand extends BaseCommand
 
         $labels = $client->api('issue')->labels()->all($organization, $repository);
 
-        $rowCallback = function($label) { return array($label['name']); };
+        $rowCallback = function ($label) { return array($label['name']); };
         $tabulator = $this->getTabulator();
         $tabulator->tabulate($table = $tabulator->createTable(), $labels, $rowCallback);
         $tabulator->render($output, $table);
