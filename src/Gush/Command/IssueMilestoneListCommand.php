@@ -11,7 +11,6 @@
 
 namespace Gush\Command;
 
-use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,19 +46,21 @@ class IssueMilestoneListCommand extends BaseCommand
         $client = $this->getGithubClient();
         $milestones = $client->api('issue')->milestones()->all($organization, $repository);
 
-        /** @var TableHelper $table */
-        $table = $this->getApplication()->getHelperSet()->get('table');
-        $table->setLayout(TableHelper::LAYOUT_BORDERLESS);
-        $table->setHorizontalBorderChar('');
-        $table->setPaddingChar(' ');
-        $table->setVerticalBorderChar('');
-
-        foreach ($milestones as $label) {
-            $table->addRow(array($label['title']));
-        }
-
-        $table->render($output);
+        $tabulator = $this->getTabulator();
+        $tabulator->tabulate(
+            $table = $tabulator->createTable(),
+            $milestones,
+            $this->getRowBuilderCallback()
+        );
+        $tabulator->render($output, $table);
 
         return $milestones;
+    }
+
+    private function getRowBuilderCallback()
+    {
+        return function ($milestone) {
+            return [$milestone['title']];
+        };
     }
 }
