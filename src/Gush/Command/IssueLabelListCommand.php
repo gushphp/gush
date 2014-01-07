@@ -11,7 +11,6 @@
 
 namespace Gush\Command;
 
-use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,18 +47,10 @@ class IssueLabelListCommand extends BaseCommand
 
         $labels = $client->api('issue')->labels()->all($organization, $repository);
 
-        /** @var TableHelper $table */
-        $table = $this->getApplication()->getHelperSet()->get('table');
-        $table->setLayout(TableHelper::LAYOUT_BORDERLESS);
-        $table->setHorizontalBorderChar('');
-        $table->setPaddingChar(' ');
-        $table->setVerticalBorderChar('');
-
-        foreach ($labels as $label) {
-            $table->addRow(array($label['name']));
-        }
-
-        $table->render($output);
+        $rowCallback = function ($label) { return array($label['name']); };
+        $tabulator = $this->getTabulator();
+        $tabulator->tabulate($table = $tabulator->createTable(), $labels, $rowCallback);
+        $tabulator->render($output, $table);
 
         return $labels;
     }
