@@ -22,7 +22,7 @@ Gush is an app console whose intention is to automate common maintainer and cont
 There are different ways to use Gush but we recommend this one:
 
 ```
-$ composer global require 'cordoval/gush=dev-master' 'knplabs/github-api=@dev'
+$ composer global require 'cordoval/gush=dev-master'
 ```
 
 If it is the first time you install globally a dependency then make sure
