@@ -19,7 +19,7 @@ use Gush\Command\IssueListCommand;
 use Gush\Command\IssueMilestoneListCommand;
 use Gush\Command\IssueShowCommand;
 use Gush\Command\LabelIssuesCommand;
-use Gush\Command\PullRequestCommand;
+use Gush\Command\PullRequestTableCommand;
 use Gush\Command\PhpCsFixerCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
@@ -50,7 +50,8 @@ class Application extends BaseApplication
         parent::__construct();
 
         $this->add(new TakeIssueCommand());
-        $this->add(new PullRequestCommand());
+        $this->add(new PullRequestTableCommand());
+        $this->add(new PullRequestMergeCommand());
         $this->add(new PhpCsFixerCommand());
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
