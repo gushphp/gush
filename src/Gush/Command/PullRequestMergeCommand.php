@@ -42,8 +42,13 @@ class PullRequestMergeCommand extends BaseCommand
 
         $client = $this->getGithubClient();
 
+        $message = 'Merged using Gush';
         $merge = $client->api('pull_request')->merge($org, $repo, $prNumber, $message);
 
-        var_dump($merge);
+        if ($merge['merged']) {
+            $output->writeln($merge['message']);
+        } else {
+            $output->writeln('There was a problem merging: '.$merge['message']);
+        }
     }
 }

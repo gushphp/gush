@@ -20,6 +20,7 @@ use Gush\Command\IssueMilestoneListCommand;
 use Gush\Command\IssueShowCommand;
 use Gush\Command\LabelIssuesCommand;
 use Gush\Command\PullRequestTableCommand;
+use Gush\Command\PullRequestMergeCommand;
 use Gush\Command\PhpCsFixerCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
