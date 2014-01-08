@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Gush\Format;
 
 /**
  * Lists the issues
@@ -60,7 +61,7 @@ class IssueListCommand extends BaseCommand
             ->addOption('direction', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('direction'))
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only issues after this time are displayed.')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('type'))
-            ->setHelp(<<<HERE
+            ->setHelp(<<<EOF
 The <info>%command.name%</info> command lists issues from either the current or the given organization
 and repository:
 
@@ -72,7 +73,7 @@ All of the parameters provided by the github API are supported:
     http://developer.github.com/v3/issues/#list-issues
 
 With the addition of the <info>--type</info> option which enables you to filter show only pull-requests or only issues.
-HERE
+EOF
             )
         ;
     }
@@ -155,7 +156,7 @@ HERE
                 $issue['number'],
                 $issue['state'],
                 $issue['_type'] == 'pr' ? 'PR' : '',
-                \Gush\Format\FormatterFunctions::truncate($issue['title']),
+                Format\truncate($issue['title']),
                 $issue['user']['login'],
                 $issue['assignee']['login'],
                 $issue['milestone']['title'],

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -24,6 +24,9 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class BaseCommand extends Command
 {
+    const COMMAND_SUCCESS = 1;
+    const COMMAND_FAILURE = 0;
+
     protected $enum = array();
     protected $tabulator = null;
 

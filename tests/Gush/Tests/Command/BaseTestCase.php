@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -34,7 +34,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Command $command
+     * @param  Command       $command
      * @return CommandTester
      */
     protected function getCommandTester(Command $command)

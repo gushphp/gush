@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *

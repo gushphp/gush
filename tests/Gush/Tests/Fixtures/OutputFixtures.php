@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -24,4 +24,15 @@ class OutputFixtures
          
  123  This is a Release  Tag name  123123     yes    yes         2014-01-05  2014-01-05 
 EOT;
+
+    const issueShow = <<<EOT
+Issue #60 (open): by weaverryan [cordoval]
+Type: Pull Request
+Milestone: Conquer the world
+Labels: actionable, easy pick
+Title: Write a behat test to launch strategy
+
+Help me conquer the world. Teach them to use gush.
+EOT;
+
 }
