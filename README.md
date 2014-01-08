@@ -19,11 +19,28 @@ Gush is an app console whose intention is to automate common maintainer and cont
 
 ### Usage
 
-There are different ways to use Gush but we recommend this one:
+There are different ways to use Gush:
 
+#### 1) Installing as a composer global dependency
 ```
 $ composer global require 'cordoval/gush=dev-master'
 ```
 
 If it is the first time you install globally a dependency then make sure
 you follow the instructions [here](http://getcomposer.org/doc/03-cli.md#global).
+
+#### 2) Cloning this repository and building a PHAR
+
+First, clone Gush repository into your local machine and install the dependencies:
+
+```bash
+$ git clone git@github.com:cordoval/gush.git
+$ composer install
+```
+
+We recommend you to use [Box](https://github.com/kherge/Box) to build the phar file. Once installed, you can build it easily:
+
+```bash
+$ copy box.json.dist box.json
+$ box build -v
+```
