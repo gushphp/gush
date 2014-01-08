@@ -30,6 +30,9 @@
         "phpunit/phpunit": "~3.7",
         "raulfraile/ladybug": "~1.0"
     },
+    "bin": [
+        "bin/gsh"
+    ],
     "config": {
         "bin-dir": "bin"
     },
