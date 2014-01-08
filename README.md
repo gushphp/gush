@@ -35,7 +35,7 @@ $ composer global require 'cordoval/gush=dev-master'
 First, clone Gush repository into your local machine and install the dependencies:
 
 ```bash
-$ git clone git@github.com:cordoval/gush.git .
+$ git clone git@github.com:cordoval/gush.git
 $ cd gush
 $ composer install
 ```
