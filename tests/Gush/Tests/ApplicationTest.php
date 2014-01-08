@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -15,8 +15,6 @@ use Github\Client;
 use Gush\Application;
 use Gush\Config;
 use Gush\Tester\HttpClient\TestHttpClient;
-use Guzzle\Http\ClientInterface;
-use Guzzle\Http\Message\Response;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**

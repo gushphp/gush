@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Gush.
+ * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -17,6 +17,7 @@ use Gush\Command\ConfigureCommand;
 use Gush\Command\IssueLabelListCommand;
 use Gush\Command\IssueListCommand;
 use Gush\Command\IssueMilestoneListCommand;
+use Gush\Command\IssueShowCommand;
 use Gush\Command\LabelIssuesCommand;
 use Gush\Command\PullRequestCommand;
 use Gush\Command\PhpCsFixerCommand;
@@ -54,6 +55,7 @@ class Application extends BaseApplication
         $this->add(new ReleaseRemoveCommand());
         $this->add(new IssueLabelListCommand());
         $this->add(new IssueMilestoneListCommand());
+        $this->add(new IssueShowCommand());
         $this->add(new IssueListCommand());
         $this->add(new LabelIssuesCommand());
         $this->add(new ConfigureCommand());
