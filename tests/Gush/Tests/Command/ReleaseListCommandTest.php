@@ -35,7 +35,7 @@ class ReleaseListCommandTest extends BaseTestCase
         ));
 
         $tester = $this->getCommandTester(new ReleaseListCommand());
-        $tester->execute(array());
+        $tester->execute(array('org' => 'cordoval'));
 
         $this->assertEquals(trim(OutputFixtures::releaseList), trim($tester->getDisplay()));
     }

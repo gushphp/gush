@@ -37,8 +37,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($config->isValid());
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testConfigWithValidConfiguration()
     {
+        // clean Environment variables to avoid creating the folders
+        putenv('GUSH_HOME');
+        putenv('GUSH_CACHE_DIR');
+
         $config = new Config();
         $config->merge(
             array(

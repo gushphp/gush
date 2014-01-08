@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Test;
+namespace Gush\Tests\Tester;
 
-use Gush\Test\HttpClient\TestHttpClient;
+use Gush\Tester\HttpClient\TestHttpClient;
 
 /**
  * @author Daniel T Leech <dantleech@gmail.com>

@@ -11,6 +11,8 @@ before_script:
 matrix:
     allow_failures:
         - php: hhvm
+env:
+  - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
 
 script:
   - phpunit

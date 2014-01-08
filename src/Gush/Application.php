@@ -88,7 +88,7 @@ class Application extends BaseApplication
         return $this->githubClient;
     }
 
-    private function readParameters()
+    protected function readParameters()
     {
         $this->config = Factory::createConfig();
 
@@ -113,7 +113,7 @@ class Application extends BaseApplication
         }
     }
 
-    private function buildGithubClient()
+    protected function buildGithubClient()
     {
         $cachedClient = new CachedHttpClient(array(
             'cache_dir' => $this->config->get('cache-dir')
