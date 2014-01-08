@@ -19,7 +19,6 @@
     "require": {
         "php": ">=5.4",
         "ext-curl": "*",
-        "lib-curl": "*",
         "symfony/console": "~2.3",
         "symfony/process": "~2.3",
         "symfony/yaml": "~2.3",

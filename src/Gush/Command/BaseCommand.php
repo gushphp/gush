@@ -179,7 +179,7 @@ class BaseCommand extends Command
     protected function runCommands(array $commands)
     {
         foreach ($commands as $command) {
-            $this->runItem($explodedCommand = explode(' ', $command['line']), $command['allow_failures']);
+            $this->runItem(explode(' ', $command['line']), $command['allow_failures']);
         }
     }
 

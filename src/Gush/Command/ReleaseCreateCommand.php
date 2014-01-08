@@ -73,7 +73,8 @@ class ReleaseCreateCommand extends BaseCommand
 
         $output->writeln(
             sprintf(
-                '<info>Creating release for </info>%s<info> on </info>%s<info>/</info>%s',
+                '<info>Creating release %s for </info>%s<info> on </info>%s<info>/</info>%s',
+                $releaseName,
                 $tag,
                 $org,
                 $repo
