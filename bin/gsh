@@ -10,15 +10,25 @@
  * with this source code in the file LICENSE.
  */
 
-$vendorDir = __DIR__.'/../vendor';
+$paths = array(
+    __DIR__.'/../vendor',
+    __DIR__.'/../../..'
+);
 
-$filename = $vendorDir.'/autoload.php';
+$filename = null;
 
-if (!file_exists($filename)) {
-    echo "Cannot find the vendor directory, have you executed composer install command?\n";
-    exit(1);
+foreach ($paths as $path) {
+    if (file_exists($path.'/autoload.php')) {
+        $filename = $path.'/autoload.php';
+        break;
+    }
 }
 
+if (null == $filename) {
+        echo "Cannot find the vendor directory, have you executed composer install command?\n";
+        exit(1);
+}
+    
 require_once $filename;
 
 error_reporting(-1);
