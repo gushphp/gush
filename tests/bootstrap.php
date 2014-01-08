@@ -16,4 +16,4 @@ EOT;
 
 $loader = require $file;
 
-$loader->add('Gush\Tests', __DIR__);
+$loader->add('Gush\\Tests\\', __DIR__);

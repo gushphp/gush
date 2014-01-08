@@ -12,6 +12,13 @@
          bootstrap="./tests/bootstrap.php"
         >
 
+    <!--
+    <php>
+       <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
+       <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>
+    </php>
+    -->
+
     <testsuites>
         <testsuite name="Gush Test Suite">
             <directory>./tests</directory>

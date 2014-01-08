@@ -13,7 +13,8 @@ namespace Gush\Tests\Command;
 
 use Github\Client;
 use Gush\Application;
-use Gush\Test\HttpClient\TestHttpClient;
+use Gush\Tester\HttpClient\TestHttpClient;
+use Gush\Tests\TestableApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -22,6 +23,9 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var TestHttpClient
+     */
     protected $httpClient;
 
     public function setUp()
@@ -29,17 +33,22 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $this->httpClient = new TestHttpClient();
     }
 
-    protected function buildGithubClient()
-    {
-        return new Client($this->httpClient);
-    }
-
+    /**
+     * @param Command $command
+     * @return CommandTester
+     */
     protected function getCommandTester(Command $command)
     {
-        $application = new Application();
+        $application = new TestableApplication();
+        $application->setAutoExit(false);
         $application->setGithubClient($this->buildGithubClient());
         $command->setApplication($application);
 
         return new CommandTester($command);
+    }
+
+    protected function buildGithubClient()
+    {
+        return new Client($this->httpClient);
     }
 }

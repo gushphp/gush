@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Test\HttpClient;
+namespace Gush\Tester\HttpClient;
 
 use Guzzle\Http\Message\Response;
 
