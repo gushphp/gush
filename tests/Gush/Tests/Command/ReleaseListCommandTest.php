@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\ReleaseListCommand;
+use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
  * @author Daniel T Leech <dantleech@gmail.com>
@@ -36,12 +37,6 @@ class ReleaseListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new ReleaseListCommand());
         $tester->execute(array());
 
-        $this->assertEquals(trim(<<<EOT
-         
- ID   Name               Tag       Commitish  Draft  Prerelease  Created     Published  
-         
- 123  This is a Release  Tag name  123123     yes    yes         2014-01-05  2014-01-05 
-EOT
-        ), trim($tester->getDisplay()));
+        $this->assertEquals(trim(OutputFixtures::releaseList), trim($tester->getDisplay()));
     }
 }
