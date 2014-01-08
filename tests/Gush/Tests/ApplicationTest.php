@@ -13,7 +13,6 @@ namespace Gush\Tests;
 
 use Github\Client;
 use Gush\Application;
-use Gush\Config;
 use Gush\Tester\HttpClient\TestHttpClient;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
