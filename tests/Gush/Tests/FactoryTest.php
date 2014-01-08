@@ -30,7 +30,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->cacheDir = getenv('GUSH_CACHE_DIR');
 
         if (!$this->home || !$this->cacheDir) {
-            $this->markTestSkipped('Please added the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
+            $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
         }
 
         $home = $this->home;
@@ -59,7 +59,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->cacheDir = getenv('GUSH_CACHE_DIR');
 
         if (!$this->home || !$this->cacheDir) {
-            $this->markTestSkipped('Please added the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
+            $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
         }
 
         define('PHP_WINDOWS_VERSION_MAJOR', 1);

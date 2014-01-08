@@ -42,7 +42,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigWithValidConfiguration()
     {
-        // clean Environemnt variables to avoid creating the folders
+        // clean Environment variables to avoid creating the folders
         putenv('GUSH_HOME');
         putenv('GUSH_CACHE_DIR');
 
