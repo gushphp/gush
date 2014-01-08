@@ -188,4 +188,19 @@ class BaseCommand extends Command
 
         return $this->tabulator;
     }
+
+    protected function ensurePhpCsFixerInstalled()
+    {
+        $builder = new ProcessBuilder(['php-cs-fixer']);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+        ;
+        $process = $builder->getProcess();
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException('Please install php-cs-fixer');
+        }
+    }
 }
