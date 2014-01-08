@@ -10,6 +10,10 @@
         {
             "name" : "Daniel Gomes",
             "email": "me@danielcsgomes.com"
+        },
+        {
+            "name": "Daniel T. Leech",
+            "email": "dan.t.leech@gmail.com"
         }
     ],
     "require": {
