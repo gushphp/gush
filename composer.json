@@ -36,8 +36,7 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-0": {"Gush\\": "src"},
-        "files": ["src/Gush/Format/FormatterFunctions.php"]
+        "psr-0": {"Gush\\": "src"}
     },
     "extra": {
         "branch-alias": {

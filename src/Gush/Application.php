@@ -31,6 +31,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use Gush\Helper\TextHelper;
 
 class Application extends BaseApplication
 {
@@ -60,6 +61,14 @@ class Application extends BaseApplication
         $this->add(new IssueListCommand());
         $this->add(new LabelIssuesCommand());
         $this->add(new ConfigureCommand());
+    }
+
+    protected function getDefaultHelperSet()
+    {
+        $helperSet = parent::getDefaultHelperSet();
+        $helperSet->set(new TextHelper);
+
+        return $helperSet;
     }
 
     public function setGithubClient(Client $githubClient)

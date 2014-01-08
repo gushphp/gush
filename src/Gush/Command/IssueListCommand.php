@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Gush\Format;
 
 /**
  * Lists the issues
@@ -156,11 +155,11 @@ EOF
                 $issue['number'],
                 $issue['state'],
                 $issue['_type'] == 'pr' ? 'PR' : '',
-                Format\truncate($issue['title']),
+                $this->getHelper('text')->truncate($issue['title'], 40),
                 $issue['user']['login'],
                 $issue['assignee']['login'],
-                $issue['milestone']['title'],
-                implode(',', $labels),
+                $this->getHelper('text')->truncate($issue['milestone']['title'], 15),
+                $this->getHelper('text')->truncate(implode(',', $labels), 30),
                 date('Y-m-d', strtotime($issue['created_at'])),
             ];
         };
