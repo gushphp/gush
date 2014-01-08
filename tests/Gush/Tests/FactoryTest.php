@@ -40,11 +40,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = Factory::createConfig();
 
-        $this->assertEquals($home . '/cache', $config->get('cache-dir'));
+        $this->assertEquals($home.'/cache', $config->get('cache-dir'));
         $this->assertEquals($home, $config->get('home'));
-        $this->assertFileExists($home . '/cache');
-        $this->assertFileExists($home . '/cache/.htaccess');
-        $this->assertFileExists($home . '/.htaccess');
+        $this->assertFileExists($home.'/cache');
+        $this->assertFileExists($home.'/cache/.htaccess');
+        $this->assertFileExists($home.'/.htaccess');
 
         $process = new Process("rm -rf $this->home");
         $process->run();
@@ -63,7 +63,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         define('PHP_WINDOWS_VERSION_MAJOR', 1);
-        $home = $this->home . '/Gush';
+        $home = $this->home.'/Gush';
 
         @mkdir($this->home, 0777, true);
 
@@ -77,7 +77,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($home, $config->get('cache-dir'));
         $this->assertEquals($home, $config->get('home'));
-        $this->assertFileExists($home . '/.htaccess');
+        $this->assertFileExists($home.'/.htaccess');
 
         $process = new Process("rm -rf $this->home");
         $process->run();
