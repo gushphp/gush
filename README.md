@@ -23,7 +23,7 @@ There are different ways to use Gush:
 
 #### 1) Installing as a composer global dependency (recommended)
 
-If it is the first time you install globally a dependency then make sure
+If it is the first time you globally install a dependency then make sure
 you follow the instructions [here](http://getcomposer.org/doc/03-cli.md#global).
 
 ```bash
@@ -35,13 +35,13 @@ $ composer global require 'cordoval/gush=dev-master'
 First, clone Gush repository into your local machine and install the dependencies:
 
 ```bash
-$ git clone git@github.com:cordoval/gush.git
+$ git clone git@github.com:cordoval/gush.git .
+$ cd gush
 $ composer install
 ```
 
 We recommend you to use [Box](https://github.com/kherge/Box) to build the phar file. Once installed, you can build it easily:
 
 ```bash
-$ copy box.json.dist box.json
 $ box build -v
 ```

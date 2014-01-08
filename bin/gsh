@@ -10,22 +10,21 @@
  * with this source code in the file LICENSE.
  */
 
-$paths = array(
-    __DIR__.'/../vendor',
-    __DIR__.'/../../..'
-);
+$paths []= __DIR__.'/../vendor';
+$paths []= __DIR__.'/../../..';
 
 $filename = null;
 
 foreach ($paths as $path) {
-    if (file_exists($path.'/autoload.php')) {
-        $filename = $path.'/autoload.php';
+    $filePath = $path.'/autoload.php';
+    if (file_exists($filePath)) {
+        $filename = $filePath;
         break;
     }
 }
 
-if (null == $filename) {
-        echo "Cannot find the vendor directory, have you executed composer install command?\n";
+if (null === $filename) {
+        echo "Cannot find an autoupload.php file, have you executed composer install command?\n";
         exit(1);
 }
     
