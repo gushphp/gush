@@ -8,7 +8,7 @@ You need to install the project dependencies using Composer:
  $ wget http://getcomposer.org/composer.phar
 Or
  $ curl -s https://getcomposer.org/installer | php
- $ php composer.phar install --dev
+ $ php composer.phar install
  $ phpunit\n
 EOT;
     exit(1);

@@ -1,6 +1,6 @@
 {
     "name": "cordoval/gush",
-    "description": "Rapid workflow for Github project maintainers and contributors",
+    "description": "Rapid workflow for project maintainers and contributors",
     "license": "MIT",
     "authors": [
         {
@@ -36,7 +36,7 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-0": { "Gush\\": "src" },
+        "psr-0": {"Gush\\": "src"},
         "files": ["src/Gush/Format/FormatterFunctions.php"]
     },
     "extra": {

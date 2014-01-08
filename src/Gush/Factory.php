@@ -14,7 +14,7 @@ namespace Gush;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 /**
- * Creates the default directory structure to run Manager Tools
+ * Creates the default directory structure to run Gush
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
@@ -32,12 +32,12 @@ class Factory
         if (!$home) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if (!getenv('APPDATA')) {
-                    throw new \RuntimeException('The APPDATA or GUSH_HOME environment variable must be set for manager tools to run correctly');
+                    throw new \RuntimeException('The APPDATA or GUSH_HOME environment variable must be set for Gush to run correctly');
                 }
                 $home = strtr(getenv('APPDATA'), '\\', '/').'/Gush';
             } else {
                 if (!getenv('HOME')) {
-                    throw new \RuntimeException('The HOME or GUSH_HOME environment variable must be set for manager tools to run correctly');
+                    throw new \RuntimeException('The HOME or GUSH_HOME environment variable must be set for Gush to run correctly');
                 }
                 $home = rtrim(getenv('HOME'), '/').'/.gush';
             }
@@ -70,16 +70,16 @@ class Factory
         $config = new Config();
 
         // add dirs to the config
-        $config->merge(array('home' => $home, 'cache-dir' => $cacheDir));
+        $config->merge(['home' => $home, 'cache-dir' => $cacheDir]);
 
         return $config;
     }
 
     public static function createAdditionalStyles()
     {
-        return array(
+        return [
             'highlight' => new OutputFormatterStyle('red'),
             'warning' => new OutputFormatterStyle('black', 'yellow'),
-        );
+        ];
     }
 }

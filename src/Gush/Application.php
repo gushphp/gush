@@ -38,6 +38,7 @@ class Application extends BaseApplication
      * @var Config $config The configuration file
      */
     protected $config;
+
     /**
      * @var \Github\Client $githubClient The Github Client
      */
