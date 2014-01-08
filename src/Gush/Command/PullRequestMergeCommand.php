@@ -50,5 +50,7 @@ class PullRequestMergeCommand extends BaseCommand
         } else {
             $output->writeln('There was a problem merging: '.$merge['message']);
         }
+
+        return self::COMMAND_SUCCESS;
     }
 }
