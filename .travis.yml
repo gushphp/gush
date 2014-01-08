@@ -1,18 +1,16 @@
 language: php
 
-php:
-  - 5.4
-  - 5.5
-  - hhvm
-
-before_script:
-  - composer install
+php: [5.4, 5.4, hhvm]
 
 matrix:
     allow_failures:
         - php: hhvm
+
 env:
   - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
+
+before_script:
+  - composer install -n
 
 script:
   - phpunit
