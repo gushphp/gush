@@ -45,13 +45,22 @@ class PullRequestMergeCommand extends BaseCommand
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
         $commits = $client->api('pull_request')->commits($org, $repo, $prNumber);
 
+        $commitsString = '';
+        foreach ($commits as $commit) {
+            $commitsString .= sprintf('%s %s %s',
+                $commit['sha'],
+                $commit['commit']['message'],
+                $commit['author']['login']
+            );
+        }
+
         $message = $this->render(
             'merge_message.twig',
             [
                 'baseBranch' => $pr['base']['label'],
                 'prTitle' => $pr['title'],
                 'prBody' => $pr['body'],
-                'commits' => $commits
+                'commits' => $commitsString
             ]
         );
 
@@ -64,5 +73,10 @@ class PullRequestMergeCommand extends BaseCommand
         }
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function render($template, $array)
+    {
+        
     }
 }
