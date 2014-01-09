@@ -30,8 +30,8 @@ class PullRequestCreateCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('pull-request:table')
-            ->setDescription('Pull request command')
+            ->setName('pull-request:create')
+            ->setDescription('Pull request create command')
             ->addArgument('baseBranch', InputArgument::OPTIONAL, 'Name of the base branch to PR', 'master')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
