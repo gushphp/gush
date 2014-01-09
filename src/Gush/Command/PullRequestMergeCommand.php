@@ -75,8 +75,13 @@ class PullRequestMergeCommand extends BaseCommand
         return self::COMMAND_SUCCESS;
     }
 
-    private function render($template, $array)
+    private function render($template, array $placeholderValuePairs)
     {
-        
+        $resultString = '';
+        foreach ($placeholderValuePairs as $placeholder => $value) {
+            $resultString = str_replace('{{ '.$placeholder.' }}', $value, $template);
+        }
+
+        return $resultString;
     }
 }
