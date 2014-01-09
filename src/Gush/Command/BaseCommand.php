@@ -14,6 +14,7 @@ namespace Gush\Command;
 use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
 use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
+use Gush\Template\Messages;
 use Gush\Table\Tabulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
@@ -211,7 +212,7 @@ class BaseCommand extends Command
     {
         $resultString = '';
         foreach ($placeholderValuePairs as $placeholder => $value) {
-            $resultString = str_replace('{{ '.$placeholder.' }}', $value, constant('Messages::'.$templateName));
+            $resultString = str_replace('{{ '.$placeholder.' }}', $value, Messages::get($templateName));
         }
 
         return $resultString;

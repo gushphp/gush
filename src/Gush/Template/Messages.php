@@ -29,4 +29,8 @@ Commits
 {{ commits }}
 EOT;
 
+    public static function get($name)
+    {
+        return constant('self::'.$name);
+    }
 }
