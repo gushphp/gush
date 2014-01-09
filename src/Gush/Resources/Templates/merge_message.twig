@@ -1,0 +1,15 @@
+This PR was merged into {{ baseBranch }} branch.
+
+Discussion
+----------
+
+{{ prTitle }}
+
+{{ prBody }}
+
+Commits
+-------
+
+{% for commit in commits %}
+    {{ commit.sha }} {{ commit.title }}
+{% endfor %}

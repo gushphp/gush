@@ -42,7 +42,18 @@ class PullRequestMergeCommand extends BaseCommand
 
         $client = $this->getGithubClient();
 
-        $message = 'Merged using Gush';
+        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+
+        $message = $this->(
+            'merge_message.twig',
+            [
+                'baseBranch' => $pr['x'],
+                'prTitle' => $pr[],
+                'prBody' => $pr[],,
+                'commits' => $pr[],
+            ]
+        );
+
         $merge = $client->api('pull_request')->merge($org, $repo, $prNumber, $message);
 
         if ($merge['merged']) {
