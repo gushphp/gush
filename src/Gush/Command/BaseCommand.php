@@ -211,8 +211,9 @@ class BaseCommand extends Command
     protected function render($templateName, array $placeholderValuePairs)
     {
         $resultString = '';
+        $templateToFill = Messages::get($templateName);
         foreach ($placeholderValuePairs as $placeholder => $value) {
-            $resultString = str_replace('{{ '.$placeholder.' }}', $value, Messages::get($templateName));
+            $resultString = str_replace('{{ '.$placeholder.' }}', $value, $templateToFill);
         }
 
         return $resultString;
