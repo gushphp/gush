@@ -11,5 +11,5 @@ Commits
 -------
 
 {% for commit in commits %}
-    {{ commit.sha }} {{ commit.title }}
+    {{ commit.sha }} {{ commit.commit.message }} {{ commit.author.login }}
 {% endfor %}

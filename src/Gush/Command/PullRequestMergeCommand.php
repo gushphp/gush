@@ -43,14 +43,15 @@ class PullRequestMergeCommand extends BaseCommand
         $client = $this->getGithubClient();
 
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+        $commits = $client->api('pull_request')->commits($org, $repo, $prNumber);
 
-        $message = $this->(
+        $message = $this->render(
             'merge_message.twig',
             [
-                'baseBranch' => $pr['x'],
-                'prTitle' => $pr[],
-                'prBody' => $pr[],,
-                'commits' => $pr[],
+                'baseBranch' => $pr['base']['label'],
+                'prTitle' => $pr['title'],
+                'prBody' => $pr['body'],
+                'commits' => $commits
             ]
         );
 
