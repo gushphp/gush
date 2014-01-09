@@ -21,7 +21,7 @@ class IssueShowCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->whenGet('repos/cordoval/gush/issues/60', [])->thenReturn(
+        $this->httpClient->whenGet('repos/cordoval/gush/issues/60')->thenReturn(
             [
                 'number' => 60,
                 'state' => "open",
