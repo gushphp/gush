@@ -145,9 +145,7 @@ class ConfigureCommand extends BaseCommand
      */
     private function isGithubCredentialsValid($username, $password)
     {
-        if (!isset($client)) {
-            $client = new Client();
-        }
+        $client = $this->getGithubClient();
 
         $client->authenticate($username, $password, Client::AUTH_HTTP_PASSWORD);
 
