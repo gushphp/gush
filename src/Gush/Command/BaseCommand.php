@@ -14,6 +14,7 @@ namespace Gush\Command;
 use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
 use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
+use Gush\Template\Messages;
 use Gush\Table\Tabulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
@@ -205,5 +206,15 @@ class BaseCommand extends Command
         if (!$process->isSuccessful()) {
             throw new \RuntimeException('Please install php-cs-fixer');
         }
+    }
+
+    protected function render($templateName, array $placeholderValuePairs)
+    {
+        $resultString = Messages::get($templateName);
+        foreach ($placeholderValuePairs as $placeholder => $value) {
+            $resultString = str_replace('{{ '.$placeholder.' }}', $value, $resultString);
+        }
+
+        return $resultString;
     }
 }
