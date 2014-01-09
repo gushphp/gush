@@ -11,10 +11,14 @@
 
 namespace Gush\Command;
 
+use Gush\Template\Messages;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @author Luis Cordova <cordoval@gmail.com>
+ */
 class PullRequestMergeCommand extends BaseCommand
 {
     /**
@@ -55,7 +59,7 @@ class PullRequestMergeCommand extends BaseCommand
         }
 
         $message = $this->render(
-            'merge_message.twig',
+            'merge',
             [
                 'baseBranch' => $pr['base']['label'],
                 'prTitle' => $pr['title'],
@@ -73,15 +77,5 @@ class PullRequestMergeCommand extends BaseCommand
         }
 
         return self::COMMAND_SUCCESS;
-    }
-
-    private function render($template, array $placeholderValuePairs)
-    {
-        $resultString = '';
-        foreach ($placeholderValuePairs as $placeholder => $value) {
-            $resultString = str_replace('{{ '.$placeholder.' }}', $value, $template);
-        }
-
-        return $resultString;
     }
 }

@@ -206,4 +206,14 @@ class BaseCommand extends Command
             throw new \RuntimeException('Please install php-cs-fixer');
         }
     }
+
+    protected function render($templateName, array $placeholderValuePairs)
+    {
+        $resultString = '';
+        foreach ($placeholderValuePairs as $placeholder => $value) {
+            $resultString = str_replace('{{ '.$placeholder.' }}', $value, constant('Messages::'.$templateName));
+        }
+
+        return $resultString;
+    }
 }
