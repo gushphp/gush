@@ -44,7 +44,6 @@ class PullRequestCreateCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tableString = $this->getGithubTableString($output);
-        $tableString = $this->appendShamelessPlug($tableString);
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -192,12 +191,5 @@ class PullRequestCreateCommand extends BaseCommand
         ;
 
         return $pullRequest;
-    }
-
-    private function appendShamelessPlug($outputString)
-    {
-        $outputString .= "\n Sent using [Gush](https://github.com/cordoval/gush)";
-
-        return $outputString;
     }
 }
