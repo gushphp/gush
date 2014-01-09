@@ -49,22 +49,13 @@ class PullRequestMergeCommand extends BaseCommand
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
         $commits = $client->api('pull_request')->commits($org, $repo, $prNumber);
 
-        $commitsString = '';
-        foreach ($commits as $commit) {
-            $commitsString .= sprintf('%s %s %s',
-                $commit['sha'],
-                $commit['commit']['message'],
-                $commit['author']['login']
-            );
-        }
-
         $message = $this->render(
             'merge',
             [
                 'baseBranch' => $pr['base']['label'],
                 'prTitle' => $pr['title'],
                 'prBody' => $pr['body'],
-                'commits' => $commitsString
+                'commits' => $this->getCommitsString($commits)
             ]
         );
 
@@ -77,5 +68,19 @@ class PullRequestMergeCommand extends BaseCommand
         }
 
         return self::COMMAND_SUCCESS;
+    }
+
+    protected function getCommitsString($commits)
+    {
+        $commitsString = '';
+        foreach ($commits as $commit) {
+            $commitsString .= sprintf('%s %s %s',
+                $commit['sha'],
+                $commit['commit']['message'],
+                $commit['author']['login']
+            );
+        }
+
+        return $commitsString;
     }
 }
