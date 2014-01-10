@@ -51,7 +51,7 @@ $ box build -v
 You may want to start by configuring it:
 
 ```bash
-~ gsh configure                                            Luiss-MacBook-Pro-3 [0:21:06]
+$ gsh configure                                            Luiss-MacBook-Pro-3 [0:21:06]
 Insert your github credentials:
 username: cordoval
 password:
@@ -62,7 +62,7 @@ Configuration saved successfully.
 Let's go into a repo, take a ticket and send PR and merge it:
 
 ```bash
-~ gsh p:take 14                                            Luiss-MacBook-Pro-3 [0:26:25]
+$ gsh p:take 14                                            Luiss-MacBook-Pro-3 [0:26:25]
 OUT > Fetching cordoval
 OUT > Fetching origin
 ERR > Note: checking out 'origin/master'.
@@ -75,11 +75,28 @@ ERR > Switched to a new branch '14-tests-and-documentation-for-commands'
 
 Now we add changes and just commit locally:
 ```bash
-git add .
-git commit -am "added instructions to use gush"
+$ git commit -am "added instructions to use gush"
 ```
 
-Let's send the PR and merge it:
+Let's send the PR:
 ```bash
-
+$ gsh p:create                                             Luiss-MacBook-Pro-3 [0:31:01]
+Bug fix? [y]
+New feature? [n]
+BC breaks? [n]
+Deprecations? [n]
+Tests pass? [y]
+Fixed tickets [#000] #14
+License [MIT]
+Doc PR
+PR Title: Added a bit of documentation under usage
+ERR > fatal: remote cordoval already exists.
+OUT > Fetching cordoval
+OUT > Fetching origin
+ERR > To git@github.com:cordoval/gush.git
+ * [new branch]      14-tests-and-documentation-for-commands -> 14-tests-and-documentation-for-commands
+OUT > Branch 14-tests-and-documentation-for-commands set up to track remote branch 14-tests-and-documentation-for-commands from cordoval.
+https://github.com/cordoval/gush/pull/94
 ```
+
+And if we have permissions for merging:
