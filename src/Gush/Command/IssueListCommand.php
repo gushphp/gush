@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Helper\TableHelper;
 
 /**
  * Lists the issues
@@ -130,28 +131,15 @@ EOF
             }
         }
 
-        $tabulator = $this->getTabulator();
-        $table = $tabulator->createTable();
+        $table = $this->getHelperSet()->get('table');
         $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created']);
-        $tabulator->tabulate($table, $issues, $this->getRowBuilderCallback());
-        $tabulator->render($output, $table);
 
-        $output->writeln('');
-        $elapsedtime = microtime(true) - $starttime;
-        $output->writeln(sprintf('%s issues in %ss',
-            count($issues), number_format($elapsedtime, 2)
-        ));
-    }
+        foreach ($issues as $issue) {
+            $labels = array_map(function ($label) {
+                return $label['name'];
+            }, $issue['labels']);
 
-    private function getRowBuilderCallback()
-    {
-        return function ($issue) {
-            $labels = [];
-            foreach ($issue['labels'] as $label) {
-                $labels[] = $label['name'];
-            }
-
-            return [
+            $table->addRow(array(
                 $issue['number'],
                 $issue['state'],
                 $issue['_type'] == 'pr' ? 'PR' : '',
@@ -161,7 +149,14 @@ EOF
                 $this->getHelper('text')->truncate($issue['milestone']['title'], 15),
                 $this->getHelper('text')->truncate(implode(',', $labels), 30),
                 date('Y-m-d', strtotime($issue['created_at'])),
-            ];
-        };
+            ));
+        }
+        $table->render($output, $table);
+
+        $output->writeln('');
+        $elapsedtime = microtime(true) - $starttime;
+        $output->writeln(sprintf('%s issues in %ss',
+            count($issues), number_format($elapsedtime, 2)
+        ));
     }
 }
