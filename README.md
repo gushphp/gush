@@ -51,7 +51,7 @@ $ box build -v
 You may want to start by configuring it:
 
 ```bash
-$ gsh configure                                            Luiss-MacBook-Pro-3 [0:21:06]
+$ gsh configure
 Insert your github credentials:
 username: cordoval
 password:
@@ -59,10 +59,19 @@ Cache folder [/Users/cordoval/.gush/cache]:
 Configuration saved successfully.
 ```
 
-Let's go into a repo, take a ticket and send PR and merge it:
+Let's go into a repo, list, take ticket, send PR and merge it:
 
+List it:
 ```bash
-$ gsh p:take 14                                            Luiss-MacBook-Pro-3 [0:26:25]
+$ cd project_directory
+$ gsh issue:list
+ #   State  PR?  Title                                     User       Assignee   Milestone        Labels       Created
+ 14  open        Tests and Documentation for Commands      cordoval                                            2014-01-10
+```
+
+Take it:
+```bash
+$ gsh p:take 14
 OUT > Fetching cordoval
 OUT > Fetching origin
 ERR > Note: checking out 'origin/master'.
@@ -73,14 +82,14 @@ ERR > Switched to a new branch '14-tests-and-documentation-for-commands'
 * 14-tests-and-documentation-for-commands
 ```
 
-Now we add changes and just commit locally:
+Do your changes and commit them:
 ```bash
 $ git commit -am "added instructions to use gush"
 ```
 
-Let's send the PR:
+Send PR:
 ```bash
-$ gsh p:create                                             Luiss-MacBook-Pro-3 [0:31:01]
+$ gsh p:create
 Bug fix? [y]
 New feature? [n]
 BC breaks? [n]
@@ -99,4 +108,8 @@ OUT > Branch 14-tests-and-documentation-for-commands set up to track remote bran
 https://github.com/cordoval/gush/pull/94
 ```
 
-And if we have permissions for merging:
+Merge it:
+```bash
+$ gsh p:merge 94
+Pull Request successfully merged
+```
