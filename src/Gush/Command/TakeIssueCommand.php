@@ -25,8 +25,8 @@ class TakeIssueCommand extends BaseCommand
         $this
             ->setName('pull-request:take')
             ->setDescription('Take an issue')
-            ->addArgument('issueNumber', InputArgument::REQUIRED, 'Number of the issue')
-            ->addArgument('baseBranch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
+            ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
+            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
@@ -37,8 +37,8 @@ class TakeIssueCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $issueNumber = $input->getArgument('issueNumber');
-        $baseBranch = $input->getArgument('baseBranch');
+        $issueNumber = $input->getArgument('issue_number');
+        $baseBranch = $input->getArgument('base_branch');
         $org = $input->getArgument('org');
         $repo = $input->getArgument('repo');
 

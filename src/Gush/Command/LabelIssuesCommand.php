@@ -37,7 +37,7 @@ class LabelIssuesCommand extends BaseCommand
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
-            ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
+            ->addOption('pull_requests', null, InputOption::VALUE_NONE, 'Get pull requests')
         ;
     }
 
@@ -48,9 +48,11 @@ class LabelIssuesCommand extends BaseCommand
     {
         $organization = $input->getArgument('org');
         $repository = $input->getArgument('repo');
+        $pullRequests = $input->getOption('pull_requests');
+        $issues = $input->getOption('issues');
 
-        $isOnlyPullRequest = $input->getOption('pull-requests') && !$input->getOption('issues');
-        $isOnlyIssue = $input->getOption('issues') && !$input->getOption('pull-requests');
+        $isOnlyPullRequest = $pullRequests && !$issues;
+        $isOnlyIssue = $issues && !$pullRequests;
 
         $params = [
             "state" => "open"
@@ -62,7 +64,7 @@ class LabelIssuesCommand extends BaseCommand
                 $this->getParameter('cache-dir'),
                 $organization,
                 $repository,
-                $input->getOption('pull-requests') ? 'pr' : 'issues'
+                $pullRequests ? 'pr' : 'issues'
             );
 
             if (file_exists($filename)) {

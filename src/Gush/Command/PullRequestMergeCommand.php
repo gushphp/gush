@@ -28,7 +28,7 @@ class PullRequestMergeCommand extends BaseCommand
         $this
             ->setName('pull-request:merge')
             ->setDescription('Pull request command')
-            ->addArgument('prNumber', InputArgument::REQUIRED, 'Pull Request number')
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
@@ -41,7 +41,7 @@ class PullRequestMergeCommand extends BaseCommand
     {
         $org = $input->getArgument('org');
         $repo = $input->getArgument('repo');
-        $prNumber = $input->getArgument('prNumber');
+        $prNumber = $input->getArgument('pr_number');
 
         $client = $this->getGithubClient();
 
