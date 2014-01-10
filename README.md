@@ -17,7 +17,7 @@ Gush is an app console whose intention is to automate common maintainer and cont
 - merge a PR with just the number and include all github discussion on the commit message
 - tagging signing off, change branch name and some queue of common tasks
 
-### Usage
+### Install
 
 There are different ways to use Gush:
 
@@ -44,4 +44,42 @@ We recommend you to use [Box](https://github.com/kherge/Box) to build the phar f
 
 ```bash
 $ box build -v
+```
+
+### Usage
+
+You may want to start by configuring it:
+
+```bash
+~ gsh configure                                            Luiss-MacBook-Pro-3 [0:21:06]
+Insert your github credentials:
+username: cordoval
+password:
+Cache folder [/Users/cordoval/.gush/cache]:
+Configuration saved successfully.
+```
+
+Let's go into a repo, take a ticket and send PR and merge it:
+
+```bash
+~ gsh p:take 14                                            Luiss-MacBook-Pro-3 [0:26:25]
+OUT > Fetching cordoval
+OUT > Fetching origin
+ERR > Note: checking out 'origin/master'.
+You are in 'detached HEAD' state ...
+ERR > HEAD is now at 681e0d6... Merge pull request #93 from cordoval/configure-command-test
+ERR > Switched to a new branch '14-tests-and-documentation-for-commands'
+~ git branch
+* 14-tests-and-documentation-for-commands
+```
+
+Now we add changes and just commit locally:
+```bash
+git add .
+git commit -am "added instructions to use gush"
+```
+
+Let's send the PR and merge it:
+```bash
+
 ```
