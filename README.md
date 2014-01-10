@@ -17,7 +17,7 @@ Gush is an app console whose intention is to automate common maintainer and cont
 - merge a PR with just the number and include all github discussion on the commit message
 - tagging signing off, change branch name and some queue of common tasks
 
-### Usage
+### Install
 
 There are different ways to use Gush:
 
@@ -44,4 +44,72 @@ We recommend you to use [Box](https://github.com/kherge/Box) to build the phar f
 
 ```bash
 $ box build -v
+```
+
+### Usage
+
+You may want to start by configuring it:
+
+```bash
+$ gsh configure
+Insert your github credentials:
+username: cordoval
+password:
+Cache folder [/Users/cordoval/.gush/cache]:
+Configuration saved successfully.
+```
+
+Let's go into a repo, list, take ticket, send PR and merge it:
+
+List it:
+```bash
+$ cd project_directory
+$ gsh issue:list
+ #   State  PR?  Title                                     User       Assignee   Milestone        Labels       Created
+ 14  open        Tests and Documentation for Commands      cordoval                                            2014-01-10
+```
+
+Take it:
+```bash
+$ gsh p:take 14
+OUT > Fetching cordoval
+OUT > Fetching origin
+ERR > Note: checking out 'origin/master'.
+You are in 'detached HEAD' state ...
+ERR > HEAD is now at 681e0d6... Merge pull request #93 from cordoval/configure-command-test
+ERR > Switched to a new branch '14-tests-and-documentation-for-commands'
+~ git branch
+* 14-tests-and-documentation-for-commands
+```
+
+Do your changes and commit them:
+```bash
+$ git commit -am "added instructions to use gush"
+```
+
+Send PR:
+```bash
+$ gsh p:create
+Bug fix? [y]
+New feature? [n]
+BC breaks? [n]
+Deprecations? [n]
+Tests pass? [y]
+Fixed tickets [#000] #14
+License [MIT]
+Doc PR
+PR Title: Added a bit of documentation under usage
+ERR > fatal: remote cordoval already exists.
+OUT > Fetching cordoval
+OUT > Fetching origin
+ERR > To git@github.com:cordoval/gush.git
+ * [new branch]      14-tests-and-documentation-for-commands -> 14-tests-and-documentation-for-commands
+OUT > Branch 14-tests-and-documentation-for-commands set up to track remote branch 14-tests-and-documentation-for-commands from cordoval.
+https://github.com/cordoval/gush/pull/94
+```
+
+Merge it:
+```bash
+$ gsh p:merge 94
+Pull Request successfully merged
 ```
