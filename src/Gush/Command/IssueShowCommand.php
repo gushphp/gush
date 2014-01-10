@@ -30,7 +30,7 @@ class IssueShowCommand extends BaseCommand
         $this
             ->setName('issue:show')
             ->setDescription('Show given issue')
-            ->addArgument('issueNumber', InputArgument::REQUIRED, 'Issue number')
+            ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->setHelp(<<<EOF
@@ -50,7 +50,7 @@ EOF
     {
         $organization = $input->getArgument('org');
         $repository = $input->getArgument('repo');
-        $issueNumber = $input->getArgument('issueNumber');
+        $issueNumber = $input->getArgument('issue_number');
 
         $client = $this->getGithubClient();
 
