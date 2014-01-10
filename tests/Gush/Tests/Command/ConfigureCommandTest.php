@@ -21,57 +21,54 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigureCommandTest extends BaseTestCase
 {
+    const PASSWORD = 'foo';
+    const USERNAME = 'bar';
+
     public function testCommand()
     {
-        $homeDir = getenv('GUSH_HOME');
-        $gushFilename = $homeDir.'/.gush.yml';
-
-        if (!$homeDir) {
+        if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
         }
+
+        $gushFilename = $homeDir.'/.gush.yml';
 
         $expected = ['parameters' => [
             'cache-dir' => $homeDir.'/cache',
             'home' => $homeDir,
-            'github' => ['username' => 'foo', 'password' => 'bar']
+            'github' => ['username' => self::USERNAME, 'password' => self::PASSWORD]
         ]];
 
         @mkdir($homeDir, 0777, true);
 
         $this->httpClient->whenGet('authorizations')->thenReturn([]);
 
-        // Mock the DialogHelper
-        $dialog = $this->getMock(
-            'Symfony\Component\Console\Helper\DialogHelper',
-            ['askAndValidate', 'askHiddenResponseAndValidate']
-        );
+        $dialog = $this->expectDialogParameters($homeDir);
 
-        // username
-        $dialog->expects($this->at(0))
-            ->method('askAndValidate')
-            ->will($this->returnValue('foo'));
-        // password
-        $dialog->expects($this->at(1))
-            ->method('askHiddenResponseAndValidate')
-            ->will($this->returnValue('bar'));
-        // cache-dir
-        $dialog->expects($this->at(2))
-            ->method('askAndValidate')
-            ->will($this->returnValue($homeDir.'/cache'));
-
-        $application = new TestableApplication();
-        $application->add(new ConfigureCommand());
-
-        $application->setGithubClient($this->buildGithubClient());
-
-        $command = $application->find('configure');
+        $tester = $this->getCommandTester($command = new ConfigureCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
-
-        $tester = new CommandTester($command);
         $tester->execute(['command' => 'configure']);
 
         $this->assertFileExists($gushFilename);
 
         $this->assertEquals($expected, Yaml::parse($gushFilename));
+    }
+
+    private function expectDialogParameters($homeDir)
+    {
+        $dialog = $this->getMock(
+            'Symfony\Component\Console\Helper\DialogHelper',
+            ['askAndValidate', 'askHiddenResponseAndValidate']
+        );
+        $dialog->expects($this->at(0))
+            ->method('askAndValidate')
+            ->will($this->returnValue(self::USERNAME));
+        $dialog->expects($this->at(1))
+            ->method('askHiddenResponseAndValidate')
+            ->will($this->returnValue(self::PASSWORD));
+        $dialog->expects($this->at(2))
+            ->method('askAndValidate')
+            ->will($this->returnValue($homeDir.'/cache'));
+
+        return $dialog;
     }
 }
