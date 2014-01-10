@@ -19,10 +19,13 @@ namespace Gush\Tests\Fixtures;
 class OutputFixtures
 {
     const releaseList = <<<EOT
-         
- ID   Name               Tag       Commitish  Draft  Prerelease  Created     Published  
-         
- 123  This is a Release  Tag name  123123     yes    yes         2014-01-05  2014-01-05 
++-----+-------------------+----------+-----------+-------+------------+------------+------------+
+| ID  | Name              | Tag      | Commitish | Draft | Prerelease | Created    | Published  |
++-----+-------------------+----------+-----------+-------+------------+------------+------------+
+| 123 | This is a Release | Tag name | 123123    | yes   | yes        | 2014-01-05 | 2014-01-05 |
++-----+-------------------+----------+-----------+-------+------------+------------+------------+
+
+1 release(s)
 EOT;
 
     const issueShow = <<<EOT

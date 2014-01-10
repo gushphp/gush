@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Helper\TableHelper;
 
 /**
  * Lists the issues
@@ -111,8 +110,6 @@ EOF
             $params['since'] = date('c', $ts);
         }
 
-        $starttime = microtime(true);
-
         $issues = $client->api('issue')->all($organization, $repository, $params);
 
         // post filter
@@ -131,15 +128,15 @@ EOF
             }
         }
 
-        $table = $this->getHelperSet()->get('table');
+        $table = $this->getHelper('table');
         $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created']);
 
-        foreach ($issues as $issue) {
+        $table->formatRows($issues, function ($issue) {
             $labels = array_map(function ($label) {
                 return $label['name'];
             }, $issue['labels']);
 
-            $table->addRow(array(
+            return [
                 $issue['number'],
                 $issue['state'],
                 $issue['_type'] == 'pr' ? 'PR' : '',
@@ -149,14 +146,11 @@ EOF
                 $this->getHelper('text')->truncate($issue['milestone']['title'], 15),
                 $this->getHelper('text')->truncate(implode(',', $labels), 30),
                 date('Y-m-d', strtotime($issue['created_at'])),
-            ));
-        }
-        $table->render($output, $table);
+            ];
+        });
 
-        $output->writeln('');
-        $elapsedtime = microtime(true) - $starttime;
-        $output->writeln(sprintf('%s issues in %ss',
-            count($issues), number_format($elapsedtime, 2)
-        ));
+        $table->setFooter(sprintf('%s issues', count($issues)));
+
+        $table->render($output, $table);
     }
 }
