@@ -11,24 +11,28 @@
 
 namespace Gush\Command;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Run php-cs-fixer
+ * Run cs-fixer
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class PhpCsFixerCommand extends BaseCommand
+class CsFixerCommand extends BaseCommand
 {
+    const DEFAULT_FIXER_LINE = 'php-cs-fixer fix .';
+
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
-            ->setName('pull-request:fixer')
-            ->setDescription('Run php-cs-fixer and commits fixes')
+            ->setName('pull-request:fix')
+            ->setDescription('Run cs-fixer and commits fixes')
+            ->addArgument('fixer_line', InputArgument::OPTIONAL, 'Custom fixer command', self::DEFAULT_FIXER_LINE)
         ;
     }
 
@@ -37,7 +41,11 @@ class PhpCsFixerCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->ensurePhpCsFixerInstalled();
+        $fixerLine = $input->getArgument('fixer_line');
+
+        if ($fixerLine === self::DEFAULT_FIXER_LINE) {
+            $this->ensurePhpCsFixerInstalled();
+        }
 
         $this->runCommands([
                 [
@@ -49,7 +57,7 @@ class PhpCsFixerCommand extends BaseCommand
                     'allow_failures' => true
                 ],
                 [
-                    'line' => 'php-cs-fixer fix .',
+                    'line' => $fixerLine,
                     'allow_failures' => true
                 ],
                 [
@@ -57,7 +65,7 @@ class PhpCsFixerCommand extends BaseCommand
                     'allow_failures' => true
                 ],
                 [
-                    'line' => 'git commit -am php-cs-fixer',
+                    'line' => 'git commit -am cs-fixer',
                     'allow_failures' => true
                 ]
             ]
