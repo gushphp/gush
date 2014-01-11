@@ -33,6 +33,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use Gush\Helper\TextHelper;
+use Gush\Helper\TableHelper;
 
 class Application extends BaseApplication
 {
@@ -69,6 +70,7 @@ class Application extends BaseApplication
     {
         $helperSet = parent::getDefaultHelperSet();
         $helperSet->set(new TextHelper);
+        $helperSet->set(new TableHelper);
 
         return $helperSet;
     }

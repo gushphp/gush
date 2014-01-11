@@ -110,8 +110,6 @@ EOF
             $params['since'] = date('c', $ts);
         }
 
-        $starttime = microtime(true);
-
         $issues = $client->api('issue')->all($organization, $repository, $params);
 
         // post filter
@@ -130,26 +128,13 @@ EOF
             }
         }
 
-        $tabulator = $this->getTabulator();
-        $table = $tabulator->createTable();
+        $table = $this->getHelper('table');
         $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created']);
-        $tabulator->tabulate($table, $issues, $this->getRowBuilderCallback());
-        $tabulator->render($output, $table);
 
-        $output->writeln('');
-        $elapsedtime = microtime(true) - $starttime;
-        $output->writeln(sprintf('%s issues in %ss',
-            count($issues), number_format($elapsedtime, 2)
-        ));
-    }
-
-    private function getRowBuilderCallback()
-    {
-        return function ($issue) {
-            $labels = [];
-            foreach ($issue['labels'] as $label) {
-                $labels[] = $label['name'];
-            }
+        $table->formatRows($issues, function ($issue) {
+            $labels = array_map(function ($label) {
+                return $label['name'];
+            }, $issue['labels']);
 
             return [
                 $issue['number'],
@@ -162,6 +147,10 @@ EOF
                 $this->getHelper('text')->truncate(implode(',', $labels), 30),
                 date('Y-m-d', strtotime($issue['created_at'])),
             ];
-        };
+        });
+
+        $table->setFooter(sprintf('%s issues', count($issues)));
+
+        $table->render($output, $table);
     }
 }

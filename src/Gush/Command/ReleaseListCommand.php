@@ -41,14 +41,11 @@ class ReleaseListCommand extends BaseCommand
 
         $releases = $client->api('repo')->releases()->all($org, $repo);
 
-        $tabulator = $this->getTabulator();
-        $tabulator->tabulate(
-            $table = $tabulator->createTable(),
-            $releases,
-            $this->getRowBuilderCallback()
-        );
+        $table = $this->getHelper('table');
         $table->setHeaders(array('ID', 'Name', 'Tag', 'Commitish', 'Draft', 'Prerelease', 'Created', 'Published'));
-        $tabulator->render($output, $table);
+        $table->formatRows($releases, $this->getRowBuilderCallback());
+        $table->setFooter(sprintf('%s release(s)', count($releases)));
+        $table->render($output, $table);
     }
 
     private function getRowBuilderCallback()

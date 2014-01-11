@@ -46,13 +46,10 @@ class IssueMilestoneListCommand extends BaseCommand
         $client = $this->getGithubClient();
         $milestones = $client->api('issue')->milestones()->all($organization, $repository);
 
-        $tabulator = $this->getTabulator();
-        $tabulator->tabulate(
-            $table = $tabulator->createTable(),
-            $milestones,
-            $this->getRowBuilderCallback()
-        );
-        $tabulator->render($output, $table);
+        $table = $this->getHelper('table');
+        $table->setLayout('compact');
+        $table->formatRows($milestones, $this->getRowBuilderCallback());
+        $table->render($output, $table);
 
         return $milestones;
     }

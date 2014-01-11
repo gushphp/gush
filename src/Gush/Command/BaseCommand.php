@@ -15,7 +15,6 @@ use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
 use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
 use Gush\Template\Messages;
-use Gush\Table\Tabulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
@@ -182,15 +181,6 @@ class BaseCommand extends Command
         foreach ($commands as $command) {
             $this->runItem(explode(' ', $command['line']), $command['allow_failures']);
         }
-    }
-
-    protected function getTabulator()
-    {
-        if (null === $this->tabulator) {
-            $this->tabulator = new Tabulator();
-        }
-
-        return $this->tabulator;
     }
 
     protected function ensurePhpCsFixerInstalled()
