@@ -14,6 +14,7 @@ namespace Gush;
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
 use Gush\Command\ConfigureCommand;
+use Gush\Command\IssueCreateCommand;
 use Gush\Command\IssueLabelListCommand;
 use Gush\Command\IssueListCommand;
 use Gush\Command\IssueMilestoneListCommand;
@@ -58,6 +59,7 @@ class Application extends BaseApplication
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
         $this->add(new ReleaseRemoveCommand());
+        $this->add(new IssueCreateCommand());
         $this->add(new IssueLabelListCommand());
         $this->add(new IssueMilestoneListCommand());
         $this->add(new IssueShowCommand());
