@@ -37,7 +37,7 @@ class LabelIssuesCommand extends BaseCommand
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
-            ->addOption('pull_requests', null, InputOption::VALUE_NONE, 'Get pull requests')
+            ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
         ;
     }
 
@@ -48,7 +48,7 @@ class LabelIssuesCommand extends BaseCommand
     {
         $organization = $input->getArgument('org');
         $repository = $input->getArgument('repo');
-        $pullRequests = $input->getOption('pull_requests');
+        $pullRequests = $input->getOption('pull-requests');
         $issues = $input->getOption('issues');
 
         $isOnlyPullRequest = $pullRequests && !$issues;
