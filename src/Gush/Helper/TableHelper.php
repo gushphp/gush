@@ -22,6 +22,7 @@ class TableHelper extends BaseTableHelper
     {
         if (is_string($layout)) {
             $layout = constant('Symfony\Component\Console\Helper\TableHelper::LAYOUT_' . strtoupper($layout));
+
             return parent::setLayout($layout);
         }
 
