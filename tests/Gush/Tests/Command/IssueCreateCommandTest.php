@@ -11,6 +11,8 @@
 
 namespace Gush\Tests\Command;
 
+use Gush\Command\IssueCreateCommand;
+
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
@@ -18,9 +20,12 @@ class IssueCreateCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->whenGet('repos/cordoval/gush/labels')->thenReturn(
+        $this->httpClient->whenPost(
+            '/repos/cordoval/gush/issues',
+            json_encode(['title' => 'bug title', 'body' => 'not working!'])
+        )->thenReturn(
             [
-
+                'number' => 77
             ]
         );
 
