@@ -11,7 +11,6 @@
 
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
