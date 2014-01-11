@@ -45,6 +45,13 @@ We recommend you to use [Box](https://github.com/kherge/Box) to build the phar f
 ```bash
 $ box build -v
 ```
+### Upgrade to latest version
+
+```bash
+$ composer global update cordoval/gush
+```
+
+**Note:** if you installed it any other way you would need to install it again.
 
 ### Usage
 
