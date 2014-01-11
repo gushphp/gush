@@ -12,8 +12,6 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\ConfigureCommand;
-use Gush\Tests\TestableApplication;
-use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Yaml\Yaml;
 
 /**
