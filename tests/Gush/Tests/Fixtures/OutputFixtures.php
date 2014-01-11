@@ -38,4 +38,15 @@ Title: Write a behat test to launch strategy
 Help me conquer the world. Teach them to use gush.
 EOT;
 
+    const issueList = <<<EOT
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
+| # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created    |
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
+| 1 | open  |     | easy issue | cordoval   | cordoval | some good st... | critic,easy pick | 1969-12-31 |
+| 2 | open  |     | hard issue | weaverryan | cordoval | some good st... | critic           | 1969-12-31 |
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
+
+2 issues
+EOT;
+
 }

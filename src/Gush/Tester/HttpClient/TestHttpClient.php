@@ -12,6 +12,7 @@
 namespace Gush\Tester\HttpClient;
 
 use Github\HttpClient\HttpClientInterface;
+use Guzzle\Http\Message\Response;
 
 /**
  * @author Daniel T Leech <dantleech@gmail.com>
@@ -130,6 +131,11 @@ class TestHttpClient implements HttpClientInterface
      */
     public function authenticate($tokenOrLogin, $password, $authMethod)
     {
+    }
+
+    public function getLastResponse()
+    {
+        return new Response(200);
     }
 
     private function getHash($path, $body, $httpMethod, $headers)

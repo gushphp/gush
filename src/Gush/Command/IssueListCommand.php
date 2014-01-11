@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Github\ResultPager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -86,6 +87,7 @@ EOF
         $repository = $input->getArgument('repo');
 
         $client = $this->getGithubClient();
+        $paginator = new ResultPager($client);
 
         $params = array();
 
@@ -110,7 +112,11 @@ EOF
             $params['since'] = date('c', $ts);
         }
 
-        $issues = $client->api('issue')->all($organization, $repository, $params);
+        $issues = $paginator->fetchAll(
+            $client->api('issue'),
+            'all',
+            [$organization, $repository, $params]
+        );
 
         // post filter
         foreach ($issues as $i => &$issue) {
