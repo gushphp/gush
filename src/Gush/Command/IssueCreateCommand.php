@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class IssueShowCommand extends BaseCommand
+class IssueCreateCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -28,16 +29,15 @@ class IssueShowCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('issue:show')
-            ->setDescription('Show given issue')
-            ->addArgument('issueNumber', InputArgument::REQUIRED, 'Issue number')
+            ->setName('issue:create')
+            ->setDescription('Creates an issue')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command show details of the given issue for either the current or the given organization
+The <info>%command.name%</info> command creates a new issue for either the current or the given organization
 and repository:
 
-    <info>$ php %command.full_name% 60</info>
+    <info>$ php %command.full_name%</info>
 EOF
             )
         ;
@@ -50,27 +50,38 @@ EOF
     {
         $organization = $input->getArgument('org');
         $repository = $input->getArgument('repo');
-        $issueNumber = $input->getArgument('issueNumber');
 
         $client = $this->getGithubClient();
+        $emptyValidator = function ($string) {
+            if (trim($string) == '') {
+                throw new \Exception('This value can not be empty');
+            }
 
-        $issue = $client->api('issue')->show($organization, $repository, $issueNumber);
+            return $string;
+        };
 
-        $output->writeln('');
-        $output->writeln('Issue #'.$issue['number'].' ('.$issue['state'].'): by '.$issue['user']['login'].' ['.$issue['assignee']['login'].']');
-        if (isset($issue['pull_request'])) {
-            $output->writeln('Type: Pull Request');
-        } else {
-            $output->writeln('Type: Issue');
-        }
-        $output->writeln('Milestone: '.$issue['milestone']['title']);
-        if ($issue['labels'] > 0) {
-            $labels = array_map(function ($label) { return $label['name']; }, $issue['labels']);
-            $output->writeln('Labels: '.implode(', ', $labels));
-        }
-        $output->writeln('Title: '.$issue['title']);
-        $output->writeln('');
-        $output->writeln($issue['body']);
+        /** @var DialogHelper $dialog */
+        $dialog = $this->getHelper('dialog');
+        $title = $dialog->askAndValidate(
+            $output,
+            'Issue title: ',
+            $emptyValidator
+        );
+
+        $body = $dialog->askAndValidate(
+            $output,
+            'Enter description: ',
+            $emptyValidator
+        );
+
+        $parameters = [
+            'title' => $title,
+            'body' => $body,
+        ];
+
+        $issue = $client->api('issue')->create($organization, $repository, $parameters);
+
+        $output->writeln("https://github.com/{$organization}/{$repository}/issues/{$issue['number']}");
 
         return self::COMMAND_SUCCESS;
     }
