@@ -49,4 +49,8 @@ EOT;
 2 issues
 EOT;
 
+    const issueClose = <<<EOT
+Closed https://github.com/cordoval/gush/issues/12
+EOT;
+
 }
