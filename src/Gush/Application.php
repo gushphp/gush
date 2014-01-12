@@ -27,6 +27,7 @@ use Gush\Command\CsFixerCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
 use Gush\Command\ReleaseRemoveCommand;
+use Gush\Command\SyncCommand;
 use Gush\Command\TakeIssueCommand;
 use Gush\Exception\FileNotFoundException;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -66,6 +67,7 @@ class Application extends BaseApplication
         $this->add(new IssueMilestoneListCommand());
         $this->add(new IssueShowCommand());
         $this->add(new IssueListCommand());
+        $this->add(new SyncCommand());
         $this->add(new LabelIssuesCommand());
         $this->add(new ConfigureCommand());
     }
