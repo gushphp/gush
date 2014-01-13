@@ -124,3 +124,13 @@ Merge it:
 $ gsh p:merge 94
 Pull Request successfully merged
 ```
+
+### Contributions
+
+Please send your PR using Gush and it will have 100% chances to be merged.
+See the [issues](https://github.com/cordoval/gush/issues?state=open).
+
+### Mailing list and IRC channel
+
+Join the [Mailing List](https://groups.google.com/forum/#!forum/gushphp)
+and also on IRC channel #gushphp for discussions and questions.
