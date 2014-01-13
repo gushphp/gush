@@ -61,12 +61,14 @@ class IssueListCommand extends BaseCommand
             ->addOption('direction', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('direction'))
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only issues after this time are displayed.')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('type'))
-            ->setHelp(<<<EOF
+            ->setHelp(
+                <<<EOF
 The <info>%command.name%</info> command lists issues from either the current or the given organization
 and repository:
 
     <info>$ php %command.full_name%</info>
-    <info>$ php %command.full_name% --filter=created --sort=created --direction=desc --since="6 months ago" --type=pr</info>
+    <info>$ php %command.full_name% --filter=created --sort=created --direction=desc --since="6 months ago"
+    --type=pr</info>
 
 All of the parameters provided by the github API are supported:
 

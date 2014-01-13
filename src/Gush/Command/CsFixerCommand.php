@@ -47,7 +47,8 @@ class CsFixerCommand extends BaseCommand
             $this->ensurePhpCsFixerInstalled();
         }
 
-        $this->runCommands([
+        $this->runCommands(
+            [
                 [
                     'line' => 'git add .',
                     'allow_failures' => true

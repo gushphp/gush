@@ -58,12 +58,18 @@ class BaseCommand extends Command
      */
     protected function getRepoName()
     {
-        $process = new Process('git remote show -n origin | grep Fetch | cut -d "/" -f 2 | cut -d "." -f 1', getcwd());
+        $process = new Process(
+            'git remote show -n origin | grep Fetch | cut -d "/" -f 2 | cut -d "." -f 1',
+            getcwd()
+        );
         $process->run();
 
         $output = trim($process->getOutput());
         if (empty($output)) {
-            $process = new Process('git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1', getcwd());
+            $process = new Process(
+                'git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1',
+                getcwd()
+            );
             $process->run();
         }
 
@@ -112,7 +118,8 @@ class BaseCommand extends Command
         ;
         $process = $builder->getProcess();
 
-        $process->run(function ($type, $buffer) {
+        $process->run(
+            function ($type, $buffer) {
                 if (Process::ERR === $type) {
                     echo 'ERR > ' . $buffer;
                 } else {

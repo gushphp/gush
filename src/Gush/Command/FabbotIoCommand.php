@@ -50,7 +50,8 @@ class FabbotIoCommand extends BaseCommand
         $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
 
-        $this->runCommands([
+        $this->runCommands(
+            [
                 [
                     'line' => 'git checkout '.$pr['head']['ref'],
                     'allow_failures' => true
@@ -69,7 +70,8 @@ class FabbotIoCommand extends BaseCommand
         $process = new Process($commandLine, getcwd());
         $process->run();
 
-        $this->runCommands([
+        $this->runCommands(
+            [
                 [
                     'line' => sprintf('git push -u %s %s -f', $username, $pr['head']['ref']),
                     'allow_failures' => true

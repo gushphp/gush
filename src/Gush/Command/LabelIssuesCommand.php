@@ -135,7 +135,12 @@ class LabelIssuesCommand extends BaseCommand
             );
 
             // update the issue
-            $client->api('issue')->update($organization, $repository, $issue['number'], array('labels' => explode(',', $label)));
+            $client->api('issue')->update(
+                $organization,
+                $repository,
+                $issue['number'],
+                array('labels' => explode(',', $label))
+            );
         }
     }
 
@@ -152,7 +157,7 @@ class LabelIssuesCommand extends BaseCommand
         $table->setLayout(TableHelper::LAYOUT_BORDERLESS);
         $table->setHorizontalBorderChar('');
 
-        $table->setRows(array_chunk($labels,3));
+        $table->setRows(array_chunk($labels, 3));
 
         $table->render($output);
     }

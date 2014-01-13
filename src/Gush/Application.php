@@ -132,7 +132,9 @@ class Application extends BaseApplication
             $this->config->merge($parsed['parameters']);
 
             if (!$this->config->isValid()) {
-                throw new \RuntimeException('The \'.gush.yml\' is not properly configured. Please run the \'configure\' command.');
+                throw new \RuntimeException(
+                    "The '.gush.yml' is not properly configured. Please run the 'configure' command."
+                );
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("{$e->getMessage()}.\nPlease run 'configure' command.");

@@ -73,7 +73,8 @@ class PullRequestMergeCommand extends BaseCommand
     {
         $commitsString = '';
         foreach ($commits as $commit) {
-            $commitsString .= sprintf("%s %s %s\n",
+            $commitsString .= sprintf(
+                "%s %s %s\n",
                 $commit['sha'],
                 $commit['commit']['message'],
                 $commit['author']['login']

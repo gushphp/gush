@@ -33,7 +33,8 @@ class IssueCloseCommand extends BaseCommand
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number to be closed')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
-            ->setHelp(<<<EOF
+            ->setHelp(
+                <<<EOF
 The <info>%command.name%</info> command closes an issue for either the current or the given organization
 and repository:
 

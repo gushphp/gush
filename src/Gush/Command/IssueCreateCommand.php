@@ -33,7 +33,8 @@ class IssueCreateCommand extends BaseCommand
             ->setDescription('Creates an issue')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
-            ->setHelp(<<<EOF
+            ->setHelp(
+                <<<EOF
 The <info>%command.name%</info> command creates a new issue for either the current or the given organization
 and repository:
 

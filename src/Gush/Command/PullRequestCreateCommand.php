@@ -151,8 +151,7 @@ class PullRequestCreateCommand extends BaseCommand
         OutputInterface $output,
         $title,
         $description
-    )
-    {
+    ) {
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
         $baseBranch = $input->getArgument('base_branch');
@@ -181,12 +180,15 @@ class PullRequestCreateCommand extends BaseCommand
         $client = $this->getGithubClient();
         $pullRequest = $client
             ->api('pull_request')
-            ->create($org, $repo, array(
+            ->create(
+                $org,
+                $repo,
+                [
                     'base'  => $org.':'.$baseBranch,
                     'head'  => $username.':'.$branchName,
                     'title' => $title,
-                    'body'  => $description
-                )
+                    'body'  => $description,
+                ]
             )
         ;
 
