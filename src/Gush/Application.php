@@ -14,6 +14,7 @@ namespace Gush;
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
 use Gush\Command\ConfigureCommand;
+use Gush\Command\FabbotIoCommand;
 use Gush\Command\IssueCloseCommand;
 use Gush\Command\IssueCreateCommand;
 use Gush\Command\IssueLabelListCommand;
@@ -59,6 +60,7 @@ class Application extends BaseApplication
         $this->add(new PullRequestCreateCommand());
         $this->add(new PullRequestMergeCommand());
         $this->add(new SquashCommand());
+        $this->add(new FabbotIoCommand());
         $this->add(new CsFixerCommand());
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
