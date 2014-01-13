@@ -32,6 +32,8 @@ class FabbotIoCommand extends BaseCommand
             ->setName('pull-request:fabbot-io')
             ->setDescription('Run fabbot-io patches')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number')
+            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
+            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -40,8 +42,8 @@ class FabbotIoCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $this->getVendorName();
-        $repo = $this->getRepoName();
+        $org = $input->getArgument('org');
+        $repo = $input->getArgument('repo');
         $prNumber = $input->getArgument('pr_number');
 
         $github = $this->getParameter('github');

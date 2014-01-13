@@ -50,7 +50,8 @@ class ReleaseCreateCommand extends BaseCommand
             ->addOption(
                 'asset-name',
                 null,
-                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Names corresponding to asset-files'
+                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
+                'Names corresponding to asset-files'
             )
             ->addOption(
                 'asset-content-type',
