@@ -41,7 +41,7 @@ $ cd gush
 $ composer install
 ```
 
-We recommend you to use [Box](https://github.com/kherge/Box) to build the phar file. Once installed, you can build it easily:
+We can use [Box](https://github.com/kherge/Box) to build the phar file. Once installed, you can build it easily:
 
 ```bash
 $ box build -v
