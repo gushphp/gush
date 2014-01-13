@@ -6,6 +6,9 @@ Gush is a rapid workflow for project maintainers and contributors
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cordoval/gush/badges/quality-score.png?s=f54effe2042a7eb161b0263322b3b4979d2de900)](https://scrutinizer-ci.com/g/cordoval/gush/)
 [![Code Coverage](https://scrutinizer-ci.com/g/cordoval/gush/badges/coverage.png?s=fbd3a27c4b0b05fbb82de21108c44f0cf7a12661)](https://scrutinizer-ci.com/g/cordoval/gush/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451/mini.png)](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451)
+[![Latest Stable Version](https://poser.pugx.org/cordoval/gush/v/stable.png)](https://packagist.org/packages/cordoval/gush)
+[![Latest Unstable Version](https://poser.pugx.org/cordoval/gush/v/unstable.png)](https://packagist.org/packages/cordoval/gush)
+[![Total Downloads](https://poser.pugx.org/cordoval/gush/downloads.png)](https://packagist.org/packages/cordoval/gush)
 
 ### What is this?
 
