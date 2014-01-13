@@ -27,6 +27,7 @@ use Gush\Command\CsFixerCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
 use Gush\Command\ReleaseRemoveCommand;
+use Gush\Command\SquashCommand;
 use Gush\Command\SyncCommand;
 use Gush\Command\TakeIssueCommand;
 use Gush\Exception\FileNotFoundException;
@@ -57,6 +58,7 @@ class Application extends BaseApplication
         $this->add(new TakeIssueCommand());
         $this->add(new PullRequestCreateCommand());
         $this->add(new PullRequestMergeCommand());
+        $this->add(new SquashCommand());
         $this->add(new CsFixerCommand());
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
