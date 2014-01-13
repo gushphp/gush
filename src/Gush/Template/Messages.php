@@ -13,7 +13,7 @@ namespace Gush\Template;
 
 class Messages
 {
-    const merge = <<<EOT
+    const MERGE = <<<EOT
 This PR was merged into {{ baseBranch }} branch.
 
 Discussion
@@ -31,6 +31,6 @@ EOT;
 
     public static function get($name)
     {
-        return constant('self::'.$name);
+        return constant('self::'.strtoupper($name));
     }
 }

@@ -18,7 +18,7 @@ namespace Gush\Tests\Fixtures;
  */
 class OutputFixtures
 {
-    const releaseList = <<<EOT
+    const RELEASE_LIST = <<<EOT
 +-----+-------------------+----------+-----------+-------+------------+------------+------------+
 | ID  | Name              | Tag      | Commitish | Draft | Prerelease | Created    | Published  |
 +-----+-------------------+----------+-----------+-------+------------+------------+------------+
@@ -28,7 +28,7 @@ class OutputFixtures
 1 release(s)
 EOT;
 
-    const issueShow = <<<EOT
+    const ISSUE_SHOW = <<<EOT
 Issue #60 (open): by weaverryan [cordoval]
 Type: Pull Request
 Milestone: Conquer the world
@@ -38,7 +38,7 @@ Title: Write a behat test to launch strategy
 Help me conquer the world. Teach them to use gush.
 EOT;
 
-    const issueList = <<<EOT
+    const ISSUE_LIST = <<<EOT
 +---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
 | # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created    |
 +---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
@@ -49,8 +49,7 @@ EOT;
 2 issues
 EOT;
 
-    const issueClose = <<<EOT
+    const ISSUE_CLOSE = <<<EOT
 Closed https://github.com/cordoval/gush/issues/12
 EOT;
-
 }

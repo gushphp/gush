@@ -33,6 +33,6 @@ class IssueCloseCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new IssueCloseCommand());
         $tester->execute(array('org' => 'cordoval', 'issue_number' => 12));
 
-        $this->assertEquals(OutputFixtures::issueClose, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::ISSUE_CLOSE, trim($tester->getDisplay()));
     }
 }

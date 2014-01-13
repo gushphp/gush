@@ -72,7 +72,16 @@ class PullRequestMergeCommandTest extends BaseTestCase
     {
         $this->httpClient->whenPut(
             'repos/cordoval/gush/pulls/40/merge',
-            json_encode(['commit_message' => "This PR was merged into master branch.\n\nDiscussion\n----------\n\nWrite a behat test to launch strategy\n\nHelp me conquer the world. Teach them to use gush.\n\nCommits\n-------\n\n32fe234332fe234332fe234332fe234332fe2343 added merge pull request feature cordoval\nab34567812345678123456781234567812345678 added final touches cordoval\n"])
+            json_encode(
+                [
+                    'commit_message' => "This PR was merged into master branch.\n\nDiscussion\n----------\n\n"
+                                    ."Write a behat test to launch strategy\n\nHelp me conquer the world. "
+                                    ."Teach them to use gush.\n\nCommits\n-------\n\n"
+                                    ."32fe234332fe234332fe234332fe234332fe2343 added merge pull request feature "
+                                    ."cordoval\nab34567812345678123456781234567812345678 added final touches "
+                                    ."cordoval\n"
+                ]
+            )
         )->thenReturn(
             [
                 'merged' => true,
