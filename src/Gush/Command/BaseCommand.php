@@ -86,7 +86,10 @@ class BaseCommand extends Command
 
         $output = trim($process->getOutput());
         if (empty($output)) {
-            $process = new Process('git remote show -n origin | grep Fetch | cut -d ":" -f 3 | cut -d "/" -f 4', getcwd());
+            $process = new Process(
+                'git remote show -n origin | grep Fetch | cut -d ":" -f 3 | cut -d "/" -f 4',
+                getcwd()
+            );
             $process->run();
         }
 

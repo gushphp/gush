@@ -44,7 +44,8 @@ class SyncCommand extends BaseCommand
         $branchName = $input->getArgument('branch_name');
         $stashedBranchName = $this->getBranchName();
 
-        $this->runCommands([
+        $this->runCommands(
+            [
                 [
                     'line' => 'git remote update',
                     'allow_failures' => true

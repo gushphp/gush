@@ -41,10 +41,14 @@ class ReleaseRemoveCommand extends BaseCommand
         $repo = $input->getArgument('repo');
         $org = $input->getArgument('org');
 
-        $output->writeln(sprintf(
-            '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s',
-            $id, $org, $repo
-        ));
+        $output->writeln(
+            sprintf(
+                '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s',
+                $id,
+                $org,
+                $repo
+            )
+        );
 
         $release = $client->api('repo')->releases()->remove($org, $repo, $id);
 

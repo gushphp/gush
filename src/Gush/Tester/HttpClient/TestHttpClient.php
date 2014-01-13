@@ -98,14 +98,17 @@ class TestHttpClient implements HttpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function request($path, $body = null, $httpMethod = 'GET', array $headers = array(), array $options = array())
+    public function request($path, $body = null, $httpMethod = 'GET', array $headers = [], array $options = [])
     {
         $hash = $this->getHash($path, $body, $httpMethod, $headers);
 
         if (!isset($this->stubs[$hash])) {
             throw new \Exception(sprintf(
                 'Could not find stub response for [%s]%s body: %s, headers: %s',
-                $httpMethod, $path, $body, var_export($headers, true)
+                $httpMethod,
+                $path,
+                $body,
+                var_export($headers, true)
             ));
         }
 

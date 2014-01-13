@@ -32,12 +32,16 @@ class Factory
         if (!$home) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if (!getenv('APPDATA')) {
-                    throw new \RuntimeException('The APPDATA or GUSH_HOME environment variable must be set for Gush to run correctly');
+                    throw new \RuntimeException(
+                        'The APPDATA or GUSH_HOME environment variable must be set for Gush to run correctly'
+                    );
                 }
                 $home = strtr(getenv('APPDATA'), '\\', '/').'/Gush';
             } else {
                 if (!getenv('HOME')) {
-                    throw new \RuntimeException('The HOME or GUSH_HOME environment variable must be set for Gush to run correctly');
+                    throw new \RuntimeException(
+                        'The HOME or GUSH_HOME environment variable must be set for Gush to run correctly'
+                    );
                 }
                 $home = rtrim(getenv('HOME'), '/').'/.gush';
             }

@@ -35,7 +35,8 @@ class TextHelper extends Helper
         if ($delimLen > $length) {
             throw new \InvalidArgumentException(sprintf(
                 'Delimiter length "%s" cannot be greater than truncate length "%s"',
-                $delimLen, $length
+                $delimLen,
+                $length
             ));
         }
 
@@ -44,7 +45,8 @@ class TextHelper extends Helper
             if ('left' === $alignment) {
                 $string = substr($string, 0, $offset).$delimString;
             } else {
-                $string = $delimString.substr($string,
+                $string = $delimString.substr(
+                    $string,
                     strlen($string) - $offset
                 );
             }

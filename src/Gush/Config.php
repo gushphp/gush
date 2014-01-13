@@ -94,8 +94,7 @@ class Config
      */
     public function isValid()
     {
-        if (
-            isset($this->config['github']['username'])
+        if (isset($this->config['github']['username'])
             && isset($this->config['github']['password'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))

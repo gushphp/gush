@@ -33,10 +33,29 @@ class ReleaseCreateCommand extends BaseCommand
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of the release')
             ->addOption('body', null, InputOption::VALUE_REQUIRED, 'Description of the release')
             ->addOption('draft', null, InputOption::VALUE_NONE, 'Specify to create an unpublished release')
-            ->addOption('prerelease', null, InputOption::VALUE_NONE, 'Specify to create a pre-release, omit for full release')
-            ->addOption('asset-file', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Assets to include in this release')
-            ->addOption('asset-name', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Names corresponding to asset-files')
-            ->addOption('asset-content-type', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Content types corresponding to asset-files (default: application/zip)')
+            ->addOption(
+                'prerelease',
+                null,
+                InputOption::VALUE_NONE,
+                'Specify to create a pre-release, omit for full release'
+            )
+            ->addOption(
+                'asset-file',
+                null,
+                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
+                'Assets to include in this release'
+            )
+            ->addOption(
+                'asset-name',
+                null,
+                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Names corresponding to asset-files'
+            )
+            ->addOption(
+                'asset-content-type',
+                null,
+                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
+                'Content types corresponding to asset-files (default: application/zip)'
+            )
             ->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name')
         ;
     }
@@ -93,9 +112,9 @@ class ReleaseCreateCommand extends BaseCommand
         $output->writeln(sprintf('<info>Created release with ID </info>%s', $release['id']));
 
         foreach ($assetFiles as $i => $assetFile) {
-            $output->writeln(sprintf(
-                '<info>Uploading asset </info>%s"', $assetFile
-            ));
+            $output->writeln(
+                sprintf('<info>Uploading asset </info>%s"', $assetFile)
+            );
 
             if (isset($assetNames[$i])) {
                 $assetName = $assetNames[$i];
@@ -111,7 +130,12 @@ class ReleaseCreateCommand extends BaseCommand
 
             $content = file_get_contents($assetFile);
             $client->api('repo')->releases()->assets()->create(
-                $org, $repo, $release['id'], $assetName, $assetContentType, $content
+                $org,
+                $repo,
+                $release['id'],
+                $assetName,
+                $assetContentType,
+                $content
             );
         }
     }
