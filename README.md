@@ -99,7 +99,7 @@ $ git commit -am "added instructions to use gush"
 ```
 
 Send PR:
-```bash
+```
 $ gsh p:create
 Bug fix? [y]
 New feature? [n]
