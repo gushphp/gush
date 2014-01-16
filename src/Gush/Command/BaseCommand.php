@@ -18,6 +18,11 @@ use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Gush\Event\GushEvents;
+use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
@@ -28,7 +33,7 @@ class BaseCommand extends Command
     const COMMAND_FAILURE = 0;
 
     protected $enum = array();
-    protected $tabulator = null;
+    protected $subscribers = [];
 
     /**
      * Gets the Github's Client
@@ -216,5 +221,20 @@ class BaseCommand extends Command
         }
 
         return $resultString;
+    }
+
+    public function addSubscriber(EventSubscriberInterface $subscriber)
+    {
+        $this->subscribers[] = $subscriber;
+    }
+
+    public function getSubscribers()
+    {
+        return $this->subscribers;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->getApplication()->getDispatcher()->dispatch(GushEvents::INITIALIZE, new ConsoleEvent($this, $input, $output));
     }
 }
