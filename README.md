@@ -12,9 +12,9 @@ Gush is a rapid workflow for project maintainers and contributors
 
 <img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="200px"/>
 
-Logo courtesy from @maxakawizard and @kotosharic
+Logo courtesy from [@maxakawizard](https://twitter.com/MAXakaWIZARD) and [@kotosharic](https://twitter.com/kotosharic)
 
-Logo explanation is best depicted from this passage:
+Logo explanation is best depicted from this passage from Psalm 78:
 
 True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
 Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
