@@ -14,7 +14,7 @@ Gush is a rapid workflow for project maintainers and contributors
 
 Logo courtesy from [@maxakawizard](https://twitter.com/MAXakaWIZARD) and [@kotosharic](https://twitter.com/kotosharic)
 
-Logo explanation is best depicted from this passage from Psalm 78:
+*Logo explanation is best depicted from this passage from Psalm 78*:
 
 True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
 Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
