@@ -10,7 +10,7 @@ Gush is a rapid workflow for project maintainers and contributors
 [![Latest Unstable Version](https://poser.pugx.org/cordoval/gush/v/unstable.png)](https://packagist.org/packages/cordoval/gush)
 [![Total Downloads](https://poser.pugx.org/cordoval/gush/downloads.png)](https://packagist.org/packages/cordoval/gush)
 
-<img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo" style="width: 100px; height: 100px;"/>
+<img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo" height="100px" width="100px" style="width: 100px; height: 100px;"/>
 
 ### What is this?
 
