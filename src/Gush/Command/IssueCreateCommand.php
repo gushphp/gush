@@ -15,13 +15,14 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Create issue
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class IssueCreateCommand extends BaseCommand
+class IssueCreateCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -31,8 +32,6 @@ class IssueCreateCommand extends BaseCommand
         $this
             ->setName('issue:create')
             ->setDescription('Creates an issue')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command creates a new issue for either the current or the given organization
@@ -49,8 +48,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $organization = $input->getArgument('org');
-        $repository = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
 
         $client = $this->getGithubClient();
         $emptyValidator = function ($string) {
@@ -80,9 +79,9 @@ EOF
             'body' => $body,
         ];
 
-        $issue = $client->api('issue')->create($organization, $repository, $parameters);
+        $issue = $client->api('issue')->create($org, $repo, $parameters);
 
-        $output->writeln("https://github.com/{$organization}/{$repository}/issues/{$issue['number']}");
+        $output->writeln("https://github.com/{$org}/{$repo}/issues/{$issue['number']}");
 
         return self::COMMAND_SUCCESS;
     }

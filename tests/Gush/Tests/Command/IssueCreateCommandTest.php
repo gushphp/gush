@@ -32,7 +32,7 @@ class IssueCreateCommandTest extends BaseTestCase
         );
 
         $tester = $this->getCommandTester(new IssueCreateCommand());
-        $tester->execute(array('org' => 'cordoval'));
+        $tester->execute(array('--org' => 'cordoval'));
 
         $this->assertEquals('x', trim($tester->getDisplay()));
     }

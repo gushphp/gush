@@ -16,13 +16,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Gush\Feature\TableFeature;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Lists the issues
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class IssueListCommand extends BaseCommand
+class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     protected $enum = array(
         'filter' => array(
@@ -52,8 +54,6 @@ class IssueListCommand extends BaseCommand
         $this
             ->setName('issue:list')
             ->setDescription('List issues')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Specify a label')
             ->addOption('filter', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('filter'))
             ->addOption('state', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('state'))
@@ -85,8 +85,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $organization = $input->getArgument('org');
-        $repository = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
 
         $client = $this->getGithubClient();
         $paginator = new ResultPager($client);
@@ -117,7 +117,7 @@ EOF
         $issues = $paginator->fetchAll(
             $client->api('issue'),
             'all',
-            [$organization, $repository, $params]
+            [$org, $repo, $params]
         );
 
         // post filter

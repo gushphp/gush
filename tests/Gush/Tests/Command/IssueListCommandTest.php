@@ -51,7 +51,7 @@ class IssueListCommandTest extends BaseTestCase
         );
 
         $tester = $this->getCommandTester(new IssueListCommand());
-        $tester->execute(array('org' => 'cordoval', 'repo' => 'gush'));
+        $tester->execute(array('--org' => 'cordoval', '--repo' => 'gush'));
 
         $this->assertEquals(OutputFixtures::ISSUE_LIST, trim($tester->getDisplay()));
     }

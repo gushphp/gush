@@ -14,13 +14,14 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Squash all commits of a PR
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class SquashCommand extends BaseCommand
+class SquashCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -39,8 +40,8 @@ class SquashCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $this->getVendorName();
-        $repo = $this->getRepoName();
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');;
         $prNumber = $input->getArgument('pr_number');
 
         $client = $this->getGithubClient();

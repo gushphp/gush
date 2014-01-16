@@ -14,8 +14,9 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
 
-class TakeIssueCommand extends BaseCommand
+class TakeIssueCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -27,8 +28,6 @@ class TakeIssueCommand extends BaseCommand
             ->setDescription('Take an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -37,10 +36,10 @@ class TakeIssueCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
-        $org = $input->getArgument('org');
-        $repo = $input->getArgument('repo');
 
         $client = $this->getGithubClient();
         $issue = $client

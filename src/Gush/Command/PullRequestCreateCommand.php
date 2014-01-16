@@ -21,8 +21,10 @@ use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
+use Gush\Feature\TableFeature;
 
-class PullRequestCreateCommand extends BaseCommand
+class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -33,8 +35,6 @@ class PullRequestCreateCommand extends BaseCommand
             ->setName('pull-request:create')
             ->setDescription('Pull request create command')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to PR', 'master')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -43,7 +43,7 @@ class PullRequestCreateCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tableString = $this->getGithubTableString($output);
+        $tableString = $this->getGithubTableString($input, $output);
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -71,13 +71,13 @@ class PullRequestCreateCommand extends BaseCommand
      * @param  OutputInterface $output
      * @return string
      */
-    protected function getGithubTableString(OutputInterface $output)
+    protected function getGithubTableString(InputInterface $input, OutputInterface $output)
     {
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
 
         /** @var \Gush\Model\Question[] $questions */
-        if (false === strpos($this->getRepoName(), 'docs')) {
+        if (false === strpos($this->getHelper('git')->getRepoName(), 'docs')) {
             $questionary = new SymfonyQuestionary();
         } else {
             $questionary = new SymfonyDocumentationQuestionary();
@@ -152,13 +152,13 @@ class PullRequestCreateCommand extends BaseCommand
         $title,
         $description
     ) {
-        $repo = $input->getArgument('repo');
-        $org = $input->getArgument('org');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
         $baseBranch = $input->getArgument('base_branch');
 
         $github = $this->getParameter('github');
         $username = $github['username'];
-        $branchName = $this->getBranchName();
+        $branchName = $this->getHelper('git')->getBranchName();
 
         $commands = [
             [

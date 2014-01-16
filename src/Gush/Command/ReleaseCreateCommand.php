@@ -17,8 +17,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Gush\Feature\GitHubFeature;
 
-class ReleaseCreateCommand extends BaseCommand
+class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
 {
     protected $workDir;
 
@@ -28,8 +29,6 @@ class ReleaseCreateCommand extends BaseCommand
             ->setName('release:create')
             ->setDescription('Create a new Release')
             ->addArgument('tag', InputArgument::REQUIRED, 'Tag of the release')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
 
             ->addOption('target-commitish', null, InputOption::VALUE_REQUIRED, 'Commitish/ref to create the tag from')
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of the release')
@@ -76,8 +75,8 @@ class ReleaseCreateCommand extends BaseCommand
         $client = $this->getApplication()->getGithubClient();
         $releaseName = $input->getOption('name');
         $tag = $input->getArgument('tag');
-        $repo = $input->getArgument('repo');
-        $org = $input->getArgument('org');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
         $assetFiles = $input->getOption('asset-file');
         $assetNames = $input->getOption('asset-name');
         $assetContentTypes = $input->getOption('asset-content-type');

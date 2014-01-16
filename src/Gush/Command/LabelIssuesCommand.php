@@ -17,13 +17,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
+use Gush\Feature\TableFeature;
 
 /**
  * Label issues and pull requests
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
-class LabelIssuesCommand extends BaseCommand
+class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -32,9 +34,7 @@ class LabelIssuesCommand extends BaseCommand
     {
         $this
             ->setName('label')
-            ->setDescription('Label issues/pull requests of a repository')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
+            ->setDescription('Label issues/pull requests of a repo')
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
             ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
@@ -46,8 +46,8 @@ class LabelIssuesCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $organization = $input->getArgument('org');
-        $repository = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
         $pullRequests = $input->getOption('pull-requests');
         $issues = $input->getOption('issues');
 
@@ -62,8 +62,8 @@ class LabelIssuesCommand extends BaseCommand
             $filename = sprintf(
                 '%s/.last_%s-%s_%s_sync',
                 $this->getParameter('cache-dir'),
-                $organization,
-                $repository,
+                $org,
+                $repo,
                 $pullRequests ? 'pr' : 'issues'
             );
 
@@ -75,8 +75,8 @@ class LabelIssuesCommand extends BaseCommand
         }
 
         $client = $this->getGithubClient();
-        $issues = $client->api('issue')->all($organization, $repository, $params);
-        $labels = $client->api('issue')->labels()->all($organization, $repository);
+        $issues = $client->api('issue')->all($org, $repo, $params);
+        $labels = $client->api('issue')->labels()->all($org, $repo);
 
         if (!$issues) {
             $new = $input->getOption('new') ? 'new ' : '';
@@ -135,12 +135,7 @@ class LabelIssuesCommand extends BaseCommand
             );
 
             // update the issue
-            $client->api('issue')->update(
-                $organization,
-                $repository,
-                $issue['number'],
-                array('labels' => explode(',', $label))
-            );
+            $client->api('issue')->update($org, $repo, $issue['number'], array('labels' => explode(',', $label)));
         }
     }
 

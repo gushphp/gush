@@ -14,8 +14,13 @@ namespace Gush\Command;
 use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
 use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
+use Gush\Event\GushEvents;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -28,7 +33,6 @@ class BaseCommand extends Command
     const COMMAND_FAILURE = 0;
 
     protected $enum = array();
-    protected $tabulator = null;
 
     /**
      * Gets the Github's Client
@@ -51,60 +55,6 @@ class BaseCommand extends Command
         $config = $this->getApplication()->getConfig();
 
         return $config->get($key);
-    }
-
-    /**
-     * @return string The repository name
-     */
-    protected function getRepoName()
-    {
-        $process = new Process(
-            'git remote show -n origin | grep Fetch | cut -d "/" -f 2 | cut -d "." -f 1',
-            getcwd()
-        );
-        $process->run();
-
-        $output = trim($process->getOutput());
-        if (empty($output)) {
-            $process = new Process(
-                'git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1',
-                getcwd()
-            );
-            $process->run();
-        }
-
-        return trim($process->getOutput());
-    }
-
-    /**
-     * @return string The vendor name
-     */
-    protected function getVendorName()
-    {
-        $process = new Process('git remote show -n origin | grep Fetch | cut -d ":" -f 3 | cut -d "/" -f 1', getcwd());
-        $process->run();
-
-        $output = trim($process->getOutput());
-        if (empty($output)) {
-            $process = new Process(
-                'git remote show -n origin | grep Fetch | cut -d ":" -f 3 | cut -d "/" -f 4',
-                getcwd()
-            );
-            $process->run();
-        }
-
-        return trim($process->getOutput());
-    }
-
-    /**
-     * @return string The branch name
-     */
-    protected function getBranchName()
-    {
-        $process = new Process('git branch | grep "*" | cut -d " " -f 2', getcwd());
-        $process->run();
-
-        return trim($process->getOutput());
     }
 
     /**
@@ -137,6 +87,7 @@ class BaseCommand extends Command
     }
 
     /**
+     * @todo Move this to TextHelper
      * @return DefaultSlugGenerator
      */
     protected function getSlugifier()
@@ -193,6 +144,9 @@ class BaseCommand extends Command
         }
     }
 
+    /**
+     * @todo Move this to a CsHelper
+     */
     protected function ensurePhpCsFixerInstalled()
     {
         $builder = new ProcessBuilder(['php-cs-fixer']);
@@ -216,5 +170,10 @@ class BaseCommand extends Command
         }
 
         return $resultString;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->getApplication()->getDispatcher()->dispatch(GushEvents::INITIALIZE, new ConsoleEvent($this, $input, $output));
     }
 }

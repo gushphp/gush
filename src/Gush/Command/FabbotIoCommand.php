@@ -15,13 +15,14 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Applies patches from fabbot-io robot
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class FabbotIoCommand extends BaseCommand
+class FabbotIoCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -32,8 +33,6 @@ class FabbotIoCommand extends BaseCommand
             ->setName('pull-request:fabbot-io')
             ->setDescription('Run fabbot-io patches')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 

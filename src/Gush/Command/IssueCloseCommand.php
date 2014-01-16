@@ -15,13 +15,14 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Close issue
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class IssueCloseCommand extends BaseCommand
+class IssueCloseCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -32,8 +33,6 @@ class IssueCloseCommand extends BaseCommand
             ->setName('issue:close')
             ->setDescription('Closes an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number to be closed')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
             ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Closing comment')
             ->setHelp(
                 <<<EOF
@@ -51,8 +50,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getArgument('org');
-        $repo = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
+
         $issueNumber = $input->getArgument('issue_number');
         $closingComment = $input->getOption('message');
 

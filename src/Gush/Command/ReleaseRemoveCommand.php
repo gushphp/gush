@@ -14,8 +14,9 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Gush\Feature\GitHubFeature;
 
-class ReleaseRemoveCommand extends BaseCommand
+class ReleaseRemoveCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -23,11 +24,9 @@ class ReleaseRemoveCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('release:delete')
+            ->setName('release:remove')
             ->setDescription('Remove release')
             ->addArgument('id', InputArgument::REQUIRED, 'ID of the release')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -38,8 +37,8 @@ class ReleaseRemoveCommand extends BaseCommand
     {
         $client = $this->getGithubClient();
         $id = $input->getArgument('id');
-        $repo = $input->getArgument('repo');
-        $org = $input->getArgument('org');
+        $repo = $input->getOption('repo');
+        $org = $input->getOption('org');
 
         $output->writeln(
             sprintf(

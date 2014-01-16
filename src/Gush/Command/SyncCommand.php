@@ -14,13 +14,14 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Sync a local branch with its upstream version
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class SyncCommand extends BaseCommand
+class SyncCommand extends BaseCommand implements GitHubFeature
 {
     const DEFAULT_BRANCH_NAME = 'master';
 
@@ -42,7 +43,7 @@ class SyncCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $branchName = $input->getArgument('branch_name');
-        $stashedBranchName = $this->getBranchName();
+        $stashedBranchName = $this->getHelper('git')->getBranchName();
 
         $this->runCommands(
             [
