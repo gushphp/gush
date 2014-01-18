@@ -39,6 +39,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use Gush\Helper\TextHelper;
 use Gush\Helper\TableHelper;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Gush\Command\BaseCommand;
+use Gush\Event\GushEvents;
+use Gush\Event\CommandEvent;
+use Symfony\Component\Console\ConsoleEvents;
 
 class Application extends BaseApplication
 {
@@ -52,8 +57,15 @@ class Application extends BaseApplication
      */
     protected $githubClient = null;
 
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $dispatcher;
+
     public function __construct()
     {
+        $this->dispatcher = new EventDispatcher();
+
         parent::__construct();
 
         $this->add(new TakeIssueCommand());
@@ -74,6 +86,21 @@ class Application extends BaseApplication
         $this->add(new SyncCommand());
         $this->add(new LabelIssuesCommand());
         $this->add(new ConfigureCommand());
+
+        $this->setDispatcher($this->dispatcher);
+    }
+
+    public function add(Command $command)
+    {
+        if ($command instanceof BaseCommand) {
+            foreach ($command->getSubscribers() as $subscriber) {
+                $this->dispatcher->addSubscriber($subscriber);
+            }
+        }
+
+        $this->dispatcher->dispatch(GushEvents::DECORATE_DEFINITION, new CommandEvent($command));
+
+        parent::add($command);
     }
 
     protected function getDefaultHelperSet()
@@ -162,5 +189,10 @@ class Application extends BaseApplication
     public function getConfig()
     {
         return $this->config;
+    }
+
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
     }
 }

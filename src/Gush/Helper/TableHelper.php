@@ -11,18 +11,31 @@
 
 namespace Gush\Helper;
 
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
-class TableHelper extends BaseTableHelper
+class TableHelper extends BaseTableHelper implements InputAwareInterface
 {
     protected $footer;
+    protected $input;
+    protected $validLayouts = array(
+        'default',
+        'borderless',
+        'compact',
+    );
+
+    public function setInput(InputInterface $input)
+    {
+        $this->input = $input;
+    }
 
     public function setLayout($layout)
     {
         if (is_string($layout)) {
             $layout = constant('Symfony\Component\Console\Helper\TableHelper::LAYOUT_' . strtoupper($layout));
-
             return parent::setLayout($layout);
         }
 
@@ -44,6 +57,25 @@ class TableHelper extends BaseTableHelper
 
     public function render(OutputInterface $output)
     {
+        if ($layout = $this->input->getOption('table-layout')) {
+            if (!in_array($layout, $this->validLayouts)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Table layout "%s" is not valid, must be one of: %s', 
+                    $layout, implode(', ', $this->validLayouts)
+                ));
+            }
+
+            $this->setLayout($layout);
+        }
+
+        if (true === $this->input->getOption('table-no-header')) {
+            $this->setHeaders(array());
+        }
+
+        if (true === $this->input->getOption('table-no-footer')) {
+            $this->footer = null;
+        }
+
         parent::render($output);
 
         if ($this->footer) {

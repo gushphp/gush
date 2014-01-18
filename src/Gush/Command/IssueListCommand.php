@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Gush\Event\TableSubscriber;
 
 /**
  * Lists the issues
@@ -77,7 +78,9 @@ All of the parameters provided by the github API are supported:
 With the addition of the <info>--type</info> option which enables you to filter show only pull-requests or only issues.
 EOF
             )
-        ;
+                ;
+
+        $this->addSubscriber(new TableSubscriber);
     }
 
     /**
