@@ -13,6 +13,7 @@ namespace Gush\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -33,12 +34,13 @@ class IssueCloseCommand extends BaseCommand
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number to be closed')
             ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
             ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
+            ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Closing comment')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command closes an issue for either the current or the given organization
 and repository:
 
-    <info>$ php %command.full_name% 12</info>
+    <info>$ php %command.full_name% 12 -m"let's try to keep it low profile guys."</info>
 EOF
             )
         ;
@@ -49,18 +51,22 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $organization = $input->getArgument('org');
-        $repository = $input->getArgument('repo');
+        $org = $input->getArgument('org');
+        $repo = $input->getArgument('repo');
         $issueNumber = $input->getArgument('issue_number');
+        $closingComment = $input->getOption('message');
 
         $client = $this->getGithubClient();
 
-        $parameters = [
-            'state' => 'closed',
-        ];
-        $client->api('issue')->update($organization, $repository, $issueNumber, $parameters);
+        $parameters = ['state' => 'closed'];
+        $client->api('issue')->update($org, $repo, $issueNumber, $parameters);
 
-        $output->writeln("Closed https://github.com/{$organization}/{$repository}/issues/{$issueNumber}");
+        if ($input->getOption('message')) {
+            $parameters = ['body' => $closingComment];
+            $client->api('issue')->comments()->create($org, $repo, $issueNumber, $parameters);
+        }
+
+        $output->writeln("Closed https://github.com/{$org}/{$repo}/issues/{$issueNumber}");
 
         return self::COMMAND_SUCCESS;
     }
