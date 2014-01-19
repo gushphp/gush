@@ -14,8 +14,10 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Gush\Feature\GitHubFeature;
+use Gush\Feature\TableFeature;
 
-class ReleaseListCommand extends BaseCommand
+class ReleaseListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -25,8 +27,6 @@ class ReleaseListCommand extends BaseCommand
         $this
             ->setName('release:list')
             ->setDescription('List of the releases')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -36,8 +36,8 @@ class ReleaseListCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $client = $this->getGithubClient();
-        $repo = $input->getArgument('repo');
-        $org = $input->getArgument('org');
+        $repo = $input->getOption('repo');
+        $org = $input->getOption('org');
 
         $releases = $client->api('repo')->releases()->all($org, $repo);
 

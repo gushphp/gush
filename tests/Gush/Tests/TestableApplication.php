@@ -52,4 +52,9 @@ class TestableApplication extends Application
             ]
         ];
     }
+
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
 }

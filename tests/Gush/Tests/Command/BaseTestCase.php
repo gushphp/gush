@@ -17,9 +17,11 @@ use Gush\Tester\HttpClient\TestHttpClient;
 use Gush\Tests\TestableApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Gush\Event\CommandEvent;
+use Gush\Event\GushEvents;
 
 /**
- * @author Daniel T Leech <dantleech@gmail.com>
+ * @author Daniel T Leech <daniel@dantleech.com>
  */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -42,7 +44,13 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $application = new TestableApplication();
         $application->setAutoExit(false);
         $application->setGithubClient($this->buildGithubClient());
+
         $command->setApplication($application);
+
+        $application->getDispatcher()->dispatch(
+            GushEvents::DECORATE_DEFINITION,
+            new CommandEvent($command)
+        );
 
         return new CommandTester($command);
     }

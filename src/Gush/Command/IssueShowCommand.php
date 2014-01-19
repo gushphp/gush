@@ -14,13 +14,14 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
 
 /**
  * Show issue
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class IssueShowCommand extends BaseCommand
+class IssueShowCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -31,12 +32,9 @@ class IssueShowCommand extends BaseCommand
             ->setName('issue:show')
             ->setDescription('Show given issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
-            ->setHelp(
-                <<<EOF
-The <info>%command.name%</info> command show details of the given issue for either the current or the given organization
-and repository:
+            ->setHelp(<<<EOF
+The <info>%command.name%</info> command show details of the given issue for either the current or the given org
+and repo:
 
     <info>$ php %command.full_name% 60</info>
 EOF
@@ -49,19 +47,17 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $organization = $input->getArgument('org');
-        $repository = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
+
         $issueNumber = $input->getArgument('issue_number');
 
         $client = $this->getGithubClient();
 
-        $issue = $client->api('issue')->show($organization, $repository, $issueNumber);
+        $issue = $client->api('issue')->show($org, $repo, $issueNumber);
 
         $output->writeln('');
-        $output->writeln(
-            'Issue #'.$issue['number'].' ('.$issue['state'].'): by '.$issue['user']['login']
-            .' ['.$issue['assignee']['login'].']'
-        );
+        $output->writeln('Issue #'.$issue['number'].' ('.$issue['state'].'): by '.$issue['user']['login'].' ['.$issue['assignee']['login'].']');
         if (isset($issue['pull_request'])) {
             $output->writeln('Type: Pull Request');
         } else {
@@ -69,12 +65,7 @@ EOF
         }
         $output->writeln('Milestone: '.$issue['milestone']['title']);
         if ($issue['labels'] > 0) {
-            $labels = array_map(
-                function ($label) {
-                    return $label['name'];
-                },
-                $issue['labels']
-            );
+            $labels = array_map(function ($label) { return $label['name']; }, $issue['labels']);
             $output->writeln('Labels: '.implode(', ', $labels));
         }
         $output->writeln('Title: '.$issue['title']);

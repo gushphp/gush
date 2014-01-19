@@ -14,13 +14,15 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
+use Gush\Feature\TableFeature;
 
 /**
  * Lists the milestones for the issues
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
-class IssueMilestoneListCommand extends BaseCommand
+class IssueMilestoneListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -30,8 +32,6 @@ class IssueMilestoneListCommand extends BaseCommand
         $this
             ->setName('issue:list:milestones')
             ->setDescription('List of the issue\'s milestones')
-            ->addArgument('org', InputArgument::OPTIONAL, 'Name of the GitHub organization', $this->getVendorName())
-            ->addArgument('repo', InputArgument::OPTIONAL, 'Name of the GitHub repository', $this->getRepoName())
         ;
     }
 
@@ -40,11 +40,11 @@ class IssueMilestoneListCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $organization = $input->getArgument('org');
-        $repository = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
 
         $client = $this->getGithubClient();
-        $milestones = $client->api('issue')->milestones()->all($organization, $repository);
+        $milestones = $client->api('issue')->milestones()->all($org, $repo);
 
         $table = $this->getHelper('table');
         $table->setLayout('compact');

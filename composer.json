@@ -22,6 +22,7 @@
         "symfony/console": "~2.3",
         "symfony/process": "~2.3",
         "symfony/yaml": "~2.3",
+        "symfony/event-dispatcher": "~2.3",
         "knplabs/github-api": "~1.2",
         "ddd/slug": "~1.0"
     },

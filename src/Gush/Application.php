@@ -13,7 +13,10 @@ namespace Gush;
 
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
+
+use Gush\Command\BaseCommand;
 use Gush\Command\ConfigureCommand;
+use Gush\Command\CsFixerCommand;
 use Gush\Command\FabbotIoCommand;
 use Gush\Command\IssueCloseCommand;
 use Gush\Command\IssueCreateCommand;
@@ -24,21 +27,28 @@ use Gush\Command\IssueShowCommand;
 use Gush\Command\LabelIssuesCommand;
 use Gush\Command\PullRequestCreateCommand;
 use Gush\Command\PullRequestMergeCommand;
-use Gush\Command\CsFixerCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
 use Gush\Command\ReleaseRemoveCommand;
 use Gush\Command\SquashCommand;
 use Gush\Command\SyncCommand;
 use Gush\Command\TakeIssueCommand;
+
+use Gush\Event\CommandEvent;
+use Gush\Event\GushEvents;
 use Gush\Exception\FileNotFoundException;
+use Gush\Helper\GitHelper;
+use Gush\Helper\TableHelper;
+use Gush\Helper\TextHelper;
+use Gush\Subscriber\GitHubSubscriber;
+use Gush\Subscriber\TableSubscriber;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Yaml;
-use Gush\Helper\TextHelper;
-use Gush\Helper\TableHelper;
 
 class Application extends BaseApplication
 {
@@ -52,8 +62,30 @@ class Application extends BaseApplication
      */
     protected $githubClient = null;
 
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $dispatcher;
+
     public function __construct()
     {
+        // instantiate the helpers here so that
+        // we can use them in the subscribers.
+        $this->gitHelper = new GitHelper();
+        $this->textHelper = new TextHelper();
+        $this->tableHelper = new TableHelper();
+
+        // the parent dispatcher is private and has
+        // no accessor, so we set it here so we can access it.
+        $this->dispatcher = new EventDispatcher();
+
+        // add our subscribers to the event dispatcher
+        $this->dispatcher->addSubscriber(new TableSubscriber());
+        $this->dispatcher->addSubscriber(new GitHubSubscriber($this->gitHelper));
+
+        // share our dispatcher with the parent class
+        $this->setDispatcher($this->dispatcher);
+
         parent::__construct();
 
         $this->add(new TakeIssueCommand());
@@ -76,11 +108,22 @@ class Application extends BaseApplication
         $this->add(new ConfigureCommand());
     }
 
+    public function add(Command $command)
+    {
+        $this->dispatcher->dispatch(
+            GushEvents::DECORATE_DEFINITION,
+            new CommandEvent($command)
+        );
+
+        parent::add($command);
+    }
+
     protected function getDefaultHelperSet()
     {
         $helperSet = parent::getDefaultHelperSet();
-        $helperSet->set(new TextHelper);
-        $helperSet->set(new TableHelper);
+        $helperSet->set($this->gitHelper);
+        $helperSet->set($this->textHelper);
+        $helperSet->set($this->tableHelper);
 
         return $helperSet;
     }
@@ -162,5 +205,10 @@ class Application extends BaseApplication
     public function getConfig()
     {
         return $this->config;
+    }
+
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
     }
 }

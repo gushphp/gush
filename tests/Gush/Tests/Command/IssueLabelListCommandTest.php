@@ -31,7 +31,7 @@ class IssueLabelListCommandTest extends BaseTestCase
         );
 
         $tester = $this->getCommandTester(new IssueLabelListCommand());
-        $tester->execute(array('org' => 'cordoval', 'repo' => 'gush'));
+        $tester->execute(array('--org' => 'cordoval', '--repo' => 'gush'));
 
         $this->assertEquals('bug', trim($tester->getDisplay()));
     }

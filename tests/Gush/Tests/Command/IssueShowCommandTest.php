@@ -36,7 +36,7 @@ class IssueShowCommandTest extends BaseTestCase
         );
 
         $tester = $this->getCommandTester(new IssueShowCommand());
-        $tester->execute(['issue_number' => 60, 'org' => 'cordoval', 'repo' => 'gush']);
+        $tester->execute(['issue_number' => 60, '--org' => 'cordoval', '--repo' => 'gush']);
 
         $this->assertEquals(trim(OutputFixtures::ISSUE_SHOW), trim($tester->getDisplay()));
     }
