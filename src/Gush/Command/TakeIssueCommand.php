@@ -47,12 +47,9 @@ class TakeIssueCommand extends BaseCommand implements GitHubFeature
             ->show($org, $repo, $issueNumber)
         ;
 
-        $slugTitle = $this
-            ->getSlugifier()
-            ->slugify(
-                explode(' ', $issueNumber.' '.$issue['title'])
-            )
-        ;
+        $slugTitle = $this->getHelper('text')->slugify(sprintf(
+            '%d %s', $issueNumber, $issue['title']
+        ));
 
         $commands = [
             [

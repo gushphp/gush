@@ -80,4 +80,22 @@ class TextHelperTest extends \PHPUnit_Framework_TestCase
         $res = $this->textHelper->truncate($text, $length, $alignment, $truncateString);
         $this->assertEquals($expected, $res);
     }
+
+    public function provideSlugify()
+    {
+        return [
+            ['this is some text', 'this-is-some-text'],
+            ['voilà, j\'ai du texte', 'voila-j-ai-du-texte'],
+            ['áçéeë', 'aceee'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideSlugify
+     */
+    public function testSlugify($string, $expected)
+    {
+        $string = $this->textHelper->slugify($string);
+        $this->assertEquals($expected, $string);
+    }
 }

@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\TableFeature;
 use Gush\Feature\GitHubFeature;
+use Gush\Helper\GitHubHelper;
 
 /**
  * Lists the issues
@@ -25,20 +26,6 @@ use Gush\Feature\GitHubFeature;
  */
 class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
-    protected $enum = [
-        'filter' => [
-            'assigned',
-            'created',
-            'mentioned',
-            'subscribed',
-            'all',
-        ],
-        'state' => ['open', 'closed'],
-        'sort' => ['created', 'updated'],
-        'direction' => ['asc', 'desc'],
-        'type' => ['pr', 'issue'],
-    ];
-
     /**
      * {@inheritdoc}
      */
@@ -48,12 +35,12 @@ class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeatur
             ->setName('issue:list')
             ->setDescription('List issues')
             ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Specify a label')
-            ->addOption('filter', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('filter'))
-            ->addOption('state', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('state'))
-            ->addOption('sort', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('sort'))
-            ->addOption('direction', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('direction'))
+            ->addOption('filter', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'filter'))
+            ->addOption('state', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'state'))
+            ->addOption('sort', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'sort'))
+            ->addOption('direction', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'direction'))
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'type'))
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only issues after this time are displayed.')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, $this->formatEnumDescription('type'))
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command lists issues from either the current or the given organization
@@ -84,14 +71,7 @@ EOF
         $client = $this->getGithubClient();
         $paginator = new ResultPager($client);
 
-        $params = [];
-
-        foreach (['state', 'filter', 'sort', 'direction'] as $key) {
-            if ($v = $input->getOption($key)) {
-                $this->validateEnum($key, $v);
-                $params[$key] = $v;
-            }
-        }
+        $params = GitHubHelper::validateEnums($input, array('state', 'filter', 'sort', 'direction'));
 
         if ($v = $input->getOption('label')) {
             $params['labels'] = implode(',', $v);
@@ -119,7 +99,7 @@ EOF
             $issue['_type'] = $isPr ? 'pr' : 'issue';
 
             if ($v = $input->getOption('type')) {
-                $this->validateEnum('type', $v);
+                GitHubHelper::validateEnum('issue', 'type', $v);
 
                 if ($v == 'pr' && false === $isPr) {
                     unset($issues[$i]);

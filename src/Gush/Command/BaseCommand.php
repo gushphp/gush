@@ -11,9 +11,6 @@
 
 namespace Gush\Command;
 
-use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
-use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
-use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
 use Gush\Event\GushEvents;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
@@ -30,8 +27,6 @@ class BaseCommand extends Command
 {
     const COMMAND_SUCCESS = 1;
     const COMMAND_FAILURE = 0;
-
-    protected $enum = [];
 
     /**
      * Gets the Github's Client
@@ -82,54 +77,6 @@ class BaseCommand extends Command
 
         if (!$process->isSuccessful() && !$allowFailures) {
             throw new \RuntimeException($process->getErrorOutput());
-        }
-    }
-
-    /**
-     * @todo Move this to TextHelper
-     * @return DefaultSlugGenerator
-     */
-    protected function getSlugifier()
-    {
-        return new DefaultSlugGenerator(
-            new TransliteratorCollection(
-                [new LatinTransliterator()]
-            ),
-            []
-        );
-    }
-
-    /**
-     * Return a description for an enumerated value.
-     *
-     * @param string $name - name of enumerated value.
-     *
-     * @return string
-     */
-    protected function formatEnumDescription($name)
-    {
-        return 'One of <comment>' . implode('</comment>, <comment>', $this->enum[$name]) . '</comment>';
-    }
-
-    /**
-     * Check to see if the given value is contained in the named
-     * enum definition.
-     *
-     * @param string $name  - name of key in $this->enum array
-     * @param string $value - value to validate
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function validateEnum($name, $value)
-    {
-        if (!isset($this->enum[$name])) {
-            throw new \InvalidArgumentException('Unknown enum ' . $name);
-        }
-
-        if (!in_array($value, $this->enum[$name])) {
-            throw new \InvalidArgumentException(
-                'Value must be one of ' . implode(', ', $this->enum[$name]) . ' got "' . $value . '"'
-            );
         }
     }
 

@@ -12,6 +12,9 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
+use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
+use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
+use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
 
 class TextHelper extends Helper
 {
@@ -20,6 +23,16 @@ class TextHelper extends Helper
         return 'text';
     }
 
+    /**
+     * Truncate a string
+     *
+     * @param string $string
+     * @param integer $length
+     * @param string $alignment - one of "left", "right". default left
+     * @param string $delimString - string to use to mark the truncation
+     *
+     * @return string
+     */
     public function truncate($string, $length, $alignment = null, $delimString = null)
     {
         $alignment = $alignment === null ? 'left' : $alignment;
@@ -51,5 +64,32 @@ class TextHelper extends Helper
         }
 
         return $string;
+    }
+
+    /**
+     * @return DefaultSlugGenerator
+     */
+    protected function getSlugifier()
+    {
+        return new DefaultSlugGenerator(
+            new TransliteratorCollection(
+                [new LatinTransliterator()]
+            ),
+            []
+        );
+    }
+
+    /**
+     * Slugify a string
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public function slugify($string)
+    {
+        $string = (array) $string;
+
+        return $this->getSlugifier()->slugify($string);
     }
 }
