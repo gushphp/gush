@@ -1,8 +1,8 @@
 /bin/*
-!/bin/gsh
+!/bin/gush
 /composer.lock
 /vendor
-/gsh.phar
+/gush.phar
 /box.json
 /.first-time-run
 /.sculpin

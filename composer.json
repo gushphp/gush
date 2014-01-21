@@ -31,7 +31,7 @@
         "raulfraile/ladybug": "~1.0"
     },
     "bin": [
-        "bin/gsh"
+        "bin/gush"
     ],
     "config": {
         "bin-dir": "bin"
