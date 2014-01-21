@@ -56,7 +56,7 @@ First, clone Gush repository into your local machine and install the dependencie
 ```bash
 $ git clone git@github.com:cordoval/gush.git
 $ cd gush
-$ composer install
+$ composer install --no-dev
 ```
 
 We can use [Box](https://github.com/kherge/Box) to build the phar file. Once installed, you can build it easily:
