@@ -8,7 +8,16 @@
     "finder": [
         {
             "name": "*.php",
-            "exclude": ["tests"],
+            "exclude": [
+                "tests",
+                "behat",
+                "phpunit",
+                "raulfraile",
+                "*Test.php",
+                "test",
+                "Tests",
+                "Test"
+            ],
             "in": "vendor"
         },
         {
