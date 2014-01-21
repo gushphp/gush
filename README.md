@@ -77,7 +77,7 @@ $ composer global update cordoval/gush
 You may want to start by configuring it:
 
 ```bash
-$ gsh configure
+$ gush configure
 Insert your github credentials:
 username: cordoval
 password:
@@ -90,14 +90,14 @@ Let's go into a repo, list, take ticket, send PR and merge it:
 List it:
 ```bash
 $ cd project_directory
-$ gsh issue:list
+$ gush issue:list
  #   State  PR?  Title                                     User       Assignee   Milestone        Labels       Created
  14  open        Tests and Documentation for Commands      cordoval                                            2014-01-10
 ```
 
 Take it:
 ```bash
-$ gsh p:take 14
+$ gush p:take 14
 OUT > Fetching cordoval
 OUT > Fetching origin
 ERR > Note: checking out 'origin/master'.
@@ -115,7 +115,7 @@ $ git commit -am "added instructions to use gush"
 
 Send PR:
 ```
-$ gsh p:create
+$ gush p:create
 Bug fix? [y]
 New feature? [n]
 BC breaks? [n]
@@ -136,7 +136,7 @@ https://github.com/cordoval/gush/pull/94
 
 Merge it:
 ```bash
-$ gsh p:merge 94
+$ gush p:merge 94
 Pull Request successfully merged
 ```
 

@@ -1,5 +1,5 @@
 {
-    "alias": "gsh.phar",
+    "alias": "gush.phar",
     "chmod": "0755",
     "directories": ["src", "bin"],
     "files": [
@@ -30,7 +30,7 @@
         }
     ],
     "git-version": "package_version",
-    "main": "bin/gsh",
-    "output": "gsh.phar",
+    "main": "bin/gush",
+    "output": "gush.phar",
     "stub": true
 }
