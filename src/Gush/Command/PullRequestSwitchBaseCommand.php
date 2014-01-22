@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class SwitchBaseCommand extends BaseCommand implements GitHubFeature
+class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ class SwitchBaseCommand extends BaseCommand implements GitHubFeature
     protected function configure()
     {
         $this
-            ->setName('pull-request:switch')
+            ->setName('pull-request:switch-base')
             ->setDescription('Switch the base of the PR to another one')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the new base branch to switch the PR to', 'master')
