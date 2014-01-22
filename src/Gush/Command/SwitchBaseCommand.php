@@ -58,7 +58,6 @@ class SwitchBaseCommand extends BaseCommand implements GitHubFeature
         // get old base and sha1 from old PR
         $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
-
         $commitSha1 = $pr['head']['sha'];
         $branchName = $pr['head']['ref'];
 
