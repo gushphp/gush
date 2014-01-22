@@ -18,18 +18,18 @@ class SymfonyQuestionary implements Questionary
      */
     public function getQuestions()
     {
-        $questionArray = array(
-            array('Bug fix?', 'y'),
-            array('New feature?', 'n'),
-            array('BC breaks?', 'n'),
-            array('Deprecations?', 'n'),
-            array('Tests pass?', 'y'),
-            array('Fixed tickets', '#000'),
-            array('License', 'MIT'),
-            array('Doc PR', ''),
-        );
+        $questionArray = [
+            ['Bug fix?', 'y'],
+            ['New feature?', 'n'],
+            ['BC breaks?', 'n'],
+            ['Deprecations?', 'n'],
+            ['Tests pass?', 'y'],
+            ['Fixed tickets', '#000'],
+            ['License', 'MIT'],
+            ['Doc PR', ''],
+        ];
 
-        $questions = array();
+        $questions = [];
 
         foreach ($questionArray as $question) {
             $q = new Question($question[0]);
@@ -42,6 +42,6 @@ class SymfonyQuestionary implements Questionary
 
     public function getHeaders()
     {
-        return array('Q', 'A');
+        return ['Q', 'A'];
     }
 }

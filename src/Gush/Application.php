@@ -14,7 +14,6 @@ namespace Gush;
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
 
-use Gush\Command\BaseCommand;
 use Gush\Command\ConfigureCommand;
 use Gush\Command\CsFixerCommand;
 use Gush\Command\FabbotIoCommand;
@@ -32,6 +31,7 @@ use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
 use Gush\Command\ReleaseRemoveCommand;
 use Gush\Command\SquashCommand;
+use Gush\Command\SwitchBaseCommand;
 use Gush\Command\SyncCommand;
 use Gush\Command\TakeIssueCommand;
 
@@ -45,7 +45,6 @@ use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -93,6 +92,7 @@ class Application extends BaseApplication
         $this->add(new PullRequestCreateCommand());
         $this->add(new PullRequestMergeCommand());
         $this->add(new PatOnTheBackCommand());
+        $this->add(new SwitchBaseCommand());
         $this->add(new SquashCommand());
         $this->add(new FabbotIoCommand());
         $this->add(new CsFixerCommand());
@@ -188,9 +188,9 @@ class Application extends BaseApplication
 
     protected function buildGithubClient()
     {
-        $cachedClient = new CachedHttpClient(array(
+        $cachedClient = new CachedHttpClient([
             'cache_dir' => $this->config->get('cache-dir')
-        ));
+        ]);
 
         $githubCredentials = $this->config->get('github');
 

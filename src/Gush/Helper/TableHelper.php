@@ -22,11 +22,11 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
     protected $footer;
     protected $input;
 
-    protected $validLayouts = array(
+    protected $validLayouts = [
         'default',
         'borderless',
         'compact',
-    );
+    ];
 
     public function setInput(InputInterface $input)
     {
@@ -72,7 +72,7 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
             $this->setLayout($layout);
 
             if (true === $this->input->getOption('table-no-header')) {
-                $this->setHeaders(array());
+                $this->setHeaders([]);
             }
 
             if (true === $this->input->getOption('table-no-footer')) {

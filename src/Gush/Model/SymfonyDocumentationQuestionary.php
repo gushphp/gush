@@ -15,15 +15,15 @@ class SymfonyDocumentationQuestionary implements Questionary
 {
     public function getQuestions()
     {
-        $questionArray = array(
-            array('Doc fix?', 'yes'),
-            array('New docs?', 'no'),
-            array('Applies to', '2.3+'),
-            array('Fixed tickets', '#000'),
-            array('License', 'CC-ASA 3.0 Unported'),
-        );
+        $questionArray = [
+            ['Doc fix?', 'yes'],
+            ['New docs?', 'no'],
+            ['Applies to', '2.3+'],
+            ['Fixed tickets', '#000'],
+            ['License', 'CC-ASA 3.0 Unported'],
+        ];
 
-        $questions = array();
+        $questions = [];
 
         foreach ($questionArray as $question) {
             $q = new Question($question[0]);
@@ -36,6 +36,6 @@ class SymfonyDocumentationQuestionary implements Questionary
 
     public function getHeaders()
     {
-        return array('Q', 'A');
+        return ['Q', 'A'];
     }
 }

@@ -22,7 +22,7 @@ class ReleaseListCommandTest extends BaseTestCase
     public function testCommand()
     {
         $this->httpClient->whenGet('repos/cordoval/gush/releases')->thenReturn(array(
-            array(
+            [
                 'id' => '123',
                 'name' => 'This is a Release',
                 'tag_name' => 'Tag name',
@@ -31,7 +31,7 @@ class ReleaseListCommandTest extends BaseTestCase
                 'prerelease' => 'yes',
                 'created_at' => '2014-01-05',
                 'published_at' => '2014-01-05',
-            ),
+            ],
         ));
 
         $tester = $this->getCommandTester(new ReleaseListCommand());

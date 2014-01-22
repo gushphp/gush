@@ -12,7 +12,6 @@
 namespace Gush\Command;
 
 use Github\ResultPager;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,25 +25,19 @@ use Gush\Feature\GitHubFeature;
  */
 class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
-    protected $enum = array(
-        'filter' => array(
+    protected $enum = [
+        'filter' => [
             'assigned',
             'created',
             'mentioned',
             'subscribed',
             'all',
-        ),
-        'state' => array(
-            'open',
-            'closed',
-        ),
-        'sort' => array(
-            'created',
-            'updated',
-        ),
-        'direction' => array('asc', 'desc'),
-        'type' => array('pr', 'issue'),
-    );
+        ],
+        'state' => ['open', 'closed'],
+        'sort' => ['created', 'updated'],
+        'direction' => ['asc', 'desc'],
+        'type' => ['pr', 'issue'],
+    ];
 
     /**
      * {@inheritdoc}
@@ -91,9 +84,9 @@ EOF
         $client = $this->getGithubClient();
         $paginator = new ResultPager($client);
 
-        $params = array();
+        $params = [];
 
-        foreach (array('state', 'filter', 'sort', 'direction') as $key) {
+        foreach (['state', 'filter', 'sort', 'direction'] as $key) {
             if ($v = $input->getOption($key)) {
                 $this->validateEnum($key, $v);
                 $params[$key] = $v;

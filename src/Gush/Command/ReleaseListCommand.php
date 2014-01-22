@@ -13,7 +13,6 @@ namespace Gush\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
 
@@ -42,7 +41,7 @@ class ReleaseListCommand extends BaseCommand implements TableFeature, GitHubFeat
         $releases = $client->api('repo')->releases()->all($org, $repo);
 
         $table = $this->getHelper('table');
-        $table->setHeaders(array('ID', 'Name', 'Tag', 'Commitish', 'Draft', 'Prerelease', 'Created', 'Published'));
+        $table->setHeaders(['ID', 'Name', 'Tag', 'Commitish', 'Draft', 'Prerelease', 'Created', 'Published']);
         $table->formatRows($releases, $this->getRowBuilderCallback());
         $table->setFooter(sprintf('%s release(s)', count($releases)));
         $table->render($output, $table);

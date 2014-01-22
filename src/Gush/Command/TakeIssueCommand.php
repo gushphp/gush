@@ -70,5 +70,7 @@ class TakeIssueCommand extends BaseCommand implements GitHubFeature
         ];
 
         $this->runCommands($commands);
+
+        return self::COMMAND_SUCCESS;
     }
 }

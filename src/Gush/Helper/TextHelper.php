@@ -26,7 +26,7 @@ class TextHelper extends Helper
         $delimString = $delimString === null ? '...' : $delimString;
         $delimLen = strlen($delimString);
 
-        if (!in_array($alignment, array('left', 'right'))) {
+        if (!in_array($alignment, ['left', 'right'])) {
             throw new \InvalidArgumentException(
                 'Alignment must either be "left" or "right"'
             );

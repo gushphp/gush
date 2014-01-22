@@ -19,7 +19,7 @@ use Guzzle\Http\Message\Response;
 class ResponseStub
 {
     protected $client;
-    protected $returnData = array();
+    protected $returnData = [];
 
     public function __construct(TestHttpClient $client)
     {
@@ -33,6 +33,6 @@ class ResponseStub
 
     public function getResponse()
     {
-        return new Response(200, array(), json_encode($this->returnData));
+        return new Response(200, [], json_encode($this->returnData));
     }
 }
