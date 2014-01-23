@@ -19,7 +19,22 @@ use Gush\Tests\Fixtures\OutputFixtures;
  */
 class IssueListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    public function provideCommand()
+    {
+        return [
+            [[
+                '--org' => 'cordoval', '--repo' => 'gush',
+            ]], 
+            [[
+                '--org' => 'cordoval', '--repo' => 'gush', '--type' => 'issue'
+            ]], 
+        ];
+    }
+
+    /**
+     * @dataProvider provideCommand
+     */
+    public function testCommand($args)
     {
         $this->httpClient->whenGet('repos/cordoval/gush/issues', [
             'page' => 1, 'per_page' => 100,
@@ -51,7 +66,7 @@ class IssueListCommandTest extends BaseTestCase
         );
 
         $tester = $this->getCommandTester(new IssueListCommand());
-        $tester->execute(array('--org' => 'cordoval', '--repo' => 'gush'));
+        $tester->execute($args);
 
         $this->assertEquals(OutputFixtures::ISSUE_LIST, trim($tester->getDisplay()));
     }

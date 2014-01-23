@@ -37,12 +37,16 @@ use Gush\Command\TakeIssueCommand;
 
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
+
 use Gush\Exception\FileNotFoundException;
+
 use Gush\Helper\GitHelper;
 use Gush\Helper\TableHelper;
 use Gush\Helper\TextHelper;
+
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
+
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -110,6 +114,13 @@ class Application extends BaseApplication
         $this->add(new ConfigureCommand());
     }
 
+    /**
+     * Override the add method and dispatch
+     * an event enabling subscribers to decorate
+     * the command definition.
+     *
+     * {@inheritDoc}
+     */
     public function add(Command $command)
     {
         $this->dispatcher->dispatch(
