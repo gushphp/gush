@@ -51,10 +51,20 @@ EOF
         $fixerLine = $input->getArgument('fixer_line');
 
         if ($fixerLine === self::DEFAULT_FIXER_LINE) {
-            $this->ensurePhpCsFixerInstalled();
+            $builder = new ProcessBuilder(['php-cs-fixer']);
+            $builder
+                ->setWorkingDirectory(getcwd())
+                ->setTimeout(3600)
+            ;
+            $process = $builder->getProcess();
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new \RuntimeException('Please install php-cs-fixer');
+            }
         }
 
-        $this->runCommands(
+        $this->getHelper('process')->runCommands(
             [
                 [
                     'line' => 'git add .',

@@ -166,7 +166,7 @@ EOF
             ]
         ];
 
-        $this->runCommands($commands);
+        $this->getHelper('process')->runCommands($commands);
 
         $client = $this->getGithubClient();
         $pullRequest = $client

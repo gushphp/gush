@@ -78,7 +78,7 @@ EOF
             ],
         ];
 
-        $this->runCommands($commands);
+        $this->getHelper('process')->runCommands($commands);
 
         return self::COMMAND_SUCCESS;
     }
