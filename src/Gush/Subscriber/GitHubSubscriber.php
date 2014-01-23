@@ -15,11 +15,8 @@ use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Feature\GitHubFeature;
 use Gush\Helper\GitHelper;
-use Symfony\Component\Console\ConsoleEvents;
-use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Process\Process;
 
 class GitHubSubscriber implements EventSubscriberInterface
 {

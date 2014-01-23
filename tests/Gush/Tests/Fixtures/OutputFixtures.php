@@ -12,7 +12,7 @@
 namespace Gush\Tests\Fixtures;
 
 /**
- * Please do not autoedit this file thereby removing intentional white spaces
+ * Please do not auto-edit this file thereby removing intentional white spaces
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */

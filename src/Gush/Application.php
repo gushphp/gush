@@ -167,7 +167,7 @@ class Application extends BaseApplication
 
         if (!file_exists($localFilename)) {
             throw new FileNotFoundException(
-                'The \'.gush.yml\' doest not exist, please run the \'configure\' command.'
+                'The .gush.yml file doest not exist, please run the configure command.'
             );
         }
 
@@ -182,7 +182,7 @@ class Application extends BaseApplication
                 );
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("{$e->getMessage()}.\nPlease run 'configure' command.");
+            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the configure command.");
         }
     }
 

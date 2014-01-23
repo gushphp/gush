@@ -12,7 +12,6 @@
 namespace Gush\Tests\Subscriber;
 
 use Gush\Subscriber\TableSubscriber;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Command\Command;
 use Gush\Feature\TableFeature;
 

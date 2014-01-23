@@ -39,25 +39,27 @@ class TableSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
 
         if ($command instanceof TableFeature) {
-            $command->addOption(
-                'table-layout', 
-                null, 
-                InputOption::VALUE_REQUIRED,
-                'Specify the layout for the table, one of default, compact or borderless',
-                'default'
-            );
-            $command->addOption(
-                'table-no-header', 
-                null, 
-                InputOption::VALUE_NONE,
-                'Disable the header on the table'
-            );
-            $command->addOption(
-                'table-no-footer', 
-                null, 
-                InputOption::VALUE_NONE,
-                'Disable the footer on the table'
-            );
+            $command
+                ->addOption(
+                    'table-layout',
+                    null,
+                    InputOption::VALUE_REQUIRED,
+                    'Specify the layout for the table, one of default, compact or borderless',
+                    'default'
+                )
+                ->addOption(
+                    'table-no-header',
+                    null,
+                    InputOption::VALUE_NONE,
+                    'Disable the header on the table'
+                )
+                ->addOption(
+                    'table-no-footer',
+                    null,
+                    InputOption::VALUE_NONE,
+                    'Disable the footer on the table'
+                )
+            ;
         }
     }
 

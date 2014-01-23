@@ -30,11 +30,13 @@ class ConfigureCommandTest extends BaseTestCase
 
         $gushFilename = $homeDir.'/.gush.yml';
 
-        $expected = ['parameters' => [
-            'cache-dir' => $homeDir.'/cache',
-            'home' => $homeDir,
-            'github' => ['username' => self::USERNAME, 'password' => self::PASSWORD]
-        ]];
+        $expected = [
+            'parameters' => [
+                'cache-dir' => $homeDir.'/cache',
+                'home' => $homeDir,
+                'github' => ['username' => self::USERNAME, 'password' => self::PASSWORD]
+            ]
+        ];
 
         @mkdir($homeDir, 0777, true);
 

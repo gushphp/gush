@@ -12,7 +12,6 @@
 namespace Gush\Tests\Command;
 
 use Github\Client;
-use Gush\Application;
 use Gush\Tester\HttpClient\TestHttpClient;
 use Gush\Tests\TestableApplication;
 use Symfony\Component\Console\Command\Command;

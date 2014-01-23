@@ -13,6 +13,9 @@ namespace Gush\Model;
 
 class SymfonyDocumentationQuestionary implements Questionary
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getQuestions()
     {
         $questionArray = [
@@ -34,6 +37,9 @@ class SymfonyDocumentationQuestionary implements Questionary
         return $questions;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getHeaders()
     {
         return ['Q', 'A'];
