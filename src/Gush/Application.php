@@ -25,6 +25,7 @@ use Gush\Command\IssueListCommand;
 use Gush\Command\IssueMilestoneListCommand;
 use Gush\Command\IssueShowCommand;
 use Gush\Command\LabelIssuesCommand;
+use Gush\Command\PatOnTheBackCommand;
 use Gush\Command\PullRequestCreateCommand;
 use Gush\Command\PullRequestMergeCommand;
 use Gush\Command\ReleaseCreateCommand;
@@ -91,6 +92,7 @@ class Application extends BaseApplication
         $this->add(new TakeIssueCommand());
         $this->add(new PullRequestCreateCommand());
         $this->add(new PullRequestMergeCommand());
+        $this->add(new PatOnTheBackCommand());
         $this->add(new SquashCommand());
         $this->add(new FabbotIoCommand());
         $this->add(new CsFixerCommand());
