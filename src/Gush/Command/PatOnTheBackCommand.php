@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Gush\Template\Pats;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,7 +59,7 @@ EOF
         $placeHolders = [
             'author' => $pr['user']['login']
         ];
-        $patMessage = $this->getRandomPat();
+        $patMessage = $this->renderRandomPat($placeHolders);
 
         $parameters = ['body' => $patMessage];
         $client->api('issue')->comments()->create($org, $repo, $prNumber, $parameters);
@@ -66,5 +67,15 @@ EOF
         $output->writeln("Pat on the back pushed to https://github.com/{$org}/{$repo}/pull/{$prNumber}");
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function renderRandomPat($placeHolders)
+    {
+        $resultString = Pats::get('PAT'.rand(1, 7));
+        foreach ($placeHolders as $placeholder => $value) {
+            $resultString = str_replace('{{ '.$placeholder.' }}', $value, $resultString);
+        }
+
+        return $resultString;
     }
 }
