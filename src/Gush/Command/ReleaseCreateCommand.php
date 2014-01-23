@@ -102,14 +102,14 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
             )
         );
 
-        $release = $client->api('repo')->releases()->create($org, $repo, array(
+        $release = $client->api('repo')->releases()->create($org, $repo, [
             'tag_name' => $input->getArgument('tag'),
             'target_commitish' => $input->getOption('target-commitish'),
             'name' => $input->getOption('name'),
             'body' => $input->getOption('body'),
             'draft' => $input->getOption('draft'),
             'prerelease' => $input->getOption('prerelease'),
-        ));
+        ]);
 
         $output->writeln(sprintf('<info>Created release with ID </info>%s', $release['id']));
 

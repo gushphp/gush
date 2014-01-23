@@ -126,13 +126,13 @@ class ConfigureCommand extends BaseCommand
         );
 
         $this->config->merge(
-            array(
+            [
                 'cache-dir' => $cacheDir,
-                'github' => array(
+                'github' => [
                     'username' => $username,
                     'password' => $password
-                )
-            )
+                ]
+            ]
         );
     }
 

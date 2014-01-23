@@ -25,32 +25,32 @@ class TestHttpClientTest extends \PHPUnit_Framework_TestCase
 
     public function provideRequestMethod()
     {
-        return array(
-            array('get'),
-            array('put'),
-            array('delete'),
-            array('post'),
-            array('patch'),
-        );
+        return [
+            ['get'],
+            ['put'],
+            ['delete'],
+            ['post'],
+            ['patch'],
+        ];
     }
 
     /**
      * @dataProvider provideRequestMethod
      */
-    public function testRequestMethod($method, $args = array())
+    public function testRequestMethod($method, $args = [])
     {
-        $args = array_merge(array(
+        $args = array_merge([
             'path' => '/foo/bar',
             'body' => null,
-            'parameters' => array(),
-            'headers' => array(),
+            'parameters' => [],
+            'headers' => [],
             'body' => 'this is body',
-        ), $args);
+        ], $args);
 
-        $expectedData = array(
+        $expectedData = [
             'this' => 'is',
             'some' => 'data',
-        );
+        ];
 
         $whenMethod = sprintf('when%s', ucfirst($method));
 

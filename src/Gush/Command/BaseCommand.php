@@ -20,7 +20,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -32,7 +31,7 @@ class BaseCommand extends Command
     const COMMAND_SUCCESS = 1;
     const COMMAND_FAILURE = 0;
 
-    protected $enum = array();
+    protected $enum = [];
 
     /**
      * Gets the Github's Client

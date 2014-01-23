@@ -48,13 +48,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $config = new Config();
         $config->merge(
-            array(
-                'github' => array(
+            [
+                'github' => [
                     'username' => 'foo',
                     'password' => 'bar'
-                ),
+                ],
                 'cache-dir' => sys_get_temp_dir()
-            )
+            ]
         );
 
         $this->assertTrue($config->isValid());

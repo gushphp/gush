@@ -68,6 +68,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
     }
 
     /**
+     * @param  InputInterface $input
      * @param  OutputInterface $output
      * @return string
      */
@@ -83,7 +84,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
             $questionary = new SymfonyDocumentationQuestionary();
         }
 
-        $answers = array();
+        $answers = [];
         /** @var Question $question */
         foreach ($questionary->getQuestions() as $question) {
             $statement = $question->getStatement() . ' ';
@@ -92,7 +93,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
             }
 
             // change this when on 2.5 to the new Question model
-            $answers[] = array(
+            $answers[] = [
                 $question->getStatement(),
                 $dialog->askAndValidate(
                     $output,
@@ -102,7 +103,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
                     $question->getDefault(),
                     $question->getAutocomplete()
                 )
-            );
+            ];
         }
 
         $table = $this->getMarkdownTableHelper($questionary);

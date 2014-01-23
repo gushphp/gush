@@ -28,11 +28,11 @@ class IssueMilestoneListCommandTest extends BaseTestCase
         ];
 
         $this->httpClient->whenGet('repos/cordoval/gush/milestones', $params)->thenReturn(
-            array(
-                array(
+            [
+                [
                     'title' => 'version 1.0'
-                ),
-            )
+                ],
+            ]
         );
 
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());

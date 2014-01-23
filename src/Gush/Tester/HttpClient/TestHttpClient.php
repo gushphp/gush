@@ -21,7 +21,7 @@ class TestHttpClient implements HttpClientInterface
 {
     protected $stubs;
 
-    public function when($path, $body = null, $httpMethod = 'GET', array $headers = array())
+    public function when($path, $body = null, $httpMethod = 'GET', array $headers = [])
     {
         $responseStub = new ResponseStub($this);
         $hash = $this->getHash($path, $body, $httpMethod, $headers);
@@ -30,27 +30,27 @@ class TestHttpClient implements HttpClientInterface
         return $responseStub;
     }
 
-    public function whenGet($path, $parameters = array(), array $headers = array())
+    public function whenGet($path, $parameters = [], array $headers = [])
     {
-        return $this->when($path, null, 'GET', array_merge($headers, array('query' => $parameters)));
+        return $this->when($path, null, 'GET', array_merge($headers, ['query' => $parameters]));
     }
 
-    public function whenPost($path, $body = null, array $headers = array())
+    public function whenPost($path, $body = null, array $headers = [])
     {
         return $this->when($path, $body, 'POST', $headers);
     }
 
-    public function whenPatch($path, $body = null, array $headers = array())
+    public function whenPatch($path, $body = null, array $headers = [])
     {
         return $this->when($path, $body, 'PATCH', $headers);
     }
 
-    public function whenDelete($path, $body = null, array $headers = array())
+    public function whenDelete($path, $body = null, array $headers = [])
     {
         return $this->when($path, $body, 'DELETE', $headers);
     }
 
-    public function whenPut($path, $body, array $headers = array())
+    public function whenPut($path, $body, array $headers = [])
     {
         return $this->when($path, $body, 'PUT', $headers);
     }
@@ -58,15 +58,15 @@ class TestHttpClient implements HttpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function get($path, array $parameters = array(), array $headers = array())
+    public function get($path, array $parameters = [], array $headers = [])
     {
-        return $this->request($path, null, 'GET', array('query' => $parameters));
+        return $this->request($path, null, 'GET', ['query' => $parameters]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function post($path, $body = null, array $headers = array())
+    public function post($path, $body = null, array $headers = [])
     {
         return $this->request($path, $body, 'POST', $headers);
     }
@@ -74,7 +74,7 @@ class TestHttpClient implements HttpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function patch($path, $body = null, array $headers = array())
+    public function patch($path, $body = null, array $headers = [])
     {
         return $this->request($path, $body, 'PATCH', $headers);
     }
@@ -82,7 +82,7 @@ class TestHttpClient implements HttpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function put($path, $body, array $headers = array())
+    public function put($path, $body, array $headers = [])
     {
         return $this->request($path, $body, 'PUT', $headers);
     }
@@ -90,7 +90,7 @@ class TestHttpClient implements HttpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function delete($path, $body = null, array $headers = array())
+    public function delete($path, $body = null, array $headers = [])
     {
         return $this->request($path, $body, 'DELETE', $headers);
     }

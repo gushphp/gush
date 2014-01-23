@@ -10,8 +10,8 @@
  * with this source code in the file LICENSE.
  */
 
-$paths []= __DIR__.'/../vendor';
-$paths []= __DIR__.'/../../..';
+$paths[] = __DIR__.'/../vendor';
+$paths[] = __DIR__.'/../../..';
 
 $filename = null;
 

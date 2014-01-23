@@ -66,13 +66,13 @@ class TableSubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function provideInitialize()
     {
-        return array(
-            array('default', true),
-            array('borderless', true),
-            array('compact', true),
+        return [
+            ['default', true],
+            ['borderless', true],
+            ['compact', true],
 
-            array('foobar', false),
-        );
+            ['foobar', false],
+        ];
     }
 
     /**

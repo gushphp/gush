@@ -62,7 +62,7 @@ class Factory
         // Protect directory against web access. Since HOME could be
         // the www-data's user home and be web-accessible it is a
         // potential security risk
-        foreach (array($home, $cacheDir) as $dir) {
+        foreach ([$home, $cacheDir] as $dir) {
             if (!file_exists($dir.'/.htaccess')) {
                 if (!is_dir($dir)) {
                     @mkdir($dir, 0744, true);
