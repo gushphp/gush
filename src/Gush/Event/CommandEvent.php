@@ -24,6 +24,9 @@ class CommandEvent extends Event
         $this->command = $command;
     }
 
+    /**
+     * @return Command
+     */
     public function getCommand()
     {
         return $this->command;

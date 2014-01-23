@@ -12,7 +12,6 @@
 namespace Gush\Tests\Subscriber;
 
 use Gush\Subscriber\GitHubSubscriber;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Command\Command;
 use Gush\Feature\GitHubFeature;
 

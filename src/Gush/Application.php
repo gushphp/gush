@@ -14,7 +14,6 @@ namespace Gush;
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
 
-use Gush\Command\BaseCommand;
 use Gush\Command\ConfigureCommand;
 use Gush\Command\CsFixerCommand;
 use Gush\Command\FabbotIoCommand;
@@ -45,7 +44,6 @@ use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -167,7 +165,7 @@ class Application extends BaseApplication
 
         if (!file_exists($localFilename)) {
             throw new FileNotFoundException(
-                'The \'.gush.yml\' doest not exist, please run the \'configure\' command.'
+                'The .gush.yml file doest not exist, please run the configure command.'
             );
         }
 
@@ -182,7 +180,7 @@ class Application extends BaseApplication
                 );
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("{$e->getMessage()}.\nPlease run 'configure' command.");
+            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the configure command.");
         }
     }
 

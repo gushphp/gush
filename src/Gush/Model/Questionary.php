@@ -17,5 +17,9 @@ interface Questionary
      * @return Question[]
      */
     public function getQuestions();
+
+    /**
+     * @return []
+     */
     public function getHeaders();
 }
