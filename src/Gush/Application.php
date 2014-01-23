@@ -27,11 +27,11 @@ use Gush\Command\LabelIssuesCommand;
 use Gush\Command\PatOnTheBackCommand;
 use Gush\Command\PullRequestCreateCommand;
 use Gush\Command\PullRequestMergeCommand;
+use Gush\Command\PullRequestSwitchBaseCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
 use Gush\Command\ReleaseRemoveCommand;
 use Gush\Command\SquashCommand;
-use Gush\Command\SwitchBaseCommand;
 use Gush\Command\SyncCommand;
 use Gush\Command\TakeIssueCommand;
 
@@ -92,7 +92,7 @@ class Application extends BaseApplication
         $this->add(new PullRequestCreateCommand());
         $this->add(new PullRequestMergeCommand());
         $this->add(new PatOnTheBackCommand());
-        $this->add(new SwitchBaseCommand());
+        $this->add(new PullRequestSwitchBaseCommand());
         $this->add(new SquashCommand());
         $this->add(new FabbotIoCommand());
         $this->add(new CsFixerCommand());

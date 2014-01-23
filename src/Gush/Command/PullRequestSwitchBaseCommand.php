@@ -82,7 +82,7 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
             ],
             [
                 'line' => sprintf('git cherry-pick %s', $commitSha1),
-                'allow_failures' => true
+                'allow_failures' => false
             ],
             [
                 'line' => sprintf('git push -u origin :%s', $branchName),
