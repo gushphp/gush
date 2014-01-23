@@ -122,14 +122,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
     protected function getMarkdownTableHelper(Questionary $questionary)
     {
         $table = $this->getHelper('table');
-
-        /** @var TableHelper $table */
-        $table
-            ->setLayout(TableHelper::LAYOUT_DEFAULT)
-            ->setVerticalBorderChar('|')
-            ->setHorizontalBorderChar(' ')
-            ->setCrossingChar(' ')
-        ;
+        $table->setLayout('github');
 
         // adds headers from questionary
         $table->addRow($questionary->getHeaders());

@@ -15,9 +15,12 @@ use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 class TableHelper extends BaseTableHelper implements InputAwareInterface
 {
+    const LAYOUT_GITHUB = 3;
+
     protected $footer;
     protected $input;
 
@@ -25,7 +28,13 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
         'default',
         'borderless',
         'compact',
+        'github',
     ];
+
+    public function __construct()
+    {
+        $this->setLayout('default');
+    }
 
     public function setInput(InputInterface $input)
     {
@@ -35,12 +44,72 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
     public function setLayout($layout)
     {
         if (is_string($layout)) {
-            $layout = constant('Symfony\Component\Console\Helper\TableHelper::LAYOUT_' . strtoupper($layout));
-
-            return parent::setLayout($layout);
+            $layout = constant('Gush\Helper\TableHelper::LAYOUT_'.strtoupper($layout));
         }
 
-        return parent::setLayout($layout);
+        switch ($layout) {
+            case self::LAYOUT_BORDERLESS:
+                $this
+                    ->setPaddingChar(' ')
+                    ->setHorizontalBorderChar('=')
+                    ->setVerticalBorderChar(' ')
+                    ->setCrossingChar(' ')
+                    ->setCellHeaderFormat('<info>%s</info>')
+                    ->setCellRowFormat('%s')
+                    ->setCellRowContentFormat(' %s ')
+                    ->setBorderFormat('%s')
+                    ->setPadType(STR_PAD_RIGHT)
+                ;
+                break;
+
+            case self::LAYOUT_COMPACT:
+                $this
+                    ->setPaddingChar(' ')
+                    ->setHorizontalBorderChar('')
+                    ->setVerticalBorderChar(' ')
+                    ->setCrossingChar('')
+                    ->setCellHeaderFormat('<info>%s</info>')
+                    ->setCellRowFormat('%s')
+                    ->setCellRowContentFormat('%s')
+                    ->setBorderFormat('%s')
+                    ->setPadType(STR_PAD_RIGHT)
+                ;
+                break;
+
+            case self::LAYOUT_DEFAULT:
+                $this
+                    ->setPaddingChar(' ')
+                    ->setHorizontalBorderChar(' ')
+                    ->setVerticalBorderChar('|')
+                    ->setCrossingChar('+')
+                    ->setCellHeaderFormat('<info>%s</info>')
+                    ->setCellRowFormat('%s')
+                    ->setCellRowContentFormat(' %s ')
+                    ->setBorderFormat('%s')
+                    ->setPadType(STR_PAD_RIGHT)
+                ;
+                break;
+
+            case self::LAYOUT_GITHUB:
+                $this
+                    ->setPaddingChar(' ')
+                    ->setHorizontalBorderChar('')
+                    ->setVerticalBorderChar(' ')
+                    ->setCrossingChar('')
+                    ->setCellHeaderFormat('<info>%s</info>')
+                    ->setCellRowFormat('%s')
+                    ->setCellRowContentFormat('%s')
+                    ->setBorderFormat('%s')
+                    ->setPadType(STR_PAD_RIGHT)
+                ;
+                break;
+
+            default:
+                throw new InvalidArgumentException(sprintf('Invalid table layout "%s".', $layout));
+                break;
+        };
+
+        return $this;
     }
 
     public function formatRows(array $rows, $rowFormatter)
