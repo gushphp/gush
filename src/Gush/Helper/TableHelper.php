@@ -79,7 +79,7 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
             case self::LAYOUT_DEFAULT:
                 $this
                     ->setPaddingChar(' ')
-                    ->setHorizontalBorderChar('-')
+                    ->setHorizontalBorderChar(' ')
                     ->setVerticalBorderChar('|')
                     ->setCrossingChar('+')
                     ->setCellHeaderFormat('<info>%s</info>')
