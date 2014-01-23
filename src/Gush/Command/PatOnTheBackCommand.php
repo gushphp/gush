@@ -55,12 +55,15 @@ EOF
         $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
 
-        $patMessage = 'you did well my vet friend! you did well {{ prAuthor }}';
+        $placeHolders = [
+            'author' => $pr['user']['login']
+        ];
+        $patMessage = $this->getRandomPat();
 
         $parameters = ['body' => $patMessage];
-        $client->api('pull_request')->comments()->create($org, $repo, $prNumber, $parameters);
+        $client->api('issue')->comments()->create($org, $repo, $prNumber, $parameters);
 
-        $output->writeln("Pat on the back pushed to https://github.com/{$org}/{$repo}/pulls/{$prNumber}");
+        $output->writeln("Pat on the back pushed to https://github.com/{$org}/{$repo}/pull/{$prNumber}");
 
         return self::COMMAND_SUCCESS;
     }
