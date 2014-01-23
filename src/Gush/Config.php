@@ -37,10 +37,8 @@ class Config
     public function merge(array $config)
     {
         // override defaults with given config
-        if (!empty($config)) {
-            foreach ($config as $key => $val) {
-                $this->config[$key] = $val;
-            }
+        foreach ($config as $key => $val) {
+            $this->config[$key] = $val;
         }
     }
 
