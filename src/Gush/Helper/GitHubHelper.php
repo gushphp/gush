@@ -67,15 +67,15 @@ class GitHubHelper extends Helper
      *
      * @param $input InputInterface  - Input which contains the options to be validated
      * @param string $domain         - Domain of the enum e.g. issue
-     * @param array  $type           - Types to validate (e.g. filter ,state, etc)
+     * @param array  $types          - Types to validate (e.g. filter ,state, etc)
      *
      * @throws \InvalidArgumentException
      *
      * @return array Array of key value pairs
      */
-    public static function validateEnums(InputInterface $input, $domain, $types = array())
+    public static function validateEnums(InputInterface $input, $domain, $types = [])
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($types as $type) {
             $v = $input->getOption($type);
@@ -103,10 +103,11 @@ class GitHubHelper extends Helper
     }
 
     /**
-     * Check if a given value is a valid  enum
+     * Check if a given value is a valid enum
      *
      * @param string $domain         - Domain of the enum e.g. issue
-     * @param array  $type           - Types to validate (e.g. filter ,state, etc)
+     * @param string $type           - Type to validate (e.g. filter ,state, etc)
+     * @param mixed  $value
      *
      * @throws \InvalidArgumentException
      */
@@ -125,7 +126,7 @@ class GitHubHelper extends Helper
      * Return a description for the given enum type.
      *
      * @param string $domain         - Domain of the enum e.g. issue
-     * @param array  $type           - Types to validate (e.g. filter ,state, etc)
+     * @param string $type           - Type to validate (e.g. filter ,state, etc)
      *
      * @return string
      */
