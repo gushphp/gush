@@ -25,4 +25,4 @@ script:
   - phpunit
 
 notifications:
-  irc:   "irc.freenode.org#gushphp"
+  irc: "irc.freenode.org#gushphp"

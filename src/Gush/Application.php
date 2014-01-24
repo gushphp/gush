@@ -13,40 +13,13 @@ namespace Gush;
 
 use Github\Client;
 use Github\HttpClient\CachedHttpClient;
-
-use Gush\Command\ConfigureCommand;
-use Gush\Command\CsFixerCommand;
-use Gush\Command\FabbotIoCommand;
-use Gush\Command\IssueCloseCommand;
-use Gush\Command\IssueCreateCommand;
-use Gush\Command\IssueLabelListCommand;
-use Gush\Command\IssueListCommand;
-use Gush\Command\IssueMilestoneListCommand;
-use Gush\Command\IssueShowCommand;
-use Gush\Command\LabelIssuesCommand;
-use Gush\Command\PullRequestPatOnTheBackCommand;
-use Gush\Command\PullRequestCreateCommand;
-use Gush\Command\PullRequestMergeCommand;
-use Gush\Command\PullRequestSwitchBaseCommand;
-use Gush\Command\ReleaseCreateCommand;
-use Gush\Command\ReleaseListCommand;
-use Gush\Command\ReleaseRemoveCommand;
-use Gush\Command\PullRequestSquashCommand;
-use Gush\Command\SyncCommand;
-use Gush\Command\IssueTakeCommand;
-
+use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
-
 use Gush\Exception\FileNotFoundException;
-
-use Gush\Helper\GitHelper;
-use Gush\Helper\TableHelper;
-use Gush\Helper\TextHelper;
-
+use Gush\Helper as Helpers;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
-
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,10 +47,10 @@ class Application extends BaseApplication
     public function __construct()
     {
         // instantiate the helpers here so that
-        // we can use them in the subscribers.
-        $this->gitHelper = new GitHelper();
-        $this->textHelper = new TextHelper();
-        $this->tableHelper = new TableHelper();
+        // we can use them inside the subscribers.
+        $this->gitHelper = new Helpers\GitHelper();
+        $this->textHelper = new Helpers\TextHelper();
+        $this->tableHelper = new Helpers\TableHelper();
 
         // the parent dispatcher is private and has
         // no accessor, so we set it here so we can access it.
@@ -92,30 +65,30 @@ class Application extends BaseApplication
 
         parent::__construct();
 
-        $this->add(new PullRequestCreateCommand());
-        $this->add(new PullRequestMergeCommand());
-        $this->add(new PullRequestPatOnTheBackCommand());
-        $this->add(new PullRequestSwitchBaseCommand());
-        $this->add(new PullRequestSquashCommand());
-        $this->add(new FabbotIoCommand());
-        $this->add(new CsFixerCommand());
-        $this->add(new ReleaseCreateCommand());
-        $this->add(new ReleaseListCommand());
-        $this->add(new ReleaseRemoveCommand());
-        $this->add(new IssueTakeCommand());
-        $this->add(new IssueCreateCommand());
-        $this->add(new IssueCloseCommand());
-        $this->add(new IssueLabelListCommand());
-        $this->add(new IssueMilestoneListCommand());
-        $this->add(new IssueShowCommand());
-        $this->add(new IssueListCommand());
-        $this->add(new SyncCommand());
-        $this->add(new LabelIssuesCommand());
-        $this->add(new ConfigureCommand());
+        $this->add(new Cmd\PullRequestCreateCommand());
+        $this->add(new Cmd\PullRequestMergeCommand());
+        $this->add(new Cmd\PullRequestPatOnTheBackCommand());
+        $this->add(new Cmd\PullRequestSwitchBaseCommand());
+        $this->add(new Cmd\PullRequestSquashCommand());
+        $this->add(new Cmd\FabbotIoCommand());
+        $this->add(new Cmd\CsFixerCommand());
+        $this->add(new Cmd\ReleaseCreateCommand());
+        $this->add(new Cmd\ReleaseListCommand());
+        $this->add(new Cmd\ReleaseRemoveCommand());
+        $this->add(new Cmd\IssueTakeCommand());
+        $this->add(new Cmd\IssueCreateCommand());
+        $this->add(new Cmd\IssueCloseCommand());
+        $this->add(new Cmd\IssueLabelListCommand());
+        $this->add(new Cmd\IssueMilestoneListCommand());
+        $this->add(new Cmd\IssueShowCommand());
+        $this->add(new Cmd\IssueListCommand());
+        $this->add(new Cmd\SyncCommand());
+        $this->add(new Cmd\LabelIssuesCommand());
+        $this->add(new Cmd\ConfigureCommand());
     }
 
     /**
-     * Override the add method and dispatch
+     * Overrides the add method and dispatch
      * an event enabling subscribers to decorate
      * the command definition.
      *

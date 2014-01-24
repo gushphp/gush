@@ -42,8 +42,8 @@ if (!$process->isSuccessful()) {
 
 $app = new Gush\Application();
 
-// First time the application run will configure the github credentials
-// and create the default structure for cache folder
+// The first time the application runs it will configure the github credentials
+// and create the cache folder
 if (!file_exists(__DIR__.'/../.first-time-run')) {
     @file_put_contents(__DIR__.'/../.first-time-run', '');
 
