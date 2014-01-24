@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
 /**
- * Show issue
+ * Shows an issue
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
@@ -30,13 +30,13 @@ class IssueShowCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('issue:show')
-            ->setDescription('Show given issue')
+            ->setDescription('Shows given issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number')
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command show details of the given issue for either the current or the given org
+The <info>%command.name%</info> command shows issue details for either the current or the given organization
 and repo:
 
-    <info>$ php %command.full_name% 60</info>
+    <info>$ gush %command.full_name% 60</info>
 EOF
             )
         ;
@@ -53,11 +53,16 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
 
         $client = $this->getGithubClient();
-
         $issue = $client->api('issue')->show($org, $repo, $issueNumber);
 
-        $output->writeln('');
-        $output->writeln('Issue #'.$issue['number'].' ('.$issue['state'].'): by '.$issue['user']['login'].' ['.$issue['assignee']['login'].']');
+        $output->writeln(sprintf(
+            "\nIssue #%s (%s): by %s [%s]",
+            $issue['number'],
+            $issue['state'],
+            $issue['user']['login'],
+            $issue['assignee']['login']
+        ));
+
         if (isset($issue['pull_request'])) {
             $output->writeln('Type: Pull Request');
         } else {

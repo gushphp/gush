@@ -19,6 +19,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\GitHubFeature;
 
+/**
+ * Creates a release
+ *
+ * @author Daniel Leech <daniel@dantleech.com>
+ */
 class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
 {
     protected $workDir;
@@ -29,7 +34,6 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
             ->setName('release:create')
             ->setDescription('Create a new Release')
             ->addArgument('tag', InputArgument::REQUIRED, 'Tag of the release')
-
             ->addOption('target-commitish', null, InputOption::VALUE_REQUIRED, 'Commitish/ref to create the tag from')
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of the release')
             ->addOption('body', null, InputOption::VALUE_REQUIRED, 'Description of the release')
@@ -63,10 +67,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return null
+     * {@inheritdoc}
      *
      * @throws \Gush\Exception\FileNotFoundException
      */
@@ -85,7 +86,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
             $this->removeExisting($output, $client, $org, $repo, $tag);
         }
 
-        // validate assets
+        // validates assets
         foreach ($assetFiles as $assetFile) {
             if (!file_exists($assetFile)) {
                 throw new FileNotFoundException(sprintf('Asset "%s" does not exist', $assetFile));
@@ -140,9 +141,11 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
                 $content
             );
         }
+
+        return self::COMMAND_SUCCESS;
     }
 
-    protected function removeExisting(OutputInterface $output, Client $client, $org, $repo, $tag)
+    private function removeExisting(OutputInterface $output, Client $client, $org, $repo, $tag)
     {
         $releases = $client->api('repo')->releases()->all($org, $repo);
         $id = null;

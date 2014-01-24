@@ -38,6 +38,13 @@ class ConfigureCommand extends BaseCommand
         $this
             ->setName('configure')
             ->setDescription('Configure the github credentials and the cache folder')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> configure parameters Gush will use:
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
         ;
     }
 
@@ -61,10 +68,12 @@ class ConfigureCommand extends BaseCommand
 
         @unlink($filename);
         if (!@file_put_contents($filename, $yaml->dump($content), 0644)) {
-            $output->writeln('<error>It could not save file.</error>');
+            $output->writeln('<error>Configuration file cannot be saved.</error>');
         }
 
-        $output->writeln('<info>Configuration saved successfully.</info>');
+        $output->writeln('<info>Configuration file saved successfully.</info>');
+
+        return self::COMMAND_SUCCESS;
     }
 
     /**
@@ -112,11 +121,11 @@ class ConfigureCommand extends BaseCommand
             "Cache folder [{$this->config->get('cache-dir')}]: ",
             function ($dir) {
                 if (!is_dir($dir)) {
-                    throw new \InvalidArgumentException('The folder is does not exist.');
+                    throw new \InvalidArgumentException('Cache folder does not exist.');
                 }
 
                 if (!is_writable($dir)) {
-                    throw new \InvalidArgumentException('The folder is not writable.');
+                    throw new \InvalidArgumentException('Cache folder is not writable.');
                 }
 
                 return $dir;

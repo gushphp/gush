@@ -17,11 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
 /**
- * Squash all commits of a PR
+ * Squashes all commits of a PR
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class SquashCommand extends BaseCommand implements GitHubFeature
+class PullRequestSquashCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -30,8 +30,15 @@ class SquashCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:squash')
-            ->setDescription('Squash all commits on a PR')
+            ->setDescription('Squashes all commits of a PR')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to squash')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command squashes all commits of a PR:
+
+    <info>$ gush %command.full_name% 12</info>
+EOF
+            )
         ;
     }
 
@@ -76,5 +83,7 @@ class SquashCommand extends BaseCommand implements GitHubFeature
         ];
 
         $this->runCommands($commands);
+
+        return self::COMMAND_SUCCESS;
     }
 }

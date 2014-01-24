@@ -45,13 +45,15 @@ class GitHubHelperTest extends \PHPUnit_Framework_TestCase
         ];
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $input->expects($this->any())
+        $input
+            ->expects($this->any())
             ->method('getOption')
             ->will($this->returnCallback(function ($key) use ($enums) {
                 return $enums[$key];
-            }));
+            }))
+        ;
 
-        $res = GitHubHelper::validateEnums($input, 'issue', array('filter', 'state'));
+        $res = GitHubHelper::validateEnums($input, 'issue', ['filter', 'state']);
 
         $this->assertEquals($enums, $res);
     }

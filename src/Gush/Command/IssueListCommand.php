@@ -71,7 +71,7 @@ EOF
         $client = $this->getGithubClient();
         $paginator = new ResultPager($client);
 
-        $params = GitHubHelper::validateEnums($input, array('state', 'filter', 'sort', 'direction'));
+        $params = GitHubHelper::validateEnums($input, ['state', 'filter', 'sort', 'direction']);
 
         if ($v = $input->getOption('label')) {
             $params['labels'] = implode(',', $v);
@@ -133,5 +133,7 @@ EOF
         $table->setFooter(sprintf('%s issues', count($issues)));
 
         $table->render($output, $table);
+
+        return self::COMMAND_SUCCESS;
     }
 }

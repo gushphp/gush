@@ -31,8 +31,15 @@ class FabbotIoCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:fabbot-io')
-            ->setDescription('Run fabbot-io patches')
+            ->setDescription('Run fabbot-io patches on given PR')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command applies patch fabbot-io robot on given PR:
+
+    <info>$ gush %command.full_name% 12</info>
+EOF
+            )
         ;
     }
 
@@ -79,5 +86,7 @@ class FabbotIoCommand extends BaseCommand implements GitHubFeature
                 ]
             ]
         );
+
+        return self::COMMAND_SUCCESS;
     }
 }

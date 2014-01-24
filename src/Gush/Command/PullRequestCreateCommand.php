@@ -17,13 +17,17 @@ use Gush\Model\Questionary;
 use Gush\Model\SymfonyDocumentationQuestionary;
 use Gush\Model\SymfonyQuestionary;
 use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
 
+/**
+ * Launches a pull request
+ *
+ * @author Luis Cordova <cordoval@gmail.com>
+ */
 class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
@@ -33,8 +37,15 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
     {
         $this
             ->setName('pull-request:create')
-            ->setDescription('Pull request create command')
-            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to PR', 'master')
+            ->setDescription('Launches a pull request')
+            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to PR to', 'master')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command gives a pat on the back to a PR's author with a random template:
+
+    <info>$ gush %command.full_name% 12</info>
+EOF
+            )
         ;
     }
 
@@ -65,14 +76,11 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
         );
         $prNumber = $this->postPullRequest($input, $output, $title, $tableString);
         $output->writeln($prNumber['html_url']);
+
+        return self::COMMAND_SUCCESS;
     }
 
-    /**
-     * @param  InputInterface $input
-     * @param  OutputInterface $output
-     * @return string
-     */
-    protected function getGithubTableString(InputInterface $input, OutputInterface $output)
+    private function getGithubTableString(InputInterface $input, OutputInterface $output)
     {
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -92,7 +100,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
                 $statement .= '[' . $question->getDefault() . '] ';
             }
 
-            // change this when on 2.5 to the new Question model
+            // @todo change this when on 2.5 to the new Question model
             $answers[] = [
                 $question->getStatement(),
                 $dialog->askAndValidate(
@@ -115,32 +123,20 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
         return $tableOutput->fetch();
     }
 
-    /**
-     * @param  Questionary $questionary
-     * @return TableHelper
-     */
-    protected function getMarkdownTableHelper(Questionary $questionary)
+    private function getMarkdownTableHelper(Questionary $questionary)
     {
         $table = $this->getHelper('table');
         $table->setLayout('github');
 
         // adds headers from questionary
         $table->addRow($questionary->getHeaders());
-        // add rows --- | --- | ...
+        // adds rows --- | --- | ...
         $table->addRow(array_fill(0, count($questionary->getHeaders()), '---'));
 
         return $table;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param string          $title
-     * @param string          $description
-     *
-     * @return mixed
-     */
-    protected function postPullRequest(
+    private function postPullRequest(
         InputInterface $input,
         OutputInterface $output,
         $title,
@@ -148,6 +144,7 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
     ) {
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
+
         $baseBranch = $input->getArgument('base_branch');
 
         $github = $this->getParameter('github');

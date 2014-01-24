@@ -22,12 +22,8 @@ class IssueListCommandTest extends BaseTestCase
     public function provideCommand()
     {
         return [
-            [[
-                '--org' => 'cordoval', '--repo' => 'gush',
-            ]], 
-            [[
-                '--org' => 'cordoval', '--repo' => 'gush', '--type' => 'issue'
-            ]], 
+            [['--org' => 'cordoval', '--repo' => 'gush']],
+            [['--org' => 'cordoval', '--repo' => 'gush', '--type' => 'issue']],
         ];
     }
 

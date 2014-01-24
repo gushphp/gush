@@ -18,22 +18,40 @@ use Gush\Command\IssueCreateCommand;
  */
 class IssueCreateCommandTest extends BaseTestCase
 {
+    const ISSUE_TITLE = 'bug title';
+    const ISSUE_DESCRIPTION = 'not working!';
+
     public function testCommand()
     {
-        $this->markTestIncomplete('stalling');
+        $this->httpClient
+            ->whenPost(
+                'repos/cordoval/gush/issues',
+                json_encode(['title' => self::ISSUE_TITLE, 'body' => self::ISSUE_DESCRIPTION])
+            )
+            ->thenReturn(['number' => 77])
+        ;
 
-        $this->httpClient->whenPost(
-            '/repos/cordoval/gush/issues',
-            json_encode(['title' => 'bug title', 'body' => 'not working!'])
-        )->thenReturn(
-            [
-                'number' => 77
-            ]
+        $dialog = $this->expectDialogParameters();
+        $tester = $this->getCommandTester($command = new IssueCreateCommand());
+        $command->getHelperSet()->set($dialog, 'dialog');
+        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
+
+        $this->assertEquals('https://github.com/cordoval/gush/issues/77', trim($tester->getDisplay()));
+    }
+
+    private function expectDialogParameters()
+    {
+        $dialog = $this->getMock(
+            'Symfony\Component\Console\Helper\DialogHelper',
+            ['askAndValidate']
         );
+        $dialog->expects($this->at(0))
+            ->method('askAndValidate')
+            ->will($this->returnValue(self::ISSUE_TITLE));
+        $dialog->expects($this->at(1))
+            ->method('askAndValidate')
+            ->will($this->returnValue(self::ISSUE_DESCRIPTION));
 
-        $tester = $this->getCommandTester(new IssueCreateCommand());
-        $tester->execute(array('--org' => 'cordoval'));
-
-        $this->assertEquals('x', trim($tester->getDisplay()));
+        return $dialog;
     }
 }

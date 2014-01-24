@@ -46,9 +46,7 @@ class BaseCommand extends Command
      */
     public function getParameter($key)
     {
-        $config = $this->getApplication()->getConfig();
-
-        return $config->get($key);
+        return $this->getApplication()->getConfig()->get($key);
     }
 
     /**
@@ -118,8 +116,14 @@ class BaseCommand extends Command
         return $resultString;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->getDispatcher()->dispatch(GushEvents::INITIALIZE, new ConsoleEvent($this, $input, $output));
+        $this->getApplication()->getDispatcher()->dispatch(
+            GushEvents::INITIALIZE,
+            new ConsoleEvent($this, $input, $output)
+        );
     }
 }

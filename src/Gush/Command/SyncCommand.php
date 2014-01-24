@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
 /**
- * Sync a local branch with its upstream version
+ * Syncs a local branch with its upstream version
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
@@ -32,8 +32,15 @@ class SyncCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('branch:sync')
-            ->setDescription('Sync local branch with its upstream version')
+            ->setDescription('Syncs local branch with its upstream version')
             ->addArgument('branch_name', InputArgument::OPTIONAL, 'Branch name to sync', self::DEFAULT_BRANCH_NAME)
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command syncs local branch with its upstream version:
+
+    <info>$ gush %command.full_name% develop</info>
+EOF
+            )
         ;
     }
 
@@ -42,7 +49,6 @@ class SyncCommand extends BaseCommand implements GitHubFeature
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $branchName = $input->getArgument('branch_name');
         $stashedBranchName = $this->getHelper('git')->getBranchName();
 
         $this->runCommands(
@@ -69,5 +75,7 @@ class SyncCommand extends BaseCommand implements GitHubFeature
                 ]
             ]
         );
+
+        return self::COMMAND_SUCCESS;
     }
 }

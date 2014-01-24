@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Run cs-fixer
+ * Runs cs-fixer
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
@@ -33,6 +33,13 @@ class CsFixerCommand extends BaseCommand
             ->setName('pull-request:fix')
             ->setDescription('Run cs-fixer and commits fixes')
             ->addArgument('fixer_line', InputArgument::OPTIONAL, 'Custom fixer command', self::DEFAULT_FIXER_LINE)
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> runs the coding style fixer and commits fix:
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
         ;
     }
 
@@ -71,5 +78,7 @@ class CsFixerCommand extends BaseCommand
                 ]
             ]
         );
+
+        return self::COMMAND_SUCCESS;
     }
 }

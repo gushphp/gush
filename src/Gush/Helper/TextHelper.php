@@ -24,13 +24,14 @@ class TextHelper extends Helper
     }
 
     /**
-     * Truncate a string
+     * Truncates a string
      *
      * @param string $string
      * @param integer $length
      * @param string $alignment - one of "left", "right". default left
      * @param string $delimString - string to use to mark the truncation
      *
+     * @throws \InvalidArgumentException
      * @return string
      */
     public function truncate($string, $length, $alignment = null, $delimString = null)

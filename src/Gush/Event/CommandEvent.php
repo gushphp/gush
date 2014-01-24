@@ -9,7 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-
 namespace Gush\Event;
 
 use Symfony\Component\EventDispatcher\Event;

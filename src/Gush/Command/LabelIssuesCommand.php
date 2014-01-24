@@ -20,7 +20,7 @@ use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
 
 /**
- * Label issues and pull requests
+ * Labels issues and pull requests
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
@@ -33,10 +33,17 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeat
     {
         $this
             ->setName('label')
-            ->setDescription('Label issues/pull requests of a repo')
+            ->setDescription('Labels issues/pull requests')
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
             ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
+            ->setHelp(<<<EOF
+The <info>%command.name%</info> command labels issue or pull requests for either the current or the given organization
+and repo:
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
         ;
     }
 
@@ -133,13 +140,15 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeat
                 $labelsName
             );
 
-            // update the issue
+            // updates the issue
             $client->api('issue')->update($org, $repo, $issue['number'], ['labels' => explode(',', $label)]);
         }
+
+        return self::COMMAND_SUCCESS;
     }
 
     /**
-     * Outputs the Labels
+     * Outputs the labels
      *
      * @param OutputInterface $output
      * @param array           $labels

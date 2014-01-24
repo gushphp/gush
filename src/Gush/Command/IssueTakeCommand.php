@@ -16,7 +16,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
-class TakeIssueCommand extends BaseCommand implements GitHubFeature
+/**
+ * Takes an issue from the GitHub repository issue list
+ *
+ * @author Luis Cordova <cordoval@gmail.com>
+ */
+class IssueTakeCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -24,10 +29,17 @@ class TakeIssueCommand extends BaseCommand implements GitHubFeature
     protected function configure()
     {
         $this
-            ->setName('pull-request:take')
-            ->setDescription('Take an issue')
+            ->setName('issue:take')
+            ->setDescription('Takes an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command takes an issue from GitHub repository list:
+
+    <info>$ gush %command.full_name% 3</info>
+EOF
+            )
         ;
     }
 
