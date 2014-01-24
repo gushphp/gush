@@ -85,8 +85,8 @@ class TextHelperTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['this is some text', 'this-is-some-text'],
-            ['voilà, j\'ai du texte', 'voila-jai-du-texte'],
-            ['áçéeë', 'acee-e'],
+            ['voilà, j\'ai du texte', 'voila-j-ai-du-texte'],
+            ['áçéeë', 'aceee'],
         ];
     }
 
