@@ -105,7 +105,7 @@ EOF
             );
             $password = $dialog->askHiddenResponseAndValidate(
                 $output,
-                'password or token: ',
+                'password: ',
                 $validator
             );
 
