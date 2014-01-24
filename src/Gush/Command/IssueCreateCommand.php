@@ -73,7 +73,7 @@ EOF
             $emptyValidator
         );
 
-        $parameters = ['title' => $title, 'body' => $body];
+        $parameters = ["title" => $title, "body" => $body];
 
         $issue = $client->api('issue')->create($org, $repo, $parameters);
 
