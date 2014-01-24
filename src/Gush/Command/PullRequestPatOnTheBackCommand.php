@@ -18,11 +18,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
 /**
- * Pat on the back
+ * Gives a pat on the back
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class PatOnTheBackCommand extends BaseCommand implements GitHubFeature
+class PullRequestPatOnTheBackCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -37,7 +37,7 @@ class PatOnTheBackCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command gives a pat on the back to a PR's author with a random template:
 
-    <info>$ php %command.full_name% 12</info>
+    <info>$ gush %command.full_name% 12</info>
 EOF
             )
         ;
@@ -56,9 +56,7 @@ EOF
         $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
 
-        $placeHolders = [
-            'author' => $pr['user']['login']
-        ];
+        $placeHolders = ['author' => $pr['user']['login']];
         $patMessage = $this->renderRandomPat($placeHolders);
 
         $parameters = ['body' => $patMessage];
@@ -69,9 +67,9 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function renderRandomPat($placeHolders)
+    private function renderRandomPat(array $placeHolders)
     {
-        $resultString = Pats::get('PAT'.rand(1, 7));
+        $resultString = Pats::getRandom();
         foreach ($placeHolders as $placeholder => $value) {
             $resultString = str_replace('{{ '.$placeholder.' }}', $value, $resultString);
         }

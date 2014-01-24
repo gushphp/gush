@@ -13,6 +13,8 @@ namespace Gush\Template;
 
 class Pats
 {
+    const SIZE = 7;
+
     const PAT1 = <<<EOT
 Good job @{{ author }}.
 EOT;
@@ -44,5 +46,10 @@ EOT;
     public static function get($name)
     {
         return constant('self::'.strtoupper($name));
+    }
+
+    public static function getRandom()
+    {
+        return self::get('PAT'.rand(1, self::SIZE));
     }
 }

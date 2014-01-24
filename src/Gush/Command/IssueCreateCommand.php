@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
 /**
- * Create issue
+ * Creates an issue
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
@@ -36,7 +36,7 @@ class IssueCreateCommand extends BaseCommand implements GitHubFeature
 The <info>%command.name%</info> command creates a new issue for either the current or the given organization
 and repository:
 
-    <info>$ php %command.full_name%</info>
+    <info>$ gush %command.full_name%</info>
 EOF
             )
         ;
@@ -73,10 +73,7 @@ EOF
             $emptyValidator
         );
 
-        $parameters = [
-            'title' => $title,
-            'body' => $body,
-        ];
+        $parameters = ['title' => $title, 'body' => $body];
 
         $issue = $client->api('issue')->create($org, $repo, $parameters);
 

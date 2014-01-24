@@ -18,6 +18,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
+ * Switches the base of a pull request
+ *
  * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
@@ -32,6 +34,13 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
             ->setDescription('Switch the base of the PR to another one')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the new base branch to switch the PR to', 'master')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command switches the base of the given pull request:
+
+    <info>$ gush %command.full_name% 12</info>
+EOF
+            )
         ;
     }
 
@@ -45,7 +54,7 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
         $prNumber = $input->getArgument('pr_number');
         $baseBranch = $input->getArgument('base_branch');
 
-        // squash to only cherry-pick once
+        // squashes to only cherry-pick once
         $command = $this->getApplication()->find('pull-request:squash');
         $input = new ArrayInput(
             [
@@ -55,13 +64,13 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
         );
         $command->run($input, $output);
 
-        // get old base and sha1 from old PR
+        // gets old base and sha1 from old PR
         $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
         $commitSha1 = $pr['head']['sha'];
         $branchName = $pr['head']['ref'];
 
-        // close PR
+        // closes PR
         $command = $this->getApplication()->find('issue:close');
         $input = new ArrayInput(
             [

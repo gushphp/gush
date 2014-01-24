@@ -30,7 +30,15 @@ class IssueMilestoneListCommand extends BaseCommand implements TableFeature, Git
     {
         $this
             ->setName('issue:list:milestones')
-            ->setDescription('List of the issue\'s milestones')
+            ->setDescription('Lists the issue\'s milestones')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command lists the issue's milestones for either the current or the given organization
+and repository:
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
         ;
     }
 

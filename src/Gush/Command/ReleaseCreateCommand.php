@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\GitHubFeature;
 
+
 class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
 {
     protected $workDir;
@@ -66,8 +67,6 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return null
-     *
      * @throws \Gush\Exception\FileNotFoundException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -85,7 +84,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
             $this->removeExisting($output, $client, $org, $repo, $tag);
         }
 
-        // validate assets
+        // validates assets
         foreach ($assetFiles as $assetFile) {
             if (!file_exists($assetFile)) {
                 throw new FileNotFoundException(sprintf('Asset "%s" does not exist', $assetFile));

@@ -133,5 +133,7 @@ EOF
         $table->setFooter(sprintf('%s issues', count($issues)));
 
         $table->render($output, $table);
+
+        return self::COMMAND_SUCCESS;
     }
 }

@@ -30,7 +30,15 @@ class IssueLabelListCommand extends BaseCommand implements TableFeature, GitHubF
     {
         $this
             ->setName('issue:label:list')
-            ->setDescription('List of the issue\'s labels')
+            ->setDescription('Lists the issue\'s labels')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command lists the issue's labels for either the current or the given organization
+and repository:
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
         ;
     }
 

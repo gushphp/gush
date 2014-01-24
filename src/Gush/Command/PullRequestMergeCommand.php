@@ -17,6 +17,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
 /**
+ * Merges a pull request
+ *
  * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
@@ -28,8 +30,15 @@ class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:merge')
-            ->setDescription('Pull request command')
+            ->setDescription('Merges the pull request given')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command merges the pull request given:
+
+    <info>$ gush %command.full_name% 12</info>
+EOF
+            )
         ;
     }
 
@@ -68,7 +77,7 @@ class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
         return self::COMMAND_SUCCESS;
     }
 
-    protected function getCommitsString($commits)
+    private function getCommitsString($commits)
     {
         $commitsString = '';
         foreach ($commits as $commit) {
