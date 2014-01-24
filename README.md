@@ -15,7 +15,7 @@ Gush is a rapid workflow for project maintainers and contributors
 
 Logo courtesy from [@maxakawizard](https://twitter.com/MAXakaWIZARD) and [@kotosharic](https://twitter.com/kotosharic)
 
-*Logo explanation is best depicted from this passage from Psalm 78*:
+*Logo explanation is best depicted from this passage from Psalms 78*:
 
 > True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
 > Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
@@ -29,27 +29,27 @@ water and blood.
 
 Gush is an app console whose intention is to automate common maintainer and contributor tasks.
 
-- create a Pull Request with a formatted table description of the changes
-- create github release notes
-- change the base branch of a Pull Request
-- automate retrieval of issue's message, title and comments as a text
-- merge a PR with just the number and include all github discussion on the commit message
-- tagging signing off, change branch name and some queue of common tasks
+- creates a Pull Request with a formatted table description of the changes
+- creates github release notes
+- changes the base branch of a Pull Request
+- automates retrieval of issue's message, title and comments as a text
+- merges a PR with just the number and includes all github discussion on the commit message
+- and much more in the form of intuitive commands!
 
 ### Install
 
 Install Gush in two ways:
 
-#### 1) Installing as a composer global dependency (recommended)
-
-If it is the first time you globally install a dependency then make sure
-you follow the instructions [here](http://getcomposer.org/doc/03-cli.md#global).
+#### 1) Installing system-wide using composer (recommended)
 
 ```bash
 $ composer global require 'cordoval/gush=dev-master'
 ```
 
-### Upgrade to latest version
+If it is the first time you globally install a dependency then make sure
+you include `~/.composer/vendor/bin` in $PATH as shown [here](http://getcomposer.org/doc/03-cli.md#global).
+
+### Keep your Gush install always updated:
 
 ```bash
 $ composer global update cordoval/gush
@@ -81,7 +81,7 @@ Cache folder [/Users/cordoval/.gush/cache]:
 Configuration saved successfully.
 ```
 
-Let's go into a repo, list, take ticket, send PR and merge it:
+Let's go into a repo, list issues, take one, send a pull request and merge it:
 
 List it:
 ```bash
