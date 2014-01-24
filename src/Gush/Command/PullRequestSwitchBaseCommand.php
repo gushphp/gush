@@ -38,7 +38,7 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command switches the base of the given pull request:
 
-    <info>$ gush %command.full_name% 12</info>
+    <info>$ gush %command.full_name% 12 2.3</info>
 EOF
             )
         ;

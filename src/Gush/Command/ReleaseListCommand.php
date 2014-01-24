@@ -16,6 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
 
+/**
+ * List releases
+ *
+ * @author Daniel Leech <daniel@dantleech.com>
+ */
 class ReleaseListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
@@ -25,7 +30,14 @@ class ReleaseListCommand extends BaseCommand implements TableFeature, GitHubFeat
     {
         $this
             ->setName('release:list')
-            ->setDescription('List of the releases')
+            ->setDescription('Lists the releases')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command lists the available releases:
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
         ;
     }
 
@@ -45,6 +57,8 @@ class ReleaseListCommand extends BaseCommand implements TableFeature, GitHubFeat
         $table->formatRows($releases, $this->getRowBuilderCallback());
         $table->setFooter(sprintf('%s release(s)', count($releases)));
         $table->render($output, $table);
+
+        return self::COMMAND_SUCCESS;
     }
 
     private function getRowBuilderCallback()

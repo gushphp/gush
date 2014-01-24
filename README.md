@@ -93,7 +93,7 @@ $ gush issue:list
 
 Take it:
 ```bash
-$ gush p:take 14
+$ gush i:take 14
 OUT > Fetching cordoval
 OUT > Fetching origin
 ERR > Note: checking out 'origin/master'.
@@ -139,7 +139,7 @@ Pull Request successfully merged
 ### Contributions
 
 Please send your PR using Gush and it will have 100% chances to be merged.
-See the [issues](https://github.com/cordoval/gush/issues?state=open).
+See the [issues list](https://github.com/cordoval/gush/issues?state=open).
 
 ### Mailing list and IRC channel
 

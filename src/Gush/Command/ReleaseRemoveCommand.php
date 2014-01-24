@@ -16,6 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Gush\Feature\GitHubFeature;
 
+/**
+ * Removes a release
+ *
+ * @author Daniel Leech <daniel@dantleech.com>
+ */
 class ReleaseRemoveCommand extends BaseCommand implements GitHubFeature
 {
     /**
@@ -25,8 +30,15 @@ class ReleaseRemoveCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('release:remove')
-            ->setDescription('Remove release')
+            ->setDescription('Removes a release')
             ->addArgument('id', InputArgument::REQUIRED, 'ID of the release')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command removes a given release:
+
+    <info>$ gush %command.full_name% 3</info>
+EOF
+            )
         ;
     }
 

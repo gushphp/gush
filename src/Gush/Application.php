@@ -31,9 +31,9 @@ use Gush\Command\PullRequestSwitchBaseCommand;
 use Gush\Command\ReleaseCreateCommand;
 use Gush\Command\ReleaseListCommand;
 use Gush\Command\ReleaseRemoveCommand;
-use Gush\Command\SquashCommand;
+use Gush\Command\PullRequestSquashCommand;
 use Gush\Command\SyncCommand;
-use Gush\Command\TakeIssueCommand;
+use Gush\Command\IssueTakeCommand;
 
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
@@ -92,17 +92,17 @@ class Application extends BaseApplication
 
         parent::__construct();
 
-        $this->add(new TakeIssueCommand());
         $this->add(new PullRequestCreateCommand());
         $this->add(new PullRequestMergeCommand());
         $this->add(new PullRequestPatOnTheBackCommand());
         $this->add(new PullRequestSwitchBaseCommand());
-        $this->add(new SquashCommand());
+        $this->add(new PullRequestSquashCommand());
         $this->add(new FabbotIoCommand());
         $this->add(new CsFixerCommand());
         $this->add(new ReleaseCreateCommand());
         $this->add(new ReleaseListCommand());
         $this->add(new ReleaseRemoveCommand());
+        $this->add(new IssueTakeCommand());
         $this->add(new IssueCreateCommand());
         $this->add(new IssueCloseCommand());
         $this->add(new IssueLabelListCommand());
