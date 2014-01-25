@@ -118,6 +118,7 @@ EOF
         $table->addRows($answers);
 
         $tableOutput = new BufferedOutput();
+        $input->setOption('table-layout', 'github');
         $table->render($tableOutput);
 
         return $tableOutput->fetch();
@@ -126,7 +127,6 @@ EOF
     private function getMarkdownTableHelper(Questionary $questionary)
     {
         $table = $this->getHelper('table');
-        $table->setLayout('github');
 
         // adds headers from questionary
         $table->addRow($questionary->getHeaders());

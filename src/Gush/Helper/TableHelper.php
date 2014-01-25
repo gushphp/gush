@@ -94,8 +94,8 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
                 $this
                     ->setPaddingChar(' ')
                     ->setHorizontalBorderChar(' ')
-                    ->setVerticalBorderChar(' ')
-                    ->setCrossingChar('')
+                    ->setVerticalBorderChar('|')
+                    ->setCrossingChar(' ')
                     ->setCellHeaderFormat('<info>%s</info>')
                     ->setCellRowFormat('%s')
                     ->setCellRowContentFormat('%s')
