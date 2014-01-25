@@ -24,6 +24,7 @@ class TableSubscriber implements EventSubscriberInterface
         'default',
         'compact',
         'borderless',
+        'github',
     ];
 
     public static function getSubscribedEvents()
@@ -44,7 +45,7 @@ class TableSubscriber implements EventSubscriberInterface
                     'table-layout',
                     null,
                     InputOption::VALUE_REQUIRED,
-                    'Specify the layout for the table, one of default, compact or borderless',
+                    'Specify the layout for the table, one of default, compact, borderless, or github',
                     'default'
                 )
                 ->addOption(
