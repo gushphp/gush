@@ -74,4 +74,20 @@ class GitHelper extends Helper
 
         return trim($process->getOutput());
     }
+
+    /**
+     * @throws \RuntimeException
+     * @return string The tag name
+     */
+    public function getLastTagOnCurrentBranch()
+    {
+        $process = new Process('git describe --tags --abbrev=0 HEAD', getcwd());
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getOutput());
+        }
+
+        return trim($process->getOutput());
+    }
 }
