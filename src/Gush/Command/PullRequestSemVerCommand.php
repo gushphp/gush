@@ -81,6 +81,10 @@ EOF
 
         $lastTag = $this->getHelper('git')->getLastTagOnCurrentBranch();
 
+        if (empty($lastTag)) {
+            $lastTag  = "0.0.0";
+        }
+
         // adjust case for format v2.3
         if ($lastTag[0] === 'v') {
             $lastTag = ltrim($lastTag, 'v');

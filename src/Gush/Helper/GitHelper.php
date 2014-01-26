@@ -84,8 +84,8 @@ class GitHelper extends Helper
         $process = new Process('git describe --tags --abbrev=0 HEAD', getcwd());
         $process->run();
 
-        if (!$process->isSuccessful() || empty($process->getOutput())) {
-            throw new \RuntimeException('Cannot get last tag on current branch or there are no tags.');
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getOutput());
         }
 
         return trim($process->getOutput());
