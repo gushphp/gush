@@ -81,7 +81,11 @@ EOF
 
         $lastTag = $this->getHelper('git')->getLastTagOnCurrentBranch();
 
-        $lastTag = ltrim ($lastTag, 'v');
+        // adjust case for format v2.3
+        if ($lastTag[0] === 'v') {
+            $lastTag = ltrim($lastTag, 'v');
+        }
+
         $builder = Parser::toBuilder($lastTag);
 
         switch (true) {
