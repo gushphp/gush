@@ -58,7 +58,7 @@ EOF
         $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
 
-        $this->runCommands(
+        $this->getHelper('process')->runCommands(
             [
                 [
                     'line' => 'git checkout '.$pr['head']['ref'],
@@ -78,7 +78,7 @@ EOF
         $process = new Process($commandLine, getcwd());
         $process->run();
 
-        $this->runCommands(
+        $this->getHelper('process')->runCommands(
             [
                 [
                     'line' => sprintf('git push -u %s %s -f', $username, $pr['head']['ref']),

@@ -17,8 +17,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
@@ -50,62 +48,13 @@ class BaseCommand extends Command
     }
 
     /**
-     * @param  array             $command
-     * @param  Boolean           $allowFailures
-     * @throws \RuntimeException
+     * Render a string from the Messages library.
+     *
+     * @param string $templateName           Name of template
+     * @param array  $placeholderValuePairs  Associative array of substitute values
+     *
+     * @return string
      */
-    protected function runItem(array $command, $allowFailures = false)
-    {
-        $builder = new ProcessBuilder($command);
-        $builder
-            ->setWorkingDirectory(getcwd())
-            ->setTimeout(3600)
-        ;
-        $process = $builder->getProcess();
-
-        $process->run(
-            function ($type, $buffer) {
-                if (Process::ERR === $type) {
-                    echo 'ERR > ' . $buffer;
-                } else {
-                    echo 'OUT > ' . $buffer;
-                }
-            }
-        );
-
-        if (!$process->isSuccessful() && !$allowFailures) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
-    }
-
-    /**
-     * @param array $commands
-     */
-    protected function runCommands(array $commands)
-    {
-        foreach ($commands as $command) {
-            $this->runItem(explode(' ', $command['line']), $command['allow_failures']);
-        }
-    }
-
-    /**
-     * @todo Move this to a CsHelper
-     */
-    protected function ensurePhpCsFixerInstalled()
-    {
-        $builder = new ProcessBuilder(['php-cs-fixer']);
-        $builder
-            ->setWorkingDirectory(getcwd())
-            ->setTimeout(3600)
-        ;
-        $process = $builder->getProcess();
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException('Please install php-cs-fixer');
-        }
-    }
-
     protected function render($templateName, array $placeholderValuePairs)
     {
         $resultString = Messages::get($templateName);
@@ -117,7 +66,11 @@ class BaseCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
+     * We override the initialize function as this is the only place
+     * where we can dispatch an event which can validate the input when
+     * it has been bound with values.
+     *
+     * {@inheritDoc}
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {

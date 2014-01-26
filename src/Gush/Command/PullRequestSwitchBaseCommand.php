@@ -103,7 +103,7 @@ EOF
             ]
         ];
 
-        $this->runCommands($commands);
+        $this->getHelper('process')->runCommands($commands);
 
         $command = $this->getApplication()->find('pull-request:create');
         $input = new ArrayInput(

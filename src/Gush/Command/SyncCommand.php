@@ -51,7 +51,7 @@ EOF
     {
         $stashedBranchName = $this->getHelper('git')->getBranchName();
 
-        $this->runCommands(
+        $this->getHelper('process')->runCommands(
             [
                 [
                     'line' => 'git remote update',
