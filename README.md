@@ -58,14 +58,14 @@ $ composer global update cordoval/gush
 #### 2) Installing as a phar file:
 
 ```
-$ curl -sS https://bit.ly/gushphp | php
+$ curl -sS https://gushphp.org/installer | php
 $ mv composer.phar /usr/local/bin/composer // optionally
 ```
 
 or
 
 ```
-$ curl -sS https://bit.ly/gushphp | php -- --install-dir=bin
+$ curl -sS https://gushphp.org/installer | php -- --install-dir=bin
 ```
 
 ### Usage
