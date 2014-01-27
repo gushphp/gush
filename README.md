@@ -10,6 +10,7 @@ Gush is a rapid workflow for project maintainers and contributors
 [![Latest Unstable Version](https://poser.pugx.org/cordoval/gush/v/unstable.png)](https://packagist.org/packages/cordoval/gush)
 [![Total Downloads](https://poser.pugx.org/cordoval/gush/downloads.png)](https://packagist.org/packages/cordoval/gush)
 [![Stories in Ready](https://badge.waffle.io/cordoval/gush.png?label=ready)](https://waffle.io/cordoval/gush)
+[![Dependency Status](https://www.versioneye.com/php/cordoval:gush/1.3.0/badge.png)](https://www.versioneye.com/php/cordoval:gush/1.3.0)
 
 <img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="200px"/>
 
