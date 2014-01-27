@@ -15,6 +15,7 @@ use Github\Client;
 use Github\Tests\HttpClient\HttpClientTest;
 use Gush\Application;
 use Gush\Tester\HttpClient\TestHttpClient;
+use Gush\Config;
 
 class TestableApplication extends Application
 {
@@ -38,19 +39,9 @@ class TestableApplication extends Application
         return new Client(new TestHttpClient([], $this->client));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function readParameters()
+    public function setConfig(Config $config)
     {
-        $this->config = [
-            'home' => sys_get_temp_dir(),
-            'cache-dir' => sys_get_temp_dir(),
-            'github' => [
-                'username' => 'foo',
-                'password' => 'bar'
-            ]
-        ];
+        $this->config = $config;
     }
 
     public function getDispatcher()

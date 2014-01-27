@@ -49,6 +49,14 @@ EOF
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getTableDefaultLayout()
+    {
+        return 'compact';
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -157,12 +165,8 @@ EOF
     private function showLabels(OutputInterface $output, array $labels)
     {
         /** @var TableHelper $table */
-        $table = $this->getApplication()->getHelperSet()->get('table');
-        $table->setLayout(TableHelper::LAYOUT_BORDERLESS);
-        $table->setHorizontalBorderChar('');
-
+        $table = $this->getHelper('table');
         $table->setRows(array_chunk($labels, 3));
-
         $table->render($output);
     }
 

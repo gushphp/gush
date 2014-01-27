@@ -43,6 +43,14 @@ EOF
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getTableDefaultLayout()
+    {
+        return 'compact';
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -55,7 +63,6 @@ EOF
         $labels = $client->api('issue')->labels()->all($org, $repo);
 
         $table = $this->getHelper('table');
-        $table->setLayout('compact');
         $table->formatRows($labels, function ($label) {
             return [$label['name']];
         });

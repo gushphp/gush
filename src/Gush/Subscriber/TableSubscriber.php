@@ -46,7 +46,7 @@ class TableSubscriber implements EventSubscriberInterface
                     null,
                     InputOption::VALUE_REQUIRED,
                     'Specify the layout for the table, one of default, compact, borderless, or github',
-                    'default'
+                    $command->getTableDefaultLayout()
                 )
                 ->addOption(
                     'table-no-header',
