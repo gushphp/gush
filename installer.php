@@ -327,7 +327,9 @@ function installGush($installDir, $quiet)
             out("Downloading...", 'info');
         }
 
-        $source = (extension_loaded('openssl') ? 'https' : 'http').'://gushphp.org/gush.phar';
+        // @todo enable https on gush server
+        $source = (extension_loaded('openssl') ? 'http' : 'http').'://gushphp.org/gush.phar';
+
         $errorHandler = new ErrorHandler();
         set_error_handler(array($errorHandler, 'handleError'));
 
