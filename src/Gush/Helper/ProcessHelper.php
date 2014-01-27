@@ -27,7 +27,7 @@ class ProcessHelper extends Helper
 
     /**
      * Run a command through the ProcessBuilder
-     * 
+     *
      * @param  array             $command
      * @param  Boolean           $allowFailures
      * @throws \RuntimeException

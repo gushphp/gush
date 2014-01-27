@@ -32,7 +32,8 @@ class IssueShowCommand extends BaseCommand implements GitHubFeature
             ->setName('issue:show')
             ->setDescription('Shows given issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number')
-            ->setHelp(<<<EOF
+            ->setHelp(
+                <<<EOF
 The <info>%command.name%</info> command shows issue details for either the current or the given organization
 and repo:
 
@@ -70,7 +71,12 @@ EOF
         }
         $output->writeln('Milestone: '.$issue['milestone']['title']);
         if ($issue['labels'] > 0) {
-            $labels = array_map(function ($label) { return $label['name']; }, $issue['labels']);
+            $labels = array_map(
+                function ($label) {
+                    return $label['name'];
+                },
+                $issue['labels']
+            );
             $output->writeln('Labels: '.implode(', ', $labels));
         }
         $output->writeln('Title: '.$issue['title']);

@@ -252,6 +252,7 @@ function checkPlatform($quiet)
         }
 
         out('');
+
         return false;
     }
 
@@ -296,12 +297,14 @@ function checkPlatform($quiet)
         }
 
         out('');
+
         return true;
     }
 
     if (!$quiet) {
         out("All settings correct for using Gush", 'success');
     }
+
     return true;
 }
 
@@ -458,7 +461,6 @@ function getStreamContext($url)
                 }
                 break;
         }
-
 
         if (isset($proxy['user'])) {
             $auth = urldecode($proxy['user']);

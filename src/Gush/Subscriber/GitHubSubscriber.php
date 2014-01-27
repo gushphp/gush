@@ -44,7 +44,7 @@ class GitHubSubscriber implements EventSubscriberInterface
 
         $command
             ->addOption(
-                'org', 
+                'org',
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'Name of the GitHub organization',
@@ -60,4 +60,3 @@ class GitHubSubscriber implements EventSubscriberInterface
         ;
     }
 }
-

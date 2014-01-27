@@ -131,10 +131,13 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
             $layout = $this->input->getOption('table-layout');
 
             if (!in_array($layout, $this->validLayouts)) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Table layout "%s" is not valid, must be one of: %s', 
-                    $layout, implode(', ', $this->validLayouts)
-                ));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Table layout "%s" is not valid, must be one of: %s',
+                        $layout,
+                        implode(', ', $this->validLayouts)
+                    )
+                );
             }
 
             $this->setLayout($layout);

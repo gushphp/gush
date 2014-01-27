@@ -11,6 +11,7 @@
 
 namespace Gush\Tests\Command;
 
+use Github\Client;
 use Gush\Command\ConfigureCommand;
 use Symfony\Component\Yaml\Yaml;
 
@@ -34,7 +35,11 @@ class ConfigureCommandTest extends BaseTestCase
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
                 'home' => $homeDir,
-                'github' => ['username' => self::USERNAME, 'password' => self::PASSWORD]
+                'github' => [
+                    'username' => self::USERNAME,
+                    'password-or-token' => self::PASSWORD,
+                    'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
+                ]
             ]
         ];
 
@@ -57,15 +62,18 @@ class ConfigureCommandTest extends BaseTestCase
     {
         $dialog = $this->getMock(
             'Symfony\Component\Console\Helper\DialogHelper',
-            ['askAndValidate', 'askHiddenResponseAndValidate']
+            ['select', 'askAndValidate', 'askHiddenResponseAndValidate']
         );
         $dialog->expects($this->at(0))
+            ->method('select')
+            ->will($this->returnValue(0));
+        $dialog->expects($this->at(1))
             ->method('askAndValidate')
             ->will($this->returnValue(self::USERNAME));
-        $dialog->expects($this->at(1))
+        $dialog->expects($this->at(2))
             ->method('askHiddenResponseAndValidate')
             ->will($this->returnValue(self::PASSWORD));
-        $dialog->expects($this->at(2))
+        $dialog->expects($this->at(3))
             ->method('askAndValidate')
             ->will($this->returnValue($homeDir.'/cache'));
 

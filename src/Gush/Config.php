@@ -93,7 +93,8 @@ class Config
     public function isValid()
     {
         if (isset($this->config['github']['username'])
-            && isset($this->config['github']['password'])
+            && isset($this->config['github']['password-or-token'])
+            && isset($this->config['github']['http-auth-type'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))
         ) {
