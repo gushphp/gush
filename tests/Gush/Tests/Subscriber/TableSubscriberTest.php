@@ -12,8 +12,6 @@
 namespace Gush\Tests\Subscriber;
 
 use Gush\Subscriber\TableSubscriber;
-use Symfony\Component\Console\Command\Command;
-use Gush\Feature\TableFeature;
 
 class TableSubscriberTest extends \PHPUnit_Framework_TestCase
 {
@@ -98,8 +96,4 @@ class TableSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->subscriber->initialize($this->consoleEvent);
     }
-}
-
-class TestTableCommand extends Command implements TableFeature
-{
 }

@@ -26,7 +26,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Yaml;
-use Gush\Helper\ProcessHelper;
 
 class Application extends BaseApplication
 {
@@ -183,11 +182,19 @@ class Application extends BaseApplication
         $githubCredentials = $this->config->get('github');
 
         $githubClient = new Client($cachedClient);
-        $githubClient->authenticate(
-            $githubCredentials['username'],
-            $githubCredentials['password'],
-            Client::AUTH_HTTP_PASSWORD
-        );
+
+        if (Client::AUTH_HTTP_PASSWORD === $githubCredentials['http-auth-type']) {
+            $githubClient->authenticate(
+                $githubCredentials['username'],
+                $githubCredentials['password-or-token'],
+                $githubCredentials['http-auth-type']
+            );
+        } else {
+            $githubClient->authenticate(
+                $githubCredentials['password-or-token'],
+                $githubCredentials['http-auth-type']
+            );
+        }
 
         return $githubClient;
     }

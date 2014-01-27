@@ -30,6 +30,11 @@ class ConfigureCommand extends BaseCommand
      */
     private $config;
 
+    protected $authenticationOptions = [
+        0 => Client::AUTH_HTTP_PASSWORD,
+        1 => Client::AUTH_HTTP_TOKEN,
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -83,7 +88,8 @@ EOF
     {
         $isAuthenticated = false;
         $username = null;
-        $password = null;
+        $passwordOrToken = null;
+        $authenticationType = null;
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -97,20 +103,32 @@ EOF
         };
 
         while (!$isAuthenticated) {
+            $output->writeln('<comment>Enter Github connection type:</comment>');
+            $authenticationType = $dialog->select(
+                $output,
+                'Select among these: ',
+                $this->authenticationOptions,
+                0
+            );
+            $authenticationType = $this->authenticationOptions[$authenticationType];
             $output->writeln('<comment>Insert your github credentials:</comment>');
             $username = $dialog->askAndValidate(
                 $output,
                 'username: ',
                 $validator
             );
-            $password = $dialog->askHiddenResponseAndValidate(
+            $passwordOrToken = $dialog->askHiddenResponseAndValidate(
                 $output,
-                'password: ',
+                'password or token: ',
                 $validator
             );
 
             try {
-                $isAuthenticated = $this->isGithubCredentialsValid($username, $password);
+                $isAuthenticated = $this->isGithubCredentialsValid(
+                    $username,
+                    $passwordOrToken,
+                    $authenticationType
+                );
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
             }
@@ -139,7 +157,8 @@ EOF
                 'cache-dir' => $cacheDir,
                 'github' => [
                     'username' => $username,
-                    'password' => $password
+                    'password-or-token' => $passwordOrToken,
+                    'http-auth-type' => $authenticationType
                 ]
             ]
         );
@@ -149,17 +168,24 @@ EOF
      * Validates if the credentials are valid
      *
      * @param  string  $username
-     * @param  string  $password
+     * @param  string  $passwordOrToken
+     * @param  string  $authenticationType
      * @return Boolean
      */
-    private function isGithubCredentialsValid($username, $password)
+    private function isGithubCredentialsValid($username, $passwordOrToken, $authenticationType)
     {
         if (null === $client = $this->getGithubClient()) {
             $client = new Client();
         }
 
-        $client->authenticate($username, $password, Client::AUTH_HTTP_PASSWORD);
+        if (Client::AUTH_HTTP_PASSWORD === $authenticationType) {
+            $client->authenticate($username, $passwordOrToken, $authenticationType);
 
-        return is_array($client->api('authorizations')->all());
+            return is_array($client->api('authorizations')->all());
+        } else {
+            $client->authenticate($passwordOrToken, $authenticationType);
+
+            return is_array($client->api('me')->show());
+        }
     }
 }

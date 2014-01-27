@@ -33,7 +33,12 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
             ->setName('pull-request:switch-base')
             ->setDescription('Switch the base of the PR to another one')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
-            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the new base branch to switch the PR to', 'master')
+            ->addArgument(
+                'base_branch',
+                InputArgument::OPTIONAL,
+                'Name of the new base branch to switch the PR to',
+                'master'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command switches the base of the given pull request:

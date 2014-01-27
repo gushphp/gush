@@ -11,6 +11,7 @@
 
 namespace Gush\Tests;
 
+use Github\Client;
 use Gush\Config;
 
 /**
@@ -51,7 +52,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             [
                 'github' => [
                     'username' => 'foo',
-                    'password' => 'bar'
+                    'password-or-token' => 'bar',
+                    'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
                 ],
                 'cache-dir' => sys_get_temp_dir()
             ]

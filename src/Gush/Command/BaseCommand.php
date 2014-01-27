@@ -50,8 +50,8 @@ class BaseCommand extends Command
     /**
      * Render a string from the Messages library.
      *
-     * @param string $templateName           Name of template
-     * @param array  $placeholderValuePairs  Associative array of substitute values
+     * @param string $templateName          Name of template
+     * @param array  $placeholderValuePairs Associative array of substitute values
      *
      * @return string
      */

@@ -12,8 +12,6 @@
 namespace Gush\Tests\Subscriber;
 
 use Gush\Subscriber\GitHubSubscriber;
-use Symfony\Component\Console\Command\Command;
-use Gush\Feature\GitHubFeature;
 
 class GitHubSubscriberTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,8 +58,4 @@ class GitHubSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $this->subscriber->decorateDefinition($this->event);
     }
-}
-
-class TestGitHubCommand extends Command implements GitHubFeature
-{
 }

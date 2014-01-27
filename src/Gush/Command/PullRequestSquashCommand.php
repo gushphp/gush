@@ -48,7 +48,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $org = $input->getOption('org');
-        $repo = $input->getOption('repo');;
+        $repo = $input->getOption('repo');
         $prNumber = $input->getArgument('pr_number');
 
         $client = $this->getGithubClient();

@@ -59,9 +59,13 @@ EOF
             ->show($org, $repo, $issueNumber)
         ;
 
-        $slugTitle = $this->getHelper('text')->slugify(sprintf(
-            '%d %s', $issueNumber, $issue['title']
-        ));
+        $slugTitle = $this->getHelper('text')->slugify(
+            sprintf(
+                '%d %s',
+                $issueNumber,
+                $issue['title']
+            )
+        );
 
         $commands = [
             [

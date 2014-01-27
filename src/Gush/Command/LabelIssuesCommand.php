@@ -37,7 +37,8 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeat
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
             ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
-            ->setHelp(<<<EOF
+            ->setHelp(
+                <<<EOF
 The <info>%command.name%</info> command labels issue or pull requests for either the current or the given organization
 and repo:
 

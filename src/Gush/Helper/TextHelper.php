@@ -26,10 +26,10 @@ class TextHelper extends Helper
     /**
      * Truncates a string
      *
-     * @param string $string
+     * @param string  $string
      * @param integer $length
-     * @param string $alignment - one of "left", "right". default left
-     * @param string $delimString - string to use to mark the truncation
+     * @param string  $alignment   - one of "left", "right". default left
+     * @param string  $delimString - string to use to mark the truncation
      *
      * @throws \InvalidArgumentException
      * @return string
@@ -47,20 +47,21 @@ class TextHelper extends Helper
         }
 
         if ($delimLen > $length) {
-            throw new \InvalidArgumentException(sprintf(
-                'Delimiter length "%s" cannot be greater than truncate length "%s"',
-                $delimLen, $length
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Delimiter length "%s" cannot be greater than truncate length "%s"',
+                    $delimLen,
+                    $length
+                )
+            );
         }
 
         if (strlen($string) > $length) {
             $offset = $length - $delimLen;
             if ('left' === $alignment) {
-                $string = substr($string, 0, $offset) . $delimString;
+                $string = substr($string, 0, $offset).$delimString;
             } else {
-                $string = $delimString . substr($string, 
-                    strlen($string) - $offset
-                );
+                $string = $delimString.substr($string, strlen($string) - $offset);
             }
         }
 

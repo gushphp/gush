@@ -66,8 +66,8 @@ class GitHubHelper extends Helper
      * Validate the given enum fields in the given Input
      *
      * @param $input InputInterface  - Input which contains the options to be validated
-     * @param string $domain         - Domain of the enum e.g. issue
-     * @param array  $types          - Types to validate (e.g. filter ,state, etc)
+     * @param string $domain - Domain of the enum e.g. issue
+     * @param array  $types  - Types to validate (e.g. filter ,state, etc)
      *
      * @throws \InvalidArgumentException
      *
@@ -89,24 +89,23 @@ class GitHubHelper extends Helper
     private static function validateEnumDomainAndType($domain, $type)
     {
         if (!isset(self::$enum[$domain])) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unknown enum domain "%s"', $domain
-            ));
+            throw new \InvalidArgumentException(
+                sprintf('Unknown enum domain "%s"', $domain)
+            );
         }
 
         if (!isset(self::$enum[$domain][$type])) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unknown enum type "%s" in domain "%s',
-                $domain, $type
-            ));
+            throw new \InvalidArgumentException(
+                sprintf('Unknown enum type "%s" in domain "%s', $domain, $type)
+            );
         }
     }
 
     /**
      * Check if a given value is a valid enum
      *
-     * @param string $domain         - Domain of the enum e.g. issue
-     * @param string $type           - Type to validate (e.g. filter ,state, etc)
+     * @param string $domain - Domain of the enum e.g. issue
+     * @param string $type   - Type to validate (e.g. filter ,state, etc)
      * @param mixed  $value
      *
      * @throws \InvalidArgumentException
@@ -116,17 +115,17 @@ class GitHubHelper extends Helper
         self::validateEnumDomainAndType($domain, $type);
 
         if (!in_array($value, self::$enum[$domain][$type]['values'])) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unknown value "%s" for "%s"', $value, $type
-            ));
+            throw new \InvalidArgumentException(
+                sprintf('Unknown value "%s" for "%s"', $value, $type)
+            );
         };
     }
 
     /**
      * Return a description for the given enum type.
      *
-     * @param string $domain         - Domain of the enum e.g. issue
-     * @param string $type           - Type to validate (e.g. filter ,state, etc)
+     * @param string $domain - Domain of the enum e.g. issue
+     * @param string $type   - Type to validate (e.g. filter ,state, etc)
      *
      * @return string
      */
