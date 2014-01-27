@@ -357,7 +357,7 @@ function installGush($installDir, $quiet)
             if (!$e instanceof UnexpectedValueException && !$e instanceof PharException) {
                 throw $e;
             }
-            unlink($file);
+            // unlink($file);
             if ($retries) {
                 if (!$quiet) {
                     out('The download is corrupt, retrying...', 'error');
