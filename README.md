@@ -60,7 +60,7 @@ $ composer global update cordoval/gush
 
 ```
 $ curl -sS http://gushphp.org/installer | php
-$ mv composer.phar /usr/local/bin/composer // optionally
+$ mv gush.phar /usr/local/bin/gush // optionally
 ```
 
 or
