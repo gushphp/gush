@@ -79,8 +79,10 @@ class GitHubHelper extends Helper
 
         foreach ($types as $type) {
             $v = $input->getOption($type);
-            self::validateEnum($domain, $type, $v);
-            $ret[$type] = $v;
+            if (null !== $v) {
+                self::validateEnum($domain, $type, $v);
+                $ret[$type] = $v;
+            }
         }
 
         return $ret;
