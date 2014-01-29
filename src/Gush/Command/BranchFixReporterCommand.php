@@ -1,0 +1,87 @@
+<?php
+
+/*
+ * This file is part of Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Gush\Command;
+
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Feature\GitHubFeature;
+
+/**
+ * Reports what got fixed or closed since last release on current branch
+ *
+ * @author Luis Cordova <cordoval@gmail.com>
+ *
+ * adapted from @lornajane / @sebastianbergmann
+ * reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
+ */
+class BranchFixReporterCommand extends BaseCommand implements GitHubFeature
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('branch:what-got-fixed-or-closed')
+            ->setDescription('Reports what got fixed or closed since last release on current branch')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command :
+
+    <info>$ gush %command.full_name%</info>
+EOF
+            )
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
+
+        $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
+
+        $commits = $this->getHelper('git')->runGitCommand(
+            sprintf('git log %s...HEAD --oneline', $latestTag)
+        );
+
+        // Filter commits that reference an issue
+        $issues = [];
+
+        $client = $this->getGithubClient();
+
+        foreach (explode("\n", $commits) as $commit) {
+            // @todo support his format as well, from here we need the 139
+            // @todo for gush type of branch naming
+            // Merge pull request #158 from cordoval/139-installer-does-not-work
+
+            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matches) && isset($matches[1])) {
+                $issues[] = $matches[1];
+            }
+        }
+
+        sort($issues);
+
+        foreach ($issues as $id) {
+            $issue = $client->api('issue')->show($org, $repo, $id);
+
+            $output->writeln(
+                sprintf("%s: %s (%s)\n", $id, $issue['title'], $issue['url'])
+            );
+        }
+
+        return self::COMMAND_SUCCESS;
+    }
+}

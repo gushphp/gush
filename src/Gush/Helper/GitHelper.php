@@ -26,10 +26,7 @@ class GitHelper extends Helper
      */
     public function getBranchName()
     {
-        $process = new Process('git branch | grep "*" | cut -d " " -f 2', getcwd());
-        $process->run();
-
-        return trim($process->getOutput());
+        return $this->runGitCommand('git branch | grep "*" | cut -d " " -f 2');
     }
 
     /**
@@ -81,7 +78,18 @@ class GitHelper extends Helper
      */
     public function getLastTagOnCurrentBranch()
     {
-        $process = new Process('git describe --tags --abbrev=0 HEAD', getcwd());
+        return $this->runGitCommand('git describe --tags --abbrev=0 HEAD');
+    }
+
+    /**
+     * @param string $gitCommandLine
+     * @throws \RuntimeException
+     *
+     * @return string $output
+     */
+    public function runGitCommand($gitCommandLine)
+    {
+        $process = new Process($gitCommandLine, getcwd());
         $process->run();
 
         if (!$process->isSuccessful()) {

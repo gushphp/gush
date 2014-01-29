@@ -48,8 +48,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getArgument('org');
-        $repo = $input->getArgument('repo');
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
+
         $prNumber = $input->getArgument('pr_number');
 
         $github = $this->getParameter('github');
