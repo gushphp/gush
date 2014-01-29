@@ -86,7 +86,7 @@ class Application extends BaseApplication
         $this->add(new Cmd\IssueListCommand());
         $this->add(new Cmd\BranchSyncCommand());
         $this->add(new Cmd\BranchDeleteCommand());
-        $this->add(new Cmd\BranchFixReporterCommand());
+        $this->add(new Cmd\BranchChangelogCommand());
         $this->add(new Cmd\LabelIssuesCommand());
         $this->add(new Cmd\ConfigureCommand());
     }

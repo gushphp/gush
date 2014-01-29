@@ -23,7 +23,7 @@ use Gush\Feature\GitHubFeature;
  * adapted from @lornajane / @sebastianbergmann
  * reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
  */
-class BranchFixReporterCommand extends BaseCommand implements GitHubFeature
+class BranchChangelogCommand extends BaseCommand implements GitHubFeature
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class BranchFixReporterCommand extends BaseCommand implements GitHubFeature
     protected function configure()
     {
         $this
-            ->setName('branch:what-got-fixed-or-closed')
+            ->setName('branch:changelog')
             ->setDescription('Reports what got fixed or closed since last release on current branch')
             ->setHelp(
                 <<<EOF
@@ -63,12 +63,12 @@ EOF
         $client = $this->getGithubClient();
 
         foreach (explode("\n", $commits) as $commit) {
-            // @todo support his format as well, from here we need the 139
-            // @todo for gush type of branch naming
-            // Merge pull request #158 from cordoval/139-installer-does-not-work
+            if (preg_match('/\/([0-9]+)/i', $commit, $matchesGush) && isset($matchesGush[1])) {
+                $issues[] = $matchesGush[1];
+            }
 
-            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matches) && isset($matches[1])) {
-                $issues[] = $matches[1];
+            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matchesGithub) && isset($matchesGithub[1])) {
+                $issues[] = $matchesGithub[1];
             }
         }
 
@@ -78,7 +78,7 @@ EOF
             $issue = $client->api('issue')->show($org, $repo, $id);
 
             $output->writeln(
-                sprintf("%s: %s (%s)\n", $id, $issue['title'], $issue['url'])
+                sprintf("%s: %s   <info>%s</info>", $id, $issue['title'], $issue['html_url'])
             );
         }
 
