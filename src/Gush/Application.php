@@ -84,7 +84,8 @@ class Application extends BaseApplication
         $this->add(new Cmd\IssueMilestoneListCommand());
         $this->add(new Cmd\IssueShowCommand());
         $this->add(new Cmd\IssueListCommand());
-        $this->add(new Cmd\SyncCommand());
+        $this->add(new Cmd\BranchSyncCommand());
+        $this->add(new Cmd\BranchDeleteCommand());
         $this->add(new Cmd\LabelIssuesCommand());
         $this->add(new Cmd\ConfigureCommand());
     }

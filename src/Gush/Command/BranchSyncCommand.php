@@ -21,7 +21,7 @@ use Gush\Feature\GitHubFeature;
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class SyncCommand extends BaseCommand implements GitHubFeature
+class BranchSyncCommand extends BaseCommand implements GitHubFeature
 {
     const DEFAULT_BRANCH_NAME = 'master';
 
