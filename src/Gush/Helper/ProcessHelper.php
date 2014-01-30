@@ -64,7 +64,12 @@ class ProcessHelper extends Helper
     public function runCommands(array $commands)
     {
         foreach ($commands as $command) {
-            $this->runCommand(explode(' ', $command['line']), $command['allow_failures']);
+            if (!is_array($command['line'])) {
+                $this->runCommand(explode(' ', $command['line']), $command['allow_failures']);
+                continue;
+            }
+
+            $this->runCommand($command['line'], $command['allow_failures']);
         }
     }
 }

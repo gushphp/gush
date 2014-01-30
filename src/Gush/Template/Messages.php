@@ -29,6 +29,15 @@ Commits
 {{ commits }}
 EOT;
 
+    const COMMENT = <<<EOT
+---------------------------------------------------------------------------
+
+by {{ login }} at {{ created_at }}
+
+{{ body }}
+\n
+EOT;
+
     public static function get($name)
     {
         return constant('self::'.strtoupper($name));
