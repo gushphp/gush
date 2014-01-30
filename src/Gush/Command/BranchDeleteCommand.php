@@ -60,6 +60,8 @@ EOF
             ]
         );
 
+        $output->writeln(sprintf('Branch %s has been deleted!', $currentBranchName));
+
         return self::COMMAND_SUCCESS;
     }
 }

@@ -16,7 +16,9 @@
                 "*Test.php",
                 "test",
                 "Tests",
-                "Test"
+                "Test",
+                "node_modules",
+                "*.lock"
             ],
             "in": "vendor"
         },
