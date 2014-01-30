@@ -77,8 +77,7 @@ You may want to start by configuring it:
 $ gush configure
 Insert your github credentials:
 username: cordoval
-password:
-Cache folder [/Users/cordoval/.gush/cache]:
+// ...
 Configuration saved successfully.
 ```
 
@@ -95,13 +94,7 @@ $ gush issue:list
 Take it:
 ```bash
 $ gush i:take 14
-OUT > Fetching cordoval
-OUT > Fetching origin
-ERR > Note: checking out 'origin/master'.
-You are in 'detached HEAD' state ...
-ERR > HEAD is now at 681e0d6... Merge pull request #93 from cordoval/configure-command-test
-ERR > Switched to a new branch '14-tests-and-documentation-for-commands'
-~ git branch
+$ git branch
 * 14-tests-and-documentation-for-commands
 ```
 
@@ -114,20 +107,8 @@ Send PR:
 ```
 $ gush p:create
 Bug fix? [y]
-New feature? [n]
-BC breaks? [n]
-Deprecations? [n]
-Tests pass? [y]
-Fixed tickets [#000] #14
-License [MIT]
-Doc PR
+// ...
 PR Title: Added a bit of documentation under usage
-ERR > fatal: remote cordoval already exists.
-OUT > Fetching cordoval
-OUT > Fetching origin
-ERR > To git@github.com:cordoval/gush.git
- * [new branch]      14-tests-and-documentation-for-commands -> 14-tests-and-documentation-for-commands
-OUT > Branch 14-tests-and-documentation-for-commands set up to track remote branch 14-tests-and-documentation-for-commands from cordoval.
 https://github.com/cordoval/gush/pull/94
 ```
 
@@ -141,6 +122,13 @@ Pull Request successfully merged
 
 Please send your PR using Gush and it will have 100% chances to be merged.
 See the [issues list](https://github.com/cordoval/gush/issues?state=open).
+
+Running the test suite (npm required):
+
+```bash
+$ npm install
+$ ./dev
+```
 
 ### Mailing list and IRC channel
 
