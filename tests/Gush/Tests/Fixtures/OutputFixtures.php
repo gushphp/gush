@@ -56,4 +56,9 @@ EOT;
     const BRANCH_SYNC = <<<EOT
 Branch test_branch has been synced upstream!
 EOT;
+
+    const BRANCH_DELETE = <<<EOT
+Branch test_branch has been deleted!
+EOT;
+
 }
