@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
