@@ -33,7 +33,7 @@ class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
-            ->addOption('add-comments', null, InputOption::VALUE_NONE, 'Add PR comments to the commit message')
+            ->addOption('no-comments', null, InputOption::VALUE_NONE, 'Avoid adding PR comments to the merge commit message')
             ->addOption('remote', null, InputOption::VALUE_OPTIONAL, 'Remote to push the notes to', 'origin')
             ->setHelp(
                 <<<EOF
@@ -72,7 +72,7 @@ EOF
         $merge = $client->api('pull_request')->merge($org, $repo, $prNumber, $message);
 
         if ($merge['merged']) {
-            if ($input->getOption('add-comments')) {
+            if (!$input->getOption('no-comments')) {
                 $comments = $client->api('issues')->comments()->all($org, $repo, $prNumber);
                 $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'));
             }
