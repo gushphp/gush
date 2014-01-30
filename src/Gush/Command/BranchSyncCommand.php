@@ -23,8 +23,6 @@ use Gush\Feature\GitHubFeature;
  */
 class BranchSyncCommand extends BaseCommand implements GitHubFeature
 {
-    const DEFAULT_BRANCH_NAME = 'master';
-
     /**
      * {@inheritdoc}
      */
@@ -33,7 +31,7 @@ class BranchSyncCommand extends BaseCommand implements GitHubFeature
         $this
             ->setName('branch:sync')
             ->setDescription('Syncs local branch with its upstream version')
-            ->addArgument('branch_name', InputArgument::OPTIONAL, 'Branch name to sync', self::DEFAULT_BRANCH_NAME)
+            ->addArgument('branch_name', InputArgument::OPTIONAL, 'Branch name to sync')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command syncs local branch with its upstream version:
@@ -50,6 +48,12 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $stashedBranchName = $this->getHelper('git')->getBranchName();
+
+        if ($input->hasArgument('branch_name')) {
+            $branchName = $input->getArgument('branch_name');
+        } else {
+            $branchName = $stashedBranchName;
+        }
 
         $this->getHelper('process')->runCommands(
             [
