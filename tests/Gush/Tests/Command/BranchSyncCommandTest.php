@@ -19,11 +19,67 @@ use Gush\Tests\Fixtures\OutputFixtures;
  */
 class BranchSyncCommandTest extends BaseTestCase
 {
+    const TEST_BRANCH_NAME = 'test_branch';
+
     public function testCommand()
     {
-        $tester = $this->getCommandTester(new BranchSyncCommand());
+        $processHelper = $this->expectProcessHelper();
+        $gitHelper = $this->expectGitHelper();
+        $tester = $this->getCommandTester($command = new BranchSyncCommand());
+        $command->getHelperSet()->set($processHelper, 'process');
+        $command->getHelperSet()->set($gitHelper, 'git');
+
         $tester->execute(array('--org' => 'cordoval', '--repo' => 'gush'));
 
         $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay()));
+    }
+
+    private function expectProcessHelper()
+    {
+        $processHelper = $this->getMock(
+            'Gush\Helper\ProcessHelper',
+            ['runCommands']
+        );
+        $processHelper->expects($this->once())
+            ->method('runCommands')
+            ->with([
+                [
+                    'line' => 'git remote update',
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git reset --hard HEAD~1',
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git pull -u origin '.self::TEST_BRANCH_NAME,
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
+                    'allow_failures' => true
+                ]
+            ])
+        ;
+
+        return $processHelper;
+    }
+
+    private function expectGitHelper()
+    {
+        $gitHelper = $this->getMock(
+            'Gush\Helper\GitHelper',
+            ['getBranchName']
+        );
+        $gitHelper->expects($this->once())
+            ->method('getBranchName')
+            ->will($this->returnValue(self::TEST_BRANCH_NAME))
+        ;
+
+        return $gitHelper;
     }
 }

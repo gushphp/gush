@@ -54,7 +54,6 @@ Closed https://github.com/cordoval/gush/issues/12
 EOT;
 
     const BRANCH_SYNC = <<<EOT
-test
+Branch test_branch has been synced upstream!
 EOT;
-
 }
