@@ -52,4 +52,8 @@ EOT;
     const ISSUE_CLOSE = <<<EOT
 Closed https://github.com/cordoval/gush/issues/12
 EOT;
+
+    const BRANCH_SYNC = <<<EOT
+Branch test_branch has been synced upstream!
+EOT;
 }

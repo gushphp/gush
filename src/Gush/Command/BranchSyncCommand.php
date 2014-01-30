@@ -49,7 +49,7 @@ EOF
     {
         $stashedBranchName = $this->getHelper('git')->getBranchName();
 
-        if ($input->hasArgument('branch_name')) {
+        if (null !== $input->getArgument('branch_name')) {
             $branchName = $input->getArgument('branch_name');
         } else {
             $branchName = $stashedBranchName;
@@ -79,6 +79,8 @@ EOF
                 ]
             ]
         );
+
+        $output->writeln(sprintf('Branch %s has been synced upstream!', $branchName));
 
         return self::COMMAND_SUCCESS;
     }
