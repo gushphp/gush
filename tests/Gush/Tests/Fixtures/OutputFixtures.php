@@ -61,4 +61,8 @@ EOT;
 Branch test_branch has been deleted!
 EOT;
 
+    const PULL_REQUEST_FIXER = <<<EOT
+CS fix committed and pushed!
+EOT;
+
 }

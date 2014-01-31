@@ -17,7 +17,7 @@ use Gush\Tests\Fixtures\OutputFixtures;
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class BranchDeletecommandTest extends BaseTestCase
+class BranchDeleteCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 
@@ -29,7 +29,7 @@ class BranchDeletecommandTest extends BaseTestCase
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
 
-        $tester->execute(array('--org' => 'cordoval', '--repo' => 'gush'));
+        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
 
         $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay()));
     }

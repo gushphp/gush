@@ -21,7 +21,7 @@ use Symfony\Component\Process\ProcessBuilder;
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class CsFixerCommand extends BaseCommand
+class PullRequestFixerCommand extends BaseCommand
 {
     const DEFAULT_FIXER_LINE = 'php-cs-fixer fix .';
 
@@ -31,7 +31,7 @@ class CsFixerCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('pull-request:fix')
+            ->setName('pull-request:fixer')
             ->setDescription('Run cs-fixer and commits fixes')
             ->addArgument('fixer_line', InputArgument::OPTIONAL, 'Custom fixer command', self::DEFAULT_FIXER_LINE)
             ->setHelp(
@@ -89,6 +89,8 @@ EOF
                 ]
             ]
         );
+
+        $output->writeln('CS fix committed and pushed!');
 
         return self::COMMAND_SUCCESS;
     }
