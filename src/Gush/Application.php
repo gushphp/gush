@@ -73,7 +73,7 @@ class Application extends BaseApplication
         $this->add(new Cmd\PullRequestSquashCommand());
         $this->add(new Cmd\PullRequestSemVerCommand());
         $this->add(new Cmd\FabbotIoCommand());
-        $this->add(new Cmd\CsFixerCommand());
+        $this->add(new Cmd\PullRequestFixerCommand());
         $this->add(new Cmd\ReleaseCreateCommand());
         $this->add(new Cmd\ReleaseListCommand());
         $this->add(new Cmd\ReleaseRemoveCommand());
