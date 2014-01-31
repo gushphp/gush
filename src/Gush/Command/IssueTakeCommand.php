@@ -54,10 +54,7 @@ EOF
         $baseBranch = $input->getArgument('base_branch');
 
         $client = $this->getGithubClient();
-        $issue = $client
-            ->api('issue')
-            ->show($org, $repo, $issueNumber)
-        ;
+        $issue = $client->api('issue')->show($org, $repo, $issueNumber);
 
         $slugTitle = $this->getHelper('text')->slugify(
             sprintf(
