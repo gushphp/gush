@@ -26,7 +26,7 @@ class GitHelper extends Helper
      */
     public function getBranchName()
     {
-        return $this->runGitCommand('git branch | grep "*" | cut -d " " -f 2');
+        return $this->runGitCommand('git rev-parse --abbrev-ref HEAD');
     }
 
     /**
@@ -34,22 +34,23 @@ class GitHelper extends Helper
      */
     public function getRepoName()
     {
-        $process = new Process(
-            'git remote show -n origin | grep Fetch | cut -d "/" -f 2 | cut -d "." -f 1',
-            getcwd()
-        );
+        $process = new Process('git remote show -n origin', getcwd());
         $process->run();
 
-        $output = trim($process->getOutput());
-        if (empty($output)) {
-            $process = new Process(
-                'git remote show -n origin | grep Fetch | cut -d "/" -f 5 | cut -d "." -f 1',
-                getcwd()
-            );
-            $process->run();
+        $outputLines = $this->splitLines(trim($process->getOutput()));
+
+        $foundRepoName = '';
+        if (!in_array('Fetch', $outputLines)) {
+            foreach ($outputLines as $line) {
+                if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
+                    preg_match('{(.+/)(.+).git}', $match[3], $secondMatch);
+                    $foundRepoName = $secondMatch[2];
+                    break;
+                }
+            }
         }
 
-        return trim($process->getOutput());
+        return $foundRepoName;
     }
 
     /**
@@ -57,19 +58,24 @@ class GitHelper extends Helper
      */
     public function getVendorName()
     {
-        $process = new Process('git remote show -n origin | grep Fetch | cut -d ":" -f 3 | cut -d "/" -f 1', getcwd());
+        $process = new Process('git remote show -n origin', getcwd());
         $process->run();
 
-        $output = trim($process->getOutput());
-        if (empty($output)) {
-            $process = new Process(
-                'git remote show -n origin | grep Fetch | cut -d ":" -f 3 | cut -d "/" -f 4',
-                getcwd()
-            );
-            $process->run();
+        $outputLines = $this->splitLines(trim($process->getOutput()));
+
+        $foundVendorName = '';
+        if (!in_array('Fetch', $outputLines)) {
+            foreach ($outputLines as $line) {
+                if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
+                    preg_match('{(.+/)(.+).git}', $match[3], $secondMatch);
+                    $exploded = explode('/', $secondMatch[1]);
+                    $foundVendorName = $exploded[count($exploded) - 2];
+                    break;
+                }
+            }
         }
 
-        return trim($process->getOutput());
+        return $foundVendorName;
     }
 
     /**
@@ -97,5 +103,12 @@ class GitHelper extends Helper
         }
 
         return trim($process->getOutput());
+    }
+
+    private function splitLines($output)
+    {
+        $output = trim($output);
+
+        return ((string) $output === '') ? [] : preg_split('{\r?\n}', $output);
     }
 }
