@@ -15,33 +15,29 @@ use Gush\Command\IssueTakeCommand;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
- * @group frontline
  */
 class IssueTakeCommandTest extends BaseTestCase
 {
     const SLUGIFIED_STRING = '17-test-string';
+    const TEST_TITLE = '17 test string';
     const ISSUE_NUMBER = 7;
 
     public function testCommand()
     {
         $this
-            ->httpClient->whenGet('repos/cordoval/gush/issues/'.self::ISSUE_NUMBER
-            ->thenReturn(
-                [
-                    'title' => '17 test string',
-                ]
-            )
+            ->httpClient->whenGet('repos/cordoval/gush/issues/'.self::ISSUE_NUMBER)
+            ->thenReturn(['title' => self::TEST_TITLE])
         ;
 
         $text = $this->expectTextHelper();
-        $git = $this->expectGitHelper();
+        $process = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($text, 'text');
-        $command->getHelperSet()->set($git, 'git');
+        $command->getHelperSet()->set($process, 'process');
         $tester->execute(['--org' => 'cordoval', '--repo' => 'gush', 'issue_number' => self::ISSUE_NUMBER]);
 
         $this->assertEquals(
-            sprintf('Issue https://github.com/cordoval/gush/issues/%s taken!', $issue),
+            sprintf('Issue https://github.com/cordoval/gush/issues/%s taken!', self::ISSUE_NUMBER),
             trim($tester->getDisplay())
         );
     }
@@ -50,22 +46,29 @@ class IssueTakeCommandTest extends BaseTestCase
     {
         $text = $this->getMock(
             'Gush\Helper\TextHelper',
-            ['askAndValidate']
+            ['slugify']
         );
         $text->expects($this->once())
-            ->method('askAndValidate')
+            ->method('slugify')
+            ->with(
+                sprintf(
+                    '%d %s',
+                    self::ISSUE_NUMBER,
+                    self::TEST_TITLE
+                )
+            )
             ->will($this->returnValue(self::SLUGIFIED_STRING));
 
         return $text;
     }
 
-    private function expectGitHelper()
+    private function expectProcessHelper()
     {
-        $git = $this->getMock(
-            'Gush\Helper\GitHelper',
+        $process = $this->getMock(
+            'Gush\Helper\ProcessHelper',
             ['runCommands']
         );
-        $git
+        $process
             ->expects($this->once())
             ->method('runCommands')
             ->with(
@@ -75,17 +78,17 @@ class IssueTakeCommandTest extends BaseTestCase
                         'allow_failures' => true
                     ],
                     [
-                        'line' => sprintf('git checkout %s/%s', 'origin', $baseBranch),
+                        'line' => 'git checkout origin/master',
                         'allow_failures' => true
                     ],
                     [
-                        'line' => sprintf('git checkout -b %s', $slugTitle),
+                        'line' => sprintf('git checkout -b %s', self::SLUGIFIED_STRING),
                         'allow_failures' => true
                     ],
                 ]
             )
         ;
 
-        return $git;
+        return $process;
     }
 }

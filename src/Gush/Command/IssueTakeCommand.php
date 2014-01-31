@@ -81,6 +81,8 @@ EOF
 
         $this->getHelper('process')->runCommands($commands);
 
+        $output->writeln(sprintf('Issue https://github.com/%s/%s/issues/%s taken!', $org, $repo, $issueNumber));
+
         return self::COMMAND_SUCCESS;
     }
 }
