@@ -54,10 +54,7 @@ EOF
         $baseBranch = $input->getArgument('base_branch');
 
         $client = $this->getGithubClient();
-        $issue = $client
-            ->api('issue')
-            ->show($org, $repo, $issueNumber)
-        ;
+        $issue = $client->api('issue')->show($org, $repo, $issueNumber);
 
         $slugTitle = $this->getHelper('text')->slugify(
             sprintf(
@@ -83,6 +80,8 @@ EOF
         ];
 
         $this->getHelper('process')->runCommands($commands);
+
+        $output->writeln(sprintf('Issue https://github.com/%s/%s/issues/%s taken!', $org, $repo, $issueNumber));
 
         return self::COMMAND_SUCCESS;
     }
