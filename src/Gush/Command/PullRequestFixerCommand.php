@@ -14,7 +14,6 @@ namespace Gush\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Runs cs-fixer
@@ -52,17 +51,7 @@ EOF
         $fixerLine = $input->getArgument('fixer_line');
 
         if ($fixerLine === self::DEFAULT_FIXER_LINE) {
-            $builder = new ProcessBuilder(['php-cs-fixer']);
-            $builder
-                ->setWorkingDirectory(getcwd())
-                ->setTimeout(3600)
-            ;
-            $process = $builder->getProcess();
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                throw new \RuntimeException('Please install php-cs-fixer');
-            }
+            $this->getHelper('process')->probePhpCsFixer();
         }
 
         $this->getHelper('process')->runCommands(

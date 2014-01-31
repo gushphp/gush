@@ -72,4 +72,19 @@ class ProcessHelper extends Helper
             $this->runCommand($command['line'], $command['allow_failures']);
         }
     }
+
+    public function probePhpCsFixer()
+    {
+        $builder = new ProcessBuilder(['php-cs-fixer']);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+        ;
+        $process = $builder->getProcess();
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException('Please install php-cs-fixer');
+        }
+    }
 }

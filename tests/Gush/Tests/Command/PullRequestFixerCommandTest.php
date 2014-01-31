@@ -36,8 +36,11 @@ class PullRequestFixerCommandTest extends BaseTestCase
     {
         $processHelper = $this->getMock(
             'Gush\Helper\ProcessHelper',
-            ['runCommands']
+            ['runCommands', 'probePhpCsFixer']
         );
+        $processHelper->expects($this->once())
+            ->method('probePhpCsFixer')
+        ;
         $processHelper->expects($this->once())
             ->method('runCommands')
             ->with(
