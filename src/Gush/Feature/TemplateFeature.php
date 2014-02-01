@@ -18,9 +18,9 @@ namespace Gush\Feature;
 interface TemplateFeature
 {
     /**
-     * Returns the domain for the template, e.g. pull-request.
+     * Returns the domain for the template, e.g. pull-request-create.
      * This domain should correspond to the first part of the
-     * template name, e.g. "pull-request/symfony-doc"
+     * template name, e.g. "pull-request-create/symfony-doc"
      *
      * @return string
      */
