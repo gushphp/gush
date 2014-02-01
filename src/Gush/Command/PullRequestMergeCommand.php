@@ -33,7 +33,12 @@ class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
-            ->addOption('no-comments', null, InputOption::VALUE_NONE, 'Avoid adding PR comments to the merge commit message')
+            ->addOption(
+                'no-comments',
+                null,
+                InputOption::VALUE_NONE,
+                'Avoid adding PR comments to the merge commit message'
+            )
             ->addOption('remote', null, InputOption::VALUE_OPTIONAL, 'Remote to push the notes to', 'origin')
             ->setHelp(
                 <<<EOF
