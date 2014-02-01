@@ -67,8 +67,7 @@ EOF
                 $issues[] = $matchesGush[1];
             }
 
-            if (
-                preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matchesGithub)
+            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matchesGithub)
                 && isset($matchesGithub[1])
             ) {
                 $issues[] = $matchesGithub[1];

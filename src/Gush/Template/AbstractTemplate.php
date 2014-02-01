@@ -11,11 +11,7 @@
 
 namespace Gush\Template;
 
-use Gush\Template\TemplateInterface;
-
 /**
- * AbstractTemplate
- *
  * @author Daniel Leech <daniel@dantleech.com>
  */
 abstract class AbstractTemplate implements TemplateInterface
