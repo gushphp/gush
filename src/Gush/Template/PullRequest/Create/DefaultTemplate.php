@@ -11,7 +11,6 @@
 
 namespace Gush\Template\PullRequest\Create;
 
-use Gush\Helper\TableHelper;
 use Gush\Template\AbstractTemplate;
 
 /**
@@ -23,7 +22,7 @@ class DefaultTemplate extends AbstractTemplate
 {
     public function render()
     {
-        $out = array();
+        $out = [];
         return implode("\n", $out);
     }
 
@@ -32,8 +31,7 @@ class DefaultTemplate extends AbstractTemplate
      */
     public function getRequirements()
     {
-        return array(
-        );
+        return [];
     }
 
     public function getName()
@@ -41,5 +39,3 @@ class DefaultTemplate extends AbstractTemplate
         return 'pull-request-create/default';
     }
 }
-
-

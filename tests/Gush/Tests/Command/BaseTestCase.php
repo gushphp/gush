@@ -59,7 +59,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             $input = $event->getInput();
 
             foreach ($command->getHelperSet() as $helper) {
-                if ($helper instanceof InputAwareInterface ) {
+                if ($helper instanceof InputAwareInterface) {
                     $helper->setInput($input);
                 }
             }

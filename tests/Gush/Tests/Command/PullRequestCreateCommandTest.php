@@ -30,17 +30,18 @@ class PullRequestCreateCommandTest extends BaseTestCase
      */
     public function testCommand($args)
     {
-
-        $this->httpClient->whenPost('repos/cordoval/gush/pulls', '{"base":"cordoval:master","head":":issue-145","title":"Test","body":""}'
-        )->thenReturn(
-            [
-                'html_url' => 'this_is_the_pull_url',
-            ]
-        );
+        $this->httpClient
+            ->whenPost(
+                'repos/cordoval/gush/pulls',
+                '{"base":"cordoval:master","head":":issue-145","title":"Test","body":""}'
+            )->thenReturn(
+                ['html_url' => 'this_is_the_pull_url']
+            )
+        ;
 
         $command = new PullRequestCreateCommand();
         $tester = $this->getCommandTester($command);
-        $tester->execute($args, [ 'interactive' => false ] );
+        $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
         $this->assertEquals('this_is_the_pull_url', $res);
