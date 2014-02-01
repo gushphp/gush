@@ -11,15 +11,15 @@
 
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\Helper;
-use Gush\Template\TemplateInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputAwareInterface;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
+use Gush\Template\TemplateInterface;
+use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\Helper;
 
 class TemplateHelper extends Helper implements InputAwareInterface
 {
