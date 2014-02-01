@@ -11,12 +11,12 @@
 
 namespace Gush\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Gush\Event\GushEvents;
 use Gush\Event\CommandEvent;
-use Symfony\Component\Console\Event\ConsoleEvent;
 use Gush\Feature\TableFeature;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TableSubscriber implements EventSubscriberInterface
 {
@@ -46,7 +46,7 @@ class TableSubscriber implements EventSubscriberInterface
                     null,
                     InputOption::VALUE_REQUIRED,
                     'Specify the layout for the table, one of default, compact, borderless, or github',
-                    'default'
+                    $command->getTableDefaultLayout()
                 )
                 ->addOption(
                     'table-no-header',

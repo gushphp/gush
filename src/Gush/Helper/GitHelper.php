@@ -88,7 +88,7 @@ class GitHelper extends Helper
     }
 
     /**
-     * @param string $gitCommandLine
+     * @param  string            $gitCommandLine
      * @throws \RuntimeException
      *
      * @return string $output

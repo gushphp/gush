@@ -18,9 +18,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
+use Symfony\Component\Console\Input\InputAwareInterface;
 
 /**
- * @author Daniel T Leech <daniel@dantleech.com>
+ * @author Daniel Leech <daniel@dantleech.com>
  */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -40,9 +41,11 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getCommandTester(Command $command)
     {
+        $config = $this->getMock('Gush\Config');
         $application = new TestableApplication();
         $application->setAutoExit(false);
         $application->setGithubClient($this->buildGithubClient());
+        $application->setConfig($config);
 
         $command->setApplication($application);
 
@@ -50,6 +53,17 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             GushEvents::DECORATE_DEFINITION,
             new CommandEvent($command)
         );
+
+        $application->getDispatcher()->addListener(GushEvents::INITIALIZE, function ($event) {
+            $command = $event->getCommand();
+            $input = $event->getInput();
+
+            foreach ($command->getHelperSet() as $helper) {
+                if ($helper instanceof InputAwareInterface) {
+                    $helper->setInput($input);
+                }
+            }
+        });
 
         return new CommandTester($command);
     }

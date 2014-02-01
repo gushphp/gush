@@ -16,4 +16,8 @@ use Symfony\Component\Console\Command\Command;
 
 class TestTableCommand extends Command implements TableFeature
 {
+    public function getTableDefaultLayout()
+    {
+        return 'default';
+    }
 }

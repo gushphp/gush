@@ -17,4 +17,10 @@ namespace Gush\Feature;
  */
 interface TableFeature
 {
+    /**
+     * Return the default table layout to use
+     *
+     * @return string
+     */
+    public function getTableDefaultLayout();
 }

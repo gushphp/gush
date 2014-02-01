@@ -11,24 +11,19 @@
 
 namespace Gush\Command;
 
-use Gush\Model\BufferedOutput;
-use Gush\Model\Question;
-use Gush\Model\Questionary;
-use Gush\Model\SymfonyDocumentationQuestionary;
-use Gush\Model\SymfonyQuestionary;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
-use Gush\Feature\TableFeature;
+use Symfony\Component\Console\Input\InputOption;
+use Gush\Feature\TemplateFeature;
 
 /**
  * Launches a pull request
  *
  * @author Luis Cordova <cordoval@gmail.com>
+ * @author Daniel Leech <daniel@dantleech.com>
  */
-class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitHubFeature
+class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, TemplateFeature
 {
     /**
      * {@inheritdoc}
@@ -38,15 +33,50 @@ class PullRequestCreateCommand extends BaseCommand implements TableFeature, GitH
         $this
             ->setName('pull-request:create')
             ->setDescription('Launches a pull request')
-            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to PR to', 'master')
+            ->addOption('base', null, InputOption::VALUE_REQUIRED, 'Base Branch - remote branch name', 'master')
+            ->addOption(
+                'head',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Head Branch - your branch name (defaults to current)'
+            )
+            ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command gives a pat on the back to a PR's author with a random template:
+The <info>%command.name%</info> command is used to make a github pull request
+against the configured organization and repository.
 
-    <info>$ gush %command.full_name% 12</info>
+    <info>$ %command.full_name%</info>
+
+The remote branch to make the PR against can be sepcified with the
+<info>base</info> option, and the local branch with the <info>head</info>
+option, when these options are omitted they are determined from the current
+context.
+
+    <info>$ %command.full_name% --head=my_branch --base=dev</info>
+
+A pull request template can be specified with the <info>template</info> option:
+
+    <info>$ %command.full_name% --template=symfony</info>
+
+This will use the symfony specific pull request template, the full list of
+available templates is displayed in the description of the <info>template</info>
+option.
+
+When using a template you will be prompted to fill out the required parameters.
 EOF
             )
         ;
+    }
+
+    public function getTemplateDomain()
+    {
+        return 'pull-request-create';
+    }
+
+    public function getTemplateDefault()
+    {
+        return 'default';
     }
 
     /**
@@ -54,135 +84,54 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tableString = $this->getGithubTableString($input, $output);
-
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
-        $validator = function ($answer) {
-            $answer = trim($answer);
-            if (empty($answer)) {
-                throw new \RunTimeException('You need to provide a non empty title');
-            }
-
-            return $answer;
-        };
-        $title = $dialog->askAndValidate(
-            $output,
-            'PR Title:',
-            $validator,
-            false,
-            null,
-            null
-        );
-        $prNumber = $this->postPullRequest($input, $output, $title, $tableString);
-        $output->writeln($prNumber['html_url']);
-
-        return self::COMMAND_SUCCESS;
-    }
-
-    private function getGithubTableString(InputInterface $input, OutputInterface $output)
-    {
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
-
-        /** @var \Gush\Model\Question[] $questions */
-        if (false === strpos($this->getHelper('git')->getRepoName(), 'docs')) {
-            $questionary = new SymfonyQuestionary();
-        } else {
-            $questionary = new SymfonyDocumentationQuestionary();
-        }
-
-        $answers = [];
-        /** @var Question $question */
-        foreach ($questionary->getQuestions() as $question) {
-            $statement = $question->getStatement() . ' ';
-            if ($question->getDefault()) {
-                $statement .= '[' . $question->getDefault() . '] ';
-            }
-
-            // @todo change this when on 2.5 to the new Question model
-            $answers[] = [
-                $question->getStatement(),
-                $dialog->askAndValidate(
-                    $output,
-                    $statement,
-                    $question->getValidator(),
-                    $question->getAttempt(),
-                    $question->getDefault(),
-                    $question->getAutocomplete()
-                )
-            ];
-        }
-
-        $table = $this->getMarkdownTableHelper($questionary);
-        $table->addRows($answers);
-
-        $tableOutput = new BufferedOutput();
-        $input->setOption('table-layout', 'github');
-        $table->render($tableOutput);
-
-        return $tableOutput->fetch();
-    }
-
-    private function getMarkdownTableHelper(Questionary $questionary)
-    {
-        $table = $this->getHelper('table');
-
-        // adds headers from questionary
-        $table->addRow($questionary->getHeaders());
-        // adds rows --- | --- | ...
-        $table->addRow(array_fill(0, count($questionary->getHeaders()), '---'));
-
-        return $table;
-    }
-
-    private function postPullRequest(
-        InputInterface $input,
-        OutputInterface $output,
-        $title,
-        $description
-    ) {
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
 
-        $baseBranch = $input->getArgument('base_branch');
+        $base = $input->getOption('base');
+        $head = $input->getOption('head');
+
+        $template = $input->getOption('template');
+
+        if (null === $head) {
+            $head = $this->getHelper('git')->getBranchName();
+        }
 
         $github = $this->getParameter('github');
         $username = $github['username'];
-        $branchName = $this->getHelper('git')->getBranchName();
 
-        $commands = [
-            [
-                'line' => sprintf('git remote add %s git@github.com:%s/%s.git', $username, $username, $repo),
-                'allow_failures' => true
-            ],
-            [
-                'line' => 'git remote update',
-                'allow_failures' => false
-            ],
-            [
-                'line' => sprintf('git push -u %s %s', $username, $branchName),
-                'allow_failures' => false
-            ]
-        ];
+        if (!$title = $input->getOption('title')) {
+            $title = $this->getHelper('dialog')->ask($output, 'Title: ');
+        }
 
-        $this->getHelper('process')->runCommands($commands);
+        $body = $this->getHelper('template')->askAndRender($output, 'pull-request-create', $template);
 
-        $client = $this->getGithubClient();
-        $pullRequest = $client
+        if (true === $input->getOption('verbose')) {
+            $output->writeln(sprintf(
+                'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
+                $username,
+                $head,
+                $org,
+                $base
+            ));
+        }
+
+        $pullRequest = $this
+            ->getGithubClient()
             ->api('pull_request')
             ->create(
                 $org,
                 $repo,
                 [
-                    'base'  => $org.':'.$baseBranch,
-                    'head'  => $username.':'.$branchName,
+                    'base'  => $org.':'.$base,
+                    'head'  => $username.':'.$head,
                     'title' => $title,
-                    'body'  => $description,
+                    'body'  => $body,
                 ]
             )
         ;
 
-        return $pullRequest;
+        $output->writeln($pullRequest['html_url']);
+
+        return self::COMMAND_SUCCESS;
     }
 }

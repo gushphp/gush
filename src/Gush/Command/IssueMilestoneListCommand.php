@@ -43,6 +43,14 @@ EOF
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getTableDefaultLayout()
+    {
+        return 'compact';
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -54,7 +62,6 @@ EOF
         $milestones = $client->api('issue')->milestones()->all($org, $repo);
 
         $table = $this->getHelper('table');
-        $table->setLayout('compact');
         $table->formatRows($milestones, $this->getRowBuilderCallback());
         $table->render($output, $table);
 

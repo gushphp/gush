@@ -48,14 +48,15 @@ class TableSubscriberTest extends \PHPUnit_Framework_TestCase
         ;
         $this->command->expects($this->at(0))
             ->method('addOption')
-            ->will($this->returnValue($this->command));
+            ->will($this->returnValue($this->command))
         ;
         $this->command->expects($this->at(1))
             ->method('addOption')
-            ->will($this->returnValue($this->command));
+            ->will($this->returnValue($this->command))
         ;
         $this->command->expects($this->at(2))
             ->method('addOption')
+            ->will($this->returnValue($this->command))
         ;
 
         $this->subscriber->decorateDefinition($this->commandEvent);

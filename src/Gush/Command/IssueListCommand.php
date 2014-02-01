@@ -61,6 +61,14 @@ EOF
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getTableDefaultLayout()
+    {
+        return 'default';
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)

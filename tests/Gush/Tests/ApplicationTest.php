@@ -14,6 +14,7 @@ namespace Gush\Tests;
 use Gush\Application;
 use Gush\Tester\HttpClient\TestHttpClient;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use Gush\Config;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
@@ -31,7 +32,10 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $config = new Config();
+
         $this->application = new TestableApplication();
+        $this->application->setConfig($config);
         $this->application->setAutoExit(false);
     }
 

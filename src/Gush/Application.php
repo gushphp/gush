@@ -26,6 +26,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Yaml;
+use Gush\Subscriber\TemplateSubscriber;
 
 class Application extends BaseApplication
 {
@@ -46,12 +47,12 @@ class Application extends BaseApplication
 
     public function __construct()
     {
-        // instantiate the helpers here so that
-        // we can use them inside the subscribers.
-        $this->gitHelper = new Helpers\GitHelper();
-        $this->textHelper = new Helpers\TextHelper();
-        $this->tableHelper = new Helpers\TableHelper();
-        $this->processHelper = new Helpers\ProcessHelper();
+        $helperSet = $this->getDefaultHelperSet();
+        $helperSet->set(new Helpers\GitHelper());
+        $helperSet->set(new Helpers\TextHelper());
+        $helperSet->set(new Helpers\TableHelper());
+        $helperSet->set(new Helpers\ProcessHelper());
+        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog')));
 
         // the parent dispatcher is private and has
         // no accessor, so we set it here so we can access it.
@@ -59,12 +60,14 @@ class Application extends BaseApplication
 
         // add our subscribers to the event dispatcher
         $this->dispatcher->addSubscriber(new TableSubscriber());
-        $this->dispatcher->addSubscriber(new GitHubSubscriber($this->gitHelper));
+        $this->dispatcher->addSubscriber(new GitHubSubscriber($helperSet->get('git')));
+        $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
 
         // share our dispatcher with the parent class
         $this->setDispatcher($this->dispatcher);
 
         parent::__construct();
+        $this->setHelperSet($helperSet);
 
         $this->add(new Cmd\PullRequestCreateCommand());
         $this->add(new Cmd\PullRequestMergeCommand());
@@ -108,17 +111,6 @@ class Application extends BaseApplication
         parent::add($command);
     }
 
-    protected function getDefaultHelperSet()
-    {
-        $helperSet = parent::getDefaultHelperSet();
-        $helperSet->set($this->gitHelper);
-        $helperSet->set($this->textHelper);
-        $helperSet->set($this->tableHelper);
-        $helperSet->set($this->processHelper);
-
-        return $helperSet;
-    }
-
     public function setGithubClient(Client $githubClient)
     {
         $this->githubClient = $githubClient;
@@ -150,6 +142,10 @@ class Application extends BaseApplication
 
     protected function readParameters()
     {
+        if ($this->config) {
+            return;
+        }
+
         $this->config = Factory::createConfig();
 
         $localFilename = $this->config->get('home').'/.gush.yml';

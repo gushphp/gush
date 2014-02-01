@@ -15,7 +15,7 @@ use Github\HttpClient\HttpClientInterface;
 use Guzzle\Http\Message\Response;
 
 /**
- * @author Daniel T Leech <dantleech@gmail.com>
+ * @author Daniel Leech <daniel@dantleech.com>
  */
 class TestHttpClient implements HttpClientInterface
 {
@@ -143,6 +143,6 @@ class TestHttpClient implements HttpClientInterface
 
     private function getHash($path, $body, $httpMethod, $headers)
     {
-        return md5($path.$body.$httpMethod.serialize($headers));
+        return md5($path.trim($body).$httpMethod.serialize($headers));
     }
 }
