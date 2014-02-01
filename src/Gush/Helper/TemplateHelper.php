@@ -75,7 +75,9 @@ class TemplateHelper extends Helper implements InputAwareInterface
     {
         if (!isset($this->templates[$domain][$name])) {
             throw new \InvalidArgumentException(sprintf(
-                'Template with name "%s" in domain "%s" has not been registered', $name, $domain
+                'Template with name "%s" in domain "%s" has not been registered',
+                $name,
+                $domain
             ));
         }
 
@@ -92,7 +94,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
      */
     public function parameterize(OutputInterface $output, TemplateInterface $template)
     {
-        $params = array();
+        $params = [];
         foreach ($template->getRequirements() as $key => $requirement) {
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
                 list($prompt, $default) = $requirement;
@@ -139,7 +141,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
     {
         if (!isset($this->templates[$domain])) {
             throw new \InvalidArgumentException(sprintf(
-                'Unknown template domain "%s"', $domain
+                'Unknown template domain "%s"',
+                $domain
             ));
         }
 

@@ -42,7 +42,12 @@ class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, Tem
             ->setName('pull-request:create')
             ->setDescription('Launches a pull request')
             ->addOption('base', null, InputOption::VALUE_REQUIRED, 'Base Branch - remote branch name', 'master')
-            ->addOption('head', null, InputOption::VALUE_REQUIRED, 'Head Branch - your branch name (defaults to current)')
+            ->addOption(
+                'head',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Head Branch - your branch name (defaults to current)'
+            )
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
             ->setHelp(
                 <<<EOF
@@ -115,16 +120,22 @@ EOF
         if (true === $input->getOption('verbose')) {
             $output->writeln(sprintf(
                 'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
-                $username, $head,
-                $org, $base
+                $username,
+                $head,
+                $org,
+                $base
             ));
         }
 
-        $pullRequest = $this->getGithubClient()
+        $pullRequest = $this
+            ->getGithubClient()
             ->api('pull_request')
-            ->create($org, $repo, [
-                    'base'  => $org . ':' . $base,
-                    'head'  => $username . ':' . $head,
+            ->create(
+                $org,
+                $repo,
+                [
+                    'base'  => $org.':'.$base,
+                    'head'  => $username.':'.$head,
                     'title' => $title,
                     'body'  => $body,
                 ]

@@ -31,10 +31,10 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function provideRegisterTemplate()
     {
         return [
-            [ 'foobar', null, true ],
-            [ '', null, true ],
-            [ 'foo/bar/far', null, true ],
-            [ 'foo/bar', [ 'foo', 'bar' ] ],
+            ['foobar', null, true],
+            ['', null, true],
+            ['foo/bar/far', null, true],
+            ['foo/bar', ['foo', 'bar']],
         ];
     }
 
@@ -58,14 +58,14 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function provideGetNamesForDomain()
     {
         return [
-            [ 
-                [ 'foo/bar', 'foo/bong', 'bar/boo' ], 'foo', [ 'bar', 'bong' ],
+            [
+                ['foo/bar', 'foo/bong', 'bar/boo'], 'foo', ['bar', 'bong'],
             ],
             [
-                [ 'foo/bar', 'foo/bong', 'bar/boo' ], 'bar', [ 'boo' ],
+                ['foo/bar', 'foo/bong', 'bar/boo' ], 'bar', ['boo'],
             ],
             [
-                [  ], 'bar', [ ], true,
+                [], 'bar', [], true,
             ],
         ];
     }
@@ -95,9 +95,9 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function provideGetHelper()
     {
         return [
-            [ 'pull-request-create', 'default' ],
-            [ 'pull-request-create', 'symfony' ],
-            [ 'pull-request-create', 'symfony-doc' ],
+            ['pull-request-create', 'default'],
+            ['pull-request-create', 'symfony'],
+            ['pull-request-create', 'symfony-doc'],
         ];
     }
 
@@ -123,9 +123,9 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function provideParameterize()
     {
         return [
-            [ [
-                'foo' => [ 'This is foo', 'default-bar' ],
-            ] ]
+            [[
+                'foo' => ['This is foo', 'default-bar'],
+            ]]
         ];
     }
 
@@ -134,7 +134,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testParameterize($requirements)
     {
-        $requirements['test-option'] = [ 'This is bar', 'default-foo' ];
+        $requirements['test-option'] = ['This is bar', 'default-foo'];
 
         $this->template->expects($this->once())
             ->method('getName')

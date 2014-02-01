@@ -11,8 +11,6 @@
 
 namespace Gush\Template\PullRequest\Create;
 
-use Symfony\Component\Console\Output\BufferedOutput;
-
 /**
  * SymfonyTemplate
  *
@@ -25,17 +23,17 @@ class SymfonyTemplate extends AbstractSymfonyTemplate
      */
     public function getRequirements()
     {
-        return array(
-            'bug_fix' => array('Bug Fix?:', 'n'),
-            'new_feature' => array('New Feature?:', 'n'),
-            'bc_breaks' => array('BC Breaks?:', 'n'),
-            'deprecations' => array('Deprecations?:', 'n'),
-            'tests_pass' => array('Tests Pass?:', 'n'),
-            'fixed_tickets' => array('Fixed Tickets:', ''),
-            'license' => array('License:', 'MIT'),
-            'doc_pr' => array('Doc PR:', ''),
-            'description' => array('Description:', ''),
-        );
+        return [
+            'bug_fix' => ['Bug Fix?:', 'n'],
+            'new_feature' => ['New Feature?:', 'n'],
+            'bc_breaks' => ['BC Breaks?:', 'n'],
+            'deprecations' => ['Deprecations?:', 'n'],
+            'tests_pass' => ['Tests Pass?:', 'n'],
+            'fixed_tickets' => ['Fixed Tickets:', ''],
+            'license' => ['License:', 'MIT'],
+            'doc_pr' => ['Doc PR:', ''],
+            'description' => ['Description:', ''],
+        ];
     }
 
     public function getName()
@@ -43,4 +41,3 @@ class SymfonyTemplate extends AbstractSymfonyTemplate
         return 'pull-request-create/symfony';
     }
 }
-

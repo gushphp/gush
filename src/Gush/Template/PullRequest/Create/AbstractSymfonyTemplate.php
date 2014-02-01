@@ -45,7 +45,7 @@ abstract class AbstractSymfonyTemplate extends AbstractTemplate
 
         $table->render($output);
 
-        $out = array();
+        $out = [];
         $out[] = $output->fetch();
         $out[] = $description;
 

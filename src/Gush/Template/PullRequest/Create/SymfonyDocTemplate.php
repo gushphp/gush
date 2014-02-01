@@ -11,8 +11,6 @@
 
 namespace Gush\Template\PullRequest\Create;
 
-use Gush\Template\AbstractTemplate;
-
 /**
  * SymfonyDocTemplate
  *
@@ -25,13 +23,13 @@ class SymfonyDocTemplate extends AbstractSymfonyTemplate
      */
     public function getRequirements()
     {
-        return array(
-            'doc-fix' => array('Doc Fix?:', 'n'),
-            'new-docs' => array('New Docs?:', 'n'),
-            'applies-to' => array('Applies to:', ''),
-            'fixed_tickets' => array('Fixed tickets:', ''),
-            'description' => array('Description:', ''),
-        );
+        return [
+            'doc-fix' => ['Doc Fix?:', 'n'],
+            'new-docs' => ['New Docs?:', 'n'],
+            'applies-to' => ['Applies to:', ''],
+            'fixed_tickets' => ['Fixed tickets:', ''],
+            'description' => ['Description:', ''],
+        ];
     }
 
     public function getName()
@@ -39,4 +37,3 @@ class SymfonyDocTemplate extends AbstractSymfonyTemplate
         return 'pull-request-create/symfony-doc';
     }
 }
-

@@ -69,7 +69,7 @@ EOF
     /**
      * @dataProvider provideTemplate
      */
-    public function testTemplate($params = array(), $expected)
+    public function testTemplate($params, $expected)
     {
         $requirements = $this->template->getRequirements();
 
