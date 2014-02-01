@@ -64,5 +64,4 @@ EOT;
     const PULL_REQUEST_FIXER = <<<EOT
 CS fix committed and pushed!
 EOT;
-
 }
