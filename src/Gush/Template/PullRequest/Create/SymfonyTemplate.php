@@ -12,8 +12,6 @@
 namespace Gush\Template\PullRequest\Create;
 
 /**
- * SymfonyTemplate
- *
  * @author Daniel Leech <daniel@dantleech.com>
  */
 class SymfonyTemplate extends AbstractSymfonyTemplate
