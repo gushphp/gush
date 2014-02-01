@@ -1,0 +1,66 @@
+---------------------------------------------------------------------------
+
+by dantleech at 2014-01-27T20:48:06Z
+
+@cordoval yeah, this is just a very quick POC.
+
+---------------------------------------------------------------------------
+
+by dantleech at 2014-01-29T22:51:59Z
+
+Updated on the train.Lots of CS problems, still WIP but is basically working.
+
+---------------------------------------------------------------------------
+
+by dantleech at 2014-01-31T01:37:09Z
+
+Updated. This PR is almost ready now. But it does introduce some \"interesting\" evolutions. The Feature classes, `TableFeature` and `TemplateFeature` enforce a method on implemting commands to get the default. So that the subsriber can determine the correct default value for the corresponding option. This can be seen as being somewhat as oposing the `configure` method - but it makes sense otherwise.
+
+Otherwise, the template system seems to work well.
+
+---------------------------------------------------------------------------
+
+by dantleech at 2014-01-31T21:19:02Z
+
+ok, I am OK with this being merged now if people are happy with this templating system. Only problem is that the `Template` namespace also has the original classes `Messages` and `Pat` which don\'t correspond with the new templating system.
+
+- the `Messages` class contains a `Merge` tempate, this should be refactored into the new template system.
+- Don\'t know where `Pat` messages should go, maybe in the command itself.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-01-31T21:23:10Z
+
+yes because they are specific to the commands
+
+can we please move those and then make tests pass so we can merge?
+
+it would be great to squash and resend the PR with gush so it can create a table PR. I have heard for some it did not work so it is good to test on other sides as well, so please send it if you can.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-01-31T21:28:29Z
+
+@dantleech also does this supersedes this https://github.com/cordoval/gush/pull/128/files ?
+
+---------------------------------------------------------------------------
+
+by dantleech at 2014-01-31T21:42:12Z
+
+Hmm, tests pass on my machine.
+
+These templates could be used for reports, so ... kind of.
+
+---------------------------------------------------------------------------
+
+by dantleech at 2014-02-01T08:46:33Z
+
+ok, tests fixed and added issue #190  for refactoring the `Message` and `Pat`.
+
+Before merging can you test? I keep getting a `Not Found` error, but this might be because I am behind a hotel firewall and have to use HTTPS.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-02-01T19:34:07Z
+
+bump @dantleech could you please merge the last PR i sent you?
