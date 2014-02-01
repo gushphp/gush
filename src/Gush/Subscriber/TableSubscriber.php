@@ -11,12 +11,12 @@
 
 namespace Gush\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Gush\Event\GushEvents;
 use Gush\Event\CommandEvent;
-use Symfony\Component\Console\Event\ConsoleEvent;
 use Gush\Feature\TableFeature;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TableSubscriber implements EventSubscriberInterface
 {

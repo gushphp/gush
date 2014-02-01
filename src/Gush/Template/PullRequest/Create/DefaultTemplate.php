@@ -14,8 +14,6 @@ namespace Gush\Template\PullRequest\Create;
 use Gush\Template\AbstractTemplate;
 
 /**
- * DefaultTemplate
- *
  * @author Daniel Leech <daniel@dantleech.com>
  */
 class DefaultTemplate extends AbstractTemplate
@@ -23,6 +21,7 @@ class DefaultTemplate extends AbstractTemplate
     public function render()
     {
         $out = [];
+
         return implode("\n", $out);
     }
 

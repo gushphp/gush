@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -11,14 +11,13 @@
 
 namespace Gush\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Gush\Event\GushEvents;
 use Gush\Event\CommandEvent;
-use Symfony\Component\Console\Event\ConsoleEvent;
-use Gush\Feature\TableFeature;
+use Gush\Event\GushEvents;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\TemplateHelper;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TemplateSubscriber implements EventSubscriberInterface
 {
@@ -49,7 +48,7 @@ class TemplateSubscriber implements EventSubscriberInterface
                     'template',
                     't',
                     InputOption::VALUE_REQUIRED,
-                    'Template to use. <info>One of: ' . implode('</info>, <info>', $names) . '</info>',
+                    'Template to use. <info>One of: '.implode('</info>, <info>', $names).'</info>',
                     $command->getTemplateDefault()
                 )
             ;

@@ -1,16 +1,25 @@
 <?php
 
+/**
+ * This file is part of Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\Helper;
-use Gush\Template\TemplateInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputAwareInterface;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
+use Gush\Template\TemplateInterface;
+use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\Helper;
 
 class TemplateHelper extends Helper implements InputAwareInterface
 {
@@ -36,9 +45,11 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Register a template
+     * Registers a template
      *
-     * @param TemplateInterface
+     * @param \Gush\Template\TemplateInterface $template
+     *
+     * @throws \InvalidArgumentException
      */
     public function registerTemplate(TemplateInterface $template)
     {
@@ -62,12 +73,12 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Retrieve a template
+     * Retrieves a template
      *
-     * @param string $domain  Domain of the template
-     * @param string $name    Name of the template
+     * @param string $domain Domain of the template
+     * @param string $name   Name of the template
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      *
      * @return TemplateInterface
      */
@@ -85,12 +96,12 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Retrieve the requirements of the given template and ask the
-     * user for any parameters that are not availabline from the
-     * input, then bind the parameters to the template.
+     * Retrieves the requirements of the given template and asks the
+     * user for any parameters that are not available from the
+     * input, then binds the parameters to the template.
      *
-     * @param OutputInterface    Output from the command
-     * @param TemplateInterface  Template to render
+     * @param \Symfony\Component\Console\Output\OutputInterface    Output from the command
+     * @param \Gush\Template\TemplateInterface  Template to render
      */
     public function parameterize(OutputInterface $output, TemplateInterface $template)
     {
@@ -111,15 +122,15 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Ask and render will render the template. If any requirements
+     * Asks and renders will render the template. If any requirements
      * are missing from the Input it will demand the parameters from
      * the user.
      *
-     * @param OutputInterface $output  Output from command
+     * @param OutputInterface $output Output from command
      * @param string                   Domain for the template, e.g. pull-request
      * @param string                   Name of the template, e.g. symfony-doc
      *
-     * @return string                  Rendered template string
+     * @return string Rendered template string
      */
     public function askAndRender(OutputInterface $output, $templateDomain, $templateName)
     {
@@ -130,12 +141,14 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Return the names of registered templates in the given
+     * Returns the names of registered templates in the given
      * domain.
      *
-     * @param string $domain  Return template names for this domain
+     * @param string $domain Return template names for this domain
      *
-     * @return array          Array of template name strings
+     * @throws \InvalidArgumentException
+     *
+     * @return array Array of template name strings
      */
     public function getNamesForDomain($domain)
     {

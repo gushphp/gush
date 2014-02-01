@@ -9,7 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-
 namespace Gush\Template\PullRequest\Create;
 
 use Gush\Template\AbstractTemplate;
@@ -17,8 +16,6 @@ use Gush\Helper\TableHelper;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
- * AbstractSymfonyTemplate
- *
  * @author Daniel Leech <daniel@dantleech.com>
  */
 abstract class AbstractSymfonyTemplate extends AbstractTemplate
