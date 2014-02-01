@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -18,7 +18,7 @@ namespace Gush\Feature;
 interface TemplateFeature
 {
     /**
-     * Return the domain for the template, e.g. pull-request.
+     * Returns the domain for the template, e.g. pull-request.
      * This domain should correspond to the first part of the
      * template name, e.g. "pull-request/symfony-doc"
      *
@@ -27,7 +27,7 @@ interface TemplateFeature
     public function getTemplateDomain();
 
     /**
-     * Return the default template name
+     * Returns the default template name
      *
      * @return string
      */
