@@ -26,7 +26,6 @@ interface TemplateFeature
      */
     public function getTemplateDomain();
 
-
     /**
      * Return the default template name
      *

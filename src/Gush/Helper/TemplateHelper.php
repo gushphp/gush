@@ -66,8 +66,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
     /**
      * Retrieves a template
      *
-     * @param string $domain  Domain of the template
-     * @param string $name    Name of the template
+     * @param string $domain Domain of the template
+     * @param string $name   Name of the template
      *
      * @throws \InvalidArgumentException
      *
@@ -117,11 +117,11 @@ class TemplateHelper extends Helper implements InputAwareInterface
      * are missing from the Input it will demand the parameters from
      * the user.
      *
-     * @param OutputInterface $output  Output from command
+     * @param OutputInterface $output Output from command
      * @param string                   Domain for the template, e.g. pull-request
      * @param string                   Name of the template, e.g. symfony-doc
      *
-     * @return string                  Rendered template string
+     * @return string Rendered template string
      */
     public function askAndRender(OutputInterface $output, $templateDomain, $templateName)
     {
@@ -139,7 +139,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
      *
      * @throws \InvalidArgumentException
      *
-     * @return array          Array of template name strings
+     * @return array Array of template name strings
      */
     public function getNamesForDomain($domain)
     {

@@ -11,18 +11,10 @@
 
 namespace Gush\Command;
 
-use Gush\Model\BufferedOutput;
-use Gush\Model\Question;
-use Gush\Model\Questionary;
-use Gush\Model\SymfonyDocumentationQuestionary;
-use Gush\Model\SymfonyQuestionary;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 use Symfony\Component\Console\Input\InputOption;
-use Gush\Template\PullRequest\SymfonyTemplate;
 use Gush\Feature\TemplateFeature;
 
 /**

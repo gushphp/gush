@@ -23,6 +23,7 @@ class DefaultTemplate extends AbstractTemplate
     public function render()
     {
         $out = [];
+
         return implode("\n", $out);
     }
 
