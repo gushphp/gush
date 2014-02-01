@@ -103,7 +103,7 @@ EOF
             $title = $this->getHelper('dialog')->ask($output, 'Title: ');
         }
 
-        $body = $this->getHelper('template')->askAndRender($output, 'pull-request-create', $template);
+        $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
 
         if (true === $input->getOption('verbose')) {
             $output->writeln(sprintf(
