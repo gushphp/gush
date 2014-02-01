@@ -1,3 +1,12 @@
+##
+# This file is part of Gush.
+#
+# (c) Luis Cordova <cordoval@gmail.com>
+#
+# This source file is subject to the MIT license that is bundled
+# with this source code in the file LICENSE.
+#
+
 /bin/*
 !/bin/gush
 /composer.lock
@@ -5,10 +14,6 @@
 /gush.phar
 /box.json
 /.first-time-run
-/.sculpin
-/output_dev
-/sculpin.lock
-/source
 /phpunit.xml
 /build
 /web
