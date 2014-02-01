@@ -117,9 +117,12 @@ EOF
                 'username: ',
                 $validator
             );
+            $passwordOrTokenText = $authenticationType == Client::AUTH_HTTP_PASSWORD
+                ? 'password: '
+                : 'token: ';
             $passwordOrToken = $dialog->askHiddenResponseAndValidate(
                 $output,
-                'password or token: ',
+                $passwordOrTokenText,
                 $validator
             );
 
