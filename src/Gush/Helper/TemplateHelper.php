@@ -11,6 +11,8 @@
 
 namespace Gush\Helper;
 
+use Gush\Template\Meta\Header\MITTemplate;
+use Gush\Template\Meta\Header\GPL3Template;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
@@ -33,6 +35,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
         $this->registerTemplate(new DefaultTemplate());
+        $this->registerTemplate(new MITTemplate());
+        $this->registerTemplate(new GPL3Template());
         $this->dialog = $dialog;
     }
 
