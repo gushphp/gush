@@ -93,7 +93,7 @@ $ gush issue:list
 
 Take it:
 ```bash
-$ gush i:take 14
+$ gush issue:take 14
 $ git branch
 * 14-tests-and-documentation-for-commands
 ```
