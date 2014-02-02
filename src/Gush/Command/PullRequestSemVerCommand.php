@@ -57,7 +57,7 @@ EOF
         $repo = $input->getOption('repo');
         $prNumber = $input->getArgument('pr_number');
 
-        $this->runCommands([
+        $this->getHelper('process')->runCommands([
            [
                'line' => 'git remote update',
                'allow_failures' => true,
@@ -68,7 +68,7 @@ EOF
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
         $branchToCheckout = $pr['head']['ref'];
 
-        $this->runCommands([
+        $this->getHelper('process')->runCommands([
             [
                 'line' => sprintf('git checkout -b %s origin/%s', $branchToCheckout, $branchToCheckout),
                 'allow_failures' => true,
