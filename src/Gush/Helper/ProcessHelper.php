@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -27,13 +27,19 @@ class ProcessHelper extends Helper
 
     /**
      * Run a command through the ProcessBuilder
-     *
-     * @param  array             $command
-     * @param  Boolean           $allowFailures
+     * 
+     * @param array             $command
+     * @param Boolean           $allowFailures
+     * @param \Closure          Callback for Process (e.g. for logging output in realtime)         
+     * :
      * @throws \RuntimeException
      */
-    public function runCommand(array $command, $allowFailures = false)
+    public function runCommand($command, $allowFailures = false, $callback = null)
     {
+        if (is_string($command)) {
+            $command = explode(' ', $command);
+        }
+
         $builder = new ProcessBuilder($command);
         $builder
             ->setWorkingDirectory(getcwd())
@@ -41,19 +47,24 @@ class ProcessHelper extends Helper
         ;
         $process = $builder->getProcess();
 
-        $process->run(
-            function ($type, $buffer) {
-                if (Process::ERR === $type) {
-                    echo 'ERR > ' . $buffer;
-                } else {
-                    echo 'OUT > ' . $buffer;
-                }
-            }
-        );
+        $process->run($callback);
 
         if (!$process->isSuccessful() && !$allowFailures) {
             throw new \RuntimeException($process->getErrorOutput());
         }
+
+        return trim($process->getOutput());
+    }
+
+    public function getProcessBuilder($arguments)
+    {
+        $builder = new ProcessBuilder($arguments);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+            ;
+
+        return $builder;
     }
 
     /**
@@ -64,27 +75,7 @@ class ProcessHelper extends Helper
     public function runCommands(array $commands)
     {
         foreach ($commands as $command) {
-            if (!is_array($command['line'])) {
-                $this->runCommand(explode(' ', $command['line']), $command['allow_failures']);
-                continue;
-            }
-
-            $this->runCommand($command['line'], $command['allow_failures']);
-        }
-    }
-
-    public function probePhpCsFixer()
-    {
-        $builder = new ProcessBuilder(['php-cs-fixer']);
-        $builder
-            ->setWorkingDirectory(getcwd())
-            ->setTimeout(3600)
-        ;
-        $process = $builder->getProcess();
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException('Please install php-cs-fixer');
+            $this->runCommand(explode(' ', $command['line']), $command['allow_failures']);
         }
     }
 }

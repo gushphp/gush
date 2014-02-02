@@ -16,6 +16,13 @@ use Symfony\Component\Process\Process;
 
 class GitHelper extends Helper
 {
+    protected $processHelper;
+
+    public function __construct(ProcessHelper $processHelper)
+    {
+        $this->processHelper = $processHelper;
+    }
+
     public function getName()
     {
         return 'git';
@@ -26,7 +33,7 @@ class GitHelper extends Helper
      */
     public function getBranchName()
     {
-        return $this->runGitCommand('git rev-parse --abbrev-ref HEAD');
+        return $this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD');
     }
 
     /**
@@ -84,25 +91,7 @@ class GitHelper extends Helper
      */
     public function getLastTagOnCurrentBranch()
     {
-        return $this->runGitCommand('git describe --tags --abbrev=0 HEAD');
-    }
-
-    /**
-     * @param  string            $gitCommandLine
-     * @throws \RuntimeException
-     *
-     * @return string $output
-     */
-    public function runGitCommand($gitCommandLine)
-    {
-        $process = new Process($gitCommandLine, getcwd());
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getOutput());
-        }
-
-        return trim($process->getOutput());
+        return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
     }
 
     private function splitLines($output)
@@ -110,5 +99,24 @@ class GitHelper extends Helper
         $output = trim($output);
 
         return ((string) $output === '') ? [] : preg_split('{\r?\n}', $output);
+    }
+
+    /**
+     * @return array  Files in the git repository
+     */
+    public function lsFiles($options = array())
+    {
+        $builder = $this->processHelper->getProcessBuilder([
+            'git',
+            'ls-files'
+        ]);
+
+        foreach ($options as $name => $value) {
+            $builder->setOption($name, $value);
+        }
+
+        $process = $builder->getProcess();
+
+        return explode("\n", $process->run());
     }
 }

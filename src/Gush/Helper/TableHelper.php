@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -36,11 +36,17 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
         $this->setLayout('default');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setInput(InputInterface $input)
     {
         $this->input = $input;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setLayout($layout)
     {
         if (is_string($layout)) {
