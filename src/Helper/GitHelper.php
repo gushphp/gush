@@ -50,7 +50,7 @@ class GitHelper extends Helper
         if (!in_array('Fetch', $outputLines)) {
             foreach ($outputLines as $line) {
                 if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
-                    preg_match('{(.+/)(.+).git}', $match[3], $secondMatch);
+                    preg_match('{(.+/)(.+)}', $match[3], $secondMatch);
                     $foundRepoName = $secondMatch[2];
                     break;
                 }
@@ -74,7 +74,7 @@ class GitHelper extends Helper
         if (!in_array('Fetch', $outputLines)) {
             foreach ($outputLines as $line) {
                 if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
-                    preg_match('{(.+/)(.+).git}', $match[3], $secondMatch);
+                    preg_match('{(.+/)(.+)}', $match[3], $secondMatch);
                     $exploded = explode('/', $secondMatch[1]);
                     $foundVendorName = $exploded[count($exploded) - 2];
                     break;
@@ -116,7 +116,8 @@ class GitHelper extends Helper
         }
 
         $process = $builder->getProcess();
+        $process->run();
 
-        return explode("\n", $process->run());
+        return explode("\n", $process->getOutput());
     }
 }
