@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -29,13 +29,19 @@ class ProcessHelper extends Helper
     /**
      * Run a command through the ProcessBuilder
      *
-     * @param  array             $command
-     * @param  Boolean           $allowFailures
-     * @param  OutputInterface   $output
+     * @param array $command
+     * @param Boolean $allowFailures
+     * @param \Closure Callback for Process (e.g. for logging output in realtime)
+     *
+     * @return string
      * @throws \RuntimeException
      */
-    public function runCommand(array $command, $allowFailures = false, OutputInterface $output)
+    public function runCommand($command, $allowFailures = false, $callback = null)
     {
+        if (is_string($command)) {
+            $command = explode(' ', $command);
+        }
+
         $builder = new ProcessBuilder($command);
         $builder
             ->setWorkingDirectory(getcwd())
@@ -43,19 +49,24 @@ class ProcessHelper extends Helper
         ;
         $process = $builder->getProcess();
 
-        $process->run(
-            function ($type, $buffer) use ($output) {
-                if (Process::ERR === $type) {
-                    $output->write('<error>ERR ></error> '.$buffer);
-                } else {
-                    $output->write('<comment>OUT ></comment> '.$buffer);
-                }
-            }
-        );
+        $process->run($callback);
 
         if (!$process->isSuccessful() && !$allowFailures) {
             throw new \RuntimeException($process->getErrorOutput());
         }
+
+        return trim($process->getOutput());
+    }
+
+    public function getProcessBuilder($arguments)
+    {
+        $builder = new ProcessBuilder($arguments);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+            ;
+
+        return $builder;
     }
 
     /**
