@@ -16,14 +16,28 @@ use Symfony\Component\Console\Output\BufferedOutput;
 require_once __DIR__.'/vendor/autoload.php';
 
 $app = new Gush\Application();
+$app->setAutoExit(false);
 
 foreach ($app->getCommands() as $command) {
-
     $output = new BufferedOutput();
     $input = new StringInput(sprintf('%s --help --format md', $command->getName()));
 
     $app->run($input, $output);
 
-    //file_put_contents($command->getName().'.md', $output->fetch());
-    echo $output->fetch();
+    $header = <<<EOT
+---
+layout: docu-page
+full_title: "Gush: Rapid workflow for project maintainers and contributors"
+---
+{% block content %}
+EOT;
+
+    $footer = <<<EOT
+{% endblock content %}
+EOT;
+
+    file_put_contents(
+        'web/'.$command->getName().'.md',
+        sprintf("%s\n%s\n%s", $header, $output->fetch(), $footer)
+    );
 }
