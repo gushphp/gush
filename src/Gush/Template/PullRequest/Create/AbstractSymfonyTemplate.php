@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * @author Daniel Leech <daniel@dantleech.com>
+ * @author Luis Cordova <cordoval@gmail.com>
  */
 abstract class AbstractSymfonyTemplate extends AbstractTemplate
 {
@@ -26,9 +27,11 @@ abstract class AbstractSymfonyTemplate extends AbstractTemplate
             throw new \RuntimeException('Template has not been bound');
         }
 
+        $questionaryHeaders = ['Q', 'A'];
         $output = new BufferedOutput();
         $table = new TableHelper();
-        $table->setHeaders(array('Q', 'A'));
+        $table->addRow($questionaryHeaders);
+        $table->addRow(array_fill(0, count($questionaryHeaders), '---'));
         $table->setLayout(TableHelper::LAYOUT_GITHUB);
 
         $description = $this->parameters['description'];
