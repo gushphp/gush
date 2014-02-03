@@ -10,17 +10,20 @@
  * with this source code in the file LICENSE.
  */
     
-require_once __DIR__.'/vendor/autoload.php';
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
-error_reporting(-1);
-ini_set('display_errors', 1);
+require_once __DIR__.'/vendor/autoload.php';
 
 $app = new Gush\Application();
 
 foreach ($app->getCommands() as $command) {
-    // run specific command with --format md
-    $app->run();
 
-    // craete md file on the right place
+    $output = new BufferedOutput();
+    $input = new StringInput(sprintf('%s --help --format md', $command->getName()));
+
+    $app->run($input, $output);
+
+    //file_put_contents($command->getName().'.md', $output->fetch());
+    echo $output->fetch();
 }
-

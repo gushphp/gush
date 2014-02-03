@@ -222,6 +222,9 @@ class Application extends BaseApplication
         return $client;
     }
 
+    /**
+     * @return \Symfony\Component\Console\Command\Command[]
+     */
     public function getCommands()
     {
         $updateCommand = new UpdateCommand('update');
