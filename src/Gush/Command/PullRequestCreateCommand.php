@@ -76,7 +76,7 @@ EOF
 
     public function getTemplateDefault()
     {
-        return 'default';
+        return 'symfony';
     }
 
     /**
