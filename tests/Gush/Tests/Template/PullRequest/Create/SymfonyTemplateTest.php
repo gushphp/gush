@@ -30,7 +30,7 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
                 <<<EOF
                     
 |Q             |A  |
-                    
+|---           |---|
 |Bug Fix?:     |n  |
 |New Feature?: |n  |
 |BC Breaks?:   |n  |
@@ -58,7 +58,7 @@ EOF
                 <<<EOF
                        
 |Q             |A     |
-                       
+|---           |---   |
 |Bug Fix?:     |y     |
 |New Feature?: |yes   |
 |BC Breaks?:   |yes   |

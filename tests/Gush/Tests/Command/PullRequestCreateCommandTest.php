@@ -21,7 +21,13 @@ class PullRequestCreateCommandTest extends BaseTestCase
     public function provideCommand()
     {
         return [
-            [['--org' => 'cordoval', '--repo' => 'gush', '--head' => 'issue-145', '--title' => 'Test' ]],
+            [[
+                '--org' => 'cordoval',
+                '--repo' => 'gush',
+                '--head' => 'issue-145',
+                '--template' => 'default',
+                '--title' => 'Test'
+            ]],
         ];
     }
 
