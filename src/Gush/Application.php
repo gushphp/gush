@@ -20,16 +20,20 @@ use Gush\Exception\FileNotFoundException;
 use Gush\Helper as Helpers;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
+use Gush\Subscriber\TemplateSubscriber;
+use KevinGH\Amend\Command as UpdateCommand;
+use KevinGH\Amend\Helper as UpdateHelper;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Yaml\Yaml;
-use Gush\Subscriber\TemplateSubscriber;
 
 class Application extends BaseApplication
 {
+    const MANIFESTO_FILE_URL = 'http://gushphp.org/manifest.json';
+
     /**
      * @var Config $config The configuration file
      */
@@ -53,6 +57,7 @@ class Application extends BaseApplication
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog')));
+        $helperSet->set(new UpdateHelper());
 
         // the parent dispatcher is private and has
         // no accessor, so we set it here so we can access it.
@@ -69,6 +74,10 @@ class Application extends BaseApplication
         parent::__construct();
         $this->setHelperSet($helperSet);
 
+        $updateCommand = new UpdateCommand('update');
+        $updateCommand->setManifestUri(self::MANIFESTO_FILE_URL);
+
+        $this->add($updateCommand);
         $this->add(new Cmd\PullRequestCreateCommand());
         $this->add(new Cmd\PullRequestMergeCommand());
         $this->add(new Cmd\PullRequestPatOnTheBackCommand());
