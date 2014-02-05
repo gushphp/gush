@@ -44,7 +44,7 @@ Install Gush in two ways:
 #### 1) Installing system-wide using composer (recommended)
 
 ```bash
-$ composer global require 'cordoval/gush=dev-master'
+$ composer global require cordoval/gush=dev-master
 ```
 
 If it is the first time you globally install a dependency then make sure
