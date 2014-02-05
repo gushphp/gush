@@ -48,7 +48,7 @@ against the configured organization and repository.
 
     <info>$ %command.full_name%</info>
 
-The remote branch to make the PR against can be sepcified with the
+The remote branch to make the PR against can be specified with the
 <info>base</info> option, and the local branch with the <info>head</info>
 option, when these options are omitted they are determined from the current
 context.
