@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-05T15:19:25Z
+
+@cordoval Done, thx. Fixed it manually for now.
+
+The same problem exists for the cs fixer, and I think there is an escaping problem caused by the symfony process, at https://github.com/cordoval/gush/blob/master/src/Gush/Helper/ProcessHelper.php#L78 Will do some investigating tonight.
