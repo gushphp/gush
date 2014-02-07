@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Template;
+namespace Gush\Template\Pats;
 
 class Pats
 {

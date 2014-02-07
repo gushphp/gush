@@ -11,6 +11,7 @@
 
 namespace Gush\Helper;
 
+use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
@@ -32,6 +33,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
         // for the moment we register a set of default Gush templates
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
+        $this->registerTemplate(new PatTemplate());
         $this->registerTemplate(new DefaultTemplate());
         $this->dialog = $dialog;
     }
@@ -136,6 +138,24 @@ class TemplateHelper extends Helper implements InputAwareInterface
     {
         $template = $this->getTemplate($templateDomain, $templateName);
         $this->parameterize($output, $template);
+
+        return $template->render();
+    }
+
+    /**
+     * Like askAndRender but directly binding parameters passed
+     * not as options but as direct input argument to method.
+     *
+     * @param array   $parameters
+     * @param string  $templateDomain  Domain for the template, e.g. pull-request
+     * @param string  $templateName    Name of the template, e.g. symfony-doc
+     *
+     * @return string Rendered template string
+     */
+    public function bindAndRender(array $parameters, $templateDomain, $templateName)
+    {
+        $template = $this->getTemplate($templateDomain, $templateName);
+        $template->bind($parameters);
 
         return $template->render();
     }

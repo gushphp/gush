@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Github\Client;
+use Gush\Config;
 use Gush\Tester\HttpClient\TestHttpClient;
 use Gush\Tests\TestableApplication;
 use Symfony\Component\Console\Command\Command;
@@ -30,9 +31,15 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected $httpClient;
 
+    /**
+     * @var Config
+     */
+    protected $config;
+
     public function setUp()
     {
         $this->httpClient = new TestHttpClient();
+        $this->config = $this->getMock('Gush\Config');
     }
 
     /**
@@ -41,12 +48,11 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getCommandTester(Command $command)
     {
-        $config = $this->getMock('Gush\Config');
         $application = new TestableApplication();
         $application->setAutoExit(false);
         $application->setGithubClient($this->buildGithubClient());
         $application->setVersionEyeClient($this->buildVersionEyeClient());
-        $application->setConfig($config);
+        $application->setConfig($this->config);
 
         $command->setApplication($application);
 

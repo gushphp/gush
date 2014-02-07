@@ -50,30 +50,29 @@ EOF
     {
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
+        $client = $this->getGithubClient();
 
         $prNumber = $input->getArgument('pr_number');
 
-        $client = $this->getGithubClient();
         $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
 
-        $placeHolders = ['author' => $pr['user']['login']];
-        $patMessage = $this->renderRandomPat($placeHolders);
+        $patMessage = $this
+            ->getHelper('template')
+            ->bindAndRender(
+                ['author' => $pr['user']['login']],
+                'pats/general',
+                'pats'
+            )
+        ;
 
-        $parameters = ['body' => $patMessage];
-        $client->api('issue')->comments()->create($org, $repo, $prNumber, $parameters);
+        $client
+            ->api('issue')
+            ->comments()
+            ->create($org, $repo, $prNumber, ['body' => $patMessage])
+        ;
 
         $output->writeln("Pat on the back pushed to https://github.com/{$org}/{$repo}/pull/{$prNumber}");
 
         return self::COMMAND_SUCCESS;
-    }
-
-    private function renderRandomPat(array $placeHolders)
-    {
-        $resultString = Pats::getRandom();
-        foreach ($placeHolders as $placeholder => $value) {
-            $resultString = str_replace('{{ '.$placeholder.' }}', $value, $resultString);
-        }
-
-        return $resultString;
     }
 }
