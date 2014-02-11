@@ -69,9 +69,7 @@ EOF
         $isOnlyPullRequest = $pullRequests && !$issues;
         $isOnlyIssue = $issues && !$pullRequests;
 
-        $params = [
-            "state" => "open"
-        ];
+        $params = ['state' => 'open'];
 
         if ($input->getOption('new')) {
             $filename = sprintf(
@@ -97,13 +95,13 @@ EOF
             $new = $input->getOption('new') ? 'new ' : '';
             $output->writeln(sprintf('<error>No %sissues/pull requests found</error>', $new));
 
-            return;
+            return self::COMMAND_FAILURE;
         }
 
         if (!$labels) {
             $output->writeln('<error>No Labels found.</error>');
 
-            return;
+            return self::COMMAND_FAILURE;
         }
 
         // we only need the labels name

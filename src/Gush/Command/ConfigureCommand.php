@@ -90,6 +90,7 @@ EOF
         $username = null;
         $passwordOrToken = null;
         $authenticationType = null;
+        $versionEyeToken = null;
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -155,6 +156,12 @@ EOF
             $this->config->get('cache-dir')
         );
 
+        $versionEyeToken = $dialog->askAndValidate(
+            $output,
+            'versioneye token: ',
+            $validator
+        );
+
         $this->config->merge(
             [
                 'cache-dir' => $cacheDir,
@@ -162,7 +169,8 @@ EOF
                     'username' => $username,
                     'password-or-token' => $passwordOrToken,
                     'http-auth-type' => $authenticationType
-                ]
+                ],
+                'versioneye-token' => $versionEyeToken,
             ]
         );
     }
@@ -185,10 +193,10 @@ EOF
             $client->authenticate($username, $passwordOrToken, $authenticationType);
 
             return is_array($client->api('authorizations')->all());
-        } else {
-            $client->authenticate($passwordOrToken, $authenticationType);
-
-            return is_array($client->api('me')->show());
         }
+
+        $client->authenticate($passwordOrToken, $authenticationType);
+
+        return is_array($client->api('me')->show());
     }
 }

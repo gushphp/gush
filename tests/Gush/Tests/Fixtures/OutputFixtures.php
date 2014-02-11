@@ -64,4 +64,10 @@ EOT;
     const PULL_REQUEST_FIXER = <<<EOT
 CS fix committed and pushed!
 EOT;
+
+    const PULL_REQUEST_VERSIONEYE = <<<EOT
+Please check the modifications on your composer.json for
+updated dependencies.
+EOT;
+
 }
