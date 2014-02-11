@@ -91,6 +91,7 @@ class PullRequestSquashCommandTest extends BaseTestCase
         $this
             ->config
             ->expects($this->once())
+            ->method('get')
             ->with('github')
             ->will($this->returnValue(['username' => 'cordoval']))
         ;
