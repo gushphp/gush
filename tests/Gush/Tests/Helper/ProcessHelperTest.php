@@ -12,6 +12,7 @@
 namespace Gush\Tests\Helper;
 
 use Gush\Helper\ProcessHelper;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class ProcessHelperTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,11 +25,14 @@ class ProcessHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testRunCommands()
     {
-        $this->helper->runCommands([
+        $this->helper->runCommands(
             [
-                'line' => 'echo "hello"',
-                'allow_failures' => true
-            ]
-        ]);
+                [
+                    'line' => 'echo "hello"',
+                    'allow_failures' => true
+                ]
+            ],
+            new BufferedOutput()
+        );
     }
 }

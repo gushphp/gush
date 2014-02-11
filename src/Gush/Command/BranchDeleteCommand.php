@@ -57,7 +57,8 @@ EOF
                     'line' => 'git push -u origin :'.$currentBranchName,
                     'allow_failures' => true
                 ]
-            ]
+            ],
+            $output
         );
 
         $output->writeln(sprintf('Branch %s has been deleted!', $currentBranchName));

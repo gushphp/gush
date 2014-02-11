@@ -65,7 +65,8 @@ EOF
                     'line' => 'git checkout '.$pr['head']['ref'],
                     'allow_failures' => true
                 ]
-            ]
+            ],
+            $output
         );
 
         $commandLine = sprintf(
@@ -85,7 +86,8 @@ EOF
                     'line' => sprintf('git push -u %s %s -f', $username, $pr['head']['ref']),
                     'allow_failures' => true
                 ]
-            ]
+            ],
+            $output
         );
 
         return self::COMMAND_SUCCESS;

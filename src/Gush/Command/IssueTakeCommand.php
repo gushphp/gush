@@ -79,7 +79,7 @@ EOF
             ],
         ];
 
-        $this->getHelper('process')->runCommands($commands);
+        $this->getHelper('process')->runCommands($commands, $output);
 
         $output->writeln(sprintf('Issue https://github.com/%s/%s/issues/%s taken!', $org, $repo, $issueNumber));
 

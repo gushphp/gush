@@ -11,6 +11,7 @@
 
 namespace Gush\Helper;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Process\Process;
@@ -30,9 +31,10 @@ class ProcessHelper extends Helper
      *
      * @param  array             $command
      * @param  Boolean           $allowFailures
+     * @param  OutputInterface   $output
      * @throws \RuntimeException
      */
-    public function runCommand(array $command, $allowFailures = false)
+    public function runCommand(array $command, $allowFailures = false, OutputInterface $output)
     {
         $builder = new ProcessBuilder($command);
         $builder
@@ -42,11 +44,11 @@ class ProcessHelper extends Helper
         $process = $builder->getProcess();
 
         $process->run(
-            function ($type, $buffer) {
+            function ($type, $buffer) use ($output) {
                 if (Process::ERR === $type) {
-                    echo 'ERR > ' . $buffer;
+                    $output->write('<error>ERR ></error> '.$buffer);
                 } else {
-                    echo 'OUT > ' . $buffer;
+                    $output->write('<comment>OUT ></comment> '.$buffer);
                 }
             }
         );
@@ -60,16 +62,17 @@ class ProcessHelper extends Helper
      * Run a series of shell command through a Process
      *
      * @param array $commands
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
-    public function runCommands(array $commands)
+    public function runCommands(array $commands, OutputInterface $output)
     {
         foreach ($commands as $command) {
             if (!is_array($command['line'])) {
-                $this->runCommand(explode(' ', $command['line']), $command['allow_failures']);
+                $this->runCommand(explode(' ', $command['line']), $command['allow_failures'], $output);
                 continue;
             }
 
-            $this->runCommand($command['line'], $command['allow_failures']);
+            $this->runCommand($command['line'], $command['allow_failures'], $output);
         }
     }
 
