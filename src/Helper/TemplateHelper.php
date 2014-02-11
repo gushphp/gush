@@ -11,8 +11,8 @@
 
 namespace Gush\Helper;
 
-use Gush\Template\Meta\Header\MITTemplate;
 use Gush\Template\Meta\Header\GPL3Template;
+use Gush\Template\Meta\Header\MITTemplate;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\EnterpriseTemplate;
