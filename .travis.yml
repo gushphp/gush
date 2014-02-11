@@ -16,7 +16,8 @@ matrix:
         - php: hhvm
 
 env:
-  - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
+  # RUNSCOPE_BUCKET= VERSIONEYE_TOKEN= GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
+  - secure: "Ii55ivFDOzWxhc856TYFxcd5y171fl0/KpnxpiAZx/2PhC8+nJ0Az0J5bkvhDp341fzMarBM01tqeBlbQxEUshOEqijQeu4avSdmcf2YvDEpoXYhi50K22XzzlBbFXZuD076bt+uWdXT4UxyvFUbjHp6eDEfM7EKi/Xszg4zVdU="
 
 before_script:
   - composer install -n

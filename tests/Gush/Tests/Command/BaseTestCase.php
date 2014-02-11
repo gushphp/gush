@@ -45,6 +45,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $application = new TestableApplication();
         $application->setAutoExit(false);
         $application->setGithubClient($this->buildGithubClient());
+        $application->setVersionEyeClient($this->buildVersionEyeClient());
         $application->setConfig($config);
 
         $command->setApplication($application);
@@ -71,5 +72,14 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function buildGithubClient()
     {
         return new Client($this->httpClient);
+    }
+
+    protected function buildVersionEyeClient()
+    {
+        $client = new \Guzzle\Http\Client();
+        $client->setBaseUrl('https://www-versioneye-com-'.getenv('RUNSCOPE_BUCKET').'.runscope.net/');
+        $client->setDefaultOption('query', ['api_key' => getenv('VERSIONEYE_TOKEN')]);
+
+        return $client;
     }
 }

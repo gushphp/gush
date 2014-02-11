@@ -22,6 +22,7 @@ class ConfigureCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';
     const USERNAME = 'bar';
+    const VERSIONEYE_TOKEN = 'token';
 
     public function testCommand()
     {
@@ -39,7 +40,8 @@ class ConfigureCommandTest extends BaseTestCase
                     'username' => self::USERNAME,
                     'password-or-token' => self::PASSWORD,
                     'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
-                ]
+                ],
+                'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
 
@@ -76,6 +78,9 @@ class ConfigureCommandTest extends BaseTestCase
         $dialog->expects($this->at(3))
             ->method('askAndValidate')
             ->will($this->returnValue($homeDir.'/cache'));
+        $dialog->expects($this->at(4))
+            ->method('askAndValidate')
+            ->will($this->returnValue(self::VERSIONEYE_TOKEN));
 
         return $dialog;
     }

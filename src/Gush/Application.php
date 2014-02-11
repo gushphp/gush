@@ -21,6 +21,7 @@ use Gush\Helper as Helpers;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
+use Guzzle\Http\Client as GuzzleClient;
 use KevinGH\Amend\Command as UpdateCommand;
 use KevinGH\Amend\Helper as UpdateHelper;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -43,6 +44,11 @@ class Application extends BaseApplication
      * @var \Github\Client $githubClient The Github Client
      */
     protected $githubClient = null;
+
+    /**
+     * @var \Guzzle\Http\Client $versionEyeClient The VersionEye Client
+     */
+    protected $versionEyeClient = null;
 
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
@@ -101,6 +107,7 @@ class Application extends BaseApplication
         $this->add(new Cmd\BranchChangelogCommand());
         $this->add(new Cmd\LabelIssuesCommand());
         $this->add(new Cmd\ConfigureCommand());
+        $this->add(new Cmd\PullRequestVersionEyeCommand());
     }
 
     /**
@@ -126,6 +133,37 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return \Github\Client
+     */
+    public function getGithubClient()
+    {
+        return $this->githubClient;
+    }
+
+    public function setVersionEyeClient(GuzzleClient $versionEyeClient)
+    {
+        $this->versionEyeClient = $versionEyeClient;
+    }
+
+    /**
+     * @return \Guzzle\Http\Client
+     */
+    public function getVersionEyeClient()
+    {
+        return $this->versionEyeClient;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
@@ -136,17 +174,13 @@ class Application extends BaseApplication
             if (null === $this->githubClient) {
                 $this->githubClient = $this->buildGithubClient();
             }
+
+            if (null === $this->versionEyeClient) {
+                $this->versionEyeClient = $this->buildVersionEyeClient();
+            }
         }
 
         parent::doRunCommand($command, $input, $output);
-    }
-
-    /**
-     * @return \Github\Client
-     */
-    public function getGithubClient()
-    {
-        return $this->githubClient;
     }
 
     protected function readParameters()
@@ -206,13 +240,13 @@ class Application extends BaseApplication
         return $githubClient;
     }
 
-    public function getConfig()
+    protected function buildVersionEyeClient()
     {
-        return $this->config;
-    }
+        $versionEyeToken = $this->config->get('versioneye-token');
+        $client = new GuzzleClient();
+        $client->setBaseUrl('https://www.versioneye.com');
+        $client->setDefaultOption('query', ['api_key' => $versionEyeToken]);
 
-    public function getDispatcher()
-    {
-        return $this->dispatcher;
+        return $client;
     }
 }

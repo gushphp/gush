@@ -78,12 +78,4 @@ class Factory
 
         return $config;
     }
-
-    public static function createAdditionalStyles()
-    {
-        return [
-            'highlight' => new OutputFormatterStyle('red'),
-            'warning' => new OutputFormatterStyle('black', 'yellow'),
-        ];
-    }
 }

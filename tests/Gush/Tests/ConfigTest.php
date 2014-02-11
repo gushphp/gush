@@ -55,7 +55,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                     'password-or-token' => 'bar',
                     'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
                 ],
-                'cache-dir' => sys_get_temp_dir()
+                'cache-dir' => sys_get_temp_dir(),
+                'versioneye-token' => '1234',
             ]
         );
 

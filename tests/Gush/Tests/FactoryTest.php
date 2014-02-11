@@ -82,12 +82,4 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $process = new Process("rm -rf $this->home");
         $process->run();
     }
-
-    public function testCreateAdditionalStyles()
-    {
-        $styles = Factory::createAdditionalStyles();
-
-        $this->assertArrayHasKey('highlight', $styles);
-        $this->assertArrayHasKey('warning', $styles);
-    }
 }
