@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -27,11 +27,12 @@ class ProcessHelper extends Helper
 
     /**
      * Run a command through the ProcessBuilder
-     * 
+     *
      * @param array             $command
      * @param Boolean           $allowFailures
-     * @param \Closure          Callback for Process (e.g. for logging output in realtime)         
-     * :
+     * @param \Closure          Callback for Process (e.g. for logging output in realtime)
+     *
+     * @return string
      * @throws \RuntimeException
      */
     public function runCommand($command, $allowFailures = false, $callback = null)

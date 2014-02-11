@@ -102,9 +102,10 @@ class GitHelper extends Helper
     }
 
     /**
+     * @param array $options
      * @return array  Files in the git repository
      */
-    public function lsFiles($options = array())
+    public function lsFiles($options = [])
     {
         $builder = $this->processHelper->getProcessBuilder([
             'git',

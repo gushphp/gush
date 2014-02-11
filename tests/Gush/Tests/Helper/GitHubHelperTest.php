@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of Gush.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
@@ -51,7 +51,7 @@ class GitHubHelperTest extends \PHPUnit_Framework_TestCase
                 return $enums[$key];
             }));
 
-        $res = GitHubHelper::validateEnums($input, 'issue', array('filter', 'state'));
+        $res = GitHubHelper::validateEnums($input, 'issue', ['filter', 'state']);
 
         $this->assertEquals($enums, $res);
     }
