@@ -79,7 +79,7 @@ EOF
         if ($merge['merged']) {
             if (!$input->getOption('no-comments')) {
                 $comments = $client->api('issues')->comments()->all($org, $repo, $prNumber);
-                $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'));
+                $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'), $output);
             }
             $output->writeln($merge['message']);
         } else {
@@ -89,7 +89,7 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function addCommentsToMergeCommit($comments, $sha, $remote)
+    private function addCommentsToMergeCommit($comments, $sha, $remote, $output)
     {
         if (0 === count($comments)) {
             return;
@@ -137,7 +137,7 @@ EOF
             ],
         ];
 
-        $this->getHelper('process')->runCommands($commands);
+        $this->getHelper('process')->runCommands($commands, $output);
     }
 
     private function getCommitsString($commits)

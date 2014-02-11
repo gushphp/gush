@@ -66,8 +66,9 @@ CS fix committed and pushed!
 EOT;
 
     const PULL_REQUEST_VERSIONEYE = <<<EOT
+OUT > ./composer.json has been updated
+OUT > ./composer.json has been updated
 Please check the modifications on your composer.json for
 updated dependencies.
 EOT;
-
 }

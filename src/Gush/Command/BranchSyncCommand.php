@@ -77,7 +77,8 @@ EOF
                     'line' => 'git checkout '.$stashedBranchName,
                     'allow_failures' => true
                 ]
-            ]
+            ],
+            $output
         );
 
         $output->writeln(sprintf('Branch %s has been synced upstream!', $branchName));

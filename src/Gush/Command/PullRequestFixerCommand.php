@@ -76,7 +76,8 @@ EOF
                     'line' => 'git commit -am cs-fixer',
                     'allow_failures' => true
                 ]
-            ]
+            ],
+            $output
         );
 
         $output->writeln('CS fix committed and pushed!');
