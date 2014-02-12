@@ -79,35 +79,7 @@ class Application extends BaseApplication
 
         parent::__construct($name, $version);
         $this->setHelperSet($helperSet);
-
-        $updateCommand = new UpdateCommand('update');
-        $updateCommand->setManifestUri(self::MANIFESTO_FILE_URL);
-
-        $this->add($updateCommand);
-        $this->add(new Cmd\PullRequestCreateCommand());
-        $this->add(new Cmd\PullRequestMergeCommand());
-        $this->add(new Cmd\PullRequestPatOnTheBackCommand());
-        $this->add(new Cmd\PullRequestSwitchBaseCommand());
-        $this->add(new Cmd\PullRequestSquashCommand());
-        $this->add(new Cmd\PullRequestSemVerCommand());
-        $this->add(new Cmd\FabbotIoCommand());
-        $this->add(new Cmd\PullRequestFixerCommand());
-        $this->add(new Cmd\ReleaseCreateCommand());
-        $this->add(new Cmd\ReleaseListCommand());
-        $this->add(new Cmd\ReleaseRemoveCommand());
-        $this->add(new Cmd\IssueTakeCommand());
-        $this->add(new Cmd\IssueCreateCommand());
-        $this->add(new Cmd\IssueCloseCommand());
-        $this->add(new Cmd\IssueLabelListCommand());
-        $this->add(new Cmd\IssueMilestoneListCommand());
-        $this->add(new Cmd\IssueShowCommand());
-        $this->add(new Cmd\IssueListCommand());
-        $this->add(new Cmd\BranchSyncCommand());
-        $this->add(new Cmd\BranchDeleteCommand());
-        $this->add(new Cmd\BranchChangelogCommand());
-        $this->add(new Cmd\LabelIssuesCommand());
-        $this->add(new Cmd\ConfigureCommand());
-        $this->add(new Cmd\PullRequestVersionEyeCommand());
+        $this->addCommands($this->getCommands());
     }
 
     /**
@@ -248,5 +220,42 @@ class Application extends BaseApplication
         $client->setDefaultOption('query', ['api_key' => $versionEyeToken]);
 
         return $client;
+    }
+
+    /**
+     * @return \Symfony\Component\Console\Command\Command[]
+     */
+    public function getCommands()
+    {
+        $updateCommand = new UpdateCommand('update');
+        $updateCommand->setManifestUri(self::MANIFESTO_FILE_URL);
+
+        return [
+            $updateCommand,
+            new Cmd\PullRequestCreateCommand(),
+            new Cmd\PullRequestMergeCommand(),
+            new Cmd\PullRequestPatOnTheBackCommand(),
+            new Cmd\PullRequestSwitchBaseCommand(),
+            new Cmd\PullRequestSquashCommand(),
+            new Cmd\PullRequestSemVerCommand(),
+            new Cmd\FabbotIoCommand(),
+            new Cmd\PullRequestFixerCommand(),
+            new Cmd\ReleaseCreateCommand(),
+            new Cmd\ReleaseListCommand(),
+            new Cmd\ReleaseRemoveCommand(),
+            new Cmd\IssueTakeCommand(),
+            new Cmd\IssueCreateCommand(),
+            new Cmd\IssueCloseCommand(),
+            new Cmd\IssueLabelListCommand(),
+            new Cmd\IssueMilestoneListCommand(),
+            new Cmd\IssueShowCommand(),
+            new Cmd\IssueListCommand(),
+            new Cmd\BranchSyncCommand(),
+            new Cmd\BranchDeleteCommand(),
+            new Cmd\BranchChangelogCommand(),
+            new Cmd\LabelIssuesCommand(),
+            new Cmd\ConfigureCommand(),
+            new Cmd\PullRequestVersionEyeCommand(),
+        ];
     }
 }
