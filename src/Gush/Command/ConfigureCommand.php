@@ -135,6 +135,8 @@ EOF
                 );
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
+                $output->writeln('');
+                $output->writeln('You can create valid access tokens at https://github.com/settings/applications.');
             }
         }
 
