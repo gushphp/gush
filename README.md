@@ -105,7 +105,7 @@ $ git commit -am "added instructions to use gush"
 
 Send PR:
 ```
-$ gush p:create
+$ gush pull-request:create
 Bug fix? [y]
 // ...
 PR Title: Added a bit of documentation under usage
@@ -114,7 +114,7 @@ https://github.com/cordoval/gush/pull/94
 
 Merge it:
 ```bash
-$ gush p:merge 94
+$ gush pull-request:merge 94
 Pull Request successfully merged
 ```
 
