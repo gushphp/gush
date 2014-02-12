@@ -25,7 +25,7 @@ abstract class AbstractTemplate implements TemplateInterface
         $requirements = $this->getRequirements();
 
         foreach ($requirements as $key => $requirementData) {
-            list($label, $default) = $requirementData;
+            list(, $default) = $requirementData;
 
             if (!isset($this->parameters[$key])) {
                 $this->parameters[$key] = $default;
