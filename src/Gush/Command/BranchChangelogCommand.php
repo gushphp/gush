@@ -20,7 +20,7 @@ use Gush\Feature\GitHubFeature;
  *
  * @author Luis Cordova <cordoval@gmail.com>
  *
- * adapted from @lornajane / @sebastianbergmann
+ * adapted from lornajane and sebastianbergmann
  * reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
  */
 class BranchChangelogCommand extends BaseCommand implements GitHubFeature
