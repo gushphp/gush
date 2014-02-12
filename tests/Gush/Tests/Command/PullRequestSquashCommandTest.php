@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\PullRequestSquashCommand;
+use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
@@ -27,7 +28,7 @@ class PullRequestSquashCommandTest extends BaseTestCase
         $command->getHelperSet()->set($processHelper, 'process');
         $tester->execute(['--org' => 'cordoval', 'pr_number' => 40]);
 
-        $this->assertEquals("Pull Request successfully merged.", trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::PULL_REQUEST_SQUASH, trim($tester->getDisplay()));
     }
 
     protected function expectShowPullRequest()

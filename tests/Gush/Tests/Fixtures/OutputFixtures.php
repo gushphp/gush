@@ -75,4 +75,8 @@ OUT > ./composer.json has been updated
 Please check the modifications on your composer.json for
 updated dependencies.
 EOT;
+
+    const PULL_REQUEST_SQUASH = <<<EOT
+PR has been squashed!
+EOT;
 }

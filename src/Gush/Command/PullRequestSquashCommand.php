@@ -84,6 +84,8 @@ EOF
 
         $this->getHelper('process')->runCommands($commands, $output);
 
+        $output->writeln('PR has been squashed!');
+
         return self::COMMAND_SUCCESS;
     }
 }
