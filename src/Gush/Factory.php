@@ -11,8 +11,6 @@
 
 namespace Gush;
 
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-
 /**
  * Creates the default directory structure to run Gush
  *
