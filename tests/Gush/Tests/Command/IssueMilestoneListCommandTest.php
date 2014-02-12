@@ -20,21 +20,6 @@ class IssueMilestoneListCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $params = [
-            'page' => 1,
-            'state' => 'open',
-            'sort' => 'due_date',
-            'direction' => 'desc'
-        ];
-
-        $this->httpClient->whenGet('repos/cordoval/gush/milestones', $params)->thenReturn(
-            [
-                [
-                    'title' => 'version 1.0'
-                ],
-            ]
-        );
-
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());
         $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
 

@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Github\Client;
+use Gush\Adapter\AbstractAdapter;
 use Gush\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -73,7 +74,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $client = $this->getApplication()->getGithubClient();
+        $adapter = $this->getAdapter();
         $releaseName = $input->getOption('name');
         $tag = $input->getArgument('tag');
         $org = $input->getOption('org');
@@ -83,7 +84,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
         $assetContentTypes = $input->getOption('asset-content-type');
 
         if ($input->getOption('replace')) {
-            $this->removeExisting($output, $client, $org, $repo, $tag);
+            $this->removeExisting($output, $adapter, $tag);
         }
 
         // validates assets
@@ -103,14 +104,16 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
             )
         );
 
-        $release = $client->api('repo')->releases()->create($org, $repo, [
-            'tag_name' => $input->getArgument('tag'),
-            'target_commitish' => $input->getOption('target-commitish'),
-            'name' => $input->getOption('name'),
-            'body' => $input->getOption('body'),
-            'draft' => $input->getOption('draft'),
-            'prerelease' => $input->getOption('prerelease'),
-        ]);
+        $release = $adapter->createRelease(
+            $input->getArgument('tag'),
+            [
+                'target_commitish' => $input->getOption('target-commitish'),
+                'name' => $input->getOption('name'),
+                'body' => $input->getOption('body'),
+                'draft' => $input->getOption('draft'),
+                'prerelease' => $input->getOption('prerelease'),
+            ]
+        );
 
         $output->writeln(sprintf('<info>Created release with ID </info>%s', $release['id']));
 
@@ -132,9 +135,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
             }
 
             $content = file_get_contents($assetFile);
-            $client->api('repo')->releases()->assets()->create(
-                $org,
-                $repo,
+            $adapter->createReleaseAssets(
                 $release['id'],
                 $assetName,
                 $assetContentType,
@@ -145,9 +146,9 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
         return self::COMMAND_SUCCESS;
     }
 
-    private function removeExisting(OutputInterface $output, Client $client, $org, $repo, $tag)
+    private function removeExisting(OutputInterface $output, AbstractAdapter $adapter, $tag)
     {
-        $releases = $client->api('repo')->releases()->all($org, $repo);
+        $releases = $adapter->getReleases();
         $id = null;
 
         foreach ($releases as $release) {
@@ -158,7 +159,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
 
         if ($id) {
             $output->writeln(sprintf('<info>Removing existing release with tag </info>%s (id: %s)', $tag, $id));
-            $client->api('repo')->releases()->remove($org, $repo, $id);
+            $adapter->removeRelease($id);
         }
     }
 }

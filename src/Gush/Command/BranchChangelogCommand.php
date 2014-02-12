@@ -48,9 +48,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
-
         $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
 
         $commits = $this->getHelper('git')->runGitCommand(
@@ -60,7 +57,7 @@ EOF
         // Filter commits that reference an issue
         $issues = [];
 
-        $client = $this->getGithubClient();
+        $adapter = $this->getAdapter();
 
         foreach (explode("\n", $commits) as $commit) {
             if (preg_match('/\/([0-9]+)/i', $commit, $matchesGush) && isset($matchesGush[1])) {
@@ -77,7 +74,7 @@ EOF
         sort($issues);
 
         foreach ($issues as $id) {
-            $issue = $client->api('issue')->show($org, $repo, $id);
+            $issue = $adapter->getIssue($id);
 
             $output->writeln(
                 sprintf("%s: %s   <info>%s</info>", $id, $issue['title'], $issue['html_url'])

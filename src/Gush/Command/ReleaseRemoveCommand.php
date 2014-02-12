@@ -47,7 +47,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $client = $this->getGithubClient();
         $id = $input->getArgument('id');
         $repo = $input->getOption('repo');
         $org = $input->getOption('org');
@@ -61,8 +60,7 @@ EOF
             )
         );
 
-        $release = $client->api('repo')->releases()->remove($org, $repo, $id);
-
-        return $release;
+        $adapter = $this->getAdapter();
+        return $adapter->removeRelease($id);
     }
 }

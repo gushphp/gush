@@ -47,17 +47,15 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
         $prNumber = $input->getArgument('pr_number');
 
-        $client = $this->getGithubClient();
-        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+        $adapter = $this->getAdapter();
+        $pr = $adapter->getPullRequest($prNumber);
         $base = $pr['base']['ref'];
         $head = $pr['head']['ref'];
 
-        $github = $this->getParameter('github');
-        $username = $github['username'];
+        $credentials = $this->getParameter('authentication');
+        $username = $credentials['username'];
 
         $commands = [
             [

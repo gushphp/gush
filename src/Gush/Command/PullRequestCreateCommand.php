@@ -85,19 +85,16 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
-
         $base = $input->getOption('base');
         $head = $input->getOption('head');
-
         $template = $input->getOption('template');
 
         if (null === $head) {
             $head = $this->getHelper('git')->getBranchName();
         }
 
-        $github = $this->getParameter('github');
-        $username = $github['username'];
+        $credentials = $this->getParameter('authentication');
+        $username = $credentials['username'];
 
         if (!$title = $input->getOption('title')) {
             $title = $this->getHelper('dialog')->ask($output, 'Title: ');
@@ -116,19 +113,13 @@ EOF
         }
 
         $pullRequest = $this
-            ->getGithubClient()
-            ->api('pull_request')
-            ->create(
-                $org,
-                $repo,
-                [
-                    'base'  => $org.':'.$base,
-                    'head'  => $username.':'.$head,
-                    'title' => $title,
-                    'body'  => $body,
-                ]
-            )
-        ;
+            ->getAdapter()
+            ->openPullRequest(
+                $org.':'.$base,
+                $username.':'.$head,
+                $title,
+                $body
+            );
 
         $output->writeln($pullRequest['html_url']);
 

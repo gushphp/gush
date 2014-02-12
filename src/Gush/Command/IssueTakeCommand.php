@@ -53,8 +53,9 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
 
-        $client = $this->getGithubClient();
-        $issue = $client->api('issue')->show($org, $repo, $issueNumber);
+        $adapter = $this->getAdapter();
+        $issue = $adapter->getIssue($issueNumber);
+
 
         $slugTitle = $this->getHelper('text')->slugify(
             sprintf(
@@ -81,7 +82,8 @@ EOF
 
         $this->getHelper('process')->runCommands($commands, $output);
 
-        $output->writeln(sprintf('Issue https://github.com/%s/%s/issues/%s taken!', $org, $repo, $issueNumber));
+        $url = $adapter->getIssueUrl($issueNumber);
+        $output->writeln("Issue {$url} taken!");
 
         return self::COMMAND_SUCCESS;
     }

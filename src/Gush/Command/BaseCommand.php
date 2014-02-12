@@ -11,7 +11,9 @@
 
 namespace Gush\Command;
 
+use Gush\Adapter\AdapterInterface;
 use Gush\Event\GushEvents;
+use Gush\Feature\GitHubFeature;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
@@ -29,11 +31,11 @@ class BaseCommand extends Command
     /**
      * Gets the Github's Client
      *
-     * @return \Github\Client
+     * @return AdapterInterface
      */
-    protected function getGithubClient()
+    protected function getAdapter()
     {
-        return $this->getApplication()->getGithubClient();
+        return $this->getApplication()->getAdapter();
     }
 
     /**

@@ -87,9 +87,9 @@ EOF
             touch($filename);
         }
 
-        $client = $this->getGithubClient();
-        $issues = $client->api('issue')->all($org, $repo, $params);
-        $labels = $client->api('issue')->labels()->all($org, $repo);
+        $adapter = $this->getAdapter();
+        $issues = $adapter->getIssues($params);
+        $labels = $adapter->getLabels();
 
         if (!$issues) {
             $new = $input->getOption('new') ? 'new ' : '';
@@ -148,7 +148,7 @@ EOF
             );
 
             // updates the issue
-            $client->api('issue')->update($org, $repo, $issue['number'], ['labels' => explode(',', $label)]);
+            $adapter->updateIssue($issue['number'], ['labels' => explode(',', $label)]);
         }
 
         return self::COMMAND_SUCCESS;

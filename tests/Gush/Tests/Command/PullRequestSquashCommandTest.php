@@ -21,7 +21,6 @@ class PullRequestSquashCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->expectShowPullRequest();
         $this->expectConfig();
         $processHelper = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new PullRequestSquashCommand());
@@ -29,27 +28,6 @@ class PullRequestSquashCommandTest extends BaseTestCase
         $tester->execute(['--org' => 'cordoval', 'pr_number' => 40]);
 
         $this->assertEquals(OutputFixtures::PULL_REQUEST_SQUASH, trim($tester->getDisplay()));
-    }
-
-    protected function expectShowPullRequest()
-    {
-        $this->httpClient->whenGet('repos/cordoval/gush/pulls/40')
-            ->thenReturn(
-                [
-                    'number' => 40,
-                    'state' => "open",
-                    'user' => ['login' => 'weaverryan'],
-                    'assignee' => ['login' => 'cordoval'],
-                    'pull_request' => [],
-                    'milestone' => ['title' => "Conquer the world"],
-                    'labels' => [['name' => 'actionable'], ['name' => 'easy pick']],
-                    'title' => 'Write a behat test to launch strategy',
-                    'body' => 'Help me conquer the world. Teach them to use gush.',
-                    'base' => ['label' => 'master', 'ref' => 'base_ref'],
-                    'head' => ['ref' => 'head_ref']
-                 ]
-            )
-        ;
     }
 
     private function expectProcessHelper()
@@ -93,7 +71,7 @@ class PullRequestSquashCommandTest extends BaseTestCase
             ->config
             ->expects($this->once())
             ->method('get')
-            ->with('github')
+            ->with('authentication')
             ->will($this->returnValue(['username' => 'cordoval']))
         ;
     }

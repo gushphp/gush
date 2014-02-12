@@ -54,11 +54,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $client = $this->getGithubClient();
-        $repo = $input->getOption('repo');
-        $org = $input->getOption('org');
-
-        $releases = $client->api('repo')->releases()->all($org, $repo);
+        $adapter = $this->getAdapter();
+        $releases = $adapter->getReleases();
 
         $table = $this->getHelper('table');
         $table->setHeaders(['ID', 'Name', 'Tag', 'Commitish', 'Draft', 'Prerelease', 'Created', 'Published']);

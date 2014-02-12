@@ -12,32 +12,27 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\IssueTakeCommand;
+use Gush\Tester\Adapter\TestAdapter;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
 class IssueTakeCommandTest extends BaseTestCase
 {
-    const SLUGIFIED_STRING = '17-test-string';
-    const TEST_TITLE = '17 test string';
-    const ISSUE_NUMBER = 7;
+    const SLUGIFIED_STRING = 'write-a-behat-test-to-launch-strategy';
+    const TEST_TITLE = 'Write a behat test to launch strategy';
 
     public function testCommand()
     {
-        $this
-            ->httpClient->whenGet('repos/cordoval/gush/issues/'.self::ISSUE_NUMBER)
-            ->thenReturn(['title' => self::TEST_TITLE])
-        ;
-
         $text = $this->expectTextHelper();
         $process = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($text, 'text');
         $command->getHelperSet()->set($process, 'process');
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush', 'issue_number' => self::ISSUE_NUMBER]);
+        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush', 'issue_number' => TestAdapter::ISSUE_NUMBER]);
 
         $this->assertEquals(
-            sprintf('Issue https://github.com/cordoval/gush/issues/%s taken!', self::ISSUE_NUMBER),
+            sprintf('Issue https://github.com/cordoval/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
             trim($tester->getDisplay())
         );
     }
@@ -53,7 +48,7 @@ class IssueTakeCommandTest extends BaseTestCase
             ->with(
                 sprintf(
                     '%d %s',
-                    self::ISSUE_NUMBER,
+                    TestAdapter::ISSUE_NUMBER,
                     self::TEST_TITLE
                 )
             )

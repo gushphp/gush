@@ -54,8 +54,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
         $prNumber = $input->getArgument('pr_number');
         $baseBranch = $input->getArgument('base_branch');
 
@@ -70,20 +68,13 @@ EOF
         $command->run($input, $output);
 
         // gets old base and sha1 from old PR
-        $client = $this->getGithubClient();
-        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+        $adapter = $this->getAdapter();
+        $pr = $adapter->getPullRequest($prNumber);
         $commitSha1 = $pr['head']['sha'];
         $branchName = $pr['head']['ref'];
 
         // closes PR
-        $command = $this->getApplication()->find('issue:close');
-        $input = new ArrayInput(
-            [
-                'command' => 'issue:close',
-                'issue_number' => $prNumber
-            ]
-        );
-        $command->run($input, $output);
+        $adapter->closeIssue($prNumber);
 
         $commands = [
             [

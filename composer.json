@@ -21,6 +21,10 @@
         {
             "name": "Daniel T. Leech",
             "email": "dan.t.leech@gmail.com"
+        },
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com"
         }
     ],
     "require": {
@@ -38,6 +42,9 @@
     "require-dev": {
         "phpunit/phpunit": "~3.7",
         "raulfraile/ladybug": "~1.0"
+    },
+    "provide": {
+        "aequasi/gush-github-adapter": "dev-master"
     },
     "bin": [
         "bin/gush"

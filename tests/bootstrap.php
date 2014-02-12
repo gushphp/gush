@@ -24,5 +24,6 @@ EOT;
 }
 
 $loader = require $file;
+date_default_timezone_set('America/Los_Angeles');
 
 $loader->add('Gush\\Tests\\', __DIR__);

@@ -48,13 +48,11 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
 
         $issueNumber = $input->getArgument('issue_number');
 
-        $client = $this->getGithubClient();
-        $issue = $client->api('issue')->show($org, $repo, $issueNumber);
+        $adapter = $this->getAdapter();
+        $issue   = $adapter->getIssue($issueNumber);
 
         $output->writeln(sprintf(
             "\nIssue #%s (%s): by %s [%s]",

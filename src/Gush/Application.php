@@ -11,12 +11,12 @@
 
 namespace Gush;
 
-use Github\Client;
-use Github\HttpClient\CachedHttpClient;
+use Gush\Adapter\Adapter;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Exception\FileNotFoundException;
+use Gush\Exception\AdapterException;
 use Gush\Helper as Helpers;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
@@ -41,9 +41,9 @@ class Application extends BaseApplication
     protected $config;
 
     /**
-     * @var \Github\Client $githubClient The Github Client
+     * @var null|Adapter $adapter The Hub Adapter
      */
-    protected $githubClient = null;
+    protected $adapter;
 
     /**
      * @var \Guzzle\Http\Client $versionEyeClient The VersionEye Client
@@ -99,18 +99,22 @@ class Application extends BaseApplication
         parent::add($command);
     }
 
-    public function setGithubClient(Client $githubClient)
-    {
-        $this->githubClient = $githubClient;
-    }
-
     /**
      * @return \Github\Client
      */
-    public function getGithubClient()
+    public function getAdapter()
     {
-        return $this->githubClient;
+        return $this->adapter;
     }
+
+    /**
+     * @param \Gush\Adapter\AdapterInterface $adapter
+     */
+    public function setAdapter($adapter)
+    {
+        $this->adapter = $adapter;
+    }
+
 
     public function setVersionEyeClient(GuzzleClient $versionEyeClient)
     {
@@ -143,8 +147,8 @@ class Application extends BaseApplication
         if ('configure' !== $this->getCommandName($input)) {
             $this->readParameters();
 
-            if (null === $this->githubClient) {
-                $this->githubClient = $this->buildGithubClient();
+            if (null === $this->adapter) {
+                $this->adapter = $this->buildAdapter($input);
             }
 
             if (null === $this->versionEyeClient) {
@@ -186,30 +190,49 @@ class Application extends BaseApplication
         }
     }
 
-    protected function buildGithubClient()
+    /**
+     * Builds the adapter for the application
+     *
+     * @param InputInterface $input
+     *
+     * @return AdapterInterface
+     */
+    public function buildAdapter(InputInterface $input)
     {
-        $cachedClient = new CachedHttpClient([
-            'cache_dir' => $this->config->get('cache-dir')
-        ]);
-
-        $githubCredentials = $this->config->get('github');
-
-        $githubClient = new Client($cachedClient);
-
-        if (Client::AUTH_HTTP_PASSWORD === $githubCredentials['http-auth-type']) {
-            $githubClient->authenticate(
-                $githubCredentials['username'],
-                $githubCredentials['password-or-token'],
-                $githubCredentials['http-auth-type']
-            );
-        } else {
-            $githubClient->authenticate(
-                $githubCredentials['password-or-token'],
-                $githubCredentials['http-auth-type']
-            );
+        $adapterClass = $this->config->get('adapter_class');
+        if (null === $adapterClass) {
+            $adapterClass = "Gush\\Adapter\\GitHubAdapter";
         }
 
-        return $githubClient;
+        $this->validateAdapterClass($adapterClass);
+
+        $org = $input->hasOption('org') ? $input->getOption('org') : null;
+        $repo = $input->hasOption('org') ? $input->getOption('repo') : null;
+
+        /** @var Adapter $adapter */
+        $adapter = new $adapterClass($this->config, $org, $repo);
+        $adapter->authenticate();
+
+        return $adapter;
+    }
+
+    public function validateAdapterClass($adapterClass)
+    {
+        if (!class_exists($adapterClass)) {
+            throw new AdapterException(sprintf('The class "%s" doesn\'t exist.', $adapterClass));
+        }
+
+        $reflection = new \ReflectionClass($adapterClass);
+        $interface  = "Gush\\Adapter\\Adapter";
+        if (!$reflection->implementsInterface($interface)) {
+            throw new AdapterException(sprintf(
+                    'The class "%s" doesnt implement "%s"',
+                    $adapterClass,
+                    $interface
+                ));
+        }
+
+        return;
     }
 
     protected function buildVersionEyeClient()

@@ -11,9 +11,8 @@
 
 namespace Gush\Tests\Command;
 
-use Github\Client;
+use Gush\Tester\Adapter\TestAdapter;
 use Gush\Config;
-use Gush\Tester\HttpClient\TestHttpClient;
 use Gush\Tests\TestableApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -26,10 +25,11 @@ use Symfony\Component\Console\Input\InputAwareInterface;
  */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
+
     /**
-     * @var TestHttpClient
+     * @var TestAdapter
      */
-    protected $httpClient;
+    protected $adapter;
 
     /**
      * @var Config
@@ -38,8 +38,8 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->httpClient = new TestHttpClient();
         $this->config = $this->getMock('Gush\Config');
+        $this->adapter = $this->buildAdapter();
     }
 
     /**
@@ -50,9 +50,9 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     {
         $application = new TestableApplication();
         $application->setAutoExit(false);
-        $application->setGithubClient($this->buildGithubClient());
-        $application->setVersionEyeClient($this->buildVersionEyeClient());
         $application->setConfig($this->config);
+        $application->setAdapter($this->adapter);
+        $application->setVersionEyeClient($this->buildVersionEyeClient());
 
         $command->setApplication($application);
 
@@ -75,9 +75,12 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         return new CommandTester($command);
     }
 
-    protected function buildGithubClient()
+    /**
+     * @return TestAdapter
+     */
+    protected function buildAdapter()
     {
-        return new Client($this->httpClient);
+        return new TestAdapter($this->config, 'cordoval', 'gush');
     }
 
     protected function buildVersionEyeClient()

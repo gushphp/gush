@@ -50,7 +50,7 @@ EOF
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
 
-        $client = $this->getGithubClient();
+        $adapter = $this->getAdapter();
         $emptyValidator = function ($string) {
             if (trim($string) == '') {
                 throw new \Exception('This value can not be empty');
@@ -73,11 +73,10 @@ EOF
             $emptyValidator
         );
 
-        $parameters = ["title" => $title, "body" => $body];
+        $issue = $adapter->openIssue($title, $body);
 
-        $issue = $client->api('issue')->create($org, $repo, $parameters);
-
-        $output->writeln("https://github.com/{$org}/{$repo}/issues/{$issue['number']}");
+        $url = $adapter->getIssueUrl($issue['number']);
+        $output->writeln("Created issue {$url}");
 
         return self::COMMAND_SUCCESS;
     }

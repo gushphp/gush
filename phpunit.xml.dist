@@ -19,16 +19,17 @@
          stopOnFailure="false"
          syntaxCheck="false"
          bootstrap="./tests/bootstrap.php"
-        >
+    >
 
-    <!--
     <php>
-       <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
-       <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>
-       <env name="RUNSCOPE_BUCKET" value="BUCKET_ID"/>
-       <env name="VERSIONEYE_TOKEN" value="TOKEN"/>
+        <env name="GIT_VENDOR_NAME" value="cordoval"/>
+        <!--
+        <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
+        <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>
+        <env name="RUNSCOPE_BUCKET" value="BUCKET_ID"/>
+        <env name="VERSIONEYE_TOKEN" value="TOKEN"/>
+        -->
     </php>
-    -->
 
     <testsuites>
         <testsuite name="Gush Test Suite">

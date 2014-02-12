@@ -55,14 +55,11 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
         $prNumber = $input->getArgument('pr_number');
 
-        $client = $this->getGithubClient();
-
-        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
-        $commits = $client->api('pull_request')->commits($org, $repo, $prNumber);
+        $adapter = $this->getAdapter();
+        $pr      = $adapter->getPullRequest($prNumber);
+        $commits = $adapter->getPullRequestCommits($prNumber);
 
         $message = $this->render(
             'merge',
@@ -74,11 +71,11 @@ EOF
             ]
         );
 
-        $merge = $client->api('pull_request')->merge($org, $repo, $prNumber, $message);
+        $merge = $adapter->mergePullRequest($prNumber, $message);
 
         if ($merge['merged']) {
             if (!$input->getOption('no-comments')) {
-                $comments = $client->api('issues')->comments()->all($org, $repo, $prNumber);
+                $comments = $adapter->getComments($prNumber);
                 $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'), $output);
             }
             $output->writeln($merge['message']);

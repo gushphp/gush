@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\IssueCloseCommand;
+use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
@@ -21,17 +22,8 @@ class IssueCloseCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->whenPatch(
-            'repos/cordoval/gush/issues/12',
-            json_encode(['state' => 'closed'])
-        )->thenReturn(
-            [
-                'number' => 12
-            ]
-        );
-
         $tester = $this->getCommandTester(new IssueCloseCommand());
-        $tester->execute(['--org' => 'cordoval', 'issue_number' => 12]);
+        $tester->execute(['--org' => 'cordoval', 'issue_number' => TestAdapter::ISSUE_NUMBER]);
 
         $this->assertEquals(OutputFixtures::ISSUE_CLOSE, trim($tester->getDisplay()));
     }
