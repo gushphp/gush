@@ -65,10 +65,18 @@ EOT;
 CS fix committed and pushed!
 EOT;
 
+    const PULL_REQUEST_PAT_ON_THE_BACK = <<<EOT
+Pat on the back pushed to https://github.com/cordoval/gush/pull/7
+EOT;
+
     const PULL_REQUEST_VERSIONEYE = <<<EOT
 OUT > ./composer.json has been updated
 OUT > ./composer.json has been updated
 Please check the modifications on your composer.json for
 updated dependencies.
+EOT;
+
+    const PULL_REQUEST_SQUASH = <<<EOT
+PR has been squashed!
 EOT;
 }
