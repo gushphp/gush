@@ -29,6 +29,10 @@
         {
             "name": "*.pem.*",
             "in": "vendor/guzzle/guzzle/src/Guzzle/Http/Resources"
+        },
+        {
+            "name": "schema.json",
+            "in": "vendor/herrera-io/phar-update/res"
         }
     ],
     "git-version": "package_version",
