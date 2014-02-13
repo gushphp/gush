@@ -157,12 +157,7 @@ EOF
             );
 
             try {
-                $isAuthenticated = $this->isCredentialsValid(
-                    $input,
-                    $username,
-                    $passwordOrToken,
-                    $authenticationType
-                );
+                $isAuthenticated = $this->isCredentialsValid($input);
             } catch (\Exception $e) {
                 var_dump($e->getMessage());
                 $output->writeln("<error>{$e->getMessage()}</error>");
@@ -210,22 +205,16 @@ EOF
     /**
      * Validates if the credentials are valid
      *
-     * @param  string $username
-     * @param  string $passwordOrToken
-     * @param  string $authenticationType
+     * @param \Symfony\Component\Console\Input\InputInterface $input
      *
      * @return Boolean
      */
-    private function isCredentialsValid($username, $passwordOrToken, $authenticationType)
+    private function isCredentialsValid(InputInterface $input)
     {
         if (null === $adapter = $this->getAdapter()) {
-            $this->config->merge([
-                'username'          => $username,
-                'password-or-token' => $passwordOrToken,
-                'http-auth-type'    => $authenticationType
-            ]);
-            $adapter = $this->getApplication()->buildAdapter($);
+            $adapter = $this->getApplication()->buildAdapter($input, false);
         }
+        $adapter->authenticate();
 
         return $adapter->isAuthenticated();
     }
