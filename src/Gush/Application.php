@@ -148,7 +148,7 @@ class Application extends BaseApplication
             $this->readParameters();
 
             if (null === $this->adapter) {
-                $this->adapter = $this->buildAdapter($input);
+                $this->buildAdapter($input);
             }
 
             if (null === $this->versionEyeClient) {
@@ -194,10 +194,11 @@ class Application extends BaseApplication
      * Builds the adapter for the application
      *
      * @param InputInterface $input
+     * @param Boolean        $authenticate
      *
      * @return AdapterInterface
      */
-    public function buildAdapter(InputInterface $input)
+    public function buildAdapter(InputInterface $input, $authenticate = true)
     {
         $adapterClass = $this->config->get('adapter_class');
         if (null === $adapterClass) {
@@ -211,9 +212,11 @@ class Application extends BaseApplication
 
         /** @var Adapter $adapter */
         $adapter = new $adapterClass($this->config, $org, $repo);
-        $adapter->authenticate();
+        if (!$authenticate) {
+            $adapter->authenticate();
+        }
 
-        return $adapter;
+        return $this->adapter = $adapter;
     }
 
     public function validateAdapterClass($adapterClass)

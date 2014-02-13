@@ -114,11 +114,6 @@ EOF
         };
 
         while (!$isAuthenticated) {
-            $config = array_merge(
-                $config,
-                [$this->getAdapter()->getName() => $this->getAdapter()->doConfiguration($output, $dialog)]
-            );
-
             $output->writeln('<comment>Enter Hub Connection type:</comment>');
             $authenticationType = $dialog->select(
                 $output,
@@ -142,8 +137,28 @@ EOF
                 $validator
             );
 
+            $this->config->merge(
+                array_merge(
+                    $config,
+                    [
+                        'authentication' => [
+                            'username'          => $username,
+                            'password-or-token' => $passwordOrToken,
+                            'http-auth-type'    => $authenticationType
+                        ]
+                    ]
+                )
+            );
+
+            $this->getApplication()->buildAdapter($input, false);
+            $config = array_merge(
+                $config,
+                [$this->getAdapter()->getName() => $this->getAdapter()->doConfiguration($output, $dialog)]
+            );
+
             try {
                 $isAuthenticated = $this->isCredentialsValid(
+                    $input,
                     $username,
                     $passwordOrToken,
                     $authenticationType
@@ -180,21 +195,16 @@ EOF
             $validator
         );
 
-        $config = array_merge(
-            $config,
-            [
-                'adapter_class'    => $input->getOption('adapter'),
-                'cache-dir'        => $cacheDir,
-                'authentication'   => [
-                    'username'          => $username,
-                    'password-or-token' => $passwordOrToken,
-                    'http-auth-type'    => $authenticationType
-                ],
-                'versioneye-token' => $versionEyeToken,
-            ]
+        $this->config->merge(
+            array_merge(
+                $config,
+                [
+                    'adapter_class'    => $input->getOption('adapter'),
+                    'cache-dir'        => $cacheDir,
+                    'versioneye-token' => $versionEyeToken,
+                ]
+            )
         );
-
-        $this->config->merge($config);
     }
 
     /**
@@ -209,12 +219,12 @@ EOF
     private function isCredentialsValid($username, $passwordOrToken, $authenticationType)
     {
         if (null === $adapter = $this->getAdapter()) {
-            $config  = [
+            $this->config->merge([
                 'username'          => $username,
                 'password-or-token' => $passwordOrToken,
                 'http-auth-type'    => $authenticationType
-            ];
-            $adapter = $this->getApplication()->buildAdapter($config);
+            ]);
+            $adapter = $this->getApplication()->buildAdapter($);
         }
 
         return $adapter->isAuthenticated();
