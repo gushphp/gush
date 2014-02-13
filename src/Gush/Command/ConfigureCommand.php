@@ -161,7 +161,6 @@ EOF
             try {
                 $isAuthenticated = $this->isCredentialsValid($input);
             } catch (\Exception $e) {
-                var_dump($e->getMessage());
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
                 $output->writeln('You can create valid access tokens at https://github.com/settings/applications.');
