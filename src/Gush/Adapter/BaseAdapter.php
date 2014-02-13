@@ -108,7 +108,7 @@ abstract class BaseAdapter implements Adapter
 
     /**
      * Returns the URL for generating a token.
-     * If the adapter does'nt support tokens, returns null
+     * If the adapter does not support tokens, returns null
      *
      * @return null|string
      */

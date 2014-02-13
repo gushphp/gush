@@ -250,7 +250,7 @@ class Application extends BaseApplication
         if (!$reflection->implementsInterface($interface)) {
             throw new AdapterException(
                 sprintf(
-                    'The class "%s" doesnt implement "%s"',
+                    'The class "%s" does not implement "%s"',
                     $adapterClass,
                     $interface
                 )
