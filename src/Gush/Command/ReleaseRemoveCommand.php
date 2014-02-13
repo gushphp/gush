@@ -60,7 +60,6 @@ EOF
             )
         );
 
-        $adapter = $this->getAdapter();
-        return $adapter->removeRelease($id);
+        return $this->getAdapter()->removeRelease($id);
     }
 }
