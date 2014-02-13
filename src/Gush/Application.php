@@ -55,7 +55,7 @@ class Application extends BaseApplication
      */
     protected $dispatcher;
 
-    public function __construct($name = 'Gush', $version = '@git-version@')
+    public function __construct($name = 'Gush', $version = '@package_version@')
     {
         $helperSet = $this->getDefaultHelperSet();
         $helperSet->set(new Helpers\GitHelper());
