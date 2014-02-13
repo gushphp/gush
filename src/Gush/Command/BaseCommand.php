@@ -11,7 +11,7 @@
 
 namespace Gush\Command;
 
-use Gush\Adapter\AdapterInterface;
+use Gush\Adapter\Adapter;
 use Gush\Event\GushEvents;
 use Gush\Feature\GitHubFeature;
 use Gush\Template\Messages;
@@ -29,9 +29,9 @@ class BaseCommand extends Command
     const COMMAND_FAILURE = 0;
 
     /**
-     * Gets the Github's Client
+     * Gets the current adapter
      *
-     * @return AdapterInterface
+     * @return Adapter
      */
     protected function getAdapter()
     {

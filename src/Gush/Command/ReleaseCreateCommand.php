@@ -11,8 +11,7 @@
 
 namespace Gush\Command;
 
-use Github\Client;
-use Gush\Adapter\AbstractAdapter;
+use Gush\Adapter\Adapter;
 use Gush\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -146,7 +145,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
         return self::COMMAND_SUCCESS;
     }
 
-    private function removeExisting(OutputInterface $output, AbstractAdapter $adapter, $tag)
+    private function removeExisting(OutputInterface $output, Adapter $adapter, $tag)
     {
         $releases = $adapter->getReleases();
         $id = null;
