@@ -23,7 +23,7 @@ class TestableApplication extends Application
     /**
      * {@inheritdoc}
      */
-    public function buildAdapter(InputInterface $input)
+    public function buildAdapter(InputInterface $input = null, Config $config = null)
     {
         return new TestAdapter($this->config, 'cordoval', 'gush');
     }

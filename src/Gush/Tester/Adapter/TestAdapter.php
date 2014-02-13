@@ -21,7 +21,7 @@ class TestAdapter extends BaseAdapter
     /**
      * @var string
      */
-    protected $name = 'test';
+    protected static $name = 'test';
 
     const PULL_REQUEST_NUMBER = 40;
 
@@ -40,6 +40,17 @@ class TestAdapter extends BaseAdapter
     public function authenticate()
     {
         return true;
+    }
+
+    /**
+     * Returns the URL for generating a token.
+     * If the adapter doesnt support tokens, returns null
+     *
+     * @return null|string
+     */
+    public function getTokenGenerationUrl()
+    {
+        return null;
     }
 
     /**

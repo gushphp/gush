@@ -36,7 +36,7 @@ class ConfigureCommandTest extends BaseTestCase
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
                 'home' => $homeDir,
-                'test' => [],
+                'base' => [],
                 'authentication' => [
                     'username' => self::USERNAME,
                     'password-or-token' => self::PASSWORD,
