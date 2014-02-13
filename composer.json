@@ -38,7 +38,7 @@
         "ddd/slug": "~1.0",
         "herrera-io/version": "~1.0@dev",
         "kherge/amend": "~3.0",
-        "gushphp/gush-adapter-implementation": "*"
+        "gushphp/gush-adapter": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",
