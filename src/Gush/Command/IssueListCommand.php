@@ -73,11 +73,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
-
-        $client = $this->getGithubClient();
-        $paginator = new ResultPager($client);
+        $adapter = $this->getAdapter();
 
         $params = GitHubHelper::validateEnums($input, 'issue', ['state', 'filter', 'sort', 'direction']);
 
@@ -95,11 +91,7 @@ EOF
             $params['since'] = date('c', $ts);
         }
 
-        $issues = $paginator->fetchAll(
-            $client->api('issue'),
-            'all',
-            [$org, $repo, $params]
-        );
+        $issues  = $adapter->getIssues($params);
 
         // post filter
         foreach ($issues as $i => &$issue) {

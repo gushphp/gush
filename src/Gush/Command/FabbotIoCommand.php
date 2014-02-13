@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Gush\Adapter\GitHubAdapter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,16 +49,20 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->getAdapter() instanceof GitHubAdapter) {
+            throw new \Exception("To use fabbot.io, you must be using the github adapter");
+        }
+
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
 
         $prNumber = $input->getArgument('pr_number');
 
-        $github = $this->getParameter('github');
+        $github = $this->getParameter('authentication');
         $username = $github['username'];
 
-        $client = $this->getGithubClient();
-        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+        $adapter = $this->getAdapter();
+        $pr      = $adapter->getPullRequest($prNumber);
 
         $this->getHelper('process')->runCommands(
             [

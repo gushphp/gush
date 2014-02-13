@@ -11,10 +11,11 @@
 
 namespace Gush\Command;
 
-use Github\Client;
+use Gush\Config;
 use Gush\Factory;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -25,14 +26,17 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigureCommand extends BaseCommand
 {
+    const AUTH_HTTP_PASSWORD = 'http_password';
+
+    const AUTH_HTTP_TOKEN = 'http_token';
     /**
      * @var \Gush\Config $config
      */
     private $config;
 
     protected $authenticationOptions = [
-        0 => Client::AUTH_HTTP_PASSWORD,
-        1 => Client::AUTH_HTTP_TOKEN,
+        0 => self::AUTH_HTTP_PASSWORD,
+        1 => self::AUTH_HTTP_TOKEN,
     ];
 
     /**
@@ -40,9 +44,15 @@ class ConfigureCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this
-            ->setName('configure')
+        $this->setName('configure')
             ->setDescription('Configure the github credentials and the cache folder')
+            ->addOption(
+                'adapter',
+                'a',
+                InputOption::VALUE_OPTIONAL,
+                "What adapter should be used? (GitHub)",
+                '\\Gush\\Adapter\\GitHubAdapter'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> configure parameters Gush will use:
@@ -68,7 +78,7 @@ EOF
     {
         $filename = $this->config->get('home').'/.gush.yml';
 
-        $yaml = new Yaml();
+        $yaml    = new Yaml();
         $content = ['parameters' => $this->config->raw()];
 
         @unlink($filename);
@@ -86,11 +96,16 @@ EOF
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $isAuthenticated = false;
-        $username = null;
-        $passwordOrToken = null;
+        $adapter = $input->getOption('adapter');
+        $adapterName = call_user_func([$adapter, 'getName']);
+        $this->getApplication()->validateAdapterClass($adapter);
+
+        $isAuthenticated    = false;
+        $username           = null;
+        $passwordOrToken    = null;
         $authenticationType = null;
-        $versionEyeToken = null;
+        $versionEyeToken    = null;
+        $config             = [];
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -104,39 +119,49 @@ EOF
         };
 
         while (!$isAuthenticated) {
-            $output->writeln('<comment>Enter Github connection type:</comment>');
+            $output->writeln('<comment>Enter Hub Connection type:</comment>');
             $authenticationType = $dialog->select(
                 $output,
                 'Select among these: ',
                 $this->authenticationOptions,
                 0
             );
+
             $authenticationType = $this->authenticationOptions[$authenticationType];
-            $output->writeln('<comment>Insert your github credentials:</comment>');
-            $username = $dialog->askAndValidate(
+            $output->writeln('<comment>Insert your Hub Credentials:</comment>');
+            $username            = $dialog->askAndValidate(
                 $output,
                 'username: ',
                 $validator
             );
-            $passwordOrTokenText = $authenticationType == Client::AUTH_HTTP_PASSWORD
-                ? 'password: '
-                : 'token: ';
-            $passwordOrToken = $dialog->askHiddenResponseAndValidate(
+
+            $passwordOrTokenText = $authenticationType == self::AUTH_HTTP_PASSWORD ? 'password: ' : 'token: ';
+            $passwordOrToken     = $dialog->askHiddenResponseAndValidate(
                 $output,
                 $passwordOrTokenText,
                 $validator
             );
 
+            $this->config->merge(
+                [
+                    'adapter_class'  => $input->getOption('adapter'),
+                    'authentication' => [
+                        'username'          => $username,
+                        'password-or-token' => $passwordOrToken,
+                        'http-auth-type'    => $authenticationType
+                    ],
+                    $adapterName => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog])
+                ]
+            );
+
             try {
-                $isAuthenticated = $this->isGithubCredentialsValid(
-                    $username,
-                    $passwordOrToken,
-                    $authenticationType
-                );
+                $isAuthenticated = $this->isCredentialsValid();
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
-                $output->writeln('You can create valid access tokens at https://github.com/settings/applications.');
+                if (null !== $url = $this->getAdapter()->getTokenGenerationUrl()) {
+                    $output->writeln("You can create valid access tokens at {$url}.");
+                }
             }
         }
 
@@ -166,12 +191,7 @@ EOF
 
         $this->config->merge(
             [
-                'cache-dir' => $cacheDir,
-                'github' => [
-                    'username' => $username,
-                    'password-or-token' => $passwordOrToken,
-                    'http-auth-type' => $authenticationType
-                ],
+                'cache-dir'        => $cacheDir,
                 'versioneye-token' => $versionEyeToken,
             ]
         );
@@ -180,25 +200,14 @@ EOF
     /**
      * Validates if the credentials are valid
      *
-     * @param  string  $username
-     * @param  string  $passwordOrToken
-     * @param  string  $authenticationType
      * @return Boolean
      */
-    private function isGithubCredentialsValid($username, $passwordOrToken, $authenticationType)
+    private function isCredentialsValid()
     {
-        if (null === $client = $this->getGithubClient()) {
-            $client = new Client();
+        if (null === $adapter = $this->getAdapter()) {
+            $adapter = $this->getApplication()->buildAdapter(null, $this->config);
         }
 
-        if (Client::AUTH_HTTP_PASSWORD === $authenticationType) {
-            $client->authenticate($username, $passwordOrToken, $authenticationType);
-
-            return is_array($client->api('authorizations')->all());
-        }
-
-        $client->authenticate($passwordOrToken, $authenticationType);
-
-        return is_array($client->api('me')->show());
+        return $adapter->isAuthenticated();
     }
 }

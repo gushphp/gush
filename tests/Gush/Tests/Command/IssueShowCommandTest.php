@@ -21,20 +21,6 @@ class IssueShowCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->whenGet('repos/cordoval/gush/issues/60')->thenReturn(
-            [
-                'number' => 60,
-                'state' => "open",
-                'user' => ['login' => 'weaverryan'],
-                'assignee' => ['login' => 'cordoval'],
-                'pull_request' => [],
-                'milestone' => ['title' => "Conquer the world"],
-                'labels' => [['name' => 'actionable'], ['name' => 'easy pick']],
-                'title' => 'Write a behat test to launch strategy',
-                'body' => 'Help me conquer the world. Teach them to use gush.',
-            ]
-        );
-
         $tester = $this->getCommandTester(new IssueShowCommand());
         $tester->execute(['issue_number' => 60, '--org' => 'cordoval', '--repo' => 'gush']);
 

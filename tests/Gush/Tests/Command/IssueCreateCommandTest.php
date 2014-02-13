@@ -23,20 +23,12 @@ class IssueCreateCommandTest extends BaseTestCase
 
     public function testCommand()
     {
-        $this->httpClient
-            ->whenPost(
-                'repos/cordoval/gush/issues',
-                json_encode(['title' => self::ISSUE_TITLE, 'body' => self::ISSUE_DESCRIPTION])
-            )
-            ->thenReturn(['number' => 77])
-        ;
-
         $dialog = $this->expectDialogParameters();
         $tester = $this->getCommandTester($command = new IssueCreateCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
         $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
 
-        $this->assertEquals('https://github.com/cordoval/gush/issues/77', trim($tester->getDisplay()));
+        $this->assertEquals('Created issue https://github.com/cordoval/gush/issues/77', trim($tester->getDisplay()));
     }
 
     private function expectDialogParameters()

@@ -1,5 +1,5 @@
 {
-    "name": "cordoval/gush",
+    "name": "gushphp/gush",
     "type": "library",
     "description": "Rapid workflow for project maintainers and contributors",
     "keywords": [
@@ -21,6 +21,10 @@
         {
             "name": "Daniel T. Leech",
             "email": "dan.t.leech@gmail.com"
+        },
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com"
         }
     ],
     "require": {
@@ -33,7 +37,8 @@
         "knplabs/github-api": "~1.2",
         "ddd/slug": "~1.0",
         "herrera-io/version": "~1.0@dev",
-        "kherge/amend": "~3.0"
+        "kherge/amend": "~3.0",
+        "gushphp/gush-adapter-implementation": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",

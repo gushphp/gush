@@ -55,12 +55,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
+        $adapter = $this->getAdapter();
 
-        $client = $this->getGithubClient();
-
-        $labels = $client->api('issue')->labels()->all($org, $repo);
+        $labels = $adapter->getLabels();
 
         $table = $this->getHelper('table');
         $table->formatRows($labels, function ($label) {

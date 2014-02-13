@@ -11,11 +11,11 @@
 
 namespace Gush\Command;
 
+use Gush\Feature\GitHubFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gush\Feature\GitHubFeature;
 
 /**
  * Closes an issue
@@ -29,8 +29,7 @@ class IssueCloseCommand extends BaseCommand implements GitHubFeature
      */
     protected function configure()
     {
-        $this
-            ->setName('issue:close')
+        $this->setName('issue:close')
             ->setDescription('Closes an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number to be closed')
             ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Closing comment')
@@ -50,23 +49,22 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
+        $org  = $input->getOption('org');
         $repo = $input->getOption('repo');
 
-        $issueNumber = $input->getArgument('issue_number');
+        $issueNumber    = $input->getArgument('issue_number');
         $closingComment = $input->getOption('message');
 
-        $client = $this->getGithubClient();
+        $adapter = $this->getAdapter();
 
-        $parameters = ['state' => 'closed'];
-        $client->api('issue')->update($org, $repo, $issueNumber, $parameters);
+        $adapter->closeIssue($issueNumber);
 
         if ($input->getOption('message')) {
-            $parameters = ['body' => $closingComment];
-            $client->api('issue')->comments()->create($org, $repo, $issueNumber, $parameters);
+            $adapter->createComment($issueNumber, $closingComment);
         }
 
-        $output->writeln("Closed https://github.com/{$org}/{$repo}/issues/{$issueNumber}");
+        $url = $adapter->getIssueUrl($issueNumber);
+        $output->writeln("Closed {$url}");
 
         return self::COMMAND_SUCCESS;
     }

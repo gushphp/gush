@@ -21,19 +21,6 @@ class ReleaseListCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->whenGet('repos/cordoval/gush/releases')->thenReturn([
-            [
-                'id' => '123',
-                'name' => 'This is a Release',
-                'tag_name' => 'Tag name',
-                'target_commitish' => '123123',
-                'draft' => true,
-                'prerelease' => 'yes',
-                'created_at' => '2014-01-05',
-                'published_at' => '2014-01-05',
-            ],
-        ]);
-
         $tester = $this->getCommandTester(new ReleaseListCommand());
         $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
 

@@ -36,24 +36,24 @@ class ConfigureCommandTest extends BaseTestCase
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
                 'home' => $homeDir,
-                'github' => [
+                'base' => [],
+                'authentication' => [
                     'username' => self::USERNAME,
                     'password-or-token' => self::PASSWORD,
                     'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
                 ],
+                'adapter_class' => 'Gush\\Tester\\Adapter\\TestAdapter',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
 
         @mkdir($homeDir, 0777, true);
 
-        $this->httpClient->whenGet('authorizations')->thenReturn([]);
-
         $dialog = $this->expectDialogParameters($homeDir);
 
         $tester = $this->getCommandTester($command = new ConfigureCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
-        $tester->execute(['command' => 'configure']);
+        $tester->execute(['--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter', 'command' => 'configure']);
 
         $this->assertFileExists($gushFilename);
 

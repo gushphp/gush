@@ -16,7 +16,7 @@ namespace Gush;
  */
 class Config
 {
-    public static $defaultConfig = ['cache-dir' => '{$home}/cache'];
+    public static $defaultConfig = ['cache-dir' => '{$home}/cache', 'adapter_class' => '\\Gush\\Adapter\\GitHubAdapter'];
 
     /**
      * @var array $config
@@ -92,9 +92,9 @@ class Config
      */
     public function isValid()
     {
-        if (isset($this->config['github']['username'])
-            && isset($this->config['github']['password-or-token'])
-            && isset($this->config['github']['http-auth-type'])
+        if (isset($this->config['authentication']['username'])
+            && isset($this->config['authentication']['password-or-token'])
+            && isset($this->config['authentication']['http-auth-type'])
             && isset($this->config['versioneye-token'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))

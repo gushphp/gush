@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\PullRequestCreateCommand;
+use Gush\Tester\Adapter\TestAdapter;
 
 /**
  * @author Daniel Leech <daniel@dantleech.com>
@@ -36,20 +37,12 @@ class PullRequestCreateCommandTest extends BaseTestCase
      */
     public function testCommand($args)
     {
-        $this->httpClient
-            ->whenPost(
-                'repos/cordoval/gush/pulls',
-                '{"base":"cordoval:master","head":":issue-145","title":"Test","body":""}'
-            )->thenReturn(
-                ['html_url' => 'this_is_the_pull_url']
-            )
-        ;
 
         $command = new PullRequestCreateCommand();
         $tester = $this->getCommandTester($command);
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
-        $this->assertEquals('this_is_the_pull_url', $res);
+        $this->assertEquals('http://github.com/cordoval/gush/pull/' . TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 }

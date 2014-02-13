@@ -49,11 +49,11 @@ EOF
     {
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
-        $client = $this->getGithubClient();
 
         $prNumber = $input->getArgument('pr_number');
 
-        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+        $adapter = $this->getAdapter();
+        $pr = $adapter->getPullRequest($prNumber);
 
         $patMessage = $this
             ->getHelper('template')
@@ -64,13 +64,10 @@ EOF
             )
         ;
 
-        $client
-            ->api('issue')
-            ->comments()
-            ->create($org, $repo, $prNumber, ['body' => $patMessage])
-        ;
+        $adapter->createComment($prNumber, $patMessage);
 
-        $output->writeln("Pat on the back pushed to https://github.com/{$org}/{$repo}/pull/{$prNumber}");
+        $url = $adapter->getPullRequestUrl($prNumber);
+        $output->writeln("Pat on the back pushed to {$url}");
 
         return self::COMMAND_SUCCESS;
     }

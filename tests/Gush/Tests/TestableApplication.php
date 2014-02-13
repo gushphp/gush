@@ -11,32 +11,21 @@
 
 namespace Gush\Tests;
 
-use Github\Client;
-use Github\Tests\HttpClient\HttpClientTest;
 use Gush\Application;
-use Gush\Tester\HttpClient\TestHttpClient;
+use Gush\Tester\Adapter\TestAdapter;
 use Gush\Config;
+use Symfony\Component\Console\Input\InputInterface;
 
 class TestableApplication extends Application
 {
-    /**
-     * @var HttpClientTest
-     */
-    protected $client;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->client = new TestHttpClient();
-        $this->setGithubClient($this->buildGithubClient());
-    }
+    protected $config;
 
     /**
      * {@inheritdoc}
      */
-    protected function buildGithubClient()
+    public function buildAdapter(InputInterface $input = null, Config $config = null)
     {
-        return new Client(new TestHttpClient([], $this->client));
+        return new TestAdapter($this->config, 'cordoval', 'gush');
     }
 
     public function setConfig(Config $config)

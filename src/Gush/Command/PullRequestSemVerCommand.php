@@ -53,8 +53,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
         $prNumber = $input->getArgument('pr_number');
 
         $this->getHelper('process')->runCommands(
@@ -67,8 +65,8 @@ EOF
             $output
         );
 
-        $client = $this->getGithubClient();
-        $pr = $client->api('pull_request')->show($org, $repo, $prNumber);
+        $adapter = $this->getAdapter();
+        $pr = $adapter->getPullRequest($prNumber);
         $branchToCheckout = $pr['head']['ref'];
 
         $this->getHelper('process')->runCommands(

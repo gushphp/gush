@@ -50,7 +50,7 @@ EOT;
 EOT;
 
     const ISSUE_CLOSE = <<<EOT
-Closed https://github.com/cordoval/gush/issues/12
+Closed https://github.com/cordoval/gush/issues/7
 EOT;
 
     const BRANCH_SYNC = <<<EOT
@@ -66,7 +66,7 @@ CS fix committed and pushed!
 EOT;
 
     const PULL_REQUEST_PAT_ON_THE_BACK = <<<EOT
-Pat on the back pushed to https://github.com/cordoval/gush/pull/7
+Pat on the back pushed to https://github.com/cordoval/gush/pull/40
 EOT;
 
     const PULL_REQUEST_VERSIONEYE = <<<EOT

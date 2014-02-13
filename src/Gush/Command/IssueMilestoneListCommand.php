@@ -55,11 +55,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
-
-        $client = $this->getGithubClient();
-        $milestones = $client->api('issue')->milestones()->all($org, $repo);
+        $adapter = $this->getAdapter();
+        $milestones = $adapter->getMilestones();
 
         $table = $this->getHelper('table');
         $table->formatRows($milestones, $this->getRowBuilderCallback());

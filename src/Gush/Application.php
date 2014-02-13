@@ -11,12 +11,12 @@
 
 namespace Gush;
 
-use Github\Client;
-use Github\HttpClient\CachedHttpClient;
+use Gush\Adapter\Adapter;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Exception\FileNotFoundException;
+use Gush\Exception\AdapterException;
 use Gush\Helper as Helpers;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
@@ -41,9 +41,9 @@ class Application extends BaseApplication
     protected $config;
 
     /**
-     * @var \Github\Client $githubClient The Github Client
+     * @var null|Adapter $adapter The Hub Adapter
      */
-    protected $githubClient = null;
+    protected $adapter;
 
     /**
      * @var \Guzzle\Http\Client $versionEyeClient The VersionEye Client
@@ -99,18 +99,22 @@ class Application extends BaseApplication
         parent::add($command);
     }
 
-    public function setGithubClient(Client $githubClient)
+    /**
+     * @return Adapter
+     */
+    public function getAdapter()
     {
-        $this->githubClient = $githubClient;
+        return $this->adapter;
     }
 
     /**
-     * @return \Github\Client
+     * @param Adapter $adapter
      */
-    public function getGithubClient()
+    public function setAdapter(Adapter $adapter)
     {
-        return $this->githubClient;
+        $this->adapter = $adapter;
     }
+
 
     public function setVersionEyeClient(GuzzleClient $versionEyeClient)
     {
@@ -125,9 +129,20 @@ class Application extends BaseApplication
         return $this->versionEyeClient;
     }
 
+    /**
+     * @return Config
+     */
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
     }
 
     public function getDispatcher()
@@ -143,8 +158,8 @@ class Application extends BaseApplication
         if ('configure' !== $this->getCommandName($input)) {
             $this->readParameters();
 
-            if (null === $this->githubClient) {
-                $this->githubClient = $this->buildGithubClient();
+            if (null === $this->adapter) {
+                $this->buildAdapter($input);
             }
 
             if (null === $this->versionEyeClient) {
@@ -186,30 +201,63 @@ class Application extends BaseApplication
         }
     }
 
-    protected function buildGithubClient()
+    /**
+     * Builds the adapter for the application
+     *
+     * @param InputInterface|null $input
+     * @param Config|null         $config
+     *
+     * @return Adapter
+     */
+    public function buildAdapter(InputInterface $input = null, Config $config = null)
     {
-        $cachedClient = new CachedHttpClient([
-            'cache_dir' => $this->config->get('cache-dir')
-        ]);
+        if (null === $config) {
+            $config = $this->config;
+        }
 
-        $githubCredentials = $this->config->get('github');
+        $adapterClass = $config->get('adapter_class');
+        if (null === $adapterClass) {
+            $adapterClass = "Gush\\Adapter\\GitHubAdapter";
+        }
 
-        $githubClient = new Client($cachedClient);
+        $this->validateAdapterClass($adapterClass);
 
-        if (Client::AUTH_HTTP_PASSWORD === $githubCredentials['http-auth-type']) {
-            $githubClient->authenticate(
-                $githubCredentials['username'],
-                $githubCredentials['password-or-token'],
-                $githubCredentials['http-auth-type']
-            );
+        if (null === $input) {
+            $org  = null;
+            $repo = null;
         } else {
-            $githubClient->authenticate(
-                $githubCredentials['password-or-token'],
-                $githubCredentials['http-auth-type']
+            $org  = $input->hasOption('org') ? $input->getOption('org') : null;
+            $repo = $input->hasOption('org') ? $input->getOption('repo') : null;
+        }
+
+        /** @var Adapter $adapter */
+        $adapter = new $adapterClass($config, $org, $repo);
+        $adapter->authenticate();
+
+        $this->setAdapter($adapter);
+
+        return $adapter;
+    }
+
+    public function validateAdapterClass($adapterClass)
+    {
+        if (!class_exists($adapterClass)) {
+            throw new AdapterException(sprintf('The class "%s" doesn\'t exist.', $adapterClass));
+        }
+
+        $reflection = new \ReflectionClass($adapterClass);
+        $interface  = "Gush\\Adapter\\Adapter";
+        if (!$reflection->implementsInterface($interface)) {
+            throw new AdapterException(
+                sprintf(
+                    'The class "%s" does not implement "%s"',
+                    $adapterClass,
+                    $interface
+                )
             );
         }
 
-        return $githubClient;
+        return;
     }
 
     protected function buildVersionEyeClient()

@@ -64,7 +64,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function itGetsTheVendorNameOfTheRepository()
     {
-        $this->assertEquals('cordoval', $this->git->getVendorName());
+        $this->assertEquals(getenv('GIT_VENDOR_NAME'), $this->git->getVendorName());
     }
 
     /**

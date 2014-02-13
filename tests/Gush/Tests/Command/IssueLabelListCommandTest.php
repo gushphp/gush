@@ -20,16 +20,6 @@ class IssueLabelListCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $this->httpClient->whenGet('repos/cordoval/gush/labels')->thenReturn(
-            [
-                [
-                    'url' => 'https://api.github.com/repos/cordoval/gush/labels/bug',
-                    'name' => 'bug',
-                    'color' => 'f29513'
-                ],
-            ]
-        );
-
         $tester = $this->getCommandTester(new IssueLabelListCommand());
         $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
 
