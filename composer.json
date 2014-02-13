@@ -1,5 +1,5 @@
 {
-    "name": "cordoval/gush",
+    "name": "gushphp/gush",
     "type": "library",
     "description": "Rapid workflow for project maintainers and contributors",
     "keywords": [
