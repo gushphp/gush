@@ -37,14 +37,12 @@
         "knplabs/github-api": "~1.2",
         "ddd/slug": "~1.0",
         "herrera-io/version": "~1.0@dev",
-        "kherge/amend": "~3.0"
+        "kherge/amend": "~3.0",
+        "gushphp/gush-adapter-implementation": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",
         "raulfraile/ladybug": "~1.0"
-    },
-    "provide": {
-        "aequasi/gush-github-adapter": "dev-master"
     },
     "bin": [
         "bin/gush"

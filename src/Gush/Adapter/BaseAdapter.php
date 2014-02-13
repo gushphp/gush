@@ -11,14 +11,13 @@
 
 namespace Gush\Adapter;
 
-
 use Gush\Config;
+use Gush\Exception\AdapterException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gush\Exception\AdapterException;
 
 /**
- * @author  Aaron Scherer <aequasi@gmail.com>
+ * @author Aaron Scherer <aequasi@gmail.com>
  */
 abstract class BaseAdapter implements Adapter
 {
@@ -109,7 +108,7 @@ abstract class BaseAdapter implements Adapter
 
     /**
      * Returns the URL for generating a token.
-     * If the adapter doesnt support tokens, returns null
+     * If the adapter does not support tokens, returns null
      *
      * @return null|string
      */
