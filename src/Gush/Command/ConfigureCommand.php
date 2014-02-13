@@ -151,6 +151,7 @@ EOF
                 )
             );
 
+            $this->getApplication()->setConfig($this->config);
             $this->getApplication()->buildAdapter($input, false);
             $config = array_merge(
                 $config,
