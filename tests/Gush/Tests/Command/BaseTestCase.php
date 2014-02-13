@@ -25,7 +25,6 @@ use Symfony\Component\Console\Input\InputAwareInterface;
  */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var TestAdapter
      */

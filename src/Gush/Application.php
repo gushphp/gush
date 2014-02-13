@@ -248,11 +248,13 @@ class Application extends BaseApplication
         $reflection = new \ReflectionClass($adapterClass);
         $interface  = "Gush\\Adapter\\Adapter";
         if (!$reflection->implementsInterface($interface)) {
-            throw new AdapterException(sprintf(
+            throw new AdapterException(
+                sprintf(
                     'The class "%s" doesnt implement "%s"',
                     $adapterClass,
                     $interface
-                ));
+                )
+            );
         }
 
         return;

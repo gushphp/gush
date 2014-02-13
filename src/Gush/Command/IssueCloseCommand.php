@@ -40,7 +40,8 @@ and repository:
 
     <info>$ gush %command.full_name% 12 -m"let's try to keep it low profile guys."</info>
 EOF
-            );
+            )
+        ;
     }
 
     /**
