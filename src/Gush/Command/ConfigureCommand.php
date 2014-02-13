@@ -141,6 +141,7 @@ EOF
                 array_merge(
                     $config,
                     [
+                        'adapter_class' => $input->getOption('adapter'),
                         'authentication' => [
                             'username'          => $username,
                             'password-or-token' => $passwordOrToken,
@@ -194,7 +195,6 @@ EOF
             array_merge(
                 $config,
                 [
-                    'adapter_class'    => $input->getOption('adapter'),
                     'cache-dir'        => $cacheDir,
                     'versioneye-token' => $versionEyeToken,
                 ]
