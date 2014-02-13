@@ -129,9 +129,20 @@ class Application extends BaseApplication
         return $this->versionEyeClient;
     }
 
+    /**
+     * @return Config
+     */
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
     }
 
     public function getDispatcher()
