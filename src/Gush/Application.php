@@ -221,7 +221,7 @@ class Application extends BaseApplication
 
         /** @var Adapter $adapter */
         $adapter = new $adapterClass($this->config, $org, $repo);
-        if (!$authenticate) {
+        if ($authenticate) {
             $adapter->authenticate();
         }
 
