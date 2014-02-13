@@ -25,7 +25,7 @@ abstract class BaseAdapter implements Adapter
     /**
      * @var null|string
      */
-    protected $name;
+    protected static $name = 'base';
 
     /**
      * @var Config
@@ -52,24 +52,24 @@ abstract class BaseAdapter implements Adapter
         $this->repository    = $repository;
 
         $this->initialize();
+    }
 
-        if (empty($this->name)) {
+    /**
+     * {@inheritdoc}
+     */
+    public static function getName()
+    {
+        if (empty(self::$name)) {
             throw new AdapterException('Adapters must specify a name.');
         }
+
+        return self::$name;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doConfiguration(OutputInterface $output, DialogHelper $dialog)
+    public static function doConfiguration(OutputInterface $output, DialogHelper $dialog)
     {
         return [];
     }

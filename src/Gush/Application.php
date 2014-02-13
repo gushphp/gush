@@ -204,28 +204,39 @@ class Application extends BaseApplication
     /**
      * Builds the adapter for the application
      *
-     * @param InputInterface $input
-     * @param Boolean        $authenticate
+     * @param InputInterface|null $input
+     * @param Config|null         $config
+     *
+     * @return Adapter
      */
-    public function buildAdapter(InputInterface $input, $authenticate = true)
+    public function buildAdapter(InputInterface $input = null, Config $config = null)
     {
-        $adapterClass = $this->config->get('adapter_class');
+        if (null === $config) {
+            $config = $this->config;
+        }
+
+        $adapterClass = $config->get('adapter_class');
         if (null === $adapterClass) {
             $adapterClass = "Gush\\Adapter\\GitHubAdapter";
         }
 
         $this->validateAdapterClass($adapterClass);
 
-        $org = $input->hasOption('org') ? $input->getOption('org') : null;
-        $repo = $input->hasOption('org') ? $input->getOption('repo') : null;
-
-        /** @var Adapter $adapter */
-        $adapter = new $adapterClass($this->config, $org, $repo);
-        if ($authenticate) {
-            $adapter->authenticate();
+        if (null === $input) {
+            $org  = null;
+            $repo = null;
+        } else {
+            $org  = $input->hasOption('org') ? $input->getOption('org') : null;
+            $repo = $input->hasOption('org') ? $input->getOption('repo') : null;
         }
 
+        /** @var Adapter $adapter */
+        $adapter = new $adapterClass($config, $org, $repo);
+        $adapter->authenticate();
+
         $this->setAdapter($adapter);
+
+        return $adapter;
     }
 
     public function validateAdapterClass($adapterClass)

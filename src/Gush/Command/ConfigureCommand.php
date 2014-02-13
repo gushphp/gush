@@ -11,7 +11,7 @@
 
 namespace Gush\Command;
 
-use Github\Client;
+use Gush\Config;
 use Gush\Factory;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,14 +26,17 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigureCommand extends BaseCommand
 {
+    const AUTH_HTTP_PASSWORD = 'http_password';
+
+    const AUTH_HTTP_TOKEN = 'http_token';
     /**
      * @var \Gush\Config $config
      */
     private $config;
 
     protected $authenticationOptions = [
-        0 => Client::AUTH_HTTP_PASSWORD,
-        1 => Client::AUTH_HTTP_TOKEN,
+        0 => self::AUTH_HTTP_PASSWORD,
+        1 => self::AUTH_HTTP_TOKEN,
     ];
 
     /**
@@ -93,7 +96,9 @@ EOF
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->validateAdapterClass($input->getOption('adapter'));
+        $adapter = $input->getOption('adapter');
+        $adapterName = call_user_func([$adapter, 'getName']);
+        $this->getApplication()->validateAdapterClass($adapter);
 
         $isAuthenticated    = false;
         $username           = null;
@@ -130,7 +135,7 @@ EOF
                 $validator
             );
 
-            $passwordOrTokenText = $authenticationType == Client::AUTH_HTTP_PASSWORD ? 'password: ' : 'token: ';
+            $passwordOrTokenText = $authenticationType == self::AUTH_HTTP_PASSWORD ? 'password: ' : 'token: ';
             $passwordOrToken     = $dialog->askHiddenResponseAndValidate(
                 $output,
                 $passwordOrTokenText,
@@ -138,28 +143,19 @@ EOF
             );
 
             $this->config->merge(
-                array_merge(
-                    $config,
-                    [
-                        'adapter_class' => $input->getOption('adapter'),
-                        'authentication' => [
-                            'username'          => $username,
-                            'password-or-token' => $passwordOrToken,
-                            'http-auth-type'    => $authenticationType
-                        ]
-                    ]
-                )
-            );
-
-            $this->getApplication()->setConfig($this->config);
-            $this->getApplication()->buildAdapter($input, false);
-            $config = array_merge(
-                $config,
-                [$this->getAdapter()->getName() => $this->getAdapter()->doConfiguration($output, $dialog)]
+                [
+                    'adapter_class'  => $input->getOption('adapter'),
+                    'authentication' => [
+                        'username'          => $username,
+                        'password-or-token' => $passwordOrToken,
+                        'http-auth-type'    => $authenticationType
+                    ],
+                    $adapterName => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog])
+                ]
             );
 
             try {
-                $isAuthenticated = $this->isCredentialsValid($input);
+                $isAuthenticated = $this->isCredentialsValid();
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
@@ -192,29 +188,23 @@ EOF
         );
 
         $this->config->merge(
-            array_merge(
-                $config,
-                [
-                    'cache-dir'        => $cacheDir,
-                    'versioneye-token' => $versionEyeToken,
-                ]
-            )
+            [
+                'cache-dir'        => $cacheDir,
+                'versioneye-token' => $versionEyeToken,
+            ]
         );
     }
 
     /**
      * Validates if the credentials are valid
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     *
      * @return Boolean
      */
-    private function isCredentialsValid(InputInterface $input)
+    private function isCredentialsValid()
     {
         if (null === $adapter = $this->getAdapter()) {
-            $adapter = $this->getApplication()->buildAdapter($input, false);
+            $adapter = $this->getApplication()->buildAdapter(null, $this->config);
         }
-        $adapter->authenticate();
 
         return $adapter->isAuthenticated();
     }

@@ -14,6 +14,7 @@ namespace Gush\Adapter;
 use Gush\Config;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gush\Exception\AdapterException;
 
 /**
  * @author  Aaron Scherer <aequasi@gmail.com>
@@ -35,14 +36,15 @@ interface Adapter
      *
      * @return array
      */
-    public function doConfiguration(OutputInterface $output, DialogHelper $dialog);
+    public static function doConfiguration(OutputInterface $output, DialogHelper $dialog);
 
     /**
      * Returns the name of the adapter
      *
+     * @throws AdapterException
      * @return string
      */
-    public function getName();
+    public static function getName();
 
     /**
      * Authenticates the Adapter
