@@ -108,6 +108,14 @@ abstract class BaseAdapter implements Adapter
     abstract public function isAuthenticated();
 
     /**
+     * Returns the URL for generating a token.
+     * If the adapter doesnt support tokens, returns null
+     *
+     * @return null|string
+     */
+    abstract public function getTokenGenerationUrl();
+
+    /**
      * {@inheritdoc}
      */
     abstract public function openIssue($subject, $body, array $options = []);

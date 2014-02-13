@@ -64,6 +64,14 @@ interface Adapter
     public function isAuthenticated();
 
     /**
+     * Returns the URL for generating a token.
+     * If the adapter doesnt support tokens, returns null
+     *
+     * @return null|string
+     */
+    public function getTokenGenerationUrl();
+
+    /**
      * @param string $subject
      * @param string $body
      * @param array  $options
