@@ -100,7 +100,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Github\Client
+     * @return Adapter
      */
     public function getAdapter()
     {
@@ -108,9 +108,9 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Gush\Adapter\AdapterInterface $adapter
+     * @param Adapter $adapter
      */
-    public function setAdapter($adapter)
+    public function setAdapter(Adapter $adapter)
     {
         $this->adapter = $adapter;
     }
@@ -195,8 +195,6 @@ class Application extends BaseApplication
      *
      * @param InputInterface $input
      * @param Boolean        $authenticate
-     *
-     * @return AdapterInterface
      */
     public function buildAdapter(InputInterface $input, $authenticate = true)
     {
@@ -216,7 +214,7 @@ class Application extends BaseApplication
             $adapter->authenticate();
         }
 
-        return $this->adapter = $adapter;
+        $this->setAdapter($adapter);
     }
 
     public function validateAdapterClass($adapterClass)
