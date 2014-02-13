@@ -17,6 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Exception\AdapterException;
 
 /**
+ * Provides a base class for adapting Gush to use different providers.
+ * E.g. Github, Gitlab, Bitbucket
+ *
  * @author  Aaron Scherer <aequasi@gmail.com>
  */
 interface Adapter
