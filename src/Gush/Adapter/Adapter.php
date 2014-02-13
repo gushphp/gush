@@ -12,9 +12,9 @@
 namespace Gush\Adapter;
 
 use Gush\Config;
+use Gush\Exception\AdapterException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gush\Exception\AdapterException;
 
 /**
  * Provides a base class for adapting Gush to use different providers.
@@ -25,11 +25,11 @@ use Gush\Exception\AdapterException;
 interface Adapter
 {
     /**
-     * @param Config $configuration Configuration for the adapter
-     * @param string $username
-     * @param string $repository
+     * @param Config      $configuration Configuration for the adapter
+     * @param string|null $username
+     * @param string|null $repository
      */
-    public function __construct(Config $configuration, $username, $repository);
+    public function __construct(Config $configuration, $username = null, $repository = null);
 
     /**
      * Runs the configuration and returns the values as an array
