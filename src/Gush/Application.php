@@ -100,7 +100,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return Adapter
+     * @return Adapter|null
      */
     public function getAdapter()
     {
