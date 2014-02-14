@@ -184,7 +184,9 @@ EOF
         $versionEyeToken = $dialog->askAndValidate(
             $output,
             'versioneye token: ',
-            $validator
+            $validator,
+            false,
+            'NO_TOKEN'
         );
 
         $this->config->merge(
