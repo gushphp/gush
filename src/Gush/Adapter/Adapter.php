@@ -25,11 +25,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface Adapter
 {
     /**
-     * @param Config      $configuration Configuration for the adapter
-     * @param string|null $username
-     * @param string|null $repository
+     * @param Config $configuration Configuration for the adapter
+     * @param string $username
+     * @param string $repository
      */
-    public function __construct(Config $configuration, $username = null, $repository = null);
+    public function __construct(Config $configuration, $username, $repository);
 
     /**
      * Runs the configuration and returns the values as an array
@@ -65,7 +65,7 @@ interface Adapter
 
     /**
      * Returns the URL for generating a token.
-     * If the adapter doesnt support tokens, returns null
+     * If the adapter does not support tokens, returns null
      *
      * @return null|string
      */
@@ -169,7 +169,7 @@ interface Adapter
     public function getPullRequestCommits($id);
 
     /**
-     * @param $id
+     * @param integer $id
      * @param $message
      *
      * @return mixed
@@ -190,7 +190,7 @@ interface Adapter
     public function getReleases();
 
     /**
-     * @param $id
+     * @param integer $id
      *
      * @return mixed
      */

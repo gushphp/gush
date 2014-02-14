@@ -44,7 +44,7 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    public function __construct(Config $configuration, $username = null, $repository = null)
+    public function __construct(Config $configuration, $username, $repository)
     {
         $this->configuration = $configuration;
         $this->username      = $username;
