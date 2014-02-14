@@ -21,7 +21,6 @@ env:
 
 before_script:
   - composer require gushphp/gush-github-adapter=dev-master
-  - composer install -n
 
 script:
   - phpunit
