@@ -115,7 +115,6 @@ class Application extends BaseApplication
         $this->adapter = $adapter;
     }
 
-
     public function setVersionEyeClient(GuzzleClient $versionEyeClient)
     {
         $this->versionEyeClient = $versionEyeClient;

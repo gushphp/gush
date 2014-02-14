@@ -153,7 +153,7 @@ EOF
             );
 
             try {
-                $isAuthenticated = $this->isCredentialsValid();
+                $isAuthenticated = $this->isCredentialsValid($input);
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
@@ -200,13 +200,13 @@ EOF
     /**
      * Validates if the credentials are valid
      *
+     * @param InputInterface $input
      * @return Boolean
      */
-    private function isCredentialsValid()
+    private function isCredentialsValid($input)
     {
-        if (null === $adapter = $this->getAdapter()) {
-            $adapter = $this->getApplication()->buildAdapter(null, $this->config);
-        }
+        $this->getApplication()->setConfig($this->config);
+        $adapter = $this->getApplication()->buildAdapter($input);
 
         return $adapter->isAuthenticated();
     }
