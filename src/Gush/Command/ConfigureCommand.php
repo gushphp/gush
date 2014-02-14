@@ -11,7 +11,6 @@
 
 namespace Gush\Command;
 
-use Gush\Config;
 use Gush\Factory;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -105,7 +104,6 @@ EOF
         $passwordOrToken    = null;
         $authenticationType = null;
         $versionEyeToken    = null;
-        $config             = [];
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');

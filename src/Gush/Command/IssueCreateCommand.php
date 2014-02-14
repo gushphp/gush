@@ -47,9 +47,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
-
         $adapter = $this->getAdapter();
         $emptyValidator = function ($string) {
             if (trim($string) == '') {

@@ -48,8 +48,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org');
-        $repo = $input->getOption('repo');
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
 

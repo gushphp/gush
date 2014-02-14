@@ -13,7 +13,6 @@ namespace Gush\Command;
 
 use Gush\Adapter\Adapter;
 use Gush\Event\GushEvents;
-use Gush\Feature\GitHubFeature;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
