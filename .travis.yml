@@ -20,7 +20,6 @@ env:
   - secure: "Ii55ivFDOzWxhc856TYFxcd5y171fl0/KpnxpiAZx/2PhC8+nJ0Az0J5bkvhDp341fzMarBM01tqeBlbQxEUshOEqijQeu4avSdmcf2YvDEpoXYhi50K22XzzlBbFXZuD076bt+uWdXT4UxyvFUbjHp6eDEfM7EKi/Xszg4zVdU="
 
 before_script:
-  - composer install -n
   - composer update gushphp/gush-github-adapter=dev-master
 
 script:
