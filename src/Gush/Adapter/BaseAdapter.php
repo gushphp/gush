@@ -22,11 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class BaseAdapter implements Adapter
 {
     /**
-     * @var null|string
-     */
-    protected static $name = 'base';
-
-    /**
      * @var Config
      */
     protected $configuration;
@@ -56,14 +51,7 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    public static function getName()
-    {
-        if (empty(self::$name)) {
-            throw new AdapterException('Adapters must specify a name.');
-        }
-
-        return self::$name;
-    }
+    abstract public static function getName();
 
     /**
      * {@inheritdoc}
