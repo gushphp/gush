@@ -22,7 +22,7 @@
     >
 
     <php>
-        <env name="GIT_VENDOR_NAME" value="cordoval"/>
+        <env name="GIT_VENDOR_NAME" value="gushphp"/>
         <!--
         <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
         <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>

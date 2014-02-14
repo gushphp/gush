@@ -92,7 +92,7 @@ class TestAdapter extends BaseAdapter
      */
     public function getIssueUrl($id)
     {
-        return 'https://github.com/cordoval/gush/issues/' . $id;
+        return 'https://github.com/gushphp/gush/issues/' . $id;
     }
 
     /**
@@ -177,7 +177,7 @@ class TestAdapter extends BaseAdapter
     {
         return [
             [
-                'url'   => 'https://api.github.com/repos/cordoval/gush/labels/bug',
+                'url'   => 'https://api.github.com/repos/gushphp/gush/labels/bug',
                 'name'  => 'bug',
                 'color' => 'f29513'
             ],
@@ -209,7 +209,7 @@ class TestAdapter extends BaseAdapter
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = [])
     {
-        return ['html_url' => 'http://github.com/cordoval/gush/pull/' . self::PULL_REQUEST_NUMBER];
+        return ['html_url' => 'http://github.com/gushphp/gush/pull/' . self::PULL_REQUEST_NUMBER];
     }
 
     /**
@@ -241,7 +241,7 @@ class TestAdapter extends BaseAdapter
      */
     public function getPullRequestUrl($id)
     {
-        return 'https://github.com/cordoval/gush/pull/' . $id;
+        return 'https://github.com/gushphp/gush/pull/' . $id;
     }
 
     /**

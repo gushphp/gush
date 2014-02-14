@@ -25,7 +25,7 @@ class TestableApplication extends Application
      */
     public function buildAdapter(InputInterface $input = null, Config $config = null)
     {
-        return new TestAdapter($this->config, 'cordoval', 'gush');
+        return new TestAdapter($this->config, 'gushphp', 'gush');
     }
 
     public function setConfig(Config $config)

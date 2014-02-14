@@ -21,7 +21,7 @@ class IssueLabelListCommandTest extends BaseTestCase
     public function testCommand()
     {
         $tester = $this->getCommandTester(new IssueLabelListCommand());
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
         $this->assertEquals('bug', trim($tester->getDisplay()));
     }

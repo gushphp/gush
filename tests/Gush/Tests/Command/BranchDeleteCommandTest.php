@@ -29,7 +29,7 @@ class BranchDeleteCommandTest extends BaseTestCase
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
 
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
         $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay()));
     }

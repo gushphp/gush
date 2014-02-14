@@ -26,9 +26,9 @@ class IssueCreateCommandTest extends BaseTestCase
         $dialog = $this->expectDialogParameters();
         $tester = $this->getCommandTester($command = new IssueCreateCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
-        $this->assertEquals('Created issue https://github.com/cordoval/gush/issues/77', trim($tester->getDisplay()));
+        $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay()));
     }
 
     private function expectDialogParameters()

@@ -23,7 +23,7 @@ class VersionEyeCommandTest extends BaseTestCase
     {
         $command = new PullRequestVersionEyeCommand();
         $tester = $this->getCommandTester($command);
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush-sandbox'], ['interactive' => false]);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush-sandbox'], ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
         $this->assertEquals(OutputFixtures::PULL_REQUEST_VERSIONEYE, $res);

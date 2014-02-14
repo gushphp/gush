@@ -8,8 +8,8 @@ Gush is a rapid workflow for project maintainers and contributors
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451/mini.png)](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451)
 
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush) [![Total Downloads](https://poser.pugx.org/gushphp/gush/downloads.png)](https://packagist.org/packages/gushphp/gush) [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush) [![License](https://poser.pugx.org/gushphp/gush/license.png)](https://packagist.org/packages/gushphp/gush)
-[![Stories in Ready](https://badge.waffle.io/cordoval/gush.png?label=ready)](https://waffle.io/cordoval/gush)
-[![Dependency Status](https://www.versioneye.com/php/cordoval:gush/1.3.0/badge.png)](https://www.versioneye.com/php/cordoval:gush/1.3.0)
+[![Stories in Ready](https://badge.waffle.io/gushphp/gush.png?label=ready)](https://waffle.io/gushphp/gush)
+[![Dependency Status](https://www.versioneye.com/php/gushphp:gush/1.3.0/badge.png)](https://www.versioneye.com/php/gushphp:gush/1.3.0)
 
 <a href="http://gushphp.org"><img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="200px"/></a>
 
@@ -43,7 +43,7 @@ Install Gush in two ways:
 #### 1) Installing system-wide using composer (recommended)
 
 ```bash
-$ composer global require cordoval/gush=dev-master
+$ composer global require gushphp/gush=dev-master gushphp/gush-github-adapter=dev-master
 ```
 
 If it is the first time you globally install a dependency then make sure
@@ -52,7 +52,7 @@ you include `~/.composer/vendor/bin` in $PATH as shown [here](http://getcomposer
 ### Keep your Gush install always updated:
 
 ```bash
-$ composer global update cordoval/gush
+$ composer global update gushphp/gush
 ```
 
 #### 2) Installing as a phar file:
@@ -108,7 +108,7 @@ $ gush pull-request:create
 Bug fix? [y]
 // ...
 PR Title: Added a bit of documentation under usage
-https://github.com/cordoval/gush/pull/94
+https://github.com/gushphp/gush/pull/94
 ```
 
 Merge it:
@@ -120,7 +120,7 @@ Pull Request successfully merged
 ### Contributions
 
 Please send your PR using Gush and it will have 100% chances to be merged.
-See the [issues list](https://github.com/cordoval/gush/issues?state=open).
+See the [issues list](https://github.com/gushphp/gush/issues?state=open).
 
 Running the test suite (npm required):
 
