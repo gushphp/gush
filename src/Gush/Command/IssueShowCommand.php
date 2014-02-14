@@ -48,7 +48,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $issueNumber = $input->getArgument('issue_number');
 
         $adapter = $this->getAdapter();

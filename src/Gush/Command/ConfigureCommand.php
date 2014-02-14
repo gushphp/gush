@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Gush\Factory;
+use Gush\Feature\GitHubFeature;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,7 +24,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
-class ConfigureCommand extends BaseCommand
+class ConfigureCommand extends BaseCommand implements GitHubFeature
 {
     const AUTH_HTTP_PASSWORD = 'http_password';
 
