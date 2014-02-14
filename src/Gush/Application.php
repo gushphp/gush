@@ -204,34 +204,21 @@ class Application extends BaseApplication
     /**
      * Builds the adapter for the application
      *
-     * @param InputInterface|null $input
-     * @param Config|null         $config
+     * @param InputInterface $input
      *
      * @return Adapter
      */
-    public function buildAdapter(InputInterface $input = null, Config $config = null)
+    public function buildAdapter(InputInterface $input)
     {
-        if (null === $config) {
-            $config = $this->config;
-        }
-
-        $adapterClass = $config->get('adapter_class');
-        if (null === $adapterClass) {
-            $adapterClass = "Gush\\Adapter\\GitHubAdapter";
-        }
-
+        $adapterClass = $this->config->get('adapter_class');
         $this->validateAdapterClass($adapterClass);
 
-        if (null === $input) {
-            $org  = null;
-            $repo = null;
-        } else {
-            $org  = $input->hasOption('org') ? $input->getOption('org') : null;
-            $repo = $input->hasOption('org') ? $input->getOption('repo') : null;
-        }
-
         /** @var Adapter $adapter */
-        $adapter = new $adapterClass($config, $org, $repo);
+        $adapter = new $adapterClass(
+            $this->config,
+            $input->getOption('org'),
+            $input->getOption('repo')
+        );
         $adapter->authenticate();
 
         $this->setAdapter($adapter);
@@ -242,7 +229,7 @@ class Application extends BaseApplication
     public function validateAdapterClass($adapterClass)
     {
         if (!class_exists($adapterClass)) {
-            throw new AdapterException(sprintf('The class "%s" doesn\'t exist.', $adapterClass));
+            throw new AdapterException(sprintf('The adapter class "%s" doesn\'t exist.', $adapterClass));
         }
 
         $reflection = new \ReflectionClass($adapterClass);
@@ -250,7 +237,7 @@ class Application extends BaseApplication
         if (!$reflection->implementsInterface($interface)) {
             throw new AdapterException(
                 sprintf(
-                    'The class "%s" does not implement "%s"',
+                    'The adapter class "%s" does not implement "%s"',
                     $adapterClass,
                     $interface
                 )
