@@ -2,13 +2,12 @@
 
 Gush is a rapid workflow for project maintainers and contributors
 
-[![Build Status](https://travis-ci.org/cordoval/gush.png?branch=master)](https://travis-ci.org/cordoval/gush)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cordoval/gush/badges/quality-score.png?s=f54effe2042a7eb161b0263322b3b4979d2de900)](https://scrutinizer-ci.com/g/cordoval/gush/)
-[![Code Coverage](https://scrutinizer-ci.com/g/cordoval/gush/badges/coverage.png?s=fbd3a27c4b0b05fbb82de21108c44f0cf7a12661)](https://scrutinizer-ci.com/g/cordoval/gush/)
+[![Build Status](https://travis-ci.org/gushphp/gush.png?branch=master)](https://travis-ci.org/gushphp/gush)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/gushphp/gush/badges/quality-score.png?s=127d28d94969ef366d3bc78808cc89b8eeba51e2)](https://scrutinizer-ci.com/g/gushphp/gush/)
+[![Code Coverage](https://scrutinizer-ci.com/g/gushphp/gush/badges/coverage.png?s=674a025b490123ccc3678eb1088d7d0a696004a1)](https://scrutinizer-ci.com/g/gushphp/gush/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451/mini.png)](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451)
-[![Latest Stable Version](https://poser.pugx.org/cordoval/gush/v/stable.png)](https://packagist.org/packages/cordoval/gush)
-[![Latest Unstable Version](https://poser.pugx.org/cordoval/gush/v/unstable.png)](https://packagist.org/packages/cordoval/gush)
-[![Total Downloads](https://poser.pugx.org/cordoval/gush/downloads.png)](https://packagist.org/packages/cordoval/gush)
+
+[![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush) [![Total Downloads](https://poser.pugx.org/gushphp/gush/downloads.png)](https://packagist.org/packages/gushphp/gush) [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush) [![License](https://poser.pugx.org/gushphp/gush/license.png)](https://packagist.org/packages/gushphp/gush)
 [![Stories in Ready](https://badge.waffle.io/cordoval/gush.png?label=ready)](https://waffle.io/cordoval/gush)
 [![Dependency Status](https://www.versioneye.com/php/cordoval:gush/1.3.0/badge.png)](https://www.versioneye.com/php/cordoval:gush/1.3.0)
 
