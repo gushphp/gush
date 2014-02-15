@@ -40,11 +40,9 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    public function __construct(Config $configuration, $username, $repository)
+    public function __construct(Config $configuration)
     {
         $this->configuration = $configuration;
-        $this->username      = $username;
-        $this->repository    = $repository;
 
         $this->initialize();
     }
@@ -65,12 +63,22 @@ abstract class BaseAdapter implements Adapter
         return [];
     }
 
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function setRepository($repository)
+    {
+        $this->repository = $repository;
     }
 
     /**

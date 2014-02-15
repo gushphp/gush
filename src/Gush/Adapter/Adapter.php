@@ -20,16 +20,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Provides a base class for adapting Gush to use different providers.
  * E.g. Github, Gitlab, Bitbucket
  *
- * @author  Aaron Scherer <aequasi@gmail.com>
+ * @author Aaron Scherer <aequasi@gmail.com>
+ * @author Luis Cordova <cordoval@gmail.com>
  */
 interface Adapter
 {
     /**
      * @param Config $configuration Configuration for the adapter
-     * @param string $username
-     * @param string $repository
      */
-    public function __construct(Config $configuration, $username, $repository);
+    public function __construct(Config $configuration);
 
     /**
      * Runs the configuration and returns the values as an array
