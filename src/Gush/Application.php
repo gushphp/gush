@@ -158,7 +158,7 @@ class Application extends BaseApplication
             $this->readParameters();
 
             if (null === $this->adapter) {
-                $this->buildAdapter($input);
+                $this->adapter = $this->buildAdapter($input);
             }
 
             if (null === $this->versionEyeClient) {
