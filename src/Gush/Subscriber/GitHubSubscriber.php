@@ -42,7 +42,7 @@ class GitHubSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $command
+        $event->getInput()
             ->addOption(
                 'org',
                 'o',
