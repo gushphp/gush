@@ -71,7 +71,8 @@ class GitHubSubscriber implements EventSubscriberInterface
             $org = $input->getOption('org');
             $repo = $input->getOption('repo');
 
-            \ladybug_dump_die($org);
+            $adapter->setRepository($repo);
+            $adapter->setUsername($org);
         }
     }
 }
