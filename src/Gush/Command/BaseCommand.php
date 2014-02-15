@@ -32,7 +32,7 @@ class BaseCommand extends Command
      *
      * @return Adapter
      */
-    protected function getAdapter()
+    public function getAdapter()
     {
         return $this->getApplication()->getAdapter();
     }

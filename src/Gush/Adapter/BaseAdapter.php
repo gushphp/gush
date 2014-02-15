@@ -66,6 +66,8 @@ abstract class BaseAdapter implements Adapter
     public function setUsername($username)
     {
         $this->username = $username;
+
+        return $this;
     }
 
     /**
@@ -79,6 +81,8 @@ abstract class BaseAdapter implements Adapter
     public function setRepository($repository)
     {
         $this->repository = $repository;
+
+        return $this;
     }
 
     /**

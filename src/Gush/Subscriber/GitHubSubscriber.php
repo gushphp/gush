@@ -66,13 +66,16 @@ class GitHubSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
 
+        /** @var \Gush\Command\BaseCommand $command */
         if ($command instanceof GithubFeature) {
             $input = $event->getInput();
-            $org = $input->getOption('org');
-            $repo = $input->getOption('repo');
 
-            $adapter->setRepository($repo);
-            $adapter->setUsername($org);
+            /** @var \Gush\Adapter\BaseAdapter $adapter */
+            $adapter = $command->getAdapter();
+            $adapter
+                ->setRepository($input->getOption('repo'))
+                ->setUsername($input->getOption('org'))
+            ;
         }
     }
 }
