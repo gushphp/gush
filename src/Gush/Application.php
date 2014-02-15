@@ -243,7 +243,7 @@ class Application extends BaseApplication
             );
         }
 
-        return;
+        return $reflection->getConstant('NAME');
     }
 
     protected function buildVersionEyeClient()

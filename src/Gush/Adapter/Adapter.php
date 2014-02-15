@@ -47,7 +47,7 @@ interface Adapter
      * @throws AdapterException
      * @return string
      */
-    public static function getName();
+    public function getName();
 
     /**
      * Authenticates the Adapter
