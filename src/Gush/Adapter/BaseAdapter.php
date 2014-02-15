@@ -12,7 +12,6 @@
 namespace Gush\Adapter;
 
 use Gush\Config;
-use Gush\Exception\AdapterException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,6 +20,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class BaseAdapter implements Adapter
 {
+    const NAME = 'unknown';
+
     /**
      * @var Config
      */
@@ -39,11 +40,9 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    public function __construct(Config $configuration, $username, $repository)
+    public function __construct(Config $configuration)
     {
         $this->configuration = $configuration;
-        $this->username      = $username;
-        $this->repository    = $repository;
 
         $this->initialize();
     }
@@ -51,7 +50,10 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    abstract public static function getName();
+    public function getName()
+    {
+        return self::NAME;
+    }
 
     /**
      * {@inheritdoc}
@@ -61,12 +63,26 @@ abstract class BaseAdapter implements Adapter
         return [];
     }
 
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function setRepository($repository)
+    {
+        $this->repository = $repository;
+
+        return $this;
     }
 
     /**

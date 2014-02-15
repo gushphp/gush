@@ -27,8 +27,8 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigureCommand extends BaseCommand implements GitHubFeature
 {
     const AUTH_HTTP_PASSWORD = 'http_password';
-
     const AUTH_HTTP_TOKEN = 'http_token';
+
     /**
      * @var \Gush\Config $config
      */
@@ -97,8 +97,7 @@ EOF
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $adapter = $input->getOption('adapter');
-        $adapterName = call_user_func([$adapter, 'getName']);
-        $this->getApplication()->validateAdapterClass($adapter);
+        $adapterName = $this->getApplication()->validateAdapterClass($adapter);
 
         $isAuthenticated    = false;
         $username           = null;

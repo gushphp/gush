@@ -15,6 +15,7 @@ use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Feature\GitHubFeature;
 use Gush\Helper\GitHelper;
+use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -31,6 +32,7 @@ class GitHubSubscriber implements EventSubscriberInterface
     {
         return [
             GushEvents::DECORATE_DEFINITION => 'decorateDefinition',
+            GushEvents::INITIALIZE => 'initialize',
         ];
     }
 
@@ -58,5 +60,22 @@ class GitHubSubscriber implements EventSubscriberInterface
                 $this->gitHelper->getRepoName()
             )
         ;
+    }
+
+    public function initialize(ConsoleEvent $event)
+    {
+        $command = $event->getCommand();
+
+        /** @var \Gush\Command\BaseCommand $command */
+        if ($command instanceof GithubFeature) {
+            $input = $event->getInput();
+
+            /** @var \Gush\Adapter\BaseAdapter $adapter */
+            $adapter = $command->getAdapter();
+            $adapter
+                ->setRepository($input->getOption('repo'))
+                ->setUsername($input->getOption('org'))
+            ;
+        }
     }
 }
