@@ -8,7 +8,7 @@
 #
 
 before_commands:
-    - "composer install --prefer-source"
+    - "composer require gushphp/gush-github-adapter=dev-master"
 
 tools:
     php_code_coverage:
