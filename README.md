@@ -1,12 +1,12 @@
 ## Gush
 
-Gush is a rapid workflow for project maintainers and contributors
+Gush is a rapid git workflow for project maintainers and contributors that works
+with backend support for GitHub, Enterprise Github, and more!
 
 [![Build Status](https://travis-ci.org/gushphp/gush.png?branch=master)](https://travis-ci.org/gushphp/gush)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/gushphp/gush/badges/quality-score.png?s=127d28d94969ef366d3bc78808cc89b8eeba51e2)](https://scrutinizer-ci.com/g/gushphp/gush/)
 [![Code Coverage](https://scrutinizer-ci.com/g/gushphp/gush/badges/coverage.png?s=674a025b490123ccc3678eb1088d7d0a696004a1)](https://scrutinizer-ci.com/g/gushphp/gush/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451/mini.png)](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451)
-
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush) [![Total Downloads](https://poser.pugx.org/gushphp/gush/downloads.png)](https://packagist.org/packages/gushphp/gush) [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush) [![License](https://poser.pugx.org/gushphp/gush/license.png)](https://packagist.org/packages/gushphp/gush)
 [![Stories in Ready](https://badge.waffle.io/gushphp/gush.png?label=ready)](https://waffle.io/gushphp/gush)
 [![Dependency Status](https://www.versioneye.com/user/projects/52fd77f2ec1375edd50003cc/badge.png)](https://www.versioneye.com/user/projects/52fd77f2ec1375edd50003cc)
