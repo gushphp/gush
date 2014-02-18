@@ -20,7 +20,7 @@ env:
   - secure: "L2Vi72Dr0mH7tBcPHXHd4c1XICKgD5S1niSF1UN+rW1bojjnerDPU6+wOaCl9FyNKXDsUkVjtG4JowX4XJ3gn50DfYZC/ujBf93zVSS86NCSbtaVJxqKeyi1y9KwAjMQX5unlGyXSrpZnL6XqHMfKny0VH5VISc6BhwYFKG0+94="
 
 before_script:
-  - composer require gushphp/gush-github-adapter=dev-master
+  - composer install
 
 script:
   - phpunit
