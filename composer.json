@@ -42,8 +42,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",
-        "raulfraile/ladybug": "~1.0",
-        "gushphp/gush-github-adapter": "default adapter to start with"
+        "raulfraile/ladybug": "~1.0"
     },
     "bin": [
         "bin/gush"
