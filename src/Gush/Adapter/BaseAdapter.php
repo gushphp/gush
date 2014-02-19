@@ -121,6 +121,11 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
+    abstract public function createFork();
+
+    /**
+     * {@inheritdoc}
+     */
     abstract public function openIssue($subject, $body, array $options = []);
 
     /**

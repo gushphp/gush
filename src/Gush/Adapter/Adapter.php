@@ -71,6 +71,13 @@ interface Adapter
     public function getTokenGenerationUrl();
 
     /**
+     * Creates a fork of upstream
+     *
+     * @return mixed
+     */
+    public function createFork();
+
+    /**
      * @param string $subject
      * @param string $body
      * @param array  $options
