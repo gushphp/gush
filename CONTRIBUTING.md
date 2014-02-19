@@ -9,7 +9,7 @@ unified and future proof.
 ## We only accept PRs  to "master"
 
 Our branching strategy is "everything to master first", even
-bugfixes and we then merge them into the stable branches. You should only
+bugfixes and we then tag stable versions on master only. You should only
 open pull requests against the master branch. Otherwise we cannot accept the PR.
 
 There is no exception to the rule. Also your PR must have been sent with Gush.
