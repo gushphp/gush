@@ -22,15 +22,15 @@ class SymfonyTemplate extends AbstractSymfonyTemplate
     public function getRequirements()
     {
         return [
-            'bug_fix' => ['Bug Fix?:', 'n'],
-            'new_feature' => ['New Feature?:', 'n'],
-            'bc_breaks' => ['BC Breaks?:', 'n'],
-            'deprecations' => ['Deprecations?:', 'n'],
-            'tests_pass' => ['Tests Pass?:', 'n'],
-            'fixed_tickets' => ['Fixed Tickets:', ''],
-            'license' => ['License:', 'MIT'],
-            'doc_pr' => ['Doc PR:', ''],
-            'description' => ['Description:', ''],
+            'bug_fix' => ['Bug Fix?', 'n'],
+            'new_feature' => ['New Feature?', 'n'],
+            'bc_breaks' => ['BC Breaks?', 'n'],
+            'deprecations' => ['Deprecations?', 'n'],
+            'tests_pass' => ['Tests Pass?', 'n'],
+            'fixed_tickets' => ['Fixed Tickets', ''],
+            'license' => ['License', 'MIT'],
+            'doc_pr' => ['Doc PR', ''],
+            'description' => ['Description', ''],
         ];
     }
 

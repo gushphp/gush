@@ -22,11 +22,11 @@ class SymfonyDocTemplate extends AbstractSymfonyTemplate
     public function getRequirements()
     {
         return [
-            'doc-fix' => ['Doc Fix?:', 'n'],
-            'new-docs' => ['New Docs?:', 'n'],
-            'applies-to' => ['Applies to:', ''],
-            'fixed_tickets' => ['Fixed tickets:', ''],
-            'description' => ['Description:', ''],
+            'doc-fix' => ['Doc Fix?', 'n'],
+            'new-docs' => ['New Docs?', 'n'],
+            'applies-to' => ['Applies to', ''],
+            'fixed_tickets' => ['Fixed tickets', ''],
+            'description' => ['Description', ''],
         ];
     }
 
