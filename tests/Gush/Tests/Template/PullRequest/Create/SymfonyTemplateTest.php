@@ -28,18 +28,18 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
             [
                 [],
                 <<<EOF
-                    
-|Q             |A  |
-|---           |---|
-|Bug Fix?:     |n  |
-|New Feature?: |n  |
-|BC Breaks?:   |n  |
-|Deprecations?:|n  |
-|Tests Pass?:  |n  |
-|Fixed Tickets:|   |
-|License:      |MIT|
-|Doc PR:       |   |
-                    
+                   
+|Q            |A  |
+|---          |---|
+|Bug Fix?     |n  |
+|New Feature? |n  |
+|BC Breaks?   |n  |
+|Deprecations?|n  |
+|Tests Pass?  |n  |
+|Fixed Tickets|   |
+|License      |MIT|
+|Doc PR       |   |
+                   
 
 This is a description
 EOF
@@ -56,18 +56,18 @@ EOF
                     'doc_pr' => 'none',
                 ],
                 <<<EOF
-                       
-|Q             |A     |
-|---           |---   |
-|Bug Fix?:     |y     |
-|New Feature?: |yes   |
-|BC Breaks?:   |yes   |
-|Deprecations?:|yes   |
-|Tests Pass?:  |yes   |
-|Fixed Tickets:|none  |
-|License:      |Apache|
-|Doc PR:       |none  |
-                       
+                      
+|Q            |A     |
+|---          |---   |
+|Bug Fix?     |y     |
+|New Feature? |yes   |
+|BC Breaks?   |yes   |
+|Deprecations?|yes   |
+|Tests Pass?  |yes   |
+|Fixed Tickets|none  |
+|License      |Apache|
+|Doc PR       |none  |
+                      
 
 This is a description
 EOF
