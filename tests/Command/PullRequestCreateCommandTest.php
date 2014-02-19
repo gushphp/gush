@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\PullRequestCreateCommand;
+use Gush\Helper\GitHelper;
 use Gush\Tester\Adapter\TestAdapter;
 
 /**
@@ -23,11 +24,11 @@ class PullRequestCreateCommandTest extends BaseTestCase
     {
         return [
             [[
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
-                '--head' => 'issue-145',
-                '--template' => 'default',
-                '--title' => 'Test'
+                '--org'           => 'gushphp',
+                '--repo'          => 'gush',
+                '--source-branch' => 'issue-145',
+                '--template'      => 'default',
+                '--title'         => 'Test'
             ]],
         ];
     }
@@ -64,5 +65,37 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
         $res = trim($tester->getDisplay());
         $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
+    }
+
+    /**
+     * @dataProvider provideCommand
+     */
+    public function testSourceOrgAutodetect($args)
+    {
+        $args['--verbose'] = true;
+
+        $gitHelper = new GitHelper();
+        $command = new PullRequestCreateCommand();
+        $tester = $this->getCommandTester($command);
+        $tester->execute($args, ['interactive' => false]);
+
+        $res = trim($tester->getDisplay());
+        $this->assertContains('Making PR from ' . $gitHelper->getVendorName() . ':issue-145 to gushphp:master', $res);
+    }
+
+    /**
+     * @dataProvider provideCommand
+     */
+    public function testSourceOrgOption($args)
+    {
+        $args['--verbose']    = true;
+        $args['--source-org'] = 'gushphp';
+
+        $command = new PullRequestCreateCommand();
+        $tester = $this->getCommandTester($command);
+        $tester->execute($args, ['interactive' => false]);
+
+        $res = trim($tester->getDisplay());
+        $this->assertContains('Making PR from ' . $args['--source-org'] . ':issue-145 to gushphp:master', $res);
     }
 }

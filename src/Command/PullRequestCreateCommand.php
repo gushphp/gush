@@ -35,10 +35,16 @@ class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, Tem
             ->setDescription('Launches a pull request')
             ->addOption('base', null, InputOption::VALUE_REQUIRED, 'Base Branch - remote branch name', 'master')
             ->addOption(
-                'head',
+                'source-org',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Head Branch - your branch name (defaults to current)'
+                'Source Organization - source organization name (defaults to current)'
+            )
+            ->addOption(
+                'source-branch',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Source Branch - source branch name (defaults to current)'
             )
             ->addOption('issue', null, InputOption::VALUE_REQUIRED, 'Issue Number')
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
@@ -50,11 +56,11 @@ against the configured organization and repository.
     <info>$ %command.full_name%</info>
 
 The remote branch to make the PR against can be specified with the
-<info>base</info> option, and the local branch with the <info>head</info>
-option, when these options are omitted they are determined from the current
+<info>base</info> option, and the local organization / branch with the <info>source-org</info> /
+<info>source-branch</info> options, when these options are omitted they are determined from the current
 context.
 
-    <info>$ %command.full_name% --head=my_branch --base=dev</info>
+    <info>$ %command.full_name% --source-branch=my_branch --source-org=my_org --base=dev</info>
 
 A pull request template can be specified with the <info>template</info> option:
 
@@ -94,16 +100,18 @@ EOF
     {
         $org = $input->getOption('org');
         $base = $input->getOption('base');
-        $head = $input->getOption('head');
         $issueNumber = $input->getOption('issue');
+        $sourceOrg = $input->getOption('source-org');
+        $sourceBranch = $input->getOption('source-branch');
         $template = $input->getOption('template');
 
-        if (null === $head) {
-            $head = $this->getHelper('git')->getBranchName();
+        if (null === $sourceOrg) {
+            $sourceOrg = $this->getHelper('git')->getVendorName();
         }
 
-        $credentials = $this->getParameter('authentication');
-        $username = $credentials['username'];
+        if (null === $sourceBranch) {
+            $sourceBranch = $this->getHelper('git')->getBranchName();
+        }
 
         if (!$title = $input->getOption('title')) {
             $title = $this->getHelper('dialog')->ask($output, 'Title: ');
@@ -114,8 +122,8 @@ EOF
         if (true === $input->getOption('verbose')) {
             $message = sprintf(
                 'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
-                $username,
-                $head,
+                $sourceOrg,
+                $sourceBranch,
                 $org,
                 $base
             );
@@ -133,7 +141,7 @@ EOF
             ->getAdapter()
             ->openPullRequest(
                 $org.':'.$base,
-                $username.':'.$head,
+                $sourceOrg.':'.$sourceBranch,
                 $title,
                 $body,
                 $parameters
