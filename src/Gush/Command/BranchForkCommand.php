@@ -53,7 +53,7 @@ EOF
         $this->getHelper('process')->runCommands(
             [
                 [
-                    'line' => printf('git remote add %s git@github.com:%s/'),
+                    'line' => 'git push -u origin',
                     'allow_failures' => true
                 ]
             ],
