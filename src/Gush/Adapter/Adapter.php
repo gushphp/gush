@@ -71,11 +71,13 @@ interface Adapter
     public function getTokenGenerationUrl();
 
     /**
-     * Creates a fork of upstream
+     * Creates a fork from upstream and returns an array
+     * with the forked url e.g. git@github.com:cordoval/repoName.git
      *
-     * @return mixed
+     * @param string $org
+     * @return array
      */
-    public function createFork();
+    public function createFork($org);
 
     /**
      * @param string $subject

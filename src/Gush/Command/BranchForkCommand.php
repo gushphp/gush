@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Forks upstream
+ * Forks upstream repository and creates local remote
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
@@ -31,6 +31,11 @@ class BranchForkCommand extends BaseCommand implements GitHubFeature
         $this
             ->setName('branch:fork')
             ->setDescription('Forks current upstream repository')
+            ->addArgument(
+                'org',
+                InputArgument::REQUIRED,
+                'Organization (default to username) to where we will fork the upstream repository'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command forks the current upstream repository:
@@ -47,20 +52,37 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
-
-        $result = $adapter->fork();
+        if (null !== $input->getArgument('org')) {
+            $org = $input->getArgument('org');
+        } else {
+            $org = $this->getHelper('git')->getUsername();
+        }
+        $fork = $adapter->createFork($org);
+        $repo = $input->getOption('repo');
 
         $this->getHelper('process')->runCommands(
             [
                 [
-                    'line' => 'git push -u origin',
+                    'line' => sprintf(
+                        'git remote add %s %s',
+                        $org,
+                        $fork['remote_url']
+                    ),
                     'allow_failures' => true
                 ]
             ],
             $output
         );
 
-        $output->writeln('Repository forked!');
+        $output->writeln(
+            sprintf(
+                'Forked repository %s/%s to %s/%s',
+                'cordoval',
+                $repo,
+                $org,
+                $repo
+            )
+        );
 
         return self::COMMAND_SUCCESS;
     }

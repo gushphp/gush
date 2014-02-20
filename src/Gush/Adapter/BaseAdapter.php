@@ -121,7 +121,7 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    abstract public function createFork();
+    abstract public function createFork($org);
 
     /**
      * {@inheritdoc}
