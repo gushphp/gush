@@ -16,6 +16,7 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
+ * @group now
  */
 class BranchForkCommandTest extends BaseTestCase
 {
@@ -24,6 +25,7 @@ class BranchForkCommandTest extends BaseTestCase
     public function testCommand()
     {
         $processHelper = $this->expectProcessHelper();
+        $this->expectsConfig();
         $tester = $this->getCommandTester($command = new BranchForkCommand());
         $command->getHelperSet()->set($processHelper, 'process');
 
@@ -49,5 +51,15 @@ class BranchForkCommandTest extends BaseTestCase
         ;
 
         return $processHelper;
+    }
+
+    private function expectsConfig()
+    {
+        $this->config
+            ->expects($this->once())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(['username' => 'cordoval']))
+        ;
     }
 }

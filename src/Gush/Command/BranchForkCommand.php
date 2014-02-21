@@ -55,7 +55,7 @@ EOF
         if (null !== $input->getArgument('other_organization')) {
             $org = $input->getArgument('other_organization');
         } else {
-            $org = $this->getApplication()->getConfig()->get('authentication')['username'];
+            $org = $this->getParameter('authentication')['username'];
         }
         $fork = $adapter->createFork($org);
         $repo = $input->getOption('repo');
