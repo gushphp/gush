@@ -24,10 +24,8 @@ class BranchForkCommandTest extends BaseTestCase
     public function testCommand()
     {
         $processHelper = $this->expectProcessHelper();
-        $gitHelper = $this->expectGitHelper();
         $tester = $this->getCommandTester($command = new BranchForkCommand());
         $command->getHelperSet()->set($processHelper, 'process');
-        $command->getHelperSet()->set($gitHelper, 'git');
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
@@ -51,19 +49,5 @@ class BranchForkCommandTest extends BaseTestCase
         ;
 
         return $processHelper;
-    }
-
-    private function expectGitHelper()
-    {
-        $gitHelper = $this->getMock(
-            'Gush\Helper\GitHelper',
-            ['getBranchLocalUser']
-        );
-        $gitHelper->expects($this->once())
-            ->method('getBranchName')
-            ->will($this->returnValue(self::TEST_USERNAME))
-        ;
-
-        return $gitHelper;
     }
 }

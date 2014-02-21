@@ -4,7 +4,7 @@ module.exports = function (grunt) {
             tests: {
                 command: [
                     'clear',
-                    'php bin/phpunit'
+                    'php bin/phpunit --group=now'
                 ].join('&&'),
                 options: {
                     stdout: true

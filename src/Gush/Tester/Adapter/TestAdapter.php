@@ -54,7 +54,7 @@ class TestAdapter extends BaseAdapter
     public function createFork($org)
     {
         return [
-
+            'remote_url' => 'git@github.com:cordoval/gush.git'
         ];
     }
 

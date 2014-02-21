@@ -77,7 +77,7 @@ EOF
 
         $output->writeln(
             sprintf(
-                'Forked repository %s/%s to %s/%s',
+                'Forked repository %s/%s into %s/%s',
                 $vendorName,
                 $repo,
                 $org,

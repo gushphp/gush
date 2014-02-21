@@ -62,7 +62,7 @@ Branch test_branch has been deleted!
 EOT;
 
     const BRANCH_FORK = <<<EOT
-Repository forked gushphp/gush to cordoval/gush
+Forked repository gushphp/gush into cordoval/gush
 EOT;
 
     const PULL_REQUEST_FIXER = <<<EOT
