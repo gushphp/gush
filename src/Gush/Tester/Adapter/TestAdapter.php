@@ -33,9 +33,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * Authenticates the Adapter
-     *
-     * @return Boolean
+     * {@inheritdoc}
      */
     public function authenticate()
     {
@@ -43,10 +41,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * Returns the URL for generating a token.
-     * If the adapter doesnt support tokens, returns null
-     *
-     * @return null|string
+     * {@inheritdoc}
      */
     public function getTokenGenerationUrl()
     {
@@ -54,11 +49,17 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param string $subject
-     * @param string $body
-     * @param array  $options
-     *
-     * @return mixed
+     * {@inheritdoc}
+     */
+    public function createFork($org)
+    {
+        return [
+            'remote_url' => 'git@github.com:cordoval/gush.git'
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function openIssue($subject, $body, array $options = [])
     {
@@ -66,9 +67,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param integer $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getIssue($id)
     {
@@ -86,9 +85,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param integer $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getIssueUrl($id)
     {
@@ -96,9 +93,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param array $parameters
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getIssues(array $parameters = [])
     {
@@ -129,30 +124,21 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param integer $id
-     * @param array   $parameters
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function updateIssue($id, array $parameters)
     {
     }
 
     /**
-     * @param integer $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function closeIssue($id)
     {
     }
 
     /**
-     * @param integer $id
-     * @param string  $message
-     *
-     * @return mixed
-     *
+     * {@inheritdoc}
      */
     public function createComment($id, $message)
     {
@@ -162,9 +148,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getComments($id)
     {
@@ -185,9 +169,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param array $parameters
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getMilestones(array $parameters = [])
     {
@@ -199,13 +181,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param string $base
-     * @param string $head
-     * @param string $subject
-     * @param string $body
-     * @param array  $parameters
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = [])
     {
@@ -213,9 +189,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param integer $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getPullRequest($id)
     {
@@ -235,9 +209,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param integer $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getPullRequestUrl($id)
     {
@@ -245,9 +217,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param integer $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getPullRequestCommits($id)
     {
@@ -266,10 +236,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param $id
-     * @param $message
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function mergePullRequest($id, $message)
     {
@@ -280,10 +247,7 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function createRelease($name, array $parameters = [])
     {
@@ -309,21 +273,14 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param $id
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function removeRelease($id)
     {
     }
 
     /**
-     * @param integer $id
-     * @param string  $name
-     * @param string  $contentType
-     * @param string  $content
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function createReleaseAssets($id, $name, $contentType, $content)
     {

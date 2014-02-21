@@ -61,6 +61,10 @@ EOT;
 Branch test_branch has been deleted!
 EOT;
 
+    const BRANCH_FORK = <<<EOT
+Forked repository gushphp/gush into cordoval/gush
+EOT;
+
     const PULL_REQUEST_FIXER = <<<EOT
 CS fix committed and pushed!
 EOT;
