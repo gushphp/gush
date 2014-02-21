@@ -280,6 +280,7 @@ class Application extends BaseApplication
             new Cmd\IssueListCommand(),
             new Cmd\BranchSyncCommand(),
             new Cmd\BranchDeleteCommand(),
+            new Cmd\BranchForkCommand(),
             new Cmd\BranchChangelogCommand(),
             new Cmd\LabelIssuesCommand(),
             new Cmd\ConfigureCommand(),

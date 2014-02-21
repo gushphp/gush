@@ -32,8 +32,8 @@ class BranchForkCommand extends BaseCommand implements GitHubFeature
             ->setName('branch:fork')
             ->setDescription('Forks current upstream repository')
             ->addArgument(
-                'org',
-                InputArgument::REQUIRED,
+                'other_organization',
+                InputArgument::OPTIONAL,
                 'Organization (default to username) to where we will fork the upstream repository'
             )
             ->setHelp(
@@ -52,13 +52,14 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
-        if (null !== $input->getArgument('org')) {
-            $org = $input->getArgument('org');
+        if (null !== $input->getArgument('other_organization')) {
+            $org = $input->getArgument('other_organization');
         } else {
-            $org = $this->getHelper('git')->getUsername();
+            $org = $this->getApplication()->getConfig()->get('authentication')['username'];
         }
         $fork = $adapter->createFork($org);
         $repo = $input->getOption('repo');
+        $vendorName = $input->getOption('org');
 
         $this->getHelper('process')->runCommands(
             [
@@ -77,7 +78,7 @@ EOF
         $output->writeln(
             sprintf(
                 'Forked repository %s/%s to %s/%s',
-                'cordoval',
+                $vendorName,
                 $repo,
                 $org,
                 $repo
