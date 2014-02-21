@@ -16,7 +16,6 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
- * @group now
  */
 class BranchForkCommandTest extends BaseTestCase
 {
