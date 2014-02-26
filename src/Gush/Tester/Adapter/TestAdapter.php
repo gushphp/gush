@@ -213,7 +213,7 @@ class TestAdapter extends BaseAdapter
      */
     public function getPullRequestUrl($id)
     {
-        return 'https://github.com/gushphp/gush/pull/' . $id;
+        return 'https://github.com/gushphp/gush/pull/'.$id;
     }
 
     /**
