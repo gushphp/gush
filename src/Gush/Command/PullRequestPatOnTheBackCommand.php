@@ -56,8 +56,8 @@ EOF
             ->getHelper('template')
             ->bindAndRender(
                 ['author' => $pr['user']['login']],
-                'pats/general',
-                'pats'
+                'pats',
+                'general'
             )
         ;
 
