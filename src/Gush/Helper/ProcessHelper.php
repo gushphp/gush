@@ -13,7 +13,6 @@ namespace Gush\Helper;
 
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Process\Process;
 
 /**
  * Helper for launching shell commands
