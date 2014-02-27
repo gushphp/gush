@@ -11,9 +11,9 @@
 
 namespace Gush\Tests\Helper;
 
-use Gush\Helper\GitHubHelper;
+use Gush\Helper\GitRepoHelper;
 
-class GitHubHelperTest extends \PHPUnit_Framework_TestCase
+class GitRepoHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function provideValidateEnum()
     {
@@ -34,7 +34,7 @@ class GitHubHelperTest extends \PHPUnit_Framework_TestCase
             $this->setExpectedException('InvalidArgumentException', $exceptionMessage);
         }
 
-        GitHubHelper::validateEnum($domain, $type, $value);
+        GitRepoHelper::validateEnum($domain, $type, $value);
     }
 
     public function testValidateEnums()
@@ -53,16 +53,16 @@ class GitHubHelperTest extends \PHPUnit_Framework_TestCase
             }))
         ;
 
-        $res = GitHubHelper::validateEnums($input, 'issue', ['filter', 'state']);
+        $res = GitRepoHelper::validateEnums($input, 'issue', ['filter', 'state']);
 
         $this->assertEquals($enums, $res);
     }
 
     public function testFormatEnums()
     {
-        foreach (GitHubHelper::$enum as $domain => $type) {
+        foreach (GitRepoHelper::$enum as $domain => $type) {
             foreach (array_keys($type) as $name) {
-                $res = GitHubHelper::formatEnum($domain, $name);
+                $res = GitRepoHelper::formatEnum($domain, $name);
                 $this->assertNotNull($res);
             }
         }

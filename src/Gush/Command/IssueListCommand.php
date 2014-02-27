@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\TableFeature;
 use Gush\Feature\GitHubFeature;
-use Gush\Helper\GitHubHelper;
+use Gush\Helper\GitRepoHelper;
 
 /**
  * Lists the issues
@@ -34,11 +34,11 @@ class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeatur
             ->setName('issue:list')
             ->setDescription('List issues')
             ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Specify a label')
-            ->addOption('filter', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'filter'))
-            ->addOption('state', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'state'))
-            ->addOption('sort', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'sort'))
-            ->addOption('direction', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'direction'))
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, GitHubHelper::formatEnum('issue', 'type'))
+            ->addOption('filter', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'filter'))
+            ->addOption('state', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'state'))
+            ->addOption('sort', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'sort'))
+            ->addOption('direction', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'direction'))
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'type'))
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only issues after this time are displayed.')
             ->setHelp(
                 <<<EOF
@@ -74,7 +74,7 @@ EOF
     {
         $adapter = $this->getAdapter();
 
-        $params = GitHubHelper::validateEnums($input, 'issue', ['state', 'filter', 'sort', 'direction']);
+        $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'filter', 'sort', 'direction']);
 
         if ($v = $input->getOption('label')) {
             $params['labels'] = implode(',', $v);
@@ -98,7 +98,7 @@ EOF
             $issue['_type'] = $isPr ? 'pr' : 'issue';
 
             if ($v = $input->getOption('type')) {
-                GitHubHelper::validateEnum('issue', 'type', $v);
+                GitRepoHelper::validateEnum('issue', 'type', $v);
 
                 if ($v == 'pr' && false === $isPr) {
                     unset($issues[$i]);
