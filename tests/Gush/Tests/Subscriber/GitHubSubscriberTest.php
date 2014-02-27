@@ -24,7 +24,7 @@ class GitHubSubscriberTest extends \PHPUnit_Framework_TestCase
         )->disableOriginalConstructor()->getMock();
 
         $this->command = $this->getMockBuilder(
-            'Gush\Tests\Subscriber\TestGitHubCommand'
+            'Gush\Tests\Subscriber\TestGitRepoCommand'
         )->disableOriginalConstructor()->getMock();
 
         $this->gitHelper = $this->getMock(

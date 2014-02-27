@@ -14,7 +14,7 @@ namespace Gush\Helper;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\InputInterface;
 
-class GitHubHelper extends Helper
+class GitRepoHelper extends Helper
 {
     public static $enum = [
         'issue' => [
