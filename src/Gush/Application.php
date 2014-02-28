@@ -57,6 +57,10 @@ class Application extends BaseApplication
 
     public function __construct($name = 'Gush', $version = '@package_version@')
     {
+        if ('@'.'package_version@' !== $version) {
+            $version = ltrim($version, 'v');
+        }
+
         $helperSet = $this->getDefaultHelperSet();
         $helperSet->set(new Helpers\GitHelper());
         $helperSet->set(new Helpers\TextHelper());
