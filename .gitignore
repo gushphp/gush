@@ -2,7 +2,7 @@
 !/bin/gush
 /composer.lock
 /vendor
-/gush.phar
+/gush*.phar
 /box.json
 /.first-time-run
 /phpunit.xml

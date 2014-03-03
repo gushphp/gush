@@ -37,6 +37,6 @@
     ],
     "git-version": "package_version",
     "main": "bin/gush",
-    "output": "gush.phar",
+    "output": "gush-@git-version@.phar",
     "stub": true
 }
