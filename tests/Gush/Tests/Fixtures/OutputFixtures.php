@@ -58,7 +58,7 @@ Branch test_branch has been synced upstream!
 EOT;
 
     const BRANCH_DELETE = <<<EOT
-Branch test_branch has been deleted!
+Branch cordoval/test_branch has been deleted!
 EOT;
 
     const BRANCH_FORK = <<<EOT

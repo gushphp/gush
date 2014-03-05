@@ -25,6 +25,8 @@ class BranchDeleteCommandTest extends BaseTestCase
     {
         $processHelper = $this->expectProcessHelper();
         $gitHelper = $this->expectGitHelper();
+
+        $this->expectsConfig();
         $tester = $this->getCommandTester($command = new BranchDeleteCommand());
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
@@ -44,7 +46,7 @@ class BranchDeleteCommandTest extends BaseTestCase
             ->method('runCommands')
             ->with([
                 [
-                    'line' => 'git push -u origin :'.self::TEST_BRANCH_NAME,
+                    'line' => 'git push -u cordoval :'.self::TEST_BRANCH_NAME,
                     'allow_failures' => true
                 ],
             ])
@@ -65,5 +67,15 @@ class BranchDeleteCommandTest extends BaseTestCase
         ;
 
         return $gitHelper;
+    }
+
+    private function expectsConfig()
+    {
+        $this->config
+            ->expects($this->once())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(['username' => 'cordoval']))
+        ;
     }
 }

@@ -32,6 +32,11 @@ class BranchDeleteCommand extends BaseCommand implements GitHubFeature
             ->setName('branch:delete')
             ->setDescription('Deletes remote branch with the current or given name')
             ->addArgument('branch_name', InputArgument::OPTIONAL, 'Branch name to remove')
+            ->addArgument(
+                'other_organization',
+                InputArgument::OPTIONAL,
+                'Organization (default to username) where the branch will be removed'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command deletes remote and local branch with the current or given name:
@@ -51,17 +56,26 @@ EOF
             $currentBranchName = $this->getHelper('git')->getBranchName();
         }
 
+        $org = $this->getParameter('authentication')['username'];
+        if (null !== $input->getArgument('other_organization')) {
+            $org = $input->getArgument('other_organization');
+        }
+
         $this->getHelper('process')->runCommands(
             [
                 [
-                    'line' => 'git push -u origin :'.$currentBranchName,
-                    'allow_failures' => true
+                    'line' => sprintf(
+                        'git push -u %s :%s',
+                        $org,
+                        $currentBranchName
+                    ),
+                    'allow_failures' => true,
                 ]
             ],
             $output
         );
 
-        $output->writeln(sprintf('Branch %s has been deleted!', $currentBranchName));
+        $output->writeln(sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName));
 
         return self::COMMAND_SUCCESS;
     }
