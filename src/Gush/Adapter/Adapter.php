@@ -96,6 +96,14 @@ interface Adapter
     public function getIssue($id);
 
     /**
+     * @param integer $issueNumber
+     * @param string $username
+     *
+     * @return Boolean
+     */
+    public function assignIssue($issueNumber, $username);
+
+    /**
      * @param integer $id
      *
      * @return mixed

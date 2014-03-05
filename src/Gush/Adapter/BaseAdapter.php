@@ -136,6 +136,11 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
+    abstract public function assignIssue($issueNumber, $username);
+
+    /**
+     * {@inheritdoc}
+     */
     abstract public function getIssueUrl($id);
 
     /**
