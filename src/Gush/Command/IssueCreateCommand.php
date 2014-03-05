@@ -11,10 +11,11 @@
 
 namespace Gush\Command;
 
+use Gush\Helper\EditorHelper;
+use Gush\Feature\GitHubFeature;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gush\Feature\GitHubFeature;
 
 /**
  * Creates an issue
@@ -64,11 +65,9 @@ EOF
             $emptyValidator
         );
 
-        $body = $dialog->askAndValidate(
-            $output,
-            'Enter description: ',
-            $emptyValidator
-        );
+        /** @var EditorHelper $editor */
+        $editor = $this->getHelper('editor');
+        $body = $editor->fromString('');
 
         $issue = $adapter->openIssue($title, $body);
 

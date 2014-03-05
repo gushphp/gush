@@ -23,15 +23,17 @@ class IssueCreateCommandTest extends BaseTestCase
 
     public function testCommand()
     {
-        $dialog = $this->expectDialogParameters();
+        $dialog = $this->expectDialog();
+        $editor = $this->expectEditor();
         $tester = $this->getCommandTester($command = new IssueCreateCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($editor, 'editor');
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
         $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay()));
     }
 
-    private function expectDialogParameters()
+    private function expectDialog()
     {
         $dialog = $this->getMock(
             'Symfony\Component\Console\Helper\DialogHelper',
@@ -39,11 +41,23 @@ class IssueCreateCommandTest extends BaseTestCase
         );
         $dialog->expects($this->at(0))
             ->method('askAndValidate')
-            ->will($this->returnValue(self::ISSUE_TITLE));
-        $dialog->expects($this->at(1))
-            ->method('askAndValidate')
-            ->will($this->returnValue(self::ISSUE_DESCRIPTION));
+            ->will($this->returnValue(self::ISSUE_TITLE))
+        ;
 
         return $dialog;
+    }
+
+    private function expectEditor()
+    {
+        $editor = $this->getMock(
+            'Gush\Helper\EditorHelper',
+            ['fromString']
+        );
+        $editor->expects($this->at(0))
+            ->method('fromString')
+            ->will($this->returnValue(self::ISSUE_DESCRIPTION))
+        ;
+
+        return $editor;
     }
 }
