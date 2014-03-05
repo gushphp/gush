@@ -13,7 +13,7 @@ namespace Gush\Template\Pats;
 
 class Pats
 {
-    const SIZE = 7;
+    const SIZE = 8;
 
     const PAT1 = <<<EOT
 Good job @{{ author }}.
@@ -41,6 +41,10 @@ EOT;
 
     const PAT7 = <<<EOT
 Well done @{{ author }}.
+EOT;
+
+    const PAT8 = <<<EOT
+:beers: @{{ author }}.
 EOT;
 
     public static function get($name)
