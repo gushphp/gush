@@ -66,6 +66,7 @@ class Application extends BaseApplication
         $helperSet->set(new Helpers\TextHelper());
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
+        $helperSet->set(new Helpers\EditorHelper());
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog')));
         $helperSet->set(new UpdateHelper());
 
