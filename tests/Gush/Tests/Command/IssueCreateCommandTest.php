@@ -50,7 +50,7 @@ class IssueCreateCommandTest extends BaseTestCase
     private function expectEditor()
     {
         $editor = $this->getMock(
-            'Symfony\Component\Console\Helper\EditorHelper',
+            'Gush\Helper\EditorHelper',
             ['fromString']
         );
         $editor->expects($this->at(0))
