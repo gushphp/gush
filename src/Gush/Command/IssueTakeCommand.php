@@ -80,6 +80,7 @@ EOF
 
         $this->getHelper('process')->runCommands($commands, $output);
 
+
         $url = $adapter->getIssueUrl($issueNumber);
         $output->writeln("Issue {$url} taken!");
 
