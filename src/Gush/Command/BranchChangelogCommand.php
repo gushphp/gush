@@ -48,7 +48,13 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
+        try {
+            $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
+        } catch (\RuntimeException $e) {
+            $output->writeln('<info>There were no tags found</info>');
+
+            return self::COMMAND_SUCCESS;
+        }
 
         $commits = $this->getHelper('git')->runGitCommand(
             sprintf('git log %s...HEAD --oneline', $latestTag)
