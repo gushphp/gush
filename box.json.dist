@@ -35,7 +35,7 @@
             "in": "vendor/herrera-io/phar-update/res"
         }
     ],
-    "git-version": "package_version",
+    "git-version": "@git-version@",
     "main": "bin/gush",
     "output": "gush-@git-version@.phar",
     "stub": true
