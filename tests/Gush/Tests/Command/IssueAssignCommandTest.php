@@ -16,7 +16,6 @@ use Gush\Tester\Adapter\TestAdapter;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
- * @group now
  */
 class IssueAssignCommandTest extends BaseTestCase
 {

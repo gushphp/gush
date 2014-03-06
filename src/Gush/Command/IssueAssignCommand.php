@@ -52,9 +52,7 @@ EOF
         $username = $input->getArgument('username');
 
         $adapter = $this->getAdapter();
-        $issue = $adapter->getIssue($issueNumber);
-
-        $result = $adapter->assignIssue($issueNumber, $username);
+        $adapter->updateIssue($issueNumber, ['assignee' => $username]);
 
         $url = $adapter->getIssueUrl($issueNumber);
         $output->writeln("Issue {$url} was assigned to {$username}!");
