@@ -279,6 +279,7 @@ class Application extends BaseApplication
             new Cmd\IssueTakeCommand(),
             new Cmd\IssueCreateCommand(),
             new Cmd\IssueCloseCommand(),
+            new Cmd\IssueAssignCommand(),
             new Cmd\IssueLabelListCommand(),
             new Cmd\IssueMilestoneListCommand(),
             new Cmd\IssueShowCommand(),
