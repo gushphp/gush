@@ -65,6 +65,14 @@ EOT;
 Forked repository gushphp/gush into cordoval/gush
 EOT;
 
+    const BRANCH_CHANGELOG_EMPTY = <<<EOT
+There were no tags found
+EOT;
+
+    const BRANCH_CHANGELOG = <<<EOT
+123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123
+EOT;
+
     const PULL_REQUEST_FIXER = <<<EOT
 CS fix committed and pushed!
 EOT;
