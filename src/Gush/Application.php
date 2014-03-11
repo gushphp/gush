@@ -290,6 +290,7 @@ class Application extends BaseApplication
             new Cmd\BranchChangelogCommand(),
             new Cmd\LabelIssuesCommand(),
             new Cmd\CoreConfigureCommand(),
+            new Cmd\CoreAliasCommand(),
             new Cmd\PullRequestVersionEyeCommand(),
         ];
     }
