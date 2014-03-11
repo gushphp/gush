@@ -32,7 +32,7 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeat
     protected function configure()
     {
         $this
-            ->setName('label')
+            ->setName('issue:label:assign')
             ->setDescription('Labels issues/pull requests')
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')

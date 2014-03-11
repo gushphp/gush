@@ -24,7 +24,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
-class ConfigureCommand extends BaseCommand implements GitHubFeature
+class CoreConfigureCommand extends BaseCommand implements GitHubFeature
 {
     const AUTH_HTTP_PASSWORD = 'http_password';
     const AUTH_HTTP_TOKEN = 'http_token';
@@ -44,7 +44,7 @@ class ConfigureCommand extends BaseCommand implements GitHubFeature
      */
     protected function configure()
     {
-        $this->setName('configure')
+        $this->setName('core:configure')
             ->setDescription('Configure the github credentials and the cache folder')
             ->addOption(
                 'adapter',
