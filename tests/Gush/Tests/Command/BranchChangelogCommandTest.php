@@ -19,7 +19,7 @@ use Gush\Tests\Fixtures\OutputFixtures;
  */
 class BranchChangelogCommandTest extends BaseTestCase
 {
-    const TEST_TAG_NAME = 'v1.2.3';
+    const TEST_TAG_NAME = '1.2.3';
 
     public function testCommandForRepositoriesWithoutTags()
     {
@@ -68,11 +68,14 @@ class BranchChangelogCommandTest extends BaseTestCase
         );
         $gitHelper->expects($this->any())
             ->method('runGitCommand')
-            ->will($this->returnValueMap([
-                ['git describe --abbrev=0 --tags', self::TEST_TAG_NAME],
-                [sprintf('git log %s...HEAD --oneline', self::TEST_TAG_NAME), "Another hack which fixes #123"]
-            ])
-        );
+            ->will($this->returnValueMap(
+                    [
+                        ['git describe --abbrev=0 --tags', self::TEST_TAG_NAME],
+                        [sprintf('git log %s...HEAD --oneline', self::TEST_TAG_NAME), 'Another hack which fixes #123']
+                    ]
+                )
+            )
+        ;
 
         return $gitHelper;
     }
