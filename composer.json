@@ -52,7 +52,10 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-0": {"Gush\\": "src"}
+        "psr-4": {"Gush\\": "src"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Gush\\Tests\\": "tests"}
     },
     "extra": {
         "branch-alias": {

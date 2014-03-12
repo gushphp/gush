@@ -18,7 +18,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="./tests/bootstrap.php"
+         bootstrap="./vendor/autoload.php"
     >
 
     <php>
