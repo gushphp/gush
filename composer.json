@@ -55,7 +55,7 @@
         "psr-4": {"Gush\\": "src"}
     },
     "autoload-dev": {
-        "psr-4": {"Gush\\Tests": "tests"}
+        "psr-4": {"Gush\\Tests\\": "tests"}
     },
     "extra": {
         "branch-alias": {
