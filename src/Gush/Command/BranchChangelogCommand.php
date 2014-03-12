@@ -48,7 +48,13 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
+        try {
+            $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
+        } catch (\RuntimeException $e) {
+            $output->writeln('<info>There were no tags found</info>');
+
+            return self::COMMAND_SUCCESS;
+        }
 
         $commits = $this->getHelper('git')->runGitCommand(
             sprintf('git log %s...HEAD --oneline', $latestTag)
@@ -60,10 +66,12 @@ EOF
         $adapter = $this->getAdapter();
 
         foreach (explode("\n", $commits) as $commit) {
+            // Cut issue id from branch name (merge commits)
             if (preg_match('/\/([0-9]+)/i', $commit, $matchesGush) && isset($matchesGush[1])) {
                 $issues[] = $matchesGush[1];
             }
 
+            // Cut issue id from commit message
             if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matchesGithub)
                 && isset($matchesGithub[1])
             ) {

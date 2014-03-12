@@ -72,7 +72,7 @@ class TestAdapter extends BaseAdapter
     public function getIssue($id)
     {
         return [
-            'number'       => 60,
+            'number'       => $id,
             'state'        => "open",
             'user'         => ['login' => 'weaverryan'],
             'assignee'     => ['login' => 'cordoval'],
@@ -81,6 +81,7 @@ class TestAdapter extends BaseAdapter
             'labels'       => [['name' => 'actionable'], ['name' => 'easy pick']],
             'title'        => 'Write a behat test to launch strategy',
             'body'         => 'Help me conquer the world. Teach them to use gush.',
+            'html_url'     => $this->getIssueUrl($id),
         ];
     }
 
