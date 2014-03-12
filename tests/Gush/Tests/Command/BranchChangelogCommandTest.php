@@ -79,5 +79,4 @@ class BranchChangelogCommandTest extends BaseTestCase
 
         return $gitHelper;
     }
-
 }
