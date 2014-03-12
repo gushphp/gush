@@ -68,7 +68,8 @@ class BranchChangelogCommandTest extends BaseTestCase
         );
         $gitHelper->expects($this->any())
             ->method('runGitCommand')
-            ->will($this->returnValueMap(
+            ->will(
+                $this->returnValueMap(
                     [
                         ['git describe --abbrev=0 --tags', self::TEST_TAG_NAME],
                         [sprintf('git log %s...HEAD --oneline', self::TEST_TAG_NAME), 'Another hack which fixes #123']
