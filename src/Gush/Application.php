@@ -159,7 +159,7 @@ class Application extends BaseApplication
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-        if ('configure' !== $this->getCommandName($input)) {
+        if ('core:configure' !== $this->getCommandName($input)) {
             $this->readParameters();
 
             if (null === $this->adapter) {
@@ -186,7 +186,7 @@ class Application extends BaseApplication
 
         if (!file_exists($localFilename)) {
             throw new FileNotFoundException(
-                'The .gush.yml file doest not exist, please run the configure command.'
+                'The .gush.yml file doest not exist, please run the core:configure command.'
             );
         }
 
@@ -197,11 +197,11 @@ class Application extends BaseApplication
 
             if (!$this->config->isValid()) {
                 throw new \RuntimeException(
-                    "The '.gush.yml' is not properly configured. Please run the 'configure' command."
+                    "The '.gush.yml' is not properly configured. Please run the 'core:configure' command."
                 );
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the configure command.");
+            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
         }
     }
 
@@ -260,7 +260,7 @@ class Application extends BaseApplication
      */
     public function getCommands()
     {
-        $updateCommand = new UpdateCommand('update');
+        $updateCommand = new UpdateCommand('core:update');
         $updateCommand->setManifestUri(self::MANIFESTO_FILE_URL);
 
         return [
@@ -289,7 +289,8 @@ class Application extends BaseApplication
             new Cmd\BranchForkCommand(),
             new Cmd\BranchChangelogCommand(),
             new Cmd\LabelIssuesCommand(),
-            new Cmd\ConfigureCommand(),
+            new Cmd\CoreConfigureCommand(),
+            new Cmd\CoreAliasCommand(),
             new Cmd\PullRequestVersionEyeCommand(),
         ];
     }
