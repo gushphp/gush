@@ -43,7 +43,7 @@ Install Gush in two ways:
 #### 1) Installing system-wide using composer (recommended)
 
 ```bash
-$ composer global require gushphp/gush=dev-master gushphp/gush-github-adapter=dev-master
+$ composer global require gushphp/gush=dev-master
 ```
 
 If it is the first time you globally install a dependency then make sure
