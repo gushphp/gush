@@ -37,6 +37,7 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeat
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
             ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
+            ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Label')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command labels issue or pull requests for either the current or the given organization
@@ -138,14 +139,16 @@ EOF
 
             /** @var DialogHelper $dialog */
             $dialog = $this->getApplication()->getHelperSet()->get('dialog');
-            $label = $dialog->askAndValidate(
-                $output,
-                '<comment>Label(s)?</comment> ',
-                $validation,
-                false,
-                null,
-                $labelsName
-            );
+            if (!$label = $input->getOption('label')) {
+                $label = $dialog->askAndValidate(
+                    $output,
+                    '<comment>Label(s)?</comment> ',
+                    $validation,
+                    false,
+                    null,
+                    $labelsName
+                );
+            }
 
             // updates the issue
             $adapter->updateIssue($issue['number'], ['labels' => explode(',', $label)]);

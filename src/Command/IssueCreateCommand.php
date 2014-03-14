@@ -15,6 +15,7 @@ use Gush\Helper\EditorHelper;
 use Gush\Feature\GitHubFeature;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -32,6 +33,7 @@ class IssueCreateCommand extends BaseCommand implements GitHubFeature
         $this
             ->setName('issue:create')
             ->setDescription('Creates an issue')
+            ->addOption('issue_title', null, InputOption::VALUE_REQUIRED, 'Issue Title')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command creates a new issue for either the current or the given organization
@@ -59,11 +61,14 @@ EOF
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
-        $title = $dialog->askAndValidate(
-            $output,
-            'Issue title: ',
-            $emptyValidator
-        );
+
+        if (!$title = $input->getOption('issue_title')) {
+            $title = $dialog->askAndValidate(
+                $output,
+                'Issue title: ',
+                $emptyValidator
+            );
+        }
 
         /** @var EditorHelper $editor */
         $editor = $this->getHelper('editor');
