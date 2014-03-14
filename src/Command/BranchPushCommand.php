@@ -31,6 +31,11 @@ class BranchPushCommand extends BaseCommand implements GitHubFeature
         $this
             ->setName('branch:push')
             ->setDescription('Pushes and tracks the current local branch into user own fork')
+            ->addArgument(
+                'other_organization',
+                InputArgument::OPTIONAL,
+                'Organization (default to username) to where to push the branch'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command pushes the current local branch into user own fork:
@@ -46,13 +51,18 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repo = $input->getOption('repo');
-        $vendorName = $input->getOption('org');
+        $branchName = $this->getHelp('git')->getBranchName();
+
+        if (null !== $input->getArgument('other_organization')) {
+            $org = $input->getArgument('other_organization');
+        } else {
+            $org = $this->getParameter('authentication')['username'];
+        }
 
         $this->getHelper('process')->runCommands(
             [
                 [
-                    'line' => sprintf('git push -u %s %s', $username, $branchName),
+                    'line' => sprintf('git push -u %s %s', $org, $branchName),
                     'allow_failures' => true
                 ]
             ],
