@@ -57,7 +57,7 @@ if (!file_exists(__DIR__.'/../.first-time-run')) {
     }
 
     if (!$config->isValid()) {
-        $app->run(new Symfony\Component\Console\Input\ArrayInput(['command' => 'configure']));
+        $app->run(new Symfony\Component\Console\Input\ArrayInput(['command' => 'core:configure']));
     }
 }
 

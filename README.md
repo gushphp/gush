@@ -73,7 +73,7 @@ $ curl -sS http://gushphp.org/installer | php -- --install-dir=bin
 You may want to start by configuring it:
 
 ```bash
-$ gush configure
+$ gush core:configure
 Insert your github credentials:
 username: cordoval
 // ...

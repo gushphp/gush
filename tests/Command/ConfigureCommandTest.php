@@ -12,7 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Github\Client;
-use Gush\Command\ConfigureCommand;
+use Gush\Command\CoreConfigureCommand;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -51,9 +51,9 @@ class ConfigureCommandTest extends BaseTestCase
 
         $dialog = $this->expectDialogParameters($homeDir);
 
-        $tester = $this->getCommandTester($command = new ConfigureCommand());
+        $tester = $this->getCommandTester($command = new CoreConfigureCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
-        $tester->execute(['--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter', 'command' => 'configure']);
+        $tester->execute(['--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter', 'command' => 'core:configure']);
 
         $this->assertFileExists($gushFilename);
 

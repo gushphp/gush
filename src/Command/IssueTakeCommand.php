@@ -69,11 +69,7 @@ EOF
                 'allow_failures' => true
             ],
             [
-                'line' => sprintf('git checkout %s/%s', 'origin', $baseBranch),
-                'allow_failures' => true
-            ],
-            [
-                'line' => sprintf('git checkout -b %s', $slugTitle),
+                'line' => sprintf('git checkout -b %s %s/%s', $slugTitle, 'origin', $baseBranch),
                 'allow_failures' => true
             ],
         ];
