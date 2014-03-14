@@ -25,7 +25,7 @@ class PullRequestSquashCommandTest extends BaseTestCase
         $processHelper = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new PullRequestSquashCommand());
         $command->getHelperSet()->set($processHelper, 'process');
-        $tester->execute(['--org' => 'cordoval', 'pr_number' => 40]);
+        $tester->execute(['--org' => 'cordoval', 'pr_number' => 40], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::PULL_REQUEST_SQUASH, trim($tester->getDisplay()));
     }
