@@ -34,6 +34,7 @@ class IssueCreateCommand extends BaseCommand implements GitHubFeature
             ->setName('issue:create')
             ->setDescription('Creates an issue')
             ->addOption('issue_title', null, InputOption::VALUE_REQUIRED, 'Issue Title')
+            ->addOption('issue_body', null, InputOption::VALUE_REQUIRED, 'Issue Body')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command creates a new issue for either the current or the given organization
@@ -70,9 +71,11 @@ EOF
             );
         }
 
-        /** @var EditorHelper $editor */
-        $editor = $this->getHelper('editor');
-        $body = $editor->fromString('');
+        if (!$body = $input->getOption('issue_body')) {
+            /** @var EditorHelper $editor */
+            $editor = $this->getHelper('editor');
+            $body = $editor->fromString('');
+        }
 
         $issue = $adapter->openIssue($title, $body);
 
