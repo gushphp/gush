@@ -3,6 +3,8 @@
 Gush is a rapid git workflow for project maintainers and contributors that works
 with backend support for GitHub, Enterprise Github, and more!
 
+Check Gush in action [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
+
 [![Build Status](https://travis-ci.org/gushphp/gush.png?branch=master)](https://travis-ci.org/gushphp/gush)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/gushphp/gush/badges/quality-score.png?s=127d28d94969ef366d3bc78808cc89b8eeba51e2)](https://scrutinizer-ci.com/g/gushphp/gush/)
 [![Code Coverage](https://scrutinizer-ci.com/g/gushphp/gush/badges/coverage.png?s=674a025b490123ccc3678eb1088d7d0a696004a1)](https://scrutinizer-ci.com/g/gushphp/gush/)
