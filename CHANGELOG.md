@@ -7,14 +7,19 @@ additions) done in the corresponding version.
 To get the diff for a specific change, go to https://github.com/gushphp/gush/commit/XXX where XXX is the change hash
 To get the diff between two versions, go to https://github.com/gushphp/gush/compare/v1.2.0...v1.2.1
 
+* 1.3.9 (2014-02-17)
+
+ * feature set GitHub as default
+ * feature added fork command and included check on other commands
+
 * 1.3.8 (2014-02-17)
 
- * feature set github as default
- * feature add fork command and include check on other commands
+ * feature set GitHub as default
+ * feature added fork command and included check on other commands
 
 * 1.3.7 (2014-02-17)
 
- * bug fix switch git version to package version
+ * bugfix switch git version to package version
  * minor added adapter classes, modifying application to use Adapter instead of GitHub Client
 
 * 1.3.6 (2014-02-12)
