@@ -73,11 +73,7 @@ class IssueTakeCommandTest extends BaseTestCase
                         'allow_failures' => true
                     ],
                     [
-                        'line' => 'git checkout origin/master',
-                        'allow_failures' => true
-                    ],
-                    [
-                        'line' => sprintf('git checkout -b %s', self::SLUGIFIED_STRING),
+                        'line' => sprintf('git checkout -b %s origin/master', self::SLUGIFIED_STRING),
                         'allow_failures' => true
                     ],
                 ]

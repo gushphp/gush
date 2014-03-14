@@ -73,6 +73,10 @@ EOT;
 123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123
 EOT;
 
+    const BRANCH_PUSH = <<<EOT
+Branch pushed to cordoval/some-branch
+EOT;
+
     const PULL_REQUEST_FIXER = <<<EOT
 CS fix committed and pushed!
 EOT;
