@@ -23,7 +23,7 @@ class IssueCloseCommandTest extends BaseTestCase
     public function testCommand()
     {
         $tester = $this->getCommandTester(new IssueCloseCommand());
-        $tester->execute(['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER]);
+        $tester->execute(['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::ISSUE_CLOSE, trim($tester->getDisplay()));
     }

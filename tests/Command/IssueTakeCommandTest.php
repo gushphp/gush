@@ -29,7 +29,7 @@ class IssueTakeCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($text, 'text');
         $command->getHelperSet()->set($process, 'process');
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush', 'issue_number' => TestAdapter::ISSUE_NUMBER]);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush', 'issue_number' => TestAdapter::ISSUE_NUMBER], ['interactive' => false]);
 
         $this->assertEquals(
             sprintf('Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
