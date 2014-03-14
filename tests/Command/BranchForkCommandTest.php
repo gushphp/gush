@@ -28,7 +28,7 @@ class BranchForkCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command = new BranchForkCommand());
         $command->getHelperSet()->set($processHelper, 'process');
 
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::BRANCH_FORK, trim($tester->getDisplay()));
     }

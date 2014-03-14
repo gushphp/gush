@@ -28,7 +28,7 @@ class BranchChangelogCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command = new BranchChangelogCommand());
         $command->getHelperSet()->set($gitHelperWithoutTags, 'git');
 
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_EMPTY, trim($tester->getDisplay()));
     }
