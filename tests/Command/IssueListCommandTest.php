@@ -33,7 +33,7 @@ class IssueListCommandTest extends BaseTestCase
     public function testCommand($args)
     {
         $tester = $this->getCommandTester(new IssueListCommand());
-        $tester->execute($args);
+        $tester->execute($args, ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::ISSUE_LIST, trim($tester->getDisplay()));
     }

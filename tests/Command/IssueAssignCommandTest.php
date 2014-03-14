@@ -28,7 +28,8 @@ class IssueAssignCommandTest extends BaseTestCase
                 '--repo' => 'gush',
                 'issue_number' => TestAdapter::ISSUE_NUMBER,
                 'username' => 'cordoval',
-            ]
+            ],
+            ['interactive' => false]
         );
 
         $this->assertEquals(

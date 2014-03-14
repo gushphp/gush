@@ -30,7 +30,7 @@ class BranchPushCommandTest extends BaseTestCase
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
 
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::BRANCH_PUSH, trim($tester->getDisplay()));
     }

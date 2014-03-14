@@ -29,7 +29,7 @@ class BranchSyncCommandTest extends BaseTestCase
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
 
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay()));
     }

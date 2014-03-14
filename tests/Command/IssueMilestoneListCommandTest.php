@@ -21,7 +21,7 @@ class IssueMilestoneListCommandTest extends BaseTestCase
     public function testCommand()
     {
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals("version 1.0", trim($tester->getDisplay()));
     }

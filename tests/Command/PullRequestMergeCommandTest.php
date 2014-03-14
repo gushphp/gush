@@ -21,7 +21,7 @@ class PullRequestMergeCommandTest extends BaseTestCase
     public function testCommand()
     {
         $tester = $this->getCommandTester(new PullRequestMergeCommand());
-        $tester->execute(['--org' => 'gushphp', 'pr_number' => 40, '--no-comments' => true]);
+        $tester->execute(['--org' => 'gushphp', 'pr_number' => 40, '--no-comments' => true], ['interactive' => false]);
 
         $this->assertEquals("Pull Request successfully merged.", trim($tester->getDisplay()));
     }

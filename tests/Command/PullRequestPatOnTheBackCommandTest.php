@@ -28,7 +28,8 @@ class PullRequestPatOnTheBackCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command = new PullRequestPatOnTheBackCommand());
         $command->getHelperSet()->set($template, 'template');
         $tester->execute(
-            ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER]
+            ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER],
+            ['interactive' => false]
         );
 
         $this->assertEquals(OutputFixtures::PULL_REQUEST_PAT_ON_THE_BACK, trim($tester->getDisplay()));

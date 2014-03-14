@@ -28,7 +28,25 @@ class IssueCreateCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command = new IssueCreateCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
         $command->getHelperSet()->set($editor, 'editor');
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
+        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+
+        $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay()));
+    }
+
+    public function testCommandWithTitleAndBodyOptions()
+    {
+        $tester = $this->getCommandTester($command = new IssueCreateCommand());
+        $tester->execute(
+            [
+                '--org' => 'gushphp',
+                '--repo' => 'gush',
+                '--issue_title' => self::ISSUE_TITLE,
+                '--issue_body' => self::ISSUE_DESCRIPTION
+            ],
+            [
+                'interactive' => false
+            ]
+        );
 
         $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay()));
     }
