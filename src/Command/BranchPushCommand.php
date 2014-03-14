@@ -51,7 +51,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $branchName = $this->getHelp('git')->getBranchName();
+        $branchName = $this->getHelper('git')->getBranchName();
 
         if (null !== $input->getArgument('other_organization')) {
             $org = $input->getArgument('other_organization');

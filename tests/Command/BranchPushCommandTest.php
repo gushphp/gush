@@ -25,6 +25,7 @@ class BranchPushCommandTest extends BaseTestCase
     {
         $processHelper = $this->expectProcessHelper();
         $gitHelper = $this->expectGitHelper();
+        $this->expectsConfig();
         $tester = $this->getCommandTester($command = new BranchPushCommand());
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
@@ -60,8 +61,21 @@ class BranchPushCommandTest extends BaseTestCase
             ['getBranchName']
         );
         $gitHelper
-            ->expects($this->once())            ->method('getBranchName')
+            ->expects($this->once())
+            ->method('getBranchName')
             ->will($this->returnValue('some-branch'))
+        ;
+
+        return $gitHelper;
+    }
+
+    private function expectsConfig()
+    {
+        $this->config
+            ->expects($this->once())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(['username' => 'cordoval']))
         ;
     }
 }
