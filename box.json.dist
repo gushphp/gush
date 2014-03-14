@@ -33,6 +33,10 @@
         {
             "name": "schema.json",
             "in": "vendor/herrera-io/phar-update/res"
+        },
+        {
+            "name": "hiddeninput.exe",
+            "in": "vendor/symfony/console/Symfony/Component/Console/Resources/bin"
         }
     ],
     "git-version": "package_version",
