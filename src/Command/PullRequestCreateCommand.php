@@ -120,6 +120,8 @@ EOF
 
             $output->writeln($message);
         }
+        
+        $parameters = $issue ? ['issue' => $issue]: [];
 
         $pullRequest = $this
             ->getAdapter()
@@ -128,7 +130,7 @@ EOF
                 $username.':'.$head,
                 $title,
                 $body,
-                ['issue' => $issue]
+                $parameters
             );
 
         $output->writeln($pullRequest['html_url']);
