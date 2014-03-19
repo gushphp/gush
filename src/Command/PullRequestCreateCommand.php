@@ -40,6 +40,7 @@ class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, Tem
                 InputOption::VALUE_REQUIRED,
                 'Head Branch - your branch name (defaults to current)'
             )
+            ->addOption('issue', null, InputOption::VALUE_REQUIRED, 'Issue Number')
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
             ->setHelp(
                 <<<EOF
@@ -62,6 +63,13 @@ A pull request template can be specified with the <info>template</info> option:
 This will use the symfony specific pull request template, the full list of
 available templates is displayed in the description of the <info>template</info>
 option.
+
+The command also can accept an issue number along with the other options:
+
+    <info>$ %command.full_name% --issue=10430</info>
+
+Passing an issue number would turn the issue into a pull request provided permissions
+allow it.
 
 When using a template you will be prompted to fill out the required parameters.
 EOF
@@ -87,6 +95,7 @@ EOF
         $org = $input->getOption('org');
         $base = $input->getOption('base');
         $head = $input->getOption('head');
+        $issueNumber = $input->getOption('issue');
         $template = $input->getOption('template');
 
         if (null === $head) {
@@ -103,14 +112,22 @@ EOF
         $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
 
         if (true === $input->getOption('verbose')) {
-            $output->writeln(sprintf(
+            $message = sprintf(
                 'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
                 $username,
                 $head,
                 $org,
                 $base
-            ));
+            );
+
+            if (null !== $issueNumber) {
+                $message = $message.' for issue #'.$issueNumber;
+            }
+
+            $output->writeln($message);
         }
+        
+        $parameters = $issueNumber ? ['issue' => $issueNumber]: [];
 
         $pullRequest = $this
             ->getAdapter()
@@ -118,7 +135,8 @@ EOF
                 $org.':'.$base,
                 $username.':'.$head,
                 $title,
-                $body
+                $body,
+                $parameters
             );
 
         $output->writeln($pullRequest['html_url']);
