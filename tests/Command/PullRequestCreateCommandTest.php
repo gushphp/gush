@@ -63,6 +63,6 @@ class PullRequestCreateCommandTest extends BaseTestCase
         );
 
         $res = trim($tester->getDisplay());
-        $this->assertEquals('http://github.com/gushphp/gush/pull/' . TestAdapter::PULL_REQUEST_NUMBER, $res);
+        $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 }

@@ -64,6 +64,13 @@ This will use the symfony specific pull request template, the full list of
 available templates is displayed in the description of the <info>template</info>
 option.
 
+The command also can accept an issue number along with the other options:
+
+    <info>$ %command.full_name% --issue=10430</info>
+
+Passing an issue number would turn the issue into a pull request provided permissions
+allow it.
+
 When using a template you will be prompted to fill out the required parameters.
 EOF
             )
@@ -88,7 +95,7 @@ EOF
         $org = $input->getOption('org');
         $base = $input->getOption('base');
         $head = $input->getOption('head');
-        $issue = $input->getOption('issue');
+        $issueNumber = $input->getOption('issue');
         $template = $input->getOption('template');
 
         if (null === $head) {
@@ -113,15 +120,14 @@ EOF
                 $base
             );
 
-            if ($issue)
-            {
-                $message = $message.'for issue #'.$issue;
+            if (null !== $issueNumber) {
+                $message = $message.' for issue #'.$issueNumber;
             }
 
             $output->writeln($message);
         }
         
-        $parameters = $issue ? ['issue' => $issue]: [];
+        $parameters = $issueNumber ? ['issue' => $issueNumber]: [];
 
         $pullRequest = $this
             ->getAdapter()
