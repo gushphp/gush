@@ -40,6 +40,7 @@ class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, Tem
                 InputOption::VALUE_REQUIRED,
                 'Head Branch - your branch name (defaults to current)'
             )
+            ->addOption('issue', null, InputOption::VALUE_REQUIRED, 'Issue Number')
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
             ->setHelp(
                 <<<EOF
@@ -87,6 +88,7 @@ EOF
         $org = $input->getOption('org');
         $base = $input->getOption('base');
         $head = $input->getOption('head');
+        $issue = $input->getOption('issue');
         $template = $input->getOption('template');
 
         if (null === $head) {
@@ -103,14 +105,23 @@ EOF
         $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
 
         if (true === $input->getOption('verbose')) {
-            $output->writeln(sprintf(
+            $message = sprintf(
                 'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
                 $username,
                 $head,
                 $org,
                 $base
-            ));
+            );
+
+            if ($issue)
+            {
+                $message = $message.'for issue #'.$issue;
+            }
+
+            $output->writeln($message);
         }
+        
+        $parameters = $issue ? ['issue' => $issue]: [];
 
         $pullRequest = $this
             ->getAdapter()
@@ -118,7 +129,8 @@ EOF
                 $org.':'.$base,
                 $username.':'.$head,
                 $title,
-                $body
+                $body,
+                $parameters
             );
 
         $output->writeln($pullRequest['html_url']);
