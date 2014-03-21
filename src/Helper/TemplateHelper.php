@@ -13,6 +13,7 @@ namespace Gush\Helper;
 
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
+use Gush\Template\PullRequest\Create\EnterpriseTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
 use Gush\Template\TemplateInterface;
@@ -33,6 +34,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
         // for the moment we register a set of default Gush templates
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
+        $this->registerTemplate(new EnterpriseTemplate());
         $this->registerTemplate(new PatTemplate());
         $this->registerTemplate(new DefaultTemplate());
         $this->dialog = $dialog;
