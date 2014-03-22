@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-03-22T14:32:05Z
+
+@samsonasik that is genious, can you now register both templates in the helper class? Thanks! Also you can send this PR with Gush already which would turn this PR really coolio! :baby:
+
+---------------------------------------------------------------------------
+
+by samsonasik at 2014-03-22T14:38:09Z
+
+@cordoval done ;). both templates added into TemplateHelper class ;)
