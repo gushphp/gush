@@ -16,6 +16,8 @@ use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\EnterpriseTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
+use Gush\Template\PullRequest\Create\ZendFrameworkDocTemplate;
+use Gush\Template\PullRequest\Create\ZendFrameworkTemplate;
 use Gush\Template\TemplateInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,6 +39,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $this->registerTemplate(new EnterpriseTemplate());
         $this->registerTemplate(new PatTemplate());
         $this->registerTemplate(new DefaultTemplate());
+        $this->registerTemplate(new ZendFrameworkDocTemplate());
+        $this->registerTemplate(new ZendFrameworkTemplate());
         $this->dialog = $dialog;
     }
 
