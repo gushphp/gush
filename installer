@@ -167,6 +167,10 @@ function checkPlatform($quiet)
         $warnings['apc_cli'] = true;
     }
 
+    if (!init_get('date.timezone')) {
+        $warnings['date.timezone'] = true;
+    }
+
     ob_start();
     phpinfo(INFO_GENERAL);
     $phpinfo = ob_get_clean();
@@ -262,6 +266,11 @@ function checkPlatform($quiet)
         out('If you encounter issues, try to change the following:', 'error');
         foreach ($warnings as $warning => $current) {
             switch ($warning) {
+                case 'date.timezone':
+                    $text = PHP_EOL . "The date.timezone setting is not configured.".PHP_EOL;
+                    $text .= "Add a valid timezone to the `php.ini` that is loaded for the php client binary. Reference: http://php.net/timezones";
+                    break;
+
                 case 'apc_cli':
                     $text = PHP_EOL."The apc.enable_cli setting is incorrect.".PHP_EOL;
                     $text .= "Add the following to the end of your `php.ini`:".PHP_EOL;
