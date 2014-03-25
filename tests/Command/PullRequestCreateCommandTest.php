@@ -47,21 +47,16 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $this->assertEquals('http://github.com/gushphp/gush/pull/' . TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 
-    public function testCommandWithIssue()
+    /**
+     * @dataProvider provideCommand
+     */
+    public function testCommandWithIssue($args)
     {
+        $args['--issue'] = '145';
+
         $command = new PullRequestCreateCommand();
         $tester = $this->getCommandTester($command);
-        $tester->execute(
-            [
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
-                '--head' => 'issue-145',
-                '--template' => 'default',
-                '--title' => 'Test',
-                '--issue' => '145'
-            ],
-            ['interactive' => false]
-        );
+        $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
         $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
