@@ -1,0 +1,203 @@
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-19T13:47:21Z
+
+At the moment, it always tries to create the PR from your personal reposiotory branch, but we are only using the organization repo for our job.
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-19T13:52:37Z
+
+Should we rename the options to something better? Maybe it\'s just me, but I don\'t really like the head and head-org names...
+
+---------------------------------------------------------------------------
+
+by thenonameguy at 2014-02-19T13:54:54Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-02-19T13:57:20Z
+
+have you tried on passing --head=origin/x --base=param87/x ?
+or with a : syntax? check the code i believe it is already supported with the changed done by @dantleech
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-19T14:18:28Z
+
+@cordoval Yep:
+
+```gush p:create --verbose --head=\"origin/test\"```
+
+```
+Making PR from Padam87:origin/test to netlifehu:master
+
+  [Github\\Exception\\ValidationFailedException]
+
+  Validation Failed: Field \"head_sha\" is missing, for resource \"PullRequest\", Fi
+eld \"base_sha\" is missing, for resource \"PullRequest\", No commits between netlif
+ehu:master and Padam87:origin/test
+```
+
+```This branch is 1 commit ahead and 0 commits behind master```
+
+Info: the project is not even forked to my personal acc.
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-02-19T15:22:13Z
+
+:thumbsup:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-02-19T15:25:03Z
+
+did you previously push the branch? the automatic push is something @dantleech removed, i was against but maybe it makes more sense for atomic commands. But try to push.
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-19T15:39:21Z
+
+Yep, pushed everything, working dir clean, gihub show the changes.
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-02-19T15:42:20Z
+
+@cordoval I think just due to the way the code originally was written, [this line][0] would pretty much prevent it from being able to do a PR from the same username as the origin
+
+[0]: https://github.com/gushphp/gush/blob/master/src/Gush/Command/PullRequestCreateCommand.php#L119
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-19T15:43:55Z
+
+@aequasi I agree.
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-02-20T13:39:48Z
+
+Also having this error.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-02-20T14:04:23Z
+
+me too :baby:
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-02-21T15:24:56Z
+
+is this ready to merge?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-02-21T15:28:48Z
+
+I doubt it, it has no tests and needs some review after more work from @Padam87 into it
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-02-21T15:51:08Z
+
+@cordoval Yep, It needs some unit tests, and then its good to go. I will fix it in the weekend.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-02-25T03:34:32Z
+
+bump @Padam87  :baby:
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-04T22:49:32Z
+
+@cordoval Is anything else needed to merge this?
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-05T11:18:04Z
+
+I would not implement this feature for all Github commands, because most of them don\'t need it. I think only the pull request works with 2 branches, possibly from different owners.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-03-05T12:11:45Z
+
+ok but can we have it so that we can extend a class or implement an interface and it would add this? that way if there is a command that needs it we just plug it.
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-05T12:26:45Z
+
+Sure, thats always a good idea. :+1:  Any ideas about naming? How about
+```source-owner```, ```source-branch``` and ```Gush\\Feature\\SourceableFeature```
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-03-05T12:41:56Z
+
+source is better, but not sure if the right one yet, but that is changable so proceed please don\'t let the x name stop you
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-03-14T19:41:00Z
+
+is this rebased and adapted to the other_organization convention i think? or am i confusing ideas?
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-16T15:10:46Z
+
+@cordoval Took another look, and unfortunately this is still not quite ready. It\'s hard to create a good abstraction for this. Some use cases, like branch:fork only require another org (currently called other_organization), and p:create requires an org and a branch name. And even though the paramters are the basically the same, sometimes they refer to the target, sometimes the source, therefore names, descriptions, and even default values are completely different...
+
+I think I will revert some of my changes to this PR, squash and rebase, and just implement the fix for this problem, to get it working ASAP, and open a separate PR for the refactor. My current plan is to add 2 new Feature Interfaces:
+
+- OtherOrgFeauture
+- OtherBranchFeature
+
+```php
+interface OtherOrgFeature
+{
+    public function getOtherOrgParameterName();
+    public function getOtherOrgParameterDescription();
+    public function getOtherOrgParameterDefaultValue();
+}
+```
+
+*UPDATE*: not sure if it\'s worth it :)
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-16T16:12:29Z
+
+@cordoval Done, minor BCbreak, the ```head``` option has been renamed to ```source-branch```
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-25T17:19:08Z
+
+@cordoval ping
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-03-25T17:20:07Z
+
+thought you needed to work some more on this, can we have a call over skype?
+
+---------------------------------------------------------------------------
+
+by Padam87 at 2014-03-25T17:23:48Z
+
+I think this one is ready, I will create a separate PR for the abstraction. We could talk about it on skype, my acc is ```prager.adam```
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-03-25T18:58:35Z
+
+@Padam87 after rebasing i will merge immediately
