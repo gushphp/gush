@@ -267,7 +267,7 @@ function checkPlatform($quiet)
         foreach ($warnings as $warning => $current) {
             switch ($warning) {
                 case 'date.timezone':
-                    $text = PHP_EOL . "The date.timezone setting is not configured.".PHP_EOL;
+                    $text = PHP_EOL."The date.timezone setting is not configured.".PHP_EOL;
                     $text .= "Add a valid timezone to the `php.ini` that is loaded for the php client binary. Reference: http://php.net/timezones";
                     break;
 
