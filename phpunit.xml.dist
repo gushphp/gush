@@ -23,6 +23,7 @@
 
     <php>
         <env name="GIT_VENDOR_NAME" value="gushphp"/>
+        <ini name="date.timezone" value="America/Los_Angeles"/>
         <!--
         <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
         <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>
