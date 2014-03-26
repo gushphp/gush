@@ -106,7 +106,7 @@ EOF
         $template = $input->getOption('template');
 
         if (null === $sourceOrg) {
-            $sourceOrg = $this->getHelper('git')->getVendorName();
+            $sourceOrg = $this->getParameter('authentication')['username'];
         }
 
         if (null === $sourceBranch) {
