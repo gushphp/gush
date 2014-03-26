@@ -32,9 +32,6 @@ require_once $filename;
 
 error_reporting(-1);
 ini_set('display_errors', 1);
-if (!ini_get('date.timezone')) {
-    echo PHP_EOL."WARNING: The php-cli php.ini setting `date.timezone` is not configured (http://php.net/timezones).".PHP_EOL.PHP_EOL;
-}
 
 $process = new Symfony\Component\Process\Process('git --version', getcwd());
 $process->run();
