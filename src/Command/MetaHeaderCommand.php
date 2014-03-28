@@ -22,6 +22,7 @@ class MetaHeaderCommand extends BaseCommand implements TemplateFeature
     {
         $this
             ->setName('meta:header')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do not change anything, output files')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command asserts that headers are present
 in files matching the given filter (*.php by default) in the current
@@ -29,8 +30,7 @@ git repository.
 
 Note only PHP files are supported at the moment.
 EOT
-        )
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do not change anything, output files')
+            )
         ;
     }
 
