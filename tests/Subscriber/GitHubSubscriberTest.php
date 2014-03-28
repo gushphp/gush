@@ -15,21 +15,30 @@ use Gush\Subscriber\GitHubSubscriber;
 
 class GitHubSubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    private $subscriber;
+    protected $subscriber;
+    protected $event;
+    protected $command;
+    protected $gitHelper;
 
     public function setUp()
     {
-        $this->event = $this->getMockBuilder(
-            'Gush\Event\CommandEvent'
-        )->disableOriginalConstructor()->getMock();
+        $this->event = $this
+            ->getMockBuilder('Gush\Event\CommandEvent')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
-        $this->command = $this->getMockBuilder(
-            'Gush\Tests\Subscriber\TestGitRepoCommand'
-        )->disableOriginalConstructor()->getMock();
+        $this->command = $this
+            ->getMockBuilder('Gush\Tests\Subscriber\TestGitRepoCommand')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
-        $this->gitHelper = $this->getMock(
-            'Gush\Helper\GitHelper'
-        );
+        $this->gitHelper = $this
+            ->getMockBuilder('Gush\Helper\GitHelper')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
         $this->subscriber = new GitHubSubscriber($this->gitHelper);
     }
