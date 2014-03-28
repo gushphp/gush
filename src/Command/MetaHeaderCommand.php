@@ -68,20 +68,21 @@ EOT
 
         // only process PHP files for now
         $files = array_filter($files, function ($value) {
-            if ('.php' == substr($value, -4)) {
+            if ('.php' === substr($value, -4)) {
                 return true;
             }
 
             return false;
         });
 
-        $output->writeln('');
-        $output->writeln(sprintf(
-            '<info>The following header will be set on %d files:</info>', count($files)
-        ));
-        $output->writeln('');
-
-        $output->writeln($header);
+        $output->writeln(
+            [
+                '',
+                sprintf('<info>The following header will be set on %d files:</info>', count($files)),
+                '',
+                $header,
+            ]
+        );
 
         $confirmed = $this->getHelper('dialog')->askConfirmation($output, 
             '<question>Do you want to continue?</question> (y/n) ', true);
