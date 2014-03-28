@@ -63,7 +63,7 @@ class ProcessHelper extends Helper
         $builder
             ->setWorkingDirectory(getcwd())
             ->setTimeout(3600)
-            ;
+        ;
 
         return $builder;
     }
