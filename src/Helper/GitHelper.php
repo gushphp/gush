@@ -87,6 +87,7 @@ class GitHelper extends Helper
 
     /**
      * @throws \RuntimeException
+     *
      * @return string            The tag name
      */
     public function getLastTagOnCurrentBranch()
