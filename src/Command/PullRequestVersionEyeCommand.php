@@ -78,7 +78,7 @@ EOF
                                 $dependency->version_current
                             ),
                             'allow_failures' => true,
-                        ]
+                        ],
                     ],
                     $output
                 );

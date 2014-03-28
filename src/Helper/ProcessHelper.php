@@ -77,20 +77,15 @@ class ProcessHelper extends Helper
      */
     public function runCommands(array $commands, OutputInterface $output)
     {
-        foreach ($commands as $command) {
-            if (!is_array($command['line'])) {
-                $this->runCommand(explode(' ', $command['line']), $command['allow_failures'], $output);
-                continue;
+        $callback = function ($type, $buffer) use ($output) {
+            if (Process::ERR === $type) {
+                $output->write('<error>ERR ></error> '.$buffer);
+            } else {
+                $output->write('<comment>OUT ></comment> '.$buffer);
             }
+        };
 
-            $callback = function ($type, $buffer) use ($output) {
-                if (Process::ERR === $type) {
-                    $output->write('<error>ERR ></error> '.$buffer);
-                } else {
-                    $output->write('<comment>OUT ></comment> '.$buffer);
-                }
-            };
-
+        foreach ($commands as $command) {
             $this->runCommand($command['line'], $command['allow_failures'], $callback);
         }
     }
