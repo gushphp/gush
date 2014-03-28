@@ -46,9 +46,7 @@ EOT;
 
     public function render()
     {
-        $params = array_merge(array(
-            'copyright_to' => date('Y')
-        ), $this->parameters);
+        $params = array_merge(['copyright_to' => date('Y')], $this->parameters);
 
         return $this->replaceTokens($this->header, $params);
     }

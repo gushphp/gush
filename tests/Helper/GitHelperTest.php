@@ -17,12 +17,12 @@ use Gush\Helper\ProcessHelper;
 class GitHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Gush\Helper\GitHelper
+     * @var GitHelper
      */
     protected $git;
 
     /**
-     * @var \Gush\Helper\ProcessHelper
+     * @var ProcessHelper
      */
     protected $processHelper;
 
