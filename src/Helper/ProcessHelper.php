@@ -12,6 +12,7 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -82,7 +83,15 @@ class ProcessHelper extends Helper
                 continue;
             }
 
-            $this->runCommand($command['line'], $command['allow_failures'], $output);
+            $callback = function ($type, $buffer) use ($output) {
+                if (Process::ERR === $type) {
+                    $output->write('<error>ERR ></error> '.$buffer);
+                } else {
+                    $output->write('<comment>OUT ></comment> '.$buffer);
+                }
+            };
+
+            $this->runCommand($command['line'], $command['allow_failures'], $callback);
         }
     }
 
