@@ -13,6 +13,7 @@ namespace Gush\Helper;
 
 use Gush\Template\Meta\Header\GPL3Template;
 use Gush\Template\Meta\Header\MITTemplate;
+use Gush\Template\Meta\Header\NoLicenseTemplate;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\EnterpriseTemplate;
@@ -35,7 +36,6 @@ class TemplateHelper extends Helper implements InputAwareInterface
 
     public function __construct(DialogHelper $dialog)
     {
-        // for the moment we register a set of default Gush templates
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
         $this->registerTemplate(new EnterpriseTemplate());
@@ -45,6 +45,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $this->registerTemplate(new ZendFrameworkTemplate());
         $this->registerTemplate(new MITTemplate());
         $this->registerTemplate(new GPL3Template());
+        $this->registerTemplate(new NoLicenseTemplate());
         $this->dialog = $dialog;
     }
 
