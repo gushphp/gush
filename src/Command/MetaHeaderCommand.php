@@ -18,7 +18,10 @@ use Gush\Feature\TemplateFeature;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
 {
-    public function configure()
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
         $this
             ->setName('meta:header')
@@ -34,17 +37,26 @@ EOT
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTemplateDomain()
     {
         return 'meta-header';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTemplateDefault()
     {
         return 'mit';
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dryRun = $input->getOption('dry-run');
         $template = $input->getOption('template');
