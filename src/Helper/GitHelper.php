@@ -104,6 +104,7 @@ class GitHelper extends Helper
 
     /**
      * @param array $options
+     *
      * @return array  Files in the git repository
      */
     public function listFiles($options = [])
