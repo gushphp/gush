@@ -60,6 +60,7 @@ class BranchPushCommandTest extends BaseTestCase
             ->getMockBuilder('Gush\Helper\GitHelper')
             ->disableOriginalConstructor()
             ->setMethods(['getBranchName'])
+            ->getMock()
         ;
         $gitHelper
             ->expects($this->once())

@@ -75,6 +75,7 @@ class BranchSyncCommandTest extends BaseTestCase
             ->getMockBuilder('Gush\Helper\GitHelper')
             ->disableOriginalConstructor()
             ->setMethods(['getBranchName'])
+            ->getMock()
         ;
         $gitHelper->expects($this->once())
             ->method('getBranchName')
