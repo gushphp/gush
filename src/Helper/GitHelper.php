@@ -16,6 +16,13 @@ use Symfony\Component\Process\Process;
 
 class GitHelper extends Helper
 {
+    protected $processHelper;
+
+    public function __construct(ProcessHelper $processHelper)
+    {
+        $this->processHelper = $processHelper;
+    }
+
     public function getName()
     {
         return 'git';
@@ -26,7 +33,7 @@ class GitHelper extends Helper
      */
     public function getBranchName()
     {
-        return $this->runGitCommand('git rev-parse --abbrev-ref HEAD');
+        return $this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD');
     }
 
     /**
@@ -80,29 +87,12 @@ class GitHelper extends Helper
 
     /**
      * @throws \RuntimeException
+     *
      * @return string            The tag name
      */
     public function getLastTagOnCurrentBranch()
     {
-        return $this->runGitCommand('git describe --tags --abbrev=0 HEAD');
-    }
-
-    /**
-     * @param  string            $gitCommandLine
-     * @throws \RuntimeException
-     *
-     * @return string $output
-     */
-    public function runGitCommand($gitCommandLine)
-    {
-        $process = new Process($gitCommandLine, getcwd());
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
-
-        return trim($process->getOutput());
+        return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
     }
 
     private function splitLines($output)
@@ -110,5 +100,29 @@ class GitHelper extends Helper
         $output = trim($output);
 
         return ((string) $output === '') ? [] : preg_split('{\r?\n}', $output);
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array  Files in the git repository
+     */
+    public function listFiles($options = [])
+    {
+        $builder = $this->processHelper->getProcessBuilder(
+            [
+                'git',
+                'ls-files',
+            ]
+        );
+
+        foreach ($options as $name => $value) {
+            $builder->setOption($name, $value);
+        }
+
+        $process = $builder->getProcess();
+        $process->run();
+
+        return explode("\n", $process->getOutput());
     }
 }

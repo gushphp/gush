@@ -32,4 +32,13 @@ abstract class AbstractTemplate implements TemplateInterface
             }
         }
     }
+
+    protected function replaceTokens($string, array $tokens)
+    {
+        foreach ($tokens as $key => $value) {
+            $string = str_replace('{{ '.$key.' }}', $value, $string);
+        }
+
+        return $string;
+    }
 }

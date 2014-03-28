@@ -62,11 +62,11 @@ class Application extends BaseApplication
         }
 
         $helperSet = $this->getDefaultHelperSet();
-        $helperSet->set(new Helpers\GitHelper());
         $helperSet->set(new Helpers\TextHelper());
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
+        $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog')));
         $helperSet->set(new UpdateHelper());
 
@@ -272,6 +272,7 @@ class Application extends BaseApplication
             new Cmd\PullRequestSquashCommand(),
             new Cmd\PullRequestSemVerCommand(),
             new Cmd\FabbotIoCommand(),
+            new Cmd\MetaHeaderCommand(),
             new Cmd\PullRequestFixerCommand(),
             new Cmd\ReleaseCreateCommand(),
             new Cmd\ReleaseListCommand(),

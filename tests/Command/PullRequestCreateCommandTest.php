@@ -69,7 +69,8 @@ class PullRequestCreateCommandTest extends BaseTestCase
     {
         $args['--verbose'] = true;
 
-        $gitHelper = new GitHelper();
+        $processHelper = $this->getMock('Gush\Helper\ProcessHelper');
+        $gitHelper = new GitHelper($processHelper);
         $command = new PullRequestCreateCommand();
         $tester = $this->getCommandTester($command);
         $tester->execute($args, ['interactive' => false]);

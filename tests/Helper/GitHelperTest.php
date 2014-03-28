@@ -12,17 +12,25 @@
 namespace Gush\Tests\Helper;
 
 use Gush\Helper\GitHelper;
+use Gush\Helper\ProcessHelper;
 
 class GitHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Gush\Helper\GitHelper
+     * @var GitHelper
      */
     protected $git;
 
+    /**
+     * @var ProcessHelper
+     */
+    protected $processHelper;
+
     public function setUp()
     {
-        $this->git = new GitHelper();
+        $this->processHelper = $this->getMock('Gush\Helper\ProcessHelper');
+        $this->git = new GitHelper(new ProcessHelper());
+        $this->unitGit = new GitHelper($this->processHelper);
     }
 
     /**
@@ -73,5 +81,15 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     public function it_runs_git_command()
     {
         $this->markTestIncomplete('needs to be written');
+    }
+
+    /**
+     * @test
+     */
+    public function it_lists_files()
+    {
+        // Smoke test for a real listFiles
+        $res = $this->git->listFiles();
+        $this->assertGreaterThan(50, $res);
     }
 }

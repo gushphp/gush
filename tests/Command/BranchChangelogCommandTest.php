@@ -47,10 +47,12 @@ class BranchChangelogCommandTest extends BaseTestCase
 
     private function expectGitHelperWithoutTags()
     {
-        $gitHelper = $this->getMock(
-            'Gush\Helper\GitHelper',
-            ['runGitCommand']
-        );
+        $gitHelper = $this
+            ->getMockBuilder('Gush\Helper\GitHelper')
+            ->disableOriginalConstructor()
+            ->setMethods(['runGitCommand'])
+            ->getMock()
+        ;
         $gitHelper->expects($this->any())
             ->method('runGitCommand')
             ->with('git describe --abbrev=0 --tags')
@@ -62,10 +64,12 @@ class BranchChangelogCommandTest extends BaseTestCase
 
     private function expectGitHelperWithTags()
     {
-        $gitHelper = $this->getMock(
-            'Gush\Helper\GitHelper',
-            ['runGitCommand']
-        );
+        $gitHelper = $this
+            ->getMockBuilder('Gush\Helper\GitHelper')
+            ->disableOriginalConstructor()
+            ->setMethods(['runGitCommand'])
+            ->getMock()
+        ;
         $gitHelper->expects($this->any())
             ->method('runGitCommand')
             ->will(

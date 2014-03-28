@@ -12,9 +12,9 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Process\Process;
 
 /**
  * Helper for launching shell commands
@@ -29,13 +29,19 @@ class ProcessHelper extends Helper
     /**
      * Run a command through the ProcessBuilder
      *
-     * @param  array             $command
-     * @param  Boolean           $allowFailures
-     * @param  OutputInterface   $output
+     * @param array             $command
+     * @param Boolean           $allowFailures
+     * @param \Closure          Callback for Process (e.g. for logging output in realtime)
+     *
+     * @return string
      * @throws \RuntimeException
      */
-    public function runCommand(array $command, $allowFailures = false, OutputInterface $output)
+    public function runCommand($command, $allowFailures = false, $callback = null)
     {
+        if (is_string($command)) {
+            $command = explode(' ', $command);
+        }
+
         $builder = new ProcessBuilder($command);
         $builder
             ->setWorkingDirectory(getcwd())
@@ -43,19 +49,24 @@ class ProcessHelper extends Helper
         ;
         $process = $builder->getProcess();
 
-        $process->run(
-            function ($type, $buffer) use ($output) {
-                if (Process::ERR === $type) {
-                    $output->write('<error>ERR ></error> '.$buffer);
-                } else {
-                    $output->write('<comment>OUT ></comment> '.$buffer);
-                }
-            }
-        );
+        $process->run($callback);
 
         if (!$process->isSuccessful() && !$allowFailures) {
             throw new \RuntimeException($process->getErrorOutput());
         }
+
+        return trim($process->getOutput());
+    }
+
+    public function getProcessBuilder($arguments)
+    {
+        $builder = new ProcessBuilder($arguments);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+        ;
+
+        return $builder;
     }
 
     /**
@@ -66,13 +77,16 @@ class ProcessHelper extends Helper
      */
     public function runCommands(array $commands, OutputInterface $output)
     {
-        foreach ($commands as $command) {
-            if (!is_array($command['line'])) {
-                $this->runCommand(explode(' ', $command['line']), $command['allow_failures'], $output);
-                continue;
+        $callback = function ($type, $buffer) use ($output) {
+            if (Process::ERR === $type) {
+                $output->write('<error>ERR ></error> '.$buffer);
+            } else {
+                $output->write('<comment>OUT ></comment> '.$buffer);
             }
+        };
 
-            $this->runCommand($command['line'], $command['allow_failures'], $output);
+        foreach ($commands as $command) {
+            $this->runCommand($command['line'], $command['allow_failures'], $callback);
         }
     }
 

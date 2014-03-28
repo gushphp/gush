@@ -11,6 +11,8 @@
 
 namespace Gush\Helper;
 
+use Gush\Template\Meta\Header\GPL3Template;
+use Gush\Template\Meta\Header\MITTemplate;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\EnterpriseTemplate;
@@ -41,6 +43,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $this->registerTemplate(new DefaultTemplate());
         $this->registerTemplate(new ZendFrameworkDocTemplate());
         $this->registerTemplate(new ZendFrameworkTemplate());
+        $this->registerTemplate(new MITTemplate());
+        $this->registerTemplate(new GPL3Template());
         $this->dialog = $dialog;
     }
 
