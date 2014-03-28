@@ -45,11 +45,13 @@ class GitRepoHelperTest extends \PHPUnit_Framework_TestCase
         ];
 
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $input->expects($this->any())
+        $input
+            ->expects($this->any())
             ->method('getOption')
             ->will($this->returnCallback(function ($key) use ($enums) {
                 return $enums[$key];
-            }));
+            }))
+        ;
 
         $res = GitRepoHelper::validateEnums($input, 'issue', ['filter', 'state']);
 
