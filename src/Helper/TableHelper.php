@@ -36,11 +36,17 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
         $this->setLayout('default');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setInput(InputInterface $input)
     {
         $this->input = $input;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setLayout($layout)
     {
         if (is_string($layout)) {
@@ -125,6 +131,9 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
         $this->footer = $footer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function render(OutputInterface $output)
     {
         if (null !== $this->input) {
