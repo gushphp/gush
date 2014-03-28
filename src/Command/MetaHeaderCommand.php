@@ -64,7 +64,7 @@ EOT
         $header = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
         $header = $this->renderHeader($header);
 
-        $files = $this->getHelper('git')->lsFiles();
+        $files = $this->getHelper('git')->listFiles();
 
         // only process PHP files for now
         $files = array_filter($files, function ($value) {

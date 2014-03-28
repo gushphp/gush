@@ -83,10 +83,10 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $this->markTestIncomplete('needs to be written');
     }
 
-    public function testLsFilesSmoke()
+    public function testListFilesSmoke()
     {
-        // Smoke test for a real lsFiles
-        $res = $this->git->lsFiles();
+        // Smoke test for a real listFiles
+        $res = $this->git->listFiles();
         $this->assertGreaterThan(50, $res);
     }
 }
