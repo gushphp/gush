@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * This file is part of Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Gush\Command;
 
-use Gush\Feature\TemplateFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Gush\Feature\TemplateFeature;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
 {
@@ -14,8 +23,8 @@ class MetaHeaderCommand extends BaseCommand implements TemplateFeature
         $this
             ->setName('meta:header')
             ->setHelp(<<<EOT
-The <info>%command.name%</info> command assets that headers are present
-in files matching the gvein filter (*.php by default) in the current
+The <info>%command.name%</info> command asserts that headers are present
+in files matching the given filter (*.php by default) in the current
 git repository.
 
 Note only PHP files are supported at the moment.
@@ -67,13 +76,14 @@ EOT
 
         if (!$confirmed) {
             $output->writeln('Aborted');
+
             return self::COMMAND_SUCCESS;
         }
 
         foreach ($files as $file) {
             $handler = fopen($file, 'r');
 
-            $newLines = array();
+            $newLines = [];
             $headerAdded = false;
 
             $replace = true;
@@ -97,7 +107,7 @@ EOT
                         }
                     }
 
-                    if (!in_array($trimmedLine, [ '<?php', '<?' ]) && $trimmedLine != '') {
+                    if (!in_array($trimmedLine, ['<?php', '<?']) && $trimmedLine != '') {
                         $newLines[] = $header;
                         $newLines[] = $line;
                         $headerAdded = true;
@@ -117,6 +127,8 @@ EOT
                 $file
             ));
         }
+
+        return self::COMMAND_SUCCESS;
     }
 
     /**
@@ -126,7 +138,7 @@ EOT
      */
     protected function renderHeader($header)
     {
-        $out = [ '/**' ];
+        $out = ['/**'];
         foreach (explode("\n", $header) as $line) {
             // avoid trailing spaces
             $out[] = ' *'.($line ? ' '.$line : '');
