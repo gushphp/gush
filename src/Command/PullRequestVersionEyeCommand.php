@@ -79,8 +79,7 @@ EOF
                             ),
                             'allow_failures' => true,
                         ],
-                    ],
-                    $output
+                    ]
                 );
             }
         }

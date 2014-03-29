@@ -18,6 +18,7 @@ use Gush\Event\GushEvents;
 use Gush\Exception\FileNotFoundException;
 use Gush\Exception\AdapterException;
 use Gush\Helper as Helpers;
+use Gush\Helper\OutputAwareInterface;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
@@ -168,6 +169,12 @@ class Application extends BaseApplication
 
             if (null === $this->versionEyeClient) {
                 $this->versionEyeClient = $this->buildVersionEyeClient();
+            }
+        }
+
+        foreach ($command->getHelperSet() as $helper) {
+            if ($helper instanceof OutputAwareInterface) {
+                $helper->setOutput($output);
             }
         }
 
