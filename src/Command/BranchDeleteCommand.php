@@ -71,8 +71,7 @@ EOF
                     ),
                     'allow_failures' => true,
                 ]
-            ],
-            $output
+            ]
         );
 
         $output->writeln(sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName));

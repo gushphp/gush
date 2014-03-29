@@ -19,8 +19,15 @@ use Symfony\Component\Console\Helper\Helper;
 /**
  * Helper for launching shell commands
  */
-class ProcessHelper extends Helper
+class ProcessHelper extends Helper implements OutputAwareInterface
 {
+    protected $output;
+
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
     public function getName()
     {
         return 'process';
@@ -73,10 +80,11 @@ class ProcessHelper extends Helper
      * Run a series of shell command through a Process
      *
      * @param array $commands
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
-    public function runCommands(array $commands, OutputInterface $output)
+    public function runCommands(array $commands)
     {
+        $output = $this->output;
+
         $callback = function ($type, $buffer) use ($output) {
             if (Process::ERR === $type) {
                 $output->write('<error>ERR ></error> '.$buffer);

@@ -80,7 +80,7 @@ EOF
             ],
         ];
 
-        $this->getHelper('process')->runCommands($commands, $output);
+        $this->getHelper('process')->runCommands($commands);
 
         $output->writeln('PR has been squashed!');
 

@@ -61,8 +61,7 @@ EOF
                     'line' => 'git remote update',
                     'allow_failures' => true,
                 ]
-            ],
-            $output
+            ]
         );
 
         $adapter = $this->getAdapter();
@@ -79,8 +78,7 @@ EOF
                     'line' => sprintf('git checkout %s', $branchToCheckout),
                     'allow_failures' => true,
                 ],
-            ],
-            $output
+            ]
         );
 
         $lastTag = $this->getHelper('git')->getLastTagOnCurrentBranch();

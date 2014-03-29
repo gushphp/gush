@@ -134,7 +134,7 @@ EOF
             ],
         ];
 
-        $this->getHelper('process')->runCommands($commands, $output);
+        $this->getHelper('process')->runCommands($commands);
     }
 
     private function getCommitsString($commits)

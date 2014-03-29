@@ -78,7 +78,7 @@ EOF
             ],
         ];
 
-        $this->getHelper('process')->runCommands($commands, $output);
+        $this->getHelper('process')->runCommands($commands);
 
 
         $url = $adapter->getIssueUrl($issueNumber);

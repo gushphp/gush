@@ -65,8 +65,7 @@ EOF
                     'line' => sprintf('git push -u %s %s', $org, $branchName),
                     'allow_failures' => true
                 ]
-            ],
-            $output
+            ]
         );
 
         $output->writeln(

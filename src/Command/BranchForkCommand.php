@@ -71,8 +71,7 @@ EOF
                     ),
                     'allow_failures' => true
                 ]
-            ],
-            $output
+            ]
         );
 
         $output->writeln(
