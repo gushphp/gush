@@ -11,13 +11,14 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Tester\Adapter\TestAdapter;
 use Gush\Config;
-use Gush\Tests\TestableApplication;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Tester\CommandTester;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
+use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tests\TestableApplication;
+use Guzzle\Http\Client;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Input\InputAwareInterface;
 
 /**
@@ -43,6 +44,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @param  Command       $command
+     *
      * @return CommandTester
      */
     protected function getCommandTester(Command $command)
@@ -84,9 +86,11 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     protected function buildVersionEyeClient()
     {
-        $client = new \Guzzle\Http\Client();
-        $client->setBaseUrl('https://www-versioneye-com-'.getenv('RUNSCOPE_BUCKET').'.runscope.net/');
-        $client->setDefaultOption('query', ['api_key' => getenv('VERSIONEYE_TOKEN')]);
+        $client = new Client();
+        $client
+            ->setBaseUrl('https://www-versioneye-com-'.getenv('RUNSCOPE_BUCKET').'.runscope.net/')
+            ->setDefaultOption('query', ['api_key' => getenv('VERSIONEYE_TOKEN')])
+        ;
 
         return $client;
     }
