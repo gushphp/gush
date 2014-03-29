@@ -21,6 +21,7 @@ class ProcessHelperTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->helper = new ProcessHelper();
+        $this->helper->setOutput(new BufferedOutput());
     }
 
     public function testRunCommands()
