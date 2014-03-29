@@ -16,7 +16,10 @@ namespace Gush;
  */
 class Config
 {
-    public static $defaultConfig = ['cache-dir' => '{$home}/cache', 'adapter_class' => '\\Gush\\Adapter\\GitHubAdapter'];
+    public static $defaultConfig = [
+        'cache-dir' => '{$home}/cache',
+        'adapter_class' => '\\Gush\\Adapter\\GitHubAdapter'
+    ];
 
     /**
      * @var array $config

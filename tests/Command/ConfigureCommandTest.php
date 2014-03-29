@@ -53,7 +53,15 @@ class ConfigureCommandTest extends BaseTestCase
 
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
-        $tester->execute(['--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter', 'command' => 'core:configure'], ['interactive' => false]);
+        $tester->execute(
+            [
+                '--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter',
+                'command' => 'core:configure',
+            ],
+            [
+                'interactive' => false,
+            ]
+        );
 
         $this->assertFileExists($gushFilename);
 

@@ -26,7 +26,8 @@ class MetaHeaderCommand extends BaseCommand implements TemplateFeature
         $this
             ->setName('meta:header')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do not change anything, output files')
-            ->setHelp(<<<EOT
+            ->setHelp(
+                <<<EOT
 The <info>%command.name%</info> command asserts that headers are present
 in files matching the given filter (*.php by default) in the current
 git repository.
@@ -84,8 +85,11 @@ EOT
             ]
         );
 
-        $confirmed = $this->getHelper('dialog')->askConfirmation($output, 
-            '<question>Do you want to continue?</question> (y/n) ', true);
+        $confirmed = $this->getHelper('dialog')->askConfirmation(
+            $output,
+            '<question>Do you want to continue?</question> (y/n) ',
+            true
+        );
 
         if (!$confirmed) {
             $output->writeln('Aborted');
@@ -135,10 +139,13 @@ EOT
                 file_put_contents($file, implode("", $newLines));
             }
 
-            $output->writeln(sprintf('%s<info>Updating header in file "%s"</info>',
-                $dryRun === false ? '' : ' <comment>[DRY-RUN] </comment>',
-                $file
-            ));
+            $output->writeln(
+                sprintf(
+                    '%s<info>Updating header in file "%s"</info>',
+                    $dryRun === false ? '' : ' <comment>[DRY-RUN] </comment>',
+                    $file
+                )
+            );
         }
 
         return self::COMMAND_SUCCESS;

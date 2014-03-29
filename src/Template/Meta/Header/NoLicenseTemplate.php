@@ -45,4 +45,3 @@ EOT;
         return $this->replaceTokens($this->header, $params);
     }
 }
-
