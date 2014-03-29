@@ -66,15 +66,15 @@ EOF
         $commands = [
             [
                 'line' => 'git remote update',
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git checkout %s/%s', 'origin', $baseBranch),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git checkout -b %s', $slugTitle),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
         ];
 

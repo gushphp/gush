@@ -76,7 +76,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
-        $this->assertContains('Making PR from ' . $gitHelper->getVendorName() . ':issue-145 to gushphp:master', $res);
+        $this->assertContains('Making PR from '.$gitHelper->getVendorName().':issue-145 to gushphp:master', $res);
     }
 
     /**
@@ -92,6 +92,6 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
-        $this->assertContains('Making PR from ' . $args['--source-org'] . ':issue-145 to gushphp:master', $res);
+        $this->assertContains('Making PR from '.$args['--source-org'].':issue-145 to gushphp:master', $res);
     }
 }
