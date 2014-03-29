@@ -76,7 +76,7 @@ EOF
         if ($merge['merged']) {
             if (!$input->getOption('no-comments')) {
                 $comments = $adapter->getComments($prNumber);
-                $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'), $output);
+                $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'));
             }
             $output->writeln($merge['message']);
         } else {
@@ -86,7 +86,7 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function addCommentsToMergeCommit($comments, $sha, $remote, $output)
+    private function addCommentsToMergeCommit($comments, $sha, $remote)
     {
         if (0 === count($comments)) {
             return;
