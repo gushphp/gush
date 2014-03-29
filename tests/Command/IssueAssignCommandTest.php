@@ -33,7 +33,10 @@ class IssueAssignCommandTest extends BaseTestCase
         );
 
         $this->assertEquals(
-            sprintf('Issue https://github.com/gushphp/gush/issues/%s was assigned to cordoval!', TestAdapter::ISSUE_NUMBER),
+            sprintf(
+                'Issue https://github.com/gushphp/gush/issues/%s was assigned to cordoval!',
+                TestAdapter::ISSUE_NUMBER
+            ),
             trim($tester->getDisplay())
         );
     }

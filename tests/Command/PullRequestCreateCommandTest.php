@@ -44,7 +44,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
-        $this->assertEquals('http://github.com/gushphp/gush/pull/' . TestAdapter::PULL_REQUEST_NUMBER, $res);
+        $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 
     /**
@@ -69,14 +69,14 @@ class PullRequestCreateCommandTest extends BaseTestCase
     {
         $args['--verbose'] = true;
 
-        $processHelper = $this->getMock('Gush\Helper\ProcessHelper');
-        $gitHelper = new GitHelper($processHelper);
-        $command = new PullRequestCreateCommand();
-        $tester = $this->getCommandTester($command);
+        $process = $this->getMock('Gush\Helper\ProcessHelper');
+        $this->expectsConfig();
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($process, 'process');
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
-        $this->assertContains('Making PR from ' . $gitHelper->getVendorName() . ':issue-145 to gushphp:master', $res);
+        $this->assertContains('Making PR from cordoval:issue-145 to gushphp:master', $res);
     }
 
     /**
@@ -92,6 +92,16 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay());
-        $this->assertContains('Making PR from ' . $args['--source-org'] . ':issue-145 to gushphp:master', $res);
+        $this->assertContains('Making PR from '.$args['--source-org'].':issue-145 to gushphp:master', $res);
+    }
+
+    private function expectsConfig()
+    {
+        $this->config
+            ->expects($this->once())
+            ->method('get')
+            ->with('authentication')
+            ->will($this->returnValue(['username' => 'cordoval']))
+        ;
     }
 }

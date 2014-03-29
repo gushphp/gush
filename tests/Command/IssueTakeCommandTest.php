@@ -70,11 +70,15 @@ class IssueTakeCommandTest extends BaseTestCase
                 [
                     [
                         'line' => 'git remote update',
-                        'allow_failures' => true
+                        'allow_failures' => true,
                     ],
                     [
-                        'line' => sprintf('git checkout -b %s origin/master', self::SLUGIFIED_STRING),
-                        'allow_failures' => true
+                        'line' => sprintf('git checkout origin/master'),
+                        'allow_failures' => true,
+                    ],
+                    [
+                        'line' => sprintf('git checkout -b %s', self::SLUGIFIED_STRING),
+                        'allow_failures' => true,
                     ],
                 ]
             )
