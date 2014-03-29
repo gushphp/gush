@@ -67,7 +67,7 @@ class GitHubSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
 
         /** @var \Gush\Command\BaseCommand $command */
-        if ($command instanceof GithubFeature) {
+        if ($command instanceof GitHubFeature) {
             $input = $event->getInput();
 
             /** @var \Gush\Adapter\BaseAdapter $adapter */
