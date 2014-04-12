@@ -29,6 +29,15 @@ class GitHelper extends Helper
     }
 
     /**
+     * @param string $command
+     * @return string
+     */
+    public function runGitCommand($command)
+    {
+        return $this->processHelper->runCommand($command);
+    }
+
+    /**
      * @return string The branch name
      */
     public function getBranchName()
