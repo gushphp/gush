@@ -1,0 +1,99 @@
+bldr:
+    name: gushphp/gush
+    description: Gush Project
+    profiles:
+        travis:
+            description: Travis Profile
+            tasks:
+                - prepare
+                - lint
+                - phpcs
+                - test
+        local:
+            description: Local Development Profile
+            tasks:
+                - testLocal
+                - watch
+    tasks:
+        prepare:
+            calls:
+                -
+                    type: filesystem:remove
+                    files: [build/coverage, build/logs]
+                -
+                    type: filesystem:mkdir
+                    failOnError: true
+                    files: [build/coverage, build/logs]
+                -
+                    type: filesystem:touch
+                    failOnError: true
+                    files: [build/coverage/index.html]
+                -
+                    type: exec
+                    failOnError: true
+                    executable: composer
+                    arguments: [install, --prefer-dist]
+                -
+                    type: notify
+                    message: Prepare Task Finished
+        lint:
+            description: Lints the files of the project
+            calls:
+                -
+                    type: apply
+                    failOnError: true
+                    fileset: [src/*.php, src/**/*.php, tests/*.php, tests/**/*.php]
+                    executable: php
+                    arguments: [-l]
+
+        phpcs:
+            description: Runs the PHP Code Sniffer
+            calls:
+                -
+                    type: exec
+                    executable: php
+                    arguments:
+                        - bin/phpcs
+                        - --standard=PSR2
+                        - --report=full
+                        - src/
+                -
+                    type: exec
+                    output: /dev/null
+                    append: false
+                    executable: php
+                    arguments:
+                        - bin/phpcs
+                        - --standard=PSR2
+                        - --report=checkstyle
+                        - --report-file=build/logs/checkstyle.xml
+                        - src/
+        test:
+            description: Runs the PHPUnit Tests
+            calls:
+                -
+                    type: exec
+                    failOnError: true
+                    executable: php
+                    arguments:
+                        - bin/phpunit
+                        - --coverage-html=build/coverage
+                        - --coverage-text=php://stdout
+        testLocal:
+            description: Runs the PHPUnit Tests
+            calls:
+                -
+                    type: exec
+                    executable: clear
+                -
+                    type: exec
+                    executable: php
+                    arguments:
+                        - bin/phpunit
+        watch:
+            description: Watch Task for Local Development
+            calls:
+                -
+                    type: watch
+                    files: [src/**/*.php, src/*.php, tests/**/*.php, tests/*.php]
+                    task: testLocal

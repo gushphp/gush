@@ -19,9 +19,14 @@ use Symfony\Component\Process\Process;
  */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var string $home */
+    /**
+     * @var string $home
+     */
     private $home;
-    /** @var string $cacheDir */
+    
+    /**
+     * @var string $cacheDir
+     */
     private $cacheDir;
 
     public function testCreateConfigUnixEnv()

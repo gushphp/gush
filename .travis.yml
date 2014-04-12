@@ -9,7 +9,7 @@
 
 language: php
 
-php: [5.5, hhvm]
+php: [5.4, 5.5, hhvm]
 
 matrix:
     allow_failures:
@@ -21,10 +21,10 @@ env:
 
 before_script:
   - composer self-update
-  - composer install
+  - curl -sS http://bldr.io/installer | php
 
 script:
-  - phpunit
+  - ./bldr.phar build -p travis
 
 notifications:
   irc: "irc.freenode.org#gushphp"
