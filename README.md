@@ -124,10 +124,9 @@ Pull Request successfully merged
 Please send your PR using Gush and it will have 100% chances to be merged.
 See the [issues list](https://github.com/gushphp/gush/issues?state=open).
 
-Running the test suite (npm required):
+Running the test suite:
 
 ```bash
-$ npm install
 $ ./dev
 ```
 

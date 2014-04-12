@@ -30,6 +30,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     protected $httpClient;
 
+    /**
+     * {@inheritDoc}
+     */
     public function setUp()
     {
         $config = new Config();
@@ -39,6 +42,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->application->setAutoExit(false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function testApplicationFirstRun()
     {
         $applicationTester = new ApplicationTester($this->application);

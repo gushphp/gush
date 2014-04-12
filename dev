@@ -1,2 +1,13 @@
 #!/bin/bash
-node_modules/.bin/grunt tests
+
+ bldr=$(which bldr)
+
+if [ -x "$bldr" ] ; then
+    $bldr build -p local
+else
+    if [ ! -f ./bldr.phar ]; then
+        curl -sS http://bldr.io/installer | php
+    fi
+
+    ./bldr.phar build -p local
+fi
