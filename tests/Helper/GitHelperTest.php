@@ -21,6 +21,8 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      */
     protected $git;
 
+    protected $unitGit;
+
     /**
      * @var ProcessHelper
      */
@@ -61,18 +63,56 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider repoUrlProvider
      */
-    public function it_gets_the_repository_name()
+    public function it_gets_the_repository_name($repo)
     {
-        $this->assertEquals('gush', $this->git->getRepoName());
+        $return = <<<OUTPUT
+* remote origin
+  Fetch URL: {$repo}
+  Push  URL: {$repo}
+  HEAD branch: (not queried)
+  Remote branches: (status not queried)
+    master
+  Local branches configured for 'git pull':
+    master                             merges with remote master
+  Local ref configured for 'git push' (status not queried):
+    (matching) pushes to (matching)
+OUTPUT;
+;
+
+        $this->processHelper->expects($this->any())
+                            ->method('runCommand')
+                            ->will($this->returnValue($return));
+
+        $this->assertEquals('gush', $this->unitGit->getRepoName());
     }
 
     /**
      * @test
+     * @dataProvider repoUrlProvider
      */
-    public function it_gets_the_vendor_name_of_the_repository()
+    public function it_gets_the_vendor_name_of_the_repository($repo)
     {
-        $this->assertEquals(getenv('GIT_VENDOR_NAME'), $this->git->getVendorName());
+        $return = <<<OUTPUT
+* remote origin
+  Fetch URL: {$repo}
+  Push  URL: {$repo}
+  HEAD branch: (not queried)
+  Remote branches: (status not queried)
+    master
+  Local branches configured for 'git pull':
+    master                             merges with remote master
+  Local ref configured for 'git push' (status not queried):
+    (matching) pushes to (matching)
+OUTPUT;
+        ;
+
+        $this->processHelper->expects($this->any())
+                            ->method('runCommand')
+                            ->will($this->returnValue($return));
+
+        $this->assertEquals(getenv('GIT_VENDOR_NAME'), $this->unitGit->getVendorName());
     }
 
     /**
@@ -80,7 +120,12 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function it_runs_git_command()
     {
-        $this->markTestIncomplete('needs to be written');
+        $return = '## master';
+        $this->processHelper->expects($this->any())
+                            ->method('runCommand')
+                            ->will($this->returnValue($return));
+
+        $this->assertContains('## master', $this->unitGit->runGitCommand('git status --branch --short'));
     }
 
     /**
@@ -91,5 +136,14 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         // Smoke test for a real listFiles
         $res = $this->git->listFiles();
         $this->assertGreaterThan(50, $res);
+    }
+
+    public function repoUrlProvider()
+    {
+        return array(
+            array('https://github.com/gushphp/gush'),
+            array('https://github.com/gushphp/gush.git'),
+            array('git@github.com:gushphp/gush.git')
+        );
     }
 }
