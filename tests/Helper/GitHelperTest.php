@@ -67,7 +67,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function it_gets_the_repository_name($repo)
     {
-        $return = <<<OUTPUT
+        $return = <<<EOT
 * remote origin
   Fetch URL: {$repo}
   Push  URL: {$repo}
@@ -78,7 +78,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     master                             merges with remote master
   Local ref configured for 'git push' (status not queried):
     (matching) pushes to (matching)
-OUTPUT;
+EOT;
 ;
 
         $this->processHelper->expects($this->any())
@@ -94,7 +94,7 @@ OUTPUT;
      */
     public function it_gets_the_vendor_name_of_the_repository($repo)
     {
-        $return = <<<OUTPUT
+        $return = <<<EOT
 * remote origin
   Fetch URL: {$repo}
   Push  URL: {$repo}
@@ -105,12 +105,14 @@ OUTPUT;
     master                             merges with remote master
   Local ref configured for 'git push' (status not queried):
     (matching) pushes to (matching)
-OUTPUT;
+EOT;
         ;
 
-        $this->processHelper->expects($this->any())
-                            ->method('runCommand')
-                            ->will($this->returnValue($return));
+        $this->processHelper
+             ->expects($this->any())
+             ->method('runCommand')
+             ->will($this->returnValue($return))
+        ;
 
         $this->assertEquals(getenv('GIT_VENDOR_NAME'), $this->unitGit->getVendorName());
     }
@@ -121,9 +123,11 @@ OUTPUT;
     public function it_runs_git_command()
     {
         $return = '## master';
-        $this->processHelper->expects($this->any())
-                            ->method('runCommand')
-                            ->will($this->returnValue($return));
+        $this->processHelper
+             ->expects($this->any())
+             ->method('runCommand')
+             ->will($this->returnValue($return))
+        ;
 
         $this->assertContains('## master', $this->unitGit->runGitCommand('git status --branch --short'));
     }
@@ -140,10 +144,19 @@ OUTPUT;
 
     public function repoUrlProvider()
     {
-        return array(
-            array('https://github.com/gushphp/gush'),
-            array('https://github.com/gushphp/gush.git'),
-            array('git@github.com:gushphp/gush.git')
-        );
+        return [
+            ['https://github.com/gushphp/gush'],
+            ['https://github.com/gushphp/gush.git'],
+            ['git@github.com:gushphp/gush.git'],
+            ['git@bitbucket.com:gushphp/gush.git'],
+            ['https://bitbucket.com/gushphp/gush.git'],
+            ['https://bitbucket.com/gushphp/gush'],
+            ['git@gitlab.com:gushphp/gush.git'],
+            ['https://gitlab.com/gushphp/gush.git'],
+            ['https://gitlab.com/gushphp/gush'],
+            ['git@entperprise.github.com:gushphp/gush.git'],
+            ['https://entperprise.github.com/gushphp/gush.git'],
+            ['https://entperprise.github.com/gushphp/gush'],
+        ];
     }
 }
