@@ -31,6 +31,7 @@ class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:merge')
+            ->setAliases(array('pr:merge'))
             ->setDescription('Merges the pull request given')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
             ->addOption(

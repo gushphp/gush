@@ -33,6 +33,7 @@ class PullRequestSemVerCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:semver')
+            ->setAliases(array('pr:semver'))
             ->setDescription('Provides information about the semver version of a pull request')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
             ->addOption('major', null, InputOption::VALUE_NONE, 'Conveys it is a major feature')

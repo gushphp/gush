@@ -31,6 +31,7 @@ class PullRequestFixerCommand extends BaseCommand
     {
         $this
             ->setName('pull-request:fixer')
+            ->setAliases(array('pr:fixer'))
             ->setDescription('Run cs-fixer and commits fixes')
             ->addArgument('fixer_line', InputArgument::OPTIONAL, 'Custom fixer command', self::DEFAULT_FIXER_LINE)
             ->setHelp(

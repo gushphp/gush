@@ -32,6 +32,7 @@ class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, Tem
     {
         $this
             ->setName('pull-request:create')
+            ->setAliases(array('pr:create'))
             ->setDescription('Launches a pull request')
             ->addOption('base', null, InputOption::VALUE_REQUIRED, 'Base Branch - remote branch name', 'master')
             ->addOption(

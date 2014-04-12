@@ -30,6 +30,7 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitHubFeatur
     {
         $this
             ->setName('pull-request:pat-on-the-back')
+            ->setAliases(array('pr:pat'))
             ->setDescription('Gives a pat on the back to a PR\'s author')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull request number')
             ->setHelp(

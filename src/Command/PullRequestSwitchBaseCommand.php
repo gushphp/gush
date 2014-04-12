@@ -31,6 +31,7 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:switch-base')
+            ->setAliases(array('pr:switch-base'))
             ->setDescription('Switch the base of the PR to another one')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
             ->addArgument(

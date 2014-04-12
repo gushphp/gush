@@ -30,6 +30,7 @@ class PullRequestSquashCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:squash')
+            ->setAliases(array('pr:squash'))
             ->setDescription('Squashes all commits of a PR')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to squash')
             ->setHelp(
