@@ -81,9 +81,11 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 EOT;
 ;
 
-        $this->processHelper->expects($this->any())
-                            ->method('runCommand')
-                            ->will($this->returnValue($return));
+        $this->processHelper
+            ->expects($this->any())
+            ->method('runCommand')
+            ->will($this->returnValue($return))
+        ;
 
         $this->assertEquals('gush', $this->unitGit->getRepoName());
     }
@@ -109,9 +111,9 @@ EOT;
         ;
 
         $this->processHelper
-             ->expects($this->any())
-             ->method('runCommand')
-             ->will($this->returnValue($return))
+            ->expects($this->any())
+            ->method('runCommand')
+            ->will($this->returnValue($return))
         ;
 
         $this->assertEquals(getenv('GIT_VENDOR_NAME'), $this->unitGit->getVendorName());
@@ -124,9 +126,9 @@ EOT;
     {
         $return = '## master';
         $this->processHelper
-             ->expects($this->any())
-             ->method('runCommand')
-             ->will($this->returnValue($return))
+            ->expects($this->any())
+            ->method('runCommand')
+            ->will($this->returnValue($return))
         ;
 
         $this->assertContains('## master', $this->unitGit->runGitCommand('git status --branch --short'));
