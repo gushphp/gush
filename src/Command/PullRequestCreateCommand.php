@@ -140,7 +140,7 @@ EOF
         $pullRequest = $this
             ->getAdapter()
             ->openPullRequest(
-                $org.':'.$base,
+                $base,
                 $sourceOrg.':'.$sourceBranch,
                 $title,
                 $body,
