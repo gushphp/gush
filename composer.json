@@ -25,6 +25,10 @@
         {
             "name": "Aaron Scherer",
             "email": "aequasi@gmail.com"
+        },
+        {
+            "name": "Pierre du Plessis",
+            "email": "pdples@gmail.com"
         }
     ],
     "require": {
