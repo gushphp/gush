@@ -24,6 +24,7 @@ class PullRequestVersionEyeCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('pull-request:version-eye')
+            ->setAliases(array('pr:version-eye'))
             ->setDescription('Update composer.json dependency versions from versioneye service')
             ->setHelp(
                 <<<EOF
