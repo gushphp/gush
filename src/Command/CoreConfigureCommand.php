@@ -23,6 +23,8 @@ use Symfony\Component\Yaml\Yaml;
  * Configure the settings needed to run the Commands
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
+ * @author Luis Cordova <cordoval@gmail.com>
+ * @author Carlos Salvatierra <cslucano@gmail.com>
  */
 class CoreConfigureCommand extends BaseCommand implements GitHubFeature
 {
@@ -46,16 +48,16 @@ class CoreConfigureCommand extends BaseCommand implements GitHubFeature
     {
         $this->setName('core:configure')
             ->setDescription('Configure the github credentials and the cache folder')
-            ->addOption(
-                'adapter',
-                'a',
-                InputOption::VALUE_OPTIONAL,
-                "What adapter should be used? (GitHub)",
-                '\\Gush\\Adapter\\GitHubAdapter'
-            )
+            ->addOption('adapter', 'a', InputOption::VALUE_OPTIONAL, "Adapter (e.g. \\Gush\\Adapter\\GitHubAdapter)", '\\Gush\\Adapter\\GitHubAdapter')
+            ->addOption('global', 'g', InputOption::VALUE_NONE, 'Set to configure global file')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> configure parameters Gush will use:
+The <info>%command.name%</info> configure parameters Gush will use. To configure
+things globally do:
+
+    <info>$ gush %command.full_name% --global</info>
+
+To configure per project authentication and other settings do:
 
     <info>$ gush %command.full_name%</info>
 EOF
@@ -68,7 +70,8 @@ EOF
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->config = Factory::createConfig();
+        $this->config = Factory::createHomeConfig();
+        $this->config = array_merge($this->config, Factory::createProjectConfig());
     }
 
     /**
@@ -76,12 +79,24 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filename = $this->config->get('home').'/.gush.yml';
+        // it looks like we have to separate two methods conditional for
+        // filling one file and not both at the same time
+
+        $homeFilename = $this->config->get('home').'/.gush.yml';
+        $projectFilename = $this->config->get('project').'/.gush.yml';
 
         $yaml    = new Yaml();
         $content = ['parameters' => $this->config->raw()];
 
-        @unlink($filename);
+        if ($input->getOption('global')) {
+            @unlink($homeFilename);
+        }
+
+        @unlink($projectFilename);
+
+        // we should not dump contents into a single file
+        // but split them accordingly
+
         if (!@file_put_contents($filename, $yaml->dump($content), 0644)) {
             $output->writeln('<error>Configuration file cannot be saved.</error>');
         }
