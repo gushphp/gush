@@ -50,10 +50,9 @@ class GitHelper extends Helper
      */
     public function getRepoName()
     {
-        $process = new Process('git remote show -n origin', getcwd());
-        $process->run();
+        $output = $this->processHelper->runCommand('git remote show -n origin');
 
-        $outputLines = $this->splitLines(trim($process->getOutput()));
+        $outputLines = $this->splitLines(trim($output));
 
         $foundRepoName = '';
         if (!in_array('Fetch', $outputLines)) {
@@ -74,10 +73,9 @@ class GitHelper extends Helper
      */
     public function getVendorName()
     {
-        $process = new Process('git remote show -n origin', getcwd());
-        $process->run();
+        $output = $this->processHelper->runCommand('git remote show -n origin');
 
-        $outputLines = $this->splitLines(trim($process->getOutput()));
+        $outputLines = $this->splitLines(trim($output));
 
         $foundVendorName = '';
         if (!in_array('Fetch', $outputLines)) {
