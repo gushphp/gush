@@ -59,8 +59,8 @@ class GitHelper extends Helper
         if (!in_array('Fetch', $outputLines)) {
             foreach ($outputLines as $line) {
                 if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
-                    preg_match('{(.+/)(.+).git}', $match[3], $secondMatch);
-                    $foundRepoName = $secondMatch[2];
+                    preg_match('{(.+/)(.+)[.git]?}', $match[3], $secondMatch);
+                    $foundRepoName = str_replace('.git', '', $secondMatch[2]);
                     break;
                 }
             }
@@ -83,7 +83,7 @@ class GitHelper extends Helper
         if (!in_array('Fetch', $outputLines)) {
             foreach ($outputLines as $line) {
                 if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
-                    preg_match('{(.+/)(.+).git}', $match[3], $secondMatch);
+                    preg_match('{(.+/)(.+)[.git]?}', $match[3], $secondMatch);
                     $exploded = explode('/', $secondMatch[1]);
                     $foundVendorName = $exploded[count($exploded) - 2];
                     break;
