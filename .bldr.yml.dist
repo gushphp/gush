@@ -43,6 +43,7 @@ bldr:
                     type: apply
                     failOnError: true
                     fileset: [src/*.php, src/**/*.php, tests/*.php, tests/**/*.php]
+                    output: /dev/null
                     executable: php
                     arguments: [-l]
 
