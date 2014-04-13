@@ -1,6 +1,5 @@
 /bin/*
 !/bin/gush
-/composer.lock
 /vendor
 /gush*.phar
 /box.json
