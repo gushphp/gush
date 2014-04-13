@@ -21,6 +21,9 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      */
     protected $git;
 
+    /**
+     * @var GitHelper
+     */
     protected $unitGit;
 
     /**
@@ -79,7 +82,6 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
   Local ref configured for 'git push' (status not queried):
     (matching) pushes to (matching)
 EOT;
-;
 
         $this->processHelper
             ->expects($this->any())
@@ -108,7 +110,6 @@ EOT;
   Local ref configured for 'git push' (status not queried):
     (matching) pushes to (matching)
 EOT;
-        ;
 
         $this->processHelper
             ->expects($this->any())

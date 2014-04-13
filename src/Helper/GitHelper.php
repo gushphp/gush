@@ -12,7 +12,6 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Process\Process;
 
 class GitHelper extends Helper
 {
