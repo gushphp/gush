@@ -42,7 +42,9 @@ bldr:
                 -
                     type: apply
                     failOnError: true
-                    fileset: [src/*.php, src/**/*.php, tests/*.php, tests/**/*.php]
+                    src:
+                        - { path: [src, tests], files: *.php, recursive: true }
+                    output: /dev/null
                     executable: php
                     arguments: [-l]
 
@@ -90,10 +92,12 @@ bldr:
                     executable: php
                     arguments:
                         - bin/phpunit
+                        - --group=now
         watch:
             description: Watch Task for Local Development
             calls:
                 -
                     type: watch
-                    files: [src/**/*.php, src/*.php, tests/**/*.php, tests/*.php]
+                    src:
+                        - { path: [src, tests], files: *.php, recursive: true }
                     task: testLocal
