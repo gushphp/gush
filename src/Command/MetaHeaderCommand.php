@@ -128,8 +128,8 @@ EOT
                         if (preg_match('&^'.preg_quote($metaClass->getStartDelimiter()).'?&', $trimmedLine)) {
                             $headerAdded = true;
 
-                            while ($lLine = fgets($handler)) {
-                                if (!preg_match('&^ ?'.preg_quote($metaClass->getDelimiter()).'&', $lLine)) {
+                            while ($headerLine = fgets($handler)) {
+                                if (!preg_match('&^ ?'.preg_quote($metaClass->getDelimiter()).'&', $headerLine)) {
 
                                     if (true === $replace) {
                                         $newLines[] = $header;
