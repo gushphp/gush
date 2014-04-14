@@ -247,6 +247,27 @@ class TestAdapter extends BaseAdapter
         ];
     }
 
+    /**]
+     * @param string $state
+     * @return mixed|void
+     */
+    public function getPullRequests($state = 'open')
+    {
+        return [
+            [
+                'number'     => 17,
+                'title'      => 'New feature added',
+                'state'      => 'open',
+                'created_at' => '2014-04-14 17:24:12',
+                'head'       => [
+                    'user' => [
+                        'login' => 'pierredup'
+                    ]
+                ]
+            ]
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
