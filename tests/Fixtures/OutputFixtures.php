@@ -28,6 +28,16 @@ class OutputFixtures
 1 release(s)
 EOT;
 
+    const PULL_REQUEST_LIST = <<<EOT
++----+-------------------+-------+---------------------+-----------+
+| ID | Title             | State | Created             | User      |
++----+-------------------+-------+---------------------+-----------+
+| 17 | New feature added | Open  | 2014-04-14 17:24:12 | pierredup |
++----+-------------------+-------+---------------------+-----------+
+
+1 pull requests(s)
+EOT;
+
     const ISSUE_SHOW = <<<EOT
 Issue #60 (open): by weaverryan [cordoval]
 Type: Pull Request
