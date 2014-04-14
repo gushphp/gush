@@ -126,6 +126,8 @@ EOT;
  * with this source code in the file LICENSE.
  */
 
+namespace Test;
+
 class MetaTest
 {
     private \$test;
