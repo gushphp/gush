@@ -186,9 +186,10 @@ interface Adapter
     public function mergePullRequest($id, $message);
 
     /**
+     * @param  string $state
      * @return mixed
      */
-    public function getPullRequests();
+    public function getPullRequests($state = 'open');
 
     /**
      * @param string $name

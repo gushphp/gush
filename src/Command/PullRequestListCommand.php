@@ -22,7 +22,7 @@ use Gush\Feature\TableFeature;
  *
  * @author Pierre du Plessis <pdples@gmail.com>
  */
-class PullRequestListCommand extends BaseCommand  implements TableFeature, GitHubFeature
+class PullRequestListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
     /**
      * {@inheritDoc}
