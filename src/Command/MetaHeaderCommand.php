@@ -125,11 +125,11 @@ EOT
                     $trimmedLine = trim($line);
 
                     if (false === $headerAdded) {
-                        if (preg_match('&^' . preg_quote($metaClass->getStartDelimiter()) . '?&', $trimmedLine)) {
+                        if (preg_match('&^'.preg_quote($metaClass->getStartDelimiter()).'?&', $trimmedLine)) {
                             $headerAdded = true;
 
                             while ($lLine = fgets($handler)) {
-                                if (!preg_match('&^ ?' . preg_quote($metaClass->getDelimiter()) . '&', $lLine)) {
+                                if (!preg_match('&^ ?'.preg_quote($metaClass->getDelimiter()).'&', $lLine)) {
 
                                     if (true === $replace) {
                                         $newLines[] = $header;
@@ -152,7 +152,7 @@ EOT
                 }
 
                 if (false === $dryRun) {
-                    file_put_contents($file, implode("", $newLines));
+                    file_put_contents($file, implode('', $newLines));
                 }
 
                 $output->writeln(

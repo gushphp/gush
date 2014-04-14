@@ -1,10 +1,19 @@
 <?php
 
+/**
+ * This file is part of Gush.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\Helper;
-use Gush\Meta;
 use Gush\Exception\UnsupportedTypeException;
+use Gush\Meta;
+use Symfony\Component\Console\Helper\Helper;
 
 /**
  * @author Pierre du Plessis <pdples@gmail.com>
@@ -14,7 +23,7 @@ class MetaHelper extends Helper
     /**
      * @var array
      */
-    protected $supportedFiles = [];
+    protected $supportedFiles;
 
     public function __construct()
     {
