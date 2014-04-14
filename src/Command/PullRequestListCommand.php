@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
@@ -38,6 +39,13 @@ class PullRequestListCommand extends BaseCommand  implements TableFeature, GitHu
     {
         $this
             ->setName('pull-request:list')
+            ->addOption(
+                'state',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Either open, closed, or all to filter by state. Default: open',
+                'open'
+            )
             ->setDescription('Lists all available pull requests')
             ->setHelp(
                 <<<EOF
@@ -54,8 +62,14 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $state = $input->getOption('state');
+
+        if (!in_array($state, ['open', 'closed', 'all'])) {
+            throw new \Exception(sprintf('The state %s is invalid. Only "open", "closed" or "all" accepted', $state));
+        }
+
         $adapter      = $this->getAdapter();
-        $pullRequests = $adapter->getPullRequests();
+        $pullRequests = $adapter->getPullRequests($state);
 
         $table = $this->getHelper('table');
         $table->setHeaders(['ID', 'Title', 'State', 'Created', 'User']);
