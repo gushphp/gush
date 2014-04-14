@@ -2,10 +2,13 @@
 
 namespace Gush\Helper;
 
-use Gush\Exception\UnsupportedTypeException;
 use Symfony\Component\Console\Helper\Helper;
 use Gush\Meta;
+use Gush\Exception\UnsupportedTypeException;
 
+/**
+ * @author Pierre du Plessis <pdples@gmail.com>
+ */
 class MetaHelper extends Helper
 {
     /**
