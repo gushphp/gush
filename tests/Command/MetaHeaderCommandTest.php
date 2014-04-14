@@ -34,7 +34,7 @@ class MetaHeaderCommandTest extends BaseTestCase
      */
     public function testCommand($file, $content)
     {
-        $this->assertEquals(trim($content), file_get_contents($file));
+        $this->assertEquals($content, file_get_contents($file));
     }
 
     public function tearDown()
