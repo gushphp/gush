@@ -337,6 +337,7 @@ class Application extends BaseApplication
             new Cmd\PullRequestSwitchBaseCommand(),
             new Cmd\PullRequestSquashCommand(),
             new Cmd\PullRequestSemVerCommand(),
+            new Cmd\PullRequestListCommand(),
             new Cmd\FabbotIoCommand(),
             new Cmd\MetaHeaderCommand(),
             new Cmd\PullRequestFixerCommand(),
