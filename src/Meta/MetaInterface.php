@@ -30,4 +30,4 @@ interface MetaInterface
      * @return string
      */
     public function getEndDelimiter();
-} 
+}

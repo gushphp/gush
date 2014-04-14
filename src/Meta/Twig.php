@@ -39,4 +39,4 @@ class Twig implements MetaInterface
     {
         return '#}';
     }
-} 
+}

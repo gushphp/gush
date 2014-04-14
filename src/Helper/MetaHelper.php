@@ -44,8 +44,8 @@ class MetaHelper extends Helper
     }
 
     /**
-     * @param string $header
-     * @param string $type
+     * @param  string                                   $header
+     * @param  string                                   $type
      * @throws \Gush\Exception\UnsupportedTypeException
      * @return string
      */
@@ -65,7 +65,7 @@ class MetaHelper extends Helper
     }
 
     /**
-     * @param string $type
+     * @param  string                                   $type
      * @return Meta\MetaInterface
      * @throws \Gush\Exception\UnsupportedTypeException
      */

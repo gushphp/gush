@@ -72,8 +72,8 @@ EOT
 
         $supportedTypes = array_keys($meta->getSupportedFiles());
 
-        foreach($supportedTypes as $type) {
-            $files = array_filter($allFiles, function ($value) use($type) {
+        foreach ($supportedTypes as $type) {
+            $files = array_filter($allFiles, function ($value) use ($type) {
                 return pathinfo($value, PATHINFO_EXTENSION) == $type;
             });
 

@@ -39,4 +39,4 @@ class Base implements MetaInterface
     {
         return '*/';
     }
-} 
+}
