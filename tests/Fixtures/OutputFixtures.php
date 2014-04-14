@@ -111,6 +111,7 @@ EOT;
         Some Content
     </div>
 {% endblock myBody %}
+
 EOT;
 
     const META_HEADER_PHP = <<<EOT
@@ -134,6 +135,7 @@ class MetaTest
         \$this->test = \$test;
     }
 }
+
 EOT;
 
     const META_HEADER_JS = <<<EOT
@@ -151,6 +153,7 @@ EOT;
         return $(this).append('New Function');
     };
 })(window.jQuery);
+
 EOT;
 
     const META_HEADER_CSS = <<<EOT
@@ -170,6 +173,7 @@ EOT;
 a#someId {
     color: #000000;
 }
+
 EOT;
 
 }
