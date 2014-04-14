@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Gush\Exception\InvalidStateException;
+use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,6 +47,7 @@ class PullRequestListCommand extends BaseCommand implements TableFeature, GitHub
                 InputOption::VALUE_REQUIRED,
                 'For a list of available states, please refer to the adapter documentation'
             )
+            )
             ->setDescription('Lists all available pull requests')
             ->setHelp(
                 <<<EOF
@@ -64,6 +66,11 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $state = $input->getOption('state');
+
+        if (!in_array($state, ['open', 'closed', 'all'])) {
+            throw new \Exception(sprintf('The state %s is invalid. Only "open", "closed" or "all" accepted', $state));
+        }
+
         $adapter = $this->getAdapter();
         $validStates = $adapter->getPullRequestStates();
 
