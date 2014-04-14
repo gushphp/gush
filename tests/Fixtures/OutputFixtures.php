@@ -93,4 +93,83 @@ EOT;
     const PULL_REQUEST_SQUASH = <<<EOT
 PR has been squashed!
 EOT;
+
+   const META_HEADER_TWIG = <<<EOT
+{##
+ # This file is part of Your Package package.
+ #
+ # (c) 2009-2014 You <you@yourdomain.com>
+ #
+ # This source file is subject to the MIT license that is bundled
+ # with this source code in the file LICENSE.
+ #}
+
+{% extends "base.twig" %}
+
+{% block myBody %}
+    <div class="someDiv">
+        Some Content
+    </div>
+{% endblock myBody %}
+EOT;
+
+   const META_HEADER_PHP = <<<EOT
+<?php
+
+/**
+ * This file is part of Your Package package.
+ *
+ * (c) 2009-2014 You <you@yourdomain.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+class MetaTest
+{
+    private \$test;
+
+    public function __construct(\$test)
+    {
+        \$this->test = \$test;
+    }
+}
+EOT;
+
+   const META_HEADER_JS = <<<EOT
+/**
+ * This file is part of Your Package package.
+ *
+ * (c) 2009-2014 You <you@yourdomain.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+(function($){
+    $.fn.someFunction = function(){
+        return $(this).append('New Function');
+    };
+})(window.jQuery);
+EOT;
+
+   const META_HEADER_CSS = <<<EOT
+/**
+ * This file is part of Your Package package.
+ *
+ * (c) 2009-2014 You <you@yourdomain.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+.someDiv {
+    background: #ff0000;
+}
+
+a#someId {
+    color: #000000;
+}
+EOT;
+
 }
