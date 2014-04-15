@@ -36,9 +36,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     /**
      * Run a command through the ProcessBuilder
      *
-     * @param array             $command
-     * @param Boolean           $allowFailures
-     * @param \Closure          Callback for Process (e.g. for logging output in realtime)
+     * @param array    $command
+     * @param Boolean  $allowFailures
+     * @param \Closure $callback      Callback for Process (e.g. for logging output in realtime)
      *
      * @return string
      * @throws \RuntimeException
@@ -65,6 +65,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         return trim($process->getOutput());
     }
 
+    /**
+     * @param string[] $arguments
+     */
     public function getProcessBuilder($arguments)
     {
         $builder = new ProcessBuilder($arguments);

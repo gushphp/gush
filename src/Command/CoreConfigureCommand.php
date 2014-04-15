@@ -200,7 +200,7 @@ EOF
     /**
      * Validates if the credentials are valid
      *
-     * @param InputInterface $input
+     * @param  InputInterface $input
      * @return Boolean
      */
     private function isCredentialsValid($input)

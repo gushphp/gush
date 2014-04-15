@@ -21,6 +21,9 @@ interface TemplateInterface
      */
     public function render();
 
+    /**
+     * @return void
+     */
     public function bind($params);
 
     /**

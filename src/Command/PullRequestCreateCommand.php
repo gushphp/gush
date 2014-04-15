@@ -134,7 +134,7 @@ EOF
 
             $output->writeln($message);
         }
-        
+
         $parameters = $issueNumber ? ['issue' => $issueNumber]: [];
 
         $pullRequest = $this

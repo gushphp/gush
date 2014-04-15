@@ -140,8 +140,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
      * the user.
      *
      * @param OutputInterface $output Output from command
-     * @param string                   Domain for the template, e.g. pull-request
-     * @param string                   Name of the template, e.g. symfony-doc
+     * @param string $templateDomain Domain for the template, e.g. pull-request
+     * @param string $templateName   Name of the template, e.g. symfony-doc
      *
      * @return string Rendered template string
      */
@@ -157,9 +157,9 @@ class TemplateHelper extends Helper implements InputAwareInterface
      * Like askAndRender but directly binding parameters passed
      * not as options but as direct input argument to method.
      *
-     * @param array   $parameters
-     * @param string  $templateDomain  Domain for the template, e.g. pull-request
-     * @param string  $templateName    Name of the template, e.g. symfony-doc
+     * @param array  $parameters
+     * @param string $templateDomain Domain for the template, e.g. pull-request
+     * @param string $templateName   Name of the template, e.g. symfony-doc
      *
      * @return string Rendered template string
      */

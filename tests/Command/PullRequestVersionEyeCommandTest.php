@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class VersionEyeCommandTest extends BaseTestCase
+class PullRequestVersionEyeCommandTest extends BaseTestCase
 {
     public function testCommand()
     {

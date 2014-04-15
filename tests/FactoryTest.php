@@ -23,7 +23,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      * @var string $home
      */
     private $home;
-    
+
     /**
      * @var string $cacheDir
      */

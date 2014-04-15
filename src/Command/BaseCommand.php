@@ -40,7 +40,7 @@ class BaseCommand extends Command
     /**
      * Gets a specific parameter
      *
-     * @param  mixed $key
+     * @param  string $key
      * @return mixed
      */
     public function getParameter($key)

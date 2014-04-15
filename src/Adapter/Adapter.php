@@ -27,6 +27,7 @@ interface Adapter
 {
     /**
      * @param Config $configuration Configuration for the adapter
+     * @return void
      */
     public function __construct(Config $configuration);
 
@@ -74,7 +75,7 @@ interface Adapter
      * Creates a fork from upstream and returns an array
      * with the forked url e.g. git@github.com:cordoval/repoName.git
      *
-     * @param string $org
+     * @param  string $org
      * @return array
      */
     public function createFork($org);
@@ -178,7 +179,7 @@ interface Adapter
 
     /**
      * @param integer $id
-     * @param $message
+     * @param string $message
      *
      * @return mixed
      */
@@ -188,7 +189,7 @@ interface Adapter
      * @param string $name
      * @param array  $parameters
      *
-     * @return mixed
+     * @return string
      */
     public function createRelease($name, array $parameters = []);
 

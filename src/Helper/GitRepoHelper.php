@@ -67,7 +67,7 @@ class GitRepoHelper extends Helper
      *
      * @param $input InputInterface  - Input which contains the options to be validated
      * @param string $domain - Domain of the enum e.g. issue
-     * @param array  $types  - Types to validate (e.g. filter ,state, etc)
+     * @param string[]  $types  - Types to validate (e.g. filter ,state, etc)
      *
      * @throws \InvalidArgumentException
      *
@@ -88,6 +88,10 @@ class GitRepoHelper extends Helper
         return $ret;
     }
 
+    /**
+     * @param string $domain
+     * @param string $type
+     */
     private static function validateEnumDomainAndType($domain, $type)
     {
         if (!isset(self::$enum[$domain])) {
