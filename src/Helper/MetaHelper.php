@@ -65,9 +65,9 @@ class MetaHelper extends Helper
         $out = [$class->getStartDelimiter()];
         foreach (explode("\n", $header) as $line) {
             // avoid trailing spaces
-            $out[] = ' ' . $class->getDelimiter() . ($line ? ' ' . $line : '');
+            $out[] = ' '.$class->getDelimiter().($line ? ' '.$line : '');
         }
-        $out[] = ' ' . $class->getEndDelimiter();
+        $out[] = ' '.$class->getEndDelimiter();
         $out[] = "\n";
 
         return implode("\n", $out);

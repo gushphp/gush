@@ -81,13 +81,7 @@ EOT
                 continue;
             }
 
-            $output->writeln(
-                [
-                    '',
-                    sprintf('<info>Updating %s files:</info>', $type),
-                    ''
-                ]
-            );
+            $output->writeln([ '', sprintf('<info>Updating %s files:</info>', $type), '']);
 
             $header = $meta->renderHeader($metaHeader, $type);
 
