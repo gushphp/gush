@@ -35,7 +35,8 @@ EOT;
 | 17 | New feature added | Open  | 2014-04-14 17:24:12 | pierredup |
 +----+-------------------+-------+---------------------+-----------+
 
-1 pull requests(s)
+1 pull request(s)
+
 EOT;
 
     const ISSUE_SHOW = <<<EOT

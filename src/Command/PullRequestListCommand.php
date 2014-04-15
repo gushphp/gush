@@ -75,7 +75,7 @@ EOF
         $table = $this->getHelper('table');
         $table->setHeaders(['ID', 'Title', 'State', 'Created', 'User']);
         $table->formatRows($pullRequests, $this->getRowBuilderCallback());
-        $table->setFooter(sprintf('%s pull requests(s)', count($pullRequests)));
+        $table->setFooter(sprintf('%s pull request(s)', count($pullRequests)));
         $table->render($output, $table);
 
         return self::COMMAND_SUCCESS;
