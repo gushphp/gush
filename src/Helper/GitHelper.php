@@ -101,10 +101,6 @@ class GitHelper extends Helper
         return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
     }
 
-    /**
-     * @param  string $output
-     * @return array
-     */
     private function splitLines($output)
     {
         $output = trim($output);

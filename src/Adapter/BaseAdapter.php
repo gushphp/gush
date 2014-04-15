@@ -63,6 +63,11 @@ abstract class BaseAdapter implements Adapter
         return [];
     }
 
+    /**
+     * @param string $username
+     *
+     * @return $this
+     */
     public function setUsername($username)
     {
         $this->username = $username;
@@ -111,10 +116,7 @@ abstract class BaseAdapter implements Adapter
     abstract public function isAuthenticated();
 
     /**
-     * Returns the URL for generating a token.
-     * If the adapter does not support tokens, returns null
-     *
-     * @return null|string
+     * {@inheritdoc}
      */
     abstract public function getTokenGenerationUrl();
 

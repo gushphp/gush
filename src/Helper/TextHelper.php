@@ -27,7 +27,7 @@ class TextHelper extends Helper
      * Truncates a string
      *
      * @param string  $string
-     * @param integer $length
+     * @param int     $length
      * @param string  $alignment   - one of "left", "right". default left
      * @param string  $delimString - string to use to mark the truncation
      *

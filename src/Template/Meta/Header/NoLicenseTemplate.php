@@ -15,6 +15,9 @@ use Gush\Template\AbstractTemplate;
 
 class NoLicenseTemplate extends AbstractTemplate
 {
+    /**
+     * @var string
+     */
     protected $header = <<<EOT
 Copyright {{ copyright-year }} {{ copyright-holder }}
 
@@ -25,11 +28,17 @@ Distribution and reproduction are prohibited.
 @license     No License (Proprietary)
 EOT;
 
+    /**
+     * {@inheritDoc}
+     */
     public function getName()
     {
         return 'meta-header/no-license';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRequirements()
     {
         return [
@@ -38,6 +47,9 @@ EOT;
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function render()
     {
         $params = array_merge(['copyright-year' => date('Y')], $this->parameters);

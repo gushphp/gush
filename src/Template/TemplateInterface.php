@@ -18,11 +18,13 @@ interface TemplateInterface
 {
     /**
      * Renders the template using the given parameters
+     *
+     * @return string
      */
     public function render();
 
     /**
-     * @return void
+     * @param array
      */
     public function bind($params);
 
@@ -31,11 +33,15 @@ interface TemplateInterface
      * including descriptions and default values.
      *
      * The user will be prompted for any missing variables.
+     *
+     * @return array
      */
     public function getRequirements();
 
     /**
      * Returns the name of this template
+     *
+     * @return string
      */
     public function getName();
 }

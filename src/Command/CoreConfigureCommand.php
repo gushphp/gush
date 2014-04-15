@@ -197,12 +197,6 @@ EOF
         );
     }
 
-    /**
-     * Validates if the credentials are valid
-     *
-     * @param  InputInterface $input
-     * @return Boolean
-     */
     private function isCredentialsValid($input)
     {
         $this->getApplication()->setConfig($this->config);

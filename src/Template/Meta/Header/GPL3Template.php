@@ -15,6 +15,9 @@ use Gush\Template\AbstractTemplate;
 
 class GPL3Template extends AbstractTemplate
 {
+    /**
+     * @var string
+     */
     protected $header = <<<EOT
 This file is part of {{ package_name }}.
 
@@ -32,11 +35,17 @@ You should have received a copy of the GNU General Public License
 along with {{ package_name }}.  If not, see <http://www.gnu.org/licenses/>.
 EOT;
 
+    /**
+     * {@inheritDoc}
+     */
     public function getName()
     {
         return 'meta-header/gpl3';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRequirements()
     {
         return [
@@ -44,6 +53,9 @@ EOT;
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function render()
     {
         $params = array_merge(['copyright_to' => date('Y')], $this->parameters);

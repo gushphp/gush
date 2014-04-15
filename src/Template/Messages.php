@@ -40,6 +40,8 @@ EOT;
 
     /**
      * @param string $name
+     *
+     * @return string
      */
     public static function get($name)
     {

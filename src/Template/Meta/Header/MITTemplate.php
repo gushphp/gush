@@ -15,6 +15,9 @@ use Gush\Template\AbstractTemplate;
 
 class MITTemplate extends AbstractTemplate
 {
+    /**
+     * @var string
+     */
     protected $header = <<<EOT
 This file is part of {{ package-name }} package.
 
@@ -24,11 +27,17 @@ This source file is subject to the MIT license that is bundled
 with this source code in the file LICENSE.
 EOT;
 
+    /**
+     * {@inheritDoc}
+     */
     public function getName()
     {
         return 'meta-header/mit';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRequirements()
     {
         return [
@@ -38,6 +47,9 @@ EOT;
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function render()
     {
         $params = array_merge(['copyright-to' => date('Y')], $this->parameters);

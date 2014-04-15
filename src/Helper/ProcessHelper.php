@@ -27,8 +27,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     protected $output;
 
     /**
-     * @param  OutputInterface $output
-     * @return void
+     * @param OutputInterface $output
      */
     public function setOutput(OutputInterface $output)
     {
@@ -47,7 +46,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      * Run a command through the ProcessBuilder
      *
      * @param array    $command
-     * @param Boolean  $allowFailures
+     * @param bool     $allowFailures
      * @param \Closure $callback      Callback for Process (e.g. for logging output in realtime)
      *
      * @return string

@@ -141,9 +141,6 @@ class TestHttpClient implements HttpClientInterface
         return new Response(200);
     }
 
-    /**
-     * @param string $httpMethod
-     */
     private function getHash($path, $body, $httpMethod, $headers)
     {
         return md5($path.trim($body).$httpMethod.serialize($headers));
