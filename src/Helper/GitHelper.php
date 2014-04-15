@@ -28,7 +28,8 @@ class GitHelper extends Helper
     }
 
     /**
-     * @param  string $command
+     * @param string $command
+     *
      * @return string
      */
     public function runGitCommand($command)

@@ -74,7 +74,8 @@ interface Adapter
      * Creates a fork from upstream and returns an array
      * with the forked url e.g. git@github.com:cordoval/repoName.git
      *
-     * @param  string $org
+     * @param string $org
+     *
      * @return array
      */
     public function createFork($org);
