@@ -247,7 +247,7 @@ class TestAdapter extends BaseAdapter
         ];
     }
 
-    /**]
+    /**
      * @param string $state
      * @return mixed|void
      */
@@ -263,7 +263,7 @@ class TestAdapter extends BaseAdapter
                     'user' => [
                         'login' => 'pierredup'
                     ]
-                ]
+                ],
             ]
         ];
     }

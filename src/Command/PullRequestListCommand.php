@@ -52,6 +52,7 @@ class PullRequestListCommand extends BaseCommand implements TableFeature, GitHub
 The <info>%command.name%</info> command lists all the pull requests:
 
     <info>$ gush %command.full_name%</info>
+
 EOF
             )
         ;
@@ -81,7 +82,7 @@ EOF
     }
 
     /**
-     * @return callable
+     * @return \Closure
      */
     private function getRowBuilderCallback()
     {
