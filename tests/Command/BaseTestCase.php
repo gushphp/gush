@@ -43,7 +43,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  Command       $command
+     * @param Command $command
      *
      * @return CommandTester
      */

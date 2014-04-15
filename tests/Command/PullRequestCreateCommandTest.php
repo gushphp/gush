@@ -12,7 +12,6 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\PullRequestCreateCommand;
-use Gush\Helper\GitHelper;
 use Gush\Tester\Adapter\TestAdapter;
 
 /**

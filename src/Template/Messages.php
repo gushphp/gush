@@ -38,6 +38,11 @@ by {{ login }} at {{ created_at }}
 \n
 EOT;
 
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
     public static function get($name)
     {
         return constant('self::'.strtoupper($name));

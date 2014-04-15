@@ -47,6 +47,9 @@ EOT;
 :beers: @{{ author }}.
 EOT;
 
+    /**
+     * @param string $name
+     */
     public static function get($name)
     {
         return constant('self::'.strtoupper($name));

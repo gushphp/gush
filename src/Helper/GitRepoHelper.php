@@ -16,6 +16,9 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class GitRepoHelper extends Helper
 {
+    /**
+     * @var array
+     */
     public static $enum = [
         'issue' => [
             'filter' => [
@@ -57,6 +60,9 @@ class GitRepoHelper extends Helper
         ],
     ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function getName()
     {
         return 'github';
@@ -65,9 +71,9 @@ class GitRepoHelper extends Helper
     /**
      * Validate the given enum fields in the given Input
      *
-     * @param $input InputInterface  - Input which contains the options to be validated
-     * @param string $domain - Domain of the enum e.g. issue
-     * @param array  $types  - Types to validate (e.g. filter ,state, etc)
+     * @param InputInterface $input  - Input which contains the options to be validated
+     * @param string         $domain - Domain of the enum e.g. issue
+     * @param string[]       $types  - Types to validate (e.g. filter ,state, etc)
      *
      * @throws \InvalidArgumentException
      *

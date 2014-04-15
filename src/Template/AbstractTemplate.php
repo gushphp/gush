@@ -16,8 +16,14 @@ namespace Gush\Template;
  */
 abstract class AbstractTemplate implements TemplateInterface
 {
+    /**
+     * @var null
+     */
     protected $parameters = null;
 
+    /**
+     * {@inheritDoc}
+     */
     public function bind($parameters)
     {
         $this->parameters = $parameters;
@@ -33,6 +39,12 @@ abstract class AbstractTemplate implements TemplateInterface
         }
     }
 
+    /**
+     * @param string $string
+     * @param array  $tokens
+     *
+     * @return string
+     */
     protected function replaceTokens($string, array $tokens)
     {
         foreach ($tokens as $key => $value) {

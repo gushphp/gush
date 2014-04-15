@@ -51,14 +51,14 @@ interface Adapter
     /**
      * Authenticates the Adapter
      *
-     * @return Boolean
+     * @return bool
      */
     public function authenticate();
 
     /**
      * Returns true if the adapter is authenticated, false otherwise
      *
-     * @return Boolean
+     * @return bool
      */
     public function isAuthenticated();
 
@@ -75,6 +75,7 @@ interface Adapter
      * with the forked url e.g. git@github.com:cordoval/repoName.git
      *
      * @param string $org
+     *
      * @return array
      */
     public function createFork($org);
@@ -89,14 +90,14 @@ interface Adapter
     public function openIssue($subject, $body, array $options = []);
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @return mixed
      */
     public function getIssue($id);
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -110,7 +111,7 @@ interface Adapter
     public function getIssues(array $parameters = []);
 
     /**
-     * @param integer $id
+     * @param int $id
      * @param array   $parameters
      *
      * @return mixed
@@ -118,14 +119,14 @@ interface Adapter
     public function updateIssue($id, array $parameters);
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @return mixed
      */
     public function closeIssue($id);
 
     /**
-     * @param integer $id
+     * @param int $id
      * @param string  $message
      *
      * @return mixed
@@ -163,22 +164,22 @@ interface Adapter
     public function openPullRequest($base, $head, $subject, $body, array $parameters = []);
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @return mixed
      */
     public function getPullRequest($id);
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @return mixed
      */
     public function getPullRequestCommits($id);
 
     /**
-     * @param integer $id
-     * @param $message
+     * @param int    $id
+     * @param string $message
      *
      * @return mixed
      */
@@ -188,7 +189,7 @@ interface Adapter
      * @param string $name
      * @param array  $parameters
      *
-     * @return mixed
+     * @return string
      */
     public function createRelease($name, array $parameters = []);
 
@@ -198,17 +199,17 @@ interface Adapter
     public function getReleases();
 
     /**
-     * @param integer $id
+     * @param int $id
      *
      * @return mixed
      */
     public function removeRelease($id);
 
     /**
-     * @param integer $id
-     * @param string  $name
-     * @param string  $contentType
-     * @param string  $content
+     * @param int    $id
+     * @param string $name
+     * @param string $contentType
+     * @param string $content
      *
      * @return mixed
      */

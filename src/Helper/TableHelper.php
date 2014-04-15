@@ -24,6 +24,9 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
     protected $footer;
     protected $input;
 
+    /**
+     * @var array
+     */
     protected $validLayouts = [
         'default',
         'borderless',
@@ -117,6 +120,10 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
         return $this;
     }
 
+    /**
+     * @param array $rows
+     * @param       $rowFormatter
+     */
     public function formatRows(array $rows, $rowFormatter)
     {
         foreach ($rows as $row) {
@@ -125,6 +132,9 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
         }
     }
 
+    /**
+     * @param $footer
+     */
     public function setFooter($footer)
     {
         $this->footer = $footer;

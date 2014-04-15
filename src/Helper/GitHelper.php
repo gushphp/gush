@@ -29,6 +29,7 @@ class GitHelper extends Helper
 
     /**
      * @param string $command
+     *
      * @return string
      */
     public function runGitCommand($command)
@@ -94,7 +95,7 @@ class GitHelper extends Helper
     /**
      * @throws \RuntimeException
      *
-     * @return string            The tag name
+     * @return string The tag name
      */
     public function getLastTagOnCurrentBranch()
     {
@@ -111,7 +112,7 @@ class GitHelper extends Helper
     /**
      * @param array $options
      *
-     * @return array  Files in the git repository
+     * @return array Files in the git repository
      */
     public function listFiles($options = [])
     {

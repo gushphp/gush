@@ -21,13 +21,22 @@ use Symfony\Component\Console\Helper\Helper;
  */
 class ProcessHelper extends Helper implements OutputAwareInterface
 {
+    /**
+     * @var OutputInterface
+     */
     protected $output;
 
+    /**
+     * @param OutputInterface $output
+     */
     public function setOutput(OutputInterface $output)
     {
         $this->output = $output;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'process';
@@ -36,9 +45,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     /**
      * Run a command through the ProcessBuilder
      *
-     * @param array             $command
-     * @param Boolean           $allowFailures
-     * @param \Closure          Callback for Process (e.g. for logging output in realtime)
+     * @param array    $command
+     * @param bool     $allowFailures
+     * @param \Closure $callback      Callback for Process (e.g. for logging output in realtime)
      *
      * @return string
      * @throws \RuntimeException
@@ -65,6 +74,10 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         return trim($process->getOutput());
     }
 
+    /**
+     * @param  string[]       $arguments
+     * @return ProcessBuilder
+     */
     public function getProcessBuilder($arguments)
     {
         $builder = new ProcessBuilder($arguments);
@@ -98,6 +111,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         }
     }
 
+    /**
+     * @throws \RuntimeException
+     */
     public function probePhpCsFixer()
     {
         $builder = new ProcessBuilder(['php-cs-fixer']);

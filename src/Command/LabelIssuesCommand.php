@@ -157,12 +157,6 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    /**
-     * Outputs the labels
-     *
-     * @param OutputInterface $output
-     * @param array           $labels
-     */
     private function showLabels(OutputInterface $output, array $labels)
     {
         /** @var TableHelper $table */
@@ -171,12 +165,6 @@ EOF
         $table->render($output);
     }
 
-    /**
-     * Retrieves the labels assigned to a given Issue
-     *
-     * @param  array  $issue The issue
-     * @return string
-     */
     private function getIssueLabels(array $issue)
     {
         $labels = [];

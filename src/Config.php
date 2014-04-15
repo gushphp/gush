@@ -81,7 +81,7 @@ class Config
      * Checks whether a setting exists
      *
      * @param  string  $key
-     * @return Boolean
+     * @return bool
      */
     public function has($key)
     {
@@ -91,7 +91,7 @@ class Config
     /**
      * Validates if the configuration
      *
-     * @return Boolean
+     * @return bool
      */
     public function isValid()
     {

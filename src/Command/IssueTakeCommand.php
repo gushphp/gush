@@ -54,7 +54,6 @@ EOF
         $adapter = $this->getAdapter();
         $issue = $adapter->getIssue($issueNumber);
 
-
         $slugTitle = $this->getHelper('text')->slugify(
             sprintf(
                 '%d %s',
@@ -79,7 +78,6 @@ EOF
         ];
 
         $this->getHelper('process')->runCommands($commands);
-
 
         $url = $adapter->getIssueUrl($issueNumber);
         $output->writeln("Issue {$url} taken!");

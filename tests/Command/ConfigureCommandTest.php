@@ -68,6 +68,9 @@ class ConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
+    /**
+     * @param string $homeDir
+     */
     private function expectDialogParameters($homeDir)
     {
         $dialog = $this->getMock(
