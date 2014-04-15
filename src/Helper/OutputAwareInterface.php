@@ -7,7 +7,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface OutputAwareInterface
 {
     /**
-     * @return void
+     * @param  OutputInterface $output
+     * @return mixed
      */
     public function setOutput(OutputInterface $output);
 }

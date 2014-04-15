@@ -139,9 +139,9 @@ class TemplateHelper extends Helper implements InputAwareInterface
      * are missing from the Input it will demand the parameters from
      * the user.
      *
-     * @param OutputInterface $output Output from command
-     * @param string $templateDomain Domain for the template, e.g. pull-request
-     * @param string $templateName   Name of the template, e.g. symfony-doc
+     * @param OutputInterface $output         Output from command
+     * @param string          $templateDomain Domain for the template, e.g. pull-request
+     * @param string          $templateName   Name of the template, e.g. symfony-doc
      *
      * @return string Rendered template string
      */

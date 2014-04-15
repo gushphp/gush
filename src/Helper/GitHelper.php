@@ -102,7 +102,8 @@ class GitHelper extends Helper
     }
 
     /**
-     * @param string $output
+     * @param  string $output
+     * @return array
      */
     private function splitLines($output)
     {

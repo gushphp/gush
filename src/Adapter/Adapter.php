@@ -26,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface Adapter
 {
     /**
-     * @param Config $configuration Configuration for the adapter
+     * @param  Config $configuration Configuration for the adapter
      * @return void
      */
     public function __construct(Config $configuration);
@@ -179,7 +179,7 @@ interface Adapter
 
     /**
      * @param integer $id
-     * @param string $message
+     * @param string  $message
      *
      * @return mixed
      */
