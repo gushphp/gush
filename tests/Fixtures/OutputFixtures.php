@@ -29,7 +29,7 @@ class OutputFixtures
 EOT;
 
     const ISSUE_SHOW = <<<EOT
-Issue #60 (open): by weaverryan [cordoval]
+Issue #60 (closed): by weaverryan [cordoval]
 Type: Pull Request
 Milestone: Conquer the world
 Labels: actionable, easy pick
