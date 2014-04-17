@@ -40,7 +40,8 @@ class BranchChangelogCommand extends BaseCommand implements GitHubFeature
                 InputOption::VALUE_NONE,
                 'Include in-progress issues (open, but has commit)'
             )
-            ->addOption('log-format',
+            ->addOption(
+                'log-format',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Log format, check the GitHub issue API for valid tokens',
@@ -105,36 +106,20 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    /**
-     * Decorates the log
-     *
-     * @param       $format
-     * @param array $issue
-     *
-     * @return string
-     */
     private function getLogLine($format, array $issue)
     {
         $issue = $this->flattenIssue($issue);
 
-        return preg_replace_callback('/%([^%]*)%/', function($matches) use ($issue) {
+        return preg_replace_callback('/%([^%]*)%/', function ($matches) use ($issue) {
             $token = $matches[1];
 
             return isset($issue[$token]) ? $issue[$token] : '';
         }, $format);
     }
 
-    /**
-     * Flattens an issue array recursively
-     *
-     * @param array  $issue
-     * @param string $prefix
-     *
-     * @return array
-     */
     private function flattenIssue(array $issue, $prefix = '')
     {
-        $result = array();
+        $result = [];
 
         foreach ($issue as $key => $value) {
             if (is_array($value)) {
