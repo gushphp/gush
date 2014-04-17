@@ -45,6 +45,22 @@ class BranchChangelogCommandTest extends BaseTestCase
         $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG, trim($tester->getDisplay()));
     }
 
+    public function testCommandForRepositoriesWithTagsFormatted()
+    {
+        $gitHelperWithTags = $this->expectGitHelperWithTags();
+
+        $tester = $this->getCommandTester($command = new BranchChangelogCommand());
+        $command->getHelperSet()->set($gitHelperWithTags, 'git');
+
+        $tester->execute([
+            '--org' => 'gushphp',
+            '--repo' => 'gush',
+            '--log-format' => '#%number%: %title% - <info>%assignee.login%</info>'
+        ]);
+
+        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_FORMATTED, trim($tester->getDisplay()));
+    }
+
     private function expectGitHelperWithoutTags()
     {
         $gitHelper = $this
@@ -76,7 +92,7 @@ class BranchChangelogCommandTest extends BaseTestCase
                 $this->returnValueMap(
                     [
                         ['git describe --abbrev=0 --tags', self::TEST_TAG_NAME],
-                        [sprintf('git log %s...HEAD --oneline', self::TEST_TAG_NAME), 'Another hack which fixes #123']
+                        [sprintf('git log %s...HEAD --format="%s"', self::TEST_TAG_NAME, "%s%b"), 'Another hack which fixes #123']
                     ]
                 )
             )
