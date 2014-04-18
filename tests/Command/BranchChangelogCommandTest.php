@@ -94,7 +94,7 @@ class BranchChangelogCommandTest extends BaseTestCase
                         ['git describe --abbrev=0 --tags', self::TEST_TAG_NAME],
                         [
                             sprintf('git log %s...HEAD --format="%s"', self::TEST_TAG_NAME, "%s%b"),
-                            'Another hack which fixes #123'
+                            'Another hack which fixes #123',
                         ]
                     ]
                 )

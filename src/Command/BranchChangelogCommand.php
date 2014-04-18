@@ -125,7 +125,7 @@ EOF
             if (is_array($value)) {
                 $result = $result + $this->flattenIssue($value, $prefix . $key . '.');
             } else {
-                $result[$prefix . $key] = $value;
+                $result[$prefix.$key] = $value;
             }
         }
 
