@@ -123,7 +123,7 @@ EOF
 
         foreach ($issue as $key => $value) {
             if (is_array($value)) {
-                $result = $result + $this->flattenIssue($value, $prefix . $key . '.');
+                $result = $result + $this->flattenIssue($value, $prefix.$key.'.');
             } else {
                 $result[$prefix.$key] = $value;
             }
