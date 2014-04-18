@@ -16,8 +16,8 @@ matrix:
         - php: hhvm
 
 env:
-  # RUNSCOPE_BUCKET= VERSIONEYE_TOKEN= GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
-  - secure: "L2Vi72Dr0mH7tBcPHXHd4c1XICKgD5S1niSF1UN+rW1bojjnerDPU6+wOaCl9FyNKXDsUkVjtG4JowX4XJ3gn50DfYZC/ujBf93zVSS86NCSbtaVJxqKeyi1y9KwAjMQX5unlGyXSrpZnL6XqHMfKny0VH5VISc6BhwYFKG0+94="
+  # VERSIONEYE_TOKEN= GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
+  - secure: "hwEam4w4t7TQg3R38sR8fpLVkt/j6d73RyVB3viNWNYO26YAr2YzRnekL7ysd1mvgy/AMK9A4iDGJ7eyPJ4+R3aKmhBGVUz78cdRdPfm+6ZJp/XqydRklVQrgKEJKlaUVDj6oDws3mGILTxfdZsfHD11XI3+Piut0mF4b5pXRZU="
 
 before_script:
   - composer self-update
