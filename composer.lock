@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8638f31f1dc51055e97273aa9ba83b0f",
+    "hash": "c8938d9fbd46e6d21a56ca882c1cd253",
     "packages": [
         {
             "name": "ddd/slug",
@@ -54,16 +54,16 @@
         },
         {
             "name": "gushphp/gush-github-adapter",
-            "version": "1.1.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gushphp/gush-github-adapter.git",
-                "reference": "bcde56561e95160a64c9ce4bfa404e8fbbbe057d"
+                "reference": "da5d80b187343cdc91d4efcc51a5a2d62d51b6b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gushphp/gush-github-adapter/zipball/bcde56561e95160a64c9ce4bfa404e8fbbbe057d",
-                "reference": "bcde56561e95160a64c9ce4bfa404e8fbbbe057d",
+                "url": "https://api.github.com/repos/gushphp/gush-github-adapter/zipball/da5d80b187343cdc91d4efcc51a5a2d62d51b6b0",
+                "reference": "da5d80b187343cdc91d4efcc51a5a2d62d51b6b0",
                 "shasum": ""
             },
             "type": "library",
@@ -90,7 +90,7 @@
                 }
             ],
             "description": "GitHub adapter for Gush",
-            "time": "2014-03-21 01:03:09"
+            "time": "2014-04-19 12:30:35"
         },
         {
             "name": "guzzle/guzzle",
@@ -1675,7 +1675,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "herrera-io/version": 20
+        "herrera-io/version": 20,
+        "gushphp/gush-github-adapter": 20
     },
     "platform": {
         "php": ">=5.5",

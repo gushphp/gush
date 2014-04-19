@@ -43,7 +43,7 @@
         "ddd/slug": "~1.0",
         "herrera-io/version": "~1.0@dev",
         "kherge/amend": "~3.0",
-        "gushphp/gush-github-adapter": "~1.1"
+        "gushphp/gush-github-adapter": "dev-master@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",
