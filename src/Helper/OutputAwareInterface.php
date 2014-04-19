@@ -8,8 +8,6 @@ interface OutputAwareInterface
 {
     /**
      * @param OutputInterface $output
-     *
-     * @return mixed
      */
     public function setOutput(OutputInterface $output);
 }

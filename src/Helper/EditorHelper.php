@@ -58,19 +58,20 @@ class EditorHelper extends Helper
 
     public function fromStringWithMessage($string, $message, $messagePrefix = '# ')
     {
-        $source = '';
+        $source = [];
+        $sourceString = '';
         if (null !== $message) {
             $message = explode("\n", $message);
 
             foreach ($message as $line) {
                 $source[] = $messagePrefix.$line;
             }
-            $source = implode("\n", $source).PHP_EOL;
+            $sourceString = implode("\n", $source).PHP_EOL;
         }
 
-        $source .= $string;
+        $sourceString .= $string;
 
-        $res = $this->fromString($source);
+        $res = $this->fromString($sourceString);
         $res = explode("\n", $res);
 
         $line = current($res);
