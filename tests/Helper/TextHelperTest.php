@@ -15,6 +15,8 @@ use Gush\Helper\TextHelper;
 
 class TextHelperTest extends \PHPUnit_Framework_TestCase
 {
+    protected $textHelper;
+
     public function setUp()
     {
         $this->textHelper = new TextHelper;

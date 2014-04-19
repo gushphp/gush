@@ -23,9 +23,9 @@ class TestableApplication extends Application
     /**
      * {@inheritdoc}
      */
-    public function buildAdapter(InputInterface $input = null, Config $config = null)
+    public function buildAdapter()
     {
-        return new TestAdapter($this->config, 'gushphp', 'gush');
+        return new TestAdapter($this->config);
     }
 
     public function setConfig(Config $config)

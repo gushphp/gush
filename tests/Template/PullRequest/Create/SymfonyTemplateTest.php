@@ -15,6 +15,7 @@ use Gush\Template\PullRequest\Create\SymfonyTemplate;
 
 class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \Gush\Template\PullRequest\Create\SymfonyTemplate */
     protected $template;
 
     public function setUp()
@@ -82,8 +83,8 @@ EOF
     {
         $requirements = $this->template->getRequirements();
 
-        foreach ($requirements as $key => $reqs) {
-            list ($prompt, $default) = $reqs;
+        foreach ($requirements as $key => $requirement) {
+            list ($prompt, $default) = $requirement;
             if (!isset($params[$key])) {
                 $params[$key] = $default;
             }

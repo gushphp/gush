@@ -18,6 +18,8 @@ use Gush\Tester\HttpClient\TestHttpClient;
  */
 class TestHttpClientTest extends \PHPUnit_Framework_TestCase
 {
+    protected $testHttpClient;
+
     public function setUp()
     {
         $this->testHttpClient = new TestHttpClient();
@@ -74,7 +76,7 @@ class TestHttpClientTest extends \PHPUnit_Framework_TestCase
                 break;
         }
 
-        $this->assertEquals(json_encode($expectedData, true), $res->getBody());
+        $this->assertEquals(json_encode($expectedData), $res->getBody());
         $this->assertEquals($args['headers'], $res->getHeaderLines());
     }
 }

@@ -28,7 +28,7 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_renders_string_with_placeholders_replaced()
+    public function itRendersStringWithPlaceholdersReplaced()
     {
         $this->template->bind(['author' => self::TEST_AUTHOR]);
 

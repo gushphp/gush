@@ -81,7 +81,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function buildAdapter()
     {
-        return new TestAdapter($this->config, 'gushphp', 'gush');
+        return new TestAdapter($this->config);
     }
 
     protected function buildVersionEyeClient()
