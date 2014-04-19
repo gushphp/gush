@@ -32,13 +32,13 @@
 
     <testsuites>
         <testsuite name="Gush Test Suite">
-            <directory>./tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./src/Gush</directory>
+            <directory>src</directory>
         </whitelist>
     </filter>
 </phpunit>
