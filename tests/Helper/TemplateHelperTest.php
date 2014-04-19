@@ -49,12 +49,13 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function testRegisterTemplate($name, $parts, $exception = false)
     {
         if (true === $exception) {
-            $this->setExpectedException('InvalidArgumentException', $exception);
+            $this->setExpectedException('InvalidArgumentException', (string) $exception);
         }
 
-        $this->template->expectS($this->once())
+        $this->template->expects($this->once())
             ->method('getName')
-            ->will($this->returnValue($name));
+            ->will($this->returnValue($name))
+        ;
         $this->helper->registerTemplate($this->template);
         $res = $this->helper->getTemplate($parts[0], $parts[1]);
         $this->assertInstanceOf('Gush\Template\TemplateInterface', $res);
@@ -118,7 +119,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage has not been registered
      */
     public function testGetHelperInvalid()
@@ -187,7 +188,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_should_bind_and_render()
+    public function itShouldBindAndRender()
     {
         $this->template->expects($this->once())
             ->method('getName')

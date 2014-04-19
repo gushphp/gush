@@ -30,7 +30,7 @@ class EditorHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_outputs_from_a_string()
+    public function itOutputsFromAString()
     {
         $oneTwoThree = <<<EOT
 One
@@ -46,7 +46,7 @@ EOT;
      * @test
      * @expectedException \RuntimeException
      */
-    public function it_fails_to_output_when_editor_environmental_variable_is_not_set()
+    public function itFailsToOutputWhenEditorEnvironmentalVariableIsNotSet()
     {
         putenv('EDITOR');
         $this->helper->fromString('asd');
@@ -56,7 +56,7 @@ EOT;
      * @test
      * @dataProvider provideFromStringWithMessage
      */
-    public function it_outputs_from_a_string_with_message($source, $message)
+    public function itOutputsFromAStringWithMessage($source, $message)
     {
         $res = $this->helper->fromStringWithMessage($source, $message);
         $this->assertSame($source, $res);

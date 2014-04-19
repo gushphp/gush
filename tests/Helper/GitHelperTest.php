@@ -41,7 +41,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_bears_the_right_helper_name()
+    public function itBearsTheRightHelperName()
     {
         $this->assertEquals('git', $this->git->getName());
     }
@@ -49,7 +49,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_gets_current_git_branch_name()
+    public function itGetsCurrentGitBranchName()
     {
         exec('git rev-parse --abbrev-ref HEAD', $output);
         $this->assertEquals($output[0], $this->git->getBranchName());
@@ -58,7 +58,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_gets_the_last_tag_on_the_current_branch()
+    public function itGetsTheLastTagOnTheCurrentBranch()
     {
         exec('git describe --tags --abbrev=0 HEAD', $output);
         $this->assertEquals($output[0], $this->git->getLastTagOnCurrentBranch());
@@ -68,7 +68,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider repoUrlProvider
      */
-    public function it_gets_the_repository_name($repo)
+    public function itGetsTheRepositoryName($repo)
     {
         $return = <<<EOT
 * remote origin
@@ -96,7 +96,7 @@ EOT;
      * @test
      * @dataProvider repoUrlProvider
      */
-    public function it_gets_the_vendor_name_of_the_repository($repo)
+    public function itGetsTheVendorNameOfTheRepository($repo)
     {
         $return = <<<EOT
 * remote origin
@@ -123,7 +123,7 @@ EOT;
     /**
      * @test
      */
-    public function it_runs_git_command()
+    public function itRunsGitCommand()
     {
         $return = '## master';
         $this->processHelper
@@ -138,7 +138,7 @@ EOT;
     /**
      * @test
      */
-    public function it_lists_files()
+    public function itListsFiles()
     {
         // Smoke test for a real listFiles
         $res = $this->git->listFiles();
