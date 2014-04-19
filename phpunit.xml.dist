@@ -27,7 +27,6 @@
         <!--
         <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
         <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>
-        <env name="VERSIONEYE_TOKEN" value="TOKEN"/>
         -->
     </php>
 

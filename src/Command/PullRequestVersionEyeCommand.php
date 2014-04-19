@@ -63,10 +63,11 @@ EOF
 
             return self::COMMAND_FAILURE;
         }
-ladybug_dump_die($projectId);
+
         $results = $client->get(sprintf('/api/v2/projects/%s', $projectId))->send();
 
         $response = json_decode($results->getBody());
+
         foreach ($response->dependencies as $dependency) {
             if ($dependency->outdated) {
                 $this->getHelper('process')->runCommands(
