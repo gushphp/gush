@@ -49,7 +49,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function testRegisterTemplate($name, $parts, $exception = false)
     {
         if (true === $exception) {
-            $this->setExpectedException('InvalidArgumentException', (string) $exception);
+            $this->setExpectedException('InvalidArgumentException');
         }
 
         $this->template->expects($this->once())
