@@ -15,7 +15,12 @@ use Gush\Subscriber\TableSubscriber;
 
 class TableSubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    private $subscriber;
+    protected $subscriber;
+    protected $commandEvent;
+    protected $consoleEvent;
+    protected $command;
+    protected $tableHelper;
+    protected $input;
 
     public function setUp()
     {
@@ -89,7 +94,8 @@ class TableSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->input->expects($this->once())
             ->method('getOption')
             ->with('table-layout')
-            ->will($this->returnValue($layoutName));
+            ->will($this->returnValue($layoutName))
+        ;
 
         if (false === $valid) {
             $this->setExpectedException('InvalidArgumentException', 'must be passed one of');

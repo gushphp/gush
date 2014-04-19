@@ -17,7 +17,7 @@ namespace Gush\Template;
 abstract class AbstractTemplate implements TemplateInterface
 {
     /**
-     * @var null
+     * @var array
      */
     protected $parameters = null;
 
