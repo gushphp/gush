@@ -256,6 +256,13 @@ class Application extends BaseApplication
     {
         $versionEyeToken = $this->config->get('versioneye-token');
         $client = new GuzzleClient();
+        $client->setConfig(
+            [
+                'curl.CURLOPT_SSL_VERIFYHOST' => false,
+                'curl.CURLOPT_SSL_VERIFYPEER' => false,
+                GuzzleClient::SSL_CERT_AUTHORITY => false
+            ]
+        );
         $client->setBaseUrl('https://www.versioneye.com');
         $client->setDefaultOption('query', ['api_key' => $versionEyeToken]);
 
