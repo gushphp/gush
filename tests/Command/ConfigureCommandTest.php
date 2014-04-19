@@ -50,16 +50,15 @@ class ConfigureCommandTest extends BaseTestCase
         @mkdir($homeDir, 0777, true);
 
         $dialog = $this->expectDialogParameters($homeDir);
-
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
         $command->getHelperSet()->set($dialog, 'dialog');
         $tester->execute(
             [
-                '--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter',
                 'command' => 'core:configure',
+                '--adapter' => 'Gush\\Tester\\Adapter\\TestAdapter',
             ],
             [
-                'interactive' => false,
+                'interactive' => true,
             ]
         );
 
@@ -68,9 +67,6 @@ class ConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    /**
-     * @param string $homeDir
-     */
     private function expectDialogParameters($homeDir)
     {
         $dialog = $this->getMock(
@@ -79,19 +75,24 @@ class ConfigureCommandTest extends BaseTestCase
         );
         $dialog->expects($this->at(0))
             ->method('select')
-            ->will($this->returnValue(0));
+            ->will($this->returnValue(0))
+        ;
         $dialog->expects($this->at(1))
             ->method('askAndValidate')
-            ->will($this->returnValue(self::USERNAME));
+            ->will($this->returnValue(self::USERNAME))
+        ;
         $dialog->expects($this->at(2))
             ->method('askHiddenResponseAndValidate')
-            ->will($this->returnValue(self::PASSWORD));
+            ->will($this->returnValue(self::PASSWORD))
+        ;
         $dialog->expects($this->at(3))
             ->method('askAndValidate')
-            ->will($this->returnValue($homeDir.'/cache'));
+            ->will($this->returnValue($homeDir.'/cache'))
+        ;
         $dialog->expects($this->at(4))
             ->method('askAndValidate')
-            ->will($this->returnValue(self::VERSIONEYE_TOKEN));
+            ->will($this->returnValue(self::VERSIONEYE_TOKEN))
+        ;
 
         return $dialog;
     }

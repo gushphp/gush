@@ -44,7 +44,8 @@ class CoreConfigureCommand extends BaseCommand implements GitHubFeature
      */
     protected function configure()
     {
-        $this->setName('core:configure')
+        $this
+            ->setName('core:configure')
             ->setDescription('Configure the github credentials and the cache folder')
             ->addOption(
                 'adapter',
