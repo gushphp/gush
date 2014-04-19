@@ -89,7 +89,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $client = new Client();
         $client
             ->setBaseUrl('https://www.versioneye.com/')
-            ->setDefaultOption('query', ['api_key' => getenv('VERSIONEYE_TOKEN')])
+            ->setDefaultOption('query', ['api_key' => '123'])
         ;
 
         return $client;
