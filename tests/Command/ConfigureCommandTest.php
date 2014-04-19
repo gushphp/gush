@@ -36,7 +36,6 @@ class ConfigureCommandTest extends BaseTestCase
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
                 'home' => $homeDir,
-                'unknown' => [],
                 'authentication' => [
                     'username' => self::USERNAME,
                     'password-or-token' => self::PASSWORD,
@@ -68,9 +67,6 @@ class ConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    /**
-     * @param string $homeDir
-     */
     private function expectDialogParameters($homeDir)
     {
         $dialog = $this->getMock(
