@@ -43,8 +43,6 @@ abstract class BaseAdapter implements Adapter
     public function __construct(Config $configuration)
     {
         $this->configuration = $configuration;
-
-        $this->initialize();
     }
 
     /**
@@ -96,13 +94,6 @@ abstract class BaseAdapter implements Adapter
     public function getRepository()
     {
         return $this->repository;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initialize()
-    {
     }
 
     /**
