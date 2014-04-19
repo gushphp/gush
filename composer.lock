@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "b132556df99762c5da583797eb83be8d",
+    "hash": "8638f31f1dc51055e97273aa9ba83b0f",
     "packages": [
         {
             "name": "ddd/slug",
@@ -86,7 +86,7 @@
                     "name": "Aaron Scherer",
                     "email": "aequasi@gmail.com",
                     "homepage": "https://github.com/aequasi",
-                    "role": "developer"
+                    "role": "lead"
                 }
             ],
             "description": "GitHub adapter for Gush",
@@ -1678,7 +1678,7 @@
         "herrera-io/version": 20
     },
     "platform": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "ext-curl": "*"
     },
     "platform-dev": [
