@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
+ * @group now
  */
 class PullRequestVersionEyeCommandTest extends BaseTestCase
 {
@@ -54,5 +55,44 @@ class PullRequestVersionEyeCommandTest extends BaseTestCase
         ;
 
         return $processHelper;
+    }
+
+    protected function buildVersionEyeClient()
+    {
+        $request = $this->getMockBuilder('Guzzle\Http\Message\RequestInterface')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $client = $this->getMockBuilder('Guzzle\Http\Client')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $client->expects($this->at(0))
+            ->method('get')
+            ->with('/api/v2/projects')
+            ->will($this->returnValue($request))
+        ;
+        $response->expects($this->once())
+            ->method('getBody')
+            ->will($this->returnValue($this->firstReturn()))
+        ;
+        $request->expects($this->once())
+            ->method('send')
+            ->will($this->returnValue($response))
+        ;
+
+        return $client;
+    }
+
+    private function firstReturn()
+    {
+        return <<<EOT
+[{"id":"52f57f54ec1375d0a600013c","project_key":"maven2_gush_1","name":"gush","project_type":"Maven2","private":false,"period":"weekly","source":"url","dep_number":null,"out_number":0,"created_at":"2014-02-08T00:50:28Z","updated_at":"2014-02-08T00:50:28Z"},{"id":"52f57f5aec1375fd0b0000b4","project_key":"maven2_gush_git_1","name":"gush.git","project_type":"Maven2","private":false,"period":"weekly","source":"url","dep_number":null,"out_number":0,"created_at":"2014-02-08T00:50:34Z","updated_at":"2014-02-08T00:50:34Z"},{"id":"52f57f71ec1375fd0b0000b6","project_key":"composer_vespolina_action_1","name":"vespolina/action","project_type":"composer","private":false,"period":"weekly","source":"url","dep_number":4,"out_number":0,"created_at":"2014-02-08T00:50:58Z","updated_at":"2014-02-08T00:50:58Z"},{"id":"52f580fbec137591740000a8","project_key":"composer_cordoval_gush_sandbox_1","name":"cordoval/gush-sandbox","project_type":"composer","private":false,"period":"weekly","source":"url","dep_number":3,"out_number":2,"created_at":"2014-02-08T00:57:31Z","updated_at":"2014-02-08T00:58:48Z"},{"id":"52fd77ddec1375edd50003ca","project_key":"maven2_gush_3","name":"gush","project_type":"Maven2","private":false,"period":"weekly","source":"url","dep_number":null,"out_number":0,"created_at":"2014-02-14T01:56:45Z","updated_at":"2014-02-14T01:56:45Z"},{"id":"52fd77f2ec1375edd50003cc","project_key":"composer_gushphp_gush_1","name":"gushphp/gush","project_type":"composer","private":false,"period":"weekly","source":"url","dep_number":14,"out_number":3,"created_at":"2014-02-14T01:57:13Z","updated_at":"2014-04-07T13:51:42Z"},{"id":"5301b071ec1375aa7f0000a9","project_key":"composer_cordoval_gush_sandbox_2","name":"cordoval/gush-sandbox","project_type":"composer","private":false,"period":"weekly","source":"url","dep_number":3,"out_number":2,"created_at":"2014-02-17T06:47:14Z","updated_at":"2014-02-17T06:47:14Z"},{"id":"5301b6e0ec1375bab10003c5","project_key":"composer_cordoval_gush_sandbox_3","name":"cordoval/gush-sandbox","project_type":"composer","private":false,"period":"weekly","source":"url","dep_number":3,"out_number":2,"created_at":"2014-02-17T07:14:40Z","updated_at":"2014-02-17T07:14:40Z"},{"id":"5301b708ec1375aa7f0000ad","project_key":"composer_gush_gush_sandbox_1","name":"gushphp/gush-sandbox","project_type":"composer","private":false,"period":"weekly","source":"url","dep_number":3,"out_number":2,"created_at":"2014-02-17T07:15:20Z","updated_at":"2014-02-17T07:21:27Z"}]
+EOT;
+
     }
 }
