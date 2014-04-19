@@ -32,7 +32,7 @@ bldr:
                     type: exec
                     failOnError: true
                     executable: composer
-                    arguments: [install, --prefer-dist]
+                    arguments: [-q, install, --prefer-dist]
                 -
                     type: notify
                     message: Prepare Task Finished
