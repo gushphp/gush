@@ -248,10 +248,9 @@ class TestAdapter extends BaseAdapter
     }
 
     /**
-     * @param string $state
-     * @return mixed|void
+     * {@inheritdoc}
      */
-    public function getPullRequests($state = 'open')
+    public function getPullRequests($state = null)
     {
         return [
             [
@@ -285,6 +284,18 @@ class TestAdapter extends BaseAdapter
                     ]
                 ],
             ]
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPullRequestStates()
+    {
+        return [
+            'open',
+            'closed',
+            'all',
         ];
     }
 
