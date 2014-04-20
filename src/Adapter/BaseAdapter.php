@@ -194,7 +194,12 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    abstract public function getPullRequests($state = 'open');
+    abstract public function getPullRequests($state = null);
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function getPullRequestStates();;
 
     /**
      * {@inheritdoc}

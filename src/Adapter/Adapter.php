@@ -189,7 +189,12 @@ interface Adapter
      * @param  string $state
      * @return mixed
      */
-    public function getPullRequests($state = 'open');
+    public function getPullRequests($state = null);
+
+    /**
+     * @return array
+     */
+    public function getPullRequestStates();
 
     /**
      * @param string $name

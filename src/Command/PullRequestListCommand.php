@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Gush\Exception\InvalidStateException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,9 +43,8 @@ class PullRequestListCommand extends BaseCommand implements TableFeature, GitHub
             ->addOption(
                 'state',
                 null,
-                InputOption::VALUE_OPTIONAL,
-                'Either open, closed, or all to filter by state. Default: open',
-                'open'
+                InputOption::VALUE_REQUIRED,
+                'For a list of available states, please refer to the adapter documentation'
             )
             ->setDescription('Lists all available pull requests')
             ->setHelp(
@@ -63,13 +63,14 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $state = $input->getOption('state');
+        $state       = $input->getOption('state');
+        $adapter     = $this->getAdapter();
+        $validStates = $adapter->getPullRequestStates();
 
-        if (!in_array($state, ['open', 'closed', 'all'])) {
-            throw new \Exception(sprintf('The state %s is invalid. Only "open", "closed" or "all" accepted', $state));
+        if (!empty($state) && !in_array($state, $validStates)) {
+            throw new InvalidStateException($state, $validStates);
         }
 
-        $adapter      = $this->getAdapter();
         $pullRequests = $adapter->getPullRequests($state);
 
         $table = $this->getHelper('table');
@@ -81,9 +82,6 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    /**
-     * @return \Closure
-     */
     private function getRowBuilderCallback()
     {
         return function ($release) {
