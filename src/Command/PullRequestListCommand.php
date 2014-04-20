@@ -47,7 +47,6 @@ class PullRequestListCommand extends BaseCommand implements TableFeature, GitHub
                 InputOption::VALUE_REQUIRED,
                 'For a list of available states, please refer to the adapter documentation'
             )
-            )
             ->setDescription('Lists all available pull requests')
             ->setHelp(
                 <<<EOF
@@ -65,10 +64,12 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $state = $input->getOption('state');
+        $state       = $input->getOption('state');
+        $adapter     = $this->getAdapter();
+        $validStates = $adapter->getPullRequestStates();
 
-        if (!in_array($state, ['open', 'closed', 'all'])) {
-            throw new \Exception(sprintf('The state %s is invalid. Only "open", "closed" or "all" accepted', $state));
+        if (!empty($state) && !in_array($state, $validStates)) {
+            throw new InvalidStateException($state, $validStates);
         }
 
         $adapter = $this->getAdapter();
