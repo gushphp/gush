@@ -32,4 +32,4 @@ class InvalidStateException extends \RuntimeException
 
         parent::__construct($message);
     }
-} 
+}
