@@ -150,8 +150,8 @@ EOT;
  * with this source code in the file LICENSE.
  */
 
-(function($){
-    $.fn.someFunction = function(){
+(function ($) {
+    $.fn.someFunction = function () {
         return $(this).append('New Function');
     };
 })(window.jQuery);
