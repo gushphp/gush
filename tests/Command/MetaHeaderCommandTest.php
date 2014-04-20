@@ -39,6 +39,7 @@ class MetaHeaderCommandTest extends BaseTestCase
 
     public function tearDown()
     {
+        // Revert meta-files back to it's original state, so the changed files doesn't get committed
         exec('git checkout tests/Fixtures/meta');
     }
 
@@ -80,10 +81,10 @@ class MetaHeaderCommandTest extends BaseTestCase
     public function metaFileProvider()
     {
         return [
-            ['tests/Fixtures/meta/metatest.twig', OutputFixtures::META_HEADER_TWIG],
-            ['tests/Fixtures/meta/metatest.php',  OutputFixtures::META_HEADER_PHP],
-            ['tests/Fixtures/meta/metatest.js',   OutputFixtures::META_HEADER_JS],
-            ['tests/Fixtures/meta/metatest.css',  OutputFixtures::META_HEADER_CSS],
+            ['tests/Fixtures/meta/metatest.twig', OutputFixtures::HEADER_LICENSE_TWIG],
+            ['tests/Fixtures/meta/metatest.php',  OutputFixtures::HEADER_LICENSE_PHP],
+            ['tests/Fixtures/meta/metatest.js',   OutputFixtures::HEADER_LICENSE_JS],
+            ['tests/Fixtures/meta/metatest.css',  OutputFixtures::HEADER_LICENSE_CSS],
         ];
     }
 }

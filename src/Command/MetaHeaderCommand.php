@@ -74,7 +74,7 @@ EOT
 
         foreach ($supportedTypes as $type) {
             $files = array_filter($allFiles, function ($value) use ($type) {
-                return pathinfo($value, PATHINFO_EXTENSION) == $type;
+                return pathinfo($value, PATHINFO_EXTENSION) === $type;
             });
 
             if (0 === count($files)) {

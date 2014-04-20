@@ -22,10 +22,10 @@ class UnsupportedTypeException extends \RuntimeException
      */
     public function __construct($type, array $supported = [])
     {
-        $message = sprintf('The type %s is unsupported', $type);
+        $message = sprintf('The type "%s" is unsupported.', $type);
 
         if (!empty($supported)) {
-            $message .= sprintf(' The supported types is: ', implode(', ', $supported));
+            $message .= sprintf(' The supported types is: "%s"', implode('", "', $supported));
         }
 
         parent::__construct($message);

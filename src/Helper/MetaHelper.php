@@ -53,9 +53,9 @@ class MetaHelper extends Helper
     }
 
     /**
-     * @param  string                                   $header
-     * @param  string                                   $type
-     * @throws \Gush\Exception\UnsupportedTypeException
+     * @param string $header
+     * @param string $type
+     *
      * @return string
      */
     public function renderHeader($header, $type)
@@ -74,9 +74,10 @@ class MetaHelper extends Helper
     }
 
     /**
-     * @param  string                                   $type
+     * @param string $type
+     *
      * @return Meta\MetaInterface
-     * @throws \Gush\Exception\UnsupportedTypeException
+     * @throws UnsupportedTypeException
      */
     public function getMetaClass($type)
     {
@@ -88,9 +89,7 @@ class MetaHelper extends Helper
     }
 
     /**
-     * Returns the canonical name of this helper.
-     *
-     * @return string The canonical name
+     * {@inheritDoc}
      */
     public function getName()
     {
