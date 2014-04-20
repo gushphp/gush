@@ -199,7 +199,7 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    abstract public function getPullRequestStates();;
+    abstract public function getPullRequestStates();
 
     /**
      * {@inheritdoc}
