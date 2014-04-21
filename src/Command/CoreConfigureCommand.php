@@ -76,7 +76,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filename = $this->config->get('home').'/.gush.yml';
+        $filename = $this->config->get('home_config');
 
         $yaml    = new Yaml();
         $content = ['parameters' => $this->config->raw()];

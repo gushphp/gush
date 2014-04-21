@@ -175,28 +175,7 @@ class Application extends BaseApplication
 
             if (null === $this->adapter) {
                 if (null === $adapter = $this->config->get('adapter')) {
-                    // @TODO: This part should move to a different place
-                    $builder = new ProcessBuilder(['git', 'config', '--get', 'remote.origin.url']);
-                    $builder
-                        ->setWorkingDirectory(getcwd())
-                        ->setTimeout(3600)
-                    ;
-                    $process = $builder->getProcess();
-
-                    $process->run();
-
-                    if (!$process->isSuccessful()) {
-                        throw new \RuntimeException($process->getErrorOutput() . 'The adapter type could not be determined. Please run the gush init command');
-                    }
-
-                    $remoteUrl = strtolower($process->getOutput());
-
-                    // @TODO: we should get a different way of determining the adapter type based on the remote url
-                    if (strpos($remoteUrl, 'github')) {
-                        $adapter = 'github';
-                    } elseif (strpos($remoteUrl, 'bitbucket')) {
-                        $adapter = 'bitbucket';
-                    }
+                    $adapter = $this->determineAdapter();
                 }
 
                 $this->adapter = $this->buildAdapter($adapter);
@@ -214,6 +193,37 @@ class Application extends BaseApplication
         }
 
         parent::doRunCommand($command, $input, $output);
+    }
+
+    private function determineAdapter()
+    {
+        $builder = new ProcessBuilder(['git', 'config', '--get', 'remote.origin.url']);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+        ;
+        $process = $builder->getProcess();
+
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException('The adapter type could not be determined. Please run the gush init command');
+        }
+
+        $remoteUrl = strtolower($process->getOutput());
+
+        // @TODO: we should get a different way of determining the adapter type based on the remote url
+        if (strpos($remoteUrl, 'github.com')) {
+            return 'github';
+        }
+
+        if (strpos($remoteUrl, 'bitbucket.org')) {
+            return 'bitbucket';
+        }
+
+        if (strpos($remoteUrl, 'gitlab.com')) {
+            return 'gitlab';
+        }
     }
 
     protected function readParameters()
