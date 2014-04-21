@@ -112,6 +112,14 @@ EOF
             );
 
             $adapterName = array_keys($adapters)[$selection];
+        } elseif (!array_key_exists($adapterName, $adapters)) {
+            throw new \Exception(
+                sprintf(
+                    'The adapter "%s" is invalid. Available adapters is "%s"',
+                    $adapterName,
+                    implode('", "',array_keys($adapters))
+                )
+            );
         }
 
         $adapter = $adapters[$adapterName];
