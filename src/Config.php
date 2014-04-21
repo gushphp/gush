@@ -102,7 +102,7 @@ class Config
      */
     public function has($key)
     {
-        return null !== $this->get($this->config, $key);
+        return null !== $this->get($key);
     }
 
     /**
