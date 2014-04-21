@@ -156,18 +156,22 @@ EOF
 
             $this->config->merge(
                 [
-                    'adapter_class'  => $adapter,
-                    'authentication' => [
-                        'username'          => $username,
-                        'password-or-token' => $passwordOrToken,
-                        'http-auth-type'    => $authenticationType
-                    ],
-                    $adapterName => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog])
+                    'adapters' => [
+                        $adapterName => [
+                            'config' => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog]),
+                            'adapter_class'  => $adapter,
+                            'authentication' => [
+                                'username'          => $username,
+                                'password-or-token' => $passwordOrToken,
+                                'http-auth-type'    => $authenticationType
+                            ],
+                        ]
+                    ]
                 ]
             );
 
             try {
-                $isAuthenticated = $this->isCredentialsValid($input);
+                $isAuthenticated = $this->isCredentialsValid($adapterName);
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
@@ -211,10 +215,10 @@ EOF
         );
     }
 
-    private function isCredentialsValid($input)
+    private function isCredentialsValid($adapterName)
     {
         $this->getApplication()->setConfig($this->config);
-        $adapter = $this->getApplication()->buildAdapter($input);
+        $adapter = $this->getApplication()->buildAdapter($adapterName);
 
         return $adapter->isAuthenticated();
     }

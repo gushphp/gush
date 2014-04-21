@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "cca039b285a4e7b625220da6d1bb8b6b",
+    "hash": "6d6cd5c5cbf067c053ffd4f4a7f015d2",
     "packages": [
         {
             "name": "ddd/slug",
@@ -1094,6 +1094,66 @@
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
             "time": "2014-02-11 13:52:09"
+        },
+        {
+            "name": "symfony/property-access",
+            "version": "v2.4.3",
+            "target-dir": "Symfony/Component/PropertyAccess",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/PropertyAccess.git",
+                "reference": "37fe0c2dc494b47db4b0850e9dcba3a27cc45c0c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/37fe0c2dc494b47db4b0850e9dcba3a27cc45c0c",
+                "reference": "37fe0c2dc494b47db4b0850e9dcba3a27cc45c0c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\PropertyAccess\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony PropertyAccess Component",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "access",
+                "array",
+                "extraction",
+                "index",
+                "injection",
+                "object",
+                "property",
+                "property path",
+                "reflection"
+            ],
+            "time": "2014-02-11 15:39:28"
         },
         {
             "name": "symfony/yaml",

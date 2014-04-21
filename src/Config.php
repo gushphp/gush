@@ -11,6 +11,9 @@
 
 namespace Gush;
 
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
@@ -18,7 +21,7 @@ class Config
 {
     public static $defaultConfig = [
         'cache-dir' => '{$home}/cache',
-        'adapter_class' => '\\Gush\\Adapter\\GitHubAdapter'
+        'adapters' => []
     ];
 
     /**
@@ -64,11 +67,18 @@ class Config
                 return rtrim($this->config[$key], '/\\');
 
             default:
-                if (!isset($this->config[$key])) {
-                    return null;
-                }
 
-                return $this->config[$key];
+                $accessor = PropertyAccess::createPropertyAccessor();
+
+                try {
+                    return $accessor->getValue($this->config, $key);
+                } catch(NoSuchPropertyException $e) {
+                    if (!isset($this->config[$key])) {
+                        return null;
+                    }
+
+                    return $this->config[$key];
+                }
         }
     }
 
@@ -85,7 +95,7 @@ class Config
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->config);
+        return null !== $this->get($this->config, $key);
     }
 
     /**
@@ -95,9 +105,10 @@ class Config
      */
     public function isValid()
     {
-        if (isset($this->config['authentication']['username'])
-            && isset($this->config['authentication']['password-or-token'])
-            && isset($this->config['authentication']['http-auth-type'])
+        if (//isset($this->config['authentication']['username'])
+            //&& isset($this->config['authentication']['password-or-token'])
+            //&& isset($this->config['authentication']['http-auth-type'])
+            count($this->config['adapters']) > 0
             && isset($this->config['versioneye-token'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))

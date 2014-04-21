@@ -31,6 +31,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
@@ -173,7 +174,32 @@ class Application extends BaseApplication
             $this->readParameters();
 
             if (null === $this->adapter) {
-                $this->adapter = $this->buildAdapter();
+                if (null === $adapter = $this->config->get('adapter')) {
+                    // @TODO: This part should move to a different place
+                    $builder = new ProcessBuilder(['git', 'config', '--get', 'remote.origin.url']);
+                    $builder
+                        ->setWorkingDirectory(getcwd())
+                        ->setTimeout(3600)
+                    ;
+                    $process = $builder->getProcess();
+
+                    $process->run();
+
+                    if (!$process->isSuccessful()) {
+                        throw new \RuntimeException($process->getErrorOutput() . 'The adapter type could not be determined. Please run the gush init command');
+                    }
+
+                    $remoteUrl = strtolower($process->getOutput());
+
+                    // @TODO: we should get a different way of determining the adapter type based on the remote url
+                    if (strpos($remoteUrl, 'github')) {
+                        $adapter = 'github';
+                    } elseif (strpos($remoteUrl, 'bitbucket')) {
+                        $adapter = 'bitbucket';
+                    }
+                }
+
+                $this->adapter = $this->buildAdapter($adapter);
             }
 
             if (null === $this->versionEyeClient) {
@@ -198,17 +224,19 @@ class Application extends BaseApplication
 
         $this->config = Factory::createConfig();
 
-        $localFilename = $this->config->get('home').'/.gush.yml';
+        $homeFilename = $this->config->get('home_config');
+        $localFilename = $this->config->get('local_config');
 
-        if (!file_exists($localFilename)) {
+        if (!file_exists($homeFilename)) {
             throw new FileNotFoundException(
                 'The .gush.yml file doest not exist, please run the core:configure command.'
             );
         }
 
+        $yaml = new Yaml();
+
         try {
-            $yaml = new Yaml();
-            $parsed = $yaml->parse($localFilename);
+            $parsed = $yaml->parse($homeFilename);
             $this->config->merge($parsed['parameters']);
 
             if (!$this->config->isValid()) {
@@ -219,16 +247,35 @@ class Application extends BaseApplication
         } catch (\Exception $e) {
             throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
         }
+
+        // merge the local config
+        if (file_exists($localFilename)) {
+            try {
+                $parsed = $yaml->parse($localFilename);
+                $this->config->merge($parsed);
+
+                /*if (!$this->config->isValid()) {
+                    throw new \RuntimeException(
+                        'The .gush.yml is not properly configured. Please run the core:configure command.'
+                    );
+                }*/
+            } catch (\Exception $e) {
+                throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
+            }
+        }
     }
 
     /**
      * Builds the adapter for the application
      *
+     * @param string $adapter
+     *
      * @return Adapter
      */
-    public function buildAdapter()
+    public function buildAdapter($adapter)
     {
-        $adapterClass = $this->config->get('adapter_class');
+        $adapterClass = $this->config->get(sprintf('[adapters][%s][adapter_class]', $adapter));
+
         $this->validateAdapterClass($adapterClass);
 
         /** @var Adapter $adapter */
