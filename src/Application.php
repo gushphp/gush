@@ -390,6 +390,7 @@ class Application extends BaseApplication
             new Cmd\LabelIssuesCommand(),
             new Cmd\CoreConfigureCommand(),
             new Cmd\CoreAliasCommand(),
+            new Cmd\InitCommand(),
             new Cmd\PullRequestVersionEyeCommand(),
         ];
     }
