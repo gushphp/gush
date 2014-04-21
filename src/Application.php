@@ -282,8 +282,24 @@ class Application extends BaseApplication
 
         $this->validateAdapterClass($adapterClass);
 
+        $rawConfig = $this->config->raw();
+        unset($rawConfig['adapters']);
+
+        $config = new Config;
+
+        // This is for BC compatibility with existing adapters
+        $config->merge(
+            array_merge(
+                $rawConfig,
+                [
+                    $adapter => $this->config->get(sprintf('[adapters][%s][config]', $adapter)),
+                    'authentication' => $this->config->get(sprintf('[adapters][%s][authentication]', $adapter)),
+                ]
+            )
+        );
+
         /** @var Adapter $adapter */
-        $adapter = new $adapterClass($this->config);
+        $adapter = new $adapterClass($config);
         $adapter->authenticate();
 
         $this->setAdapter($adapter);
