@@ -13,6 +13,7 @@ namespace Gush\Tests\Command;
 
 use Gush\Command\MetaHeaderCommand;
 use Gush\Helper\MetaHelper;
+use Gush\Meta as Meta;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
@@ -45,10 +46,16 @@ class MetaHeaderCommandTest extends BaseTestCase
 
     private function getTestCommand()
     {
+        $metasSupported = [
+            'php'  => new Meta\Base,
+            'js'   => new Meta\Base,
+            'css'  => new Meta\Base,
+            'twig' => new Meta\Twig,
+        ];
         $gitHelper = $this->expectGitHelper();
         $tester = $this->getCommandTester($command = new MetaHeaderCommand());
         $command->getHelperSet()->set($gitHelper, 'git');
-        $command->getHelperSet()->set(new MetaHelper(), 'meta');
+        $command->getHelperSet()->set(new MetaHelper($metasSupported), 'meta');
 
         return $tester;
     }

@@ -12,7 +12,7 @@
 namespace Gush\Helper;
 
 use Gush\Exception\UnsupportedTypeException;
-use Gush\Meta;
+use Gush\Meta\Meta;
 use Symfony\Component\Console\Helper\Helper;
 
 /**
@@ -25,21 +25,26 @@ class MetaHelper extends Helper
      */
     protected $supportedFiles;
 
-    public function __construct()
+    public function __construct($supportedExtensionClassCollection)
     {
-        $this->supportedFiles = [
-            'php'  => new Meta\Base,
-            'js'   => new Meta\Base,
-            'css'  => new Meta\Base,
-            'twig' => new Meta\Twig,
-        ];
+        $this->supportedFiles = $supportedExtensionClassCollection;
+        foreach ($this->supportedFiles as $type => $class) {
+            if (!$class instanceof Meta) {
+                throw new \Exception(
+                    sprintf(
+                        'Meta header class for type "%s" does not implement the Gush\Meta\Meta interface.',
+                        $type
+                    )
+                );
+            }
+        }
     }
 
     /**
      * @param string    $fileType
-     * @param Meta\Meta $class
+     * @param Meta $class
      */
-    public function registerFileType($fileType, Meta\Meta $class)
+    public function registerFileType($fileType, Meta $class)
     {
         $this->supportedFiles[$fileType] = $class;
     }
@@ -76,7 +81,7 @@ class MetaHelper extends Helper
     /**
      * @param string $type
      *
-     * @return Meta\Meta
+     * @return Meta
      * @throws UnsupportedTypeException
      */
     public function getMetaClass($type)
