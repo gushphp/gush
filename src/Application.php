@@ -19,6 +19,7 @@ use Gush\Exception\FileNotFoundException;
 use Gush\Exception\AdapterException;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
+use Gush\Meta as Meta;
 use Gush\Subscriber\GitHubSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
@@ -69,6 +70,7 @@ class Application extends BaseApplication
         $helperSet->set(new Helpers\EditorHelper());
         $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog')));
+        $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new UpdateHelper());
 
         // the parent dispatcher is private and has
@@ -301,6 +303,16 @@ class Application extends BaseApplication
             new Cmd\CoreConfigureCommand(),
             new Cmd\CoreAliasCommand(),
             new Cmd\PullRequestVersionEyeCommand(),
+        ];
+    }
+
+    public function getSupportedMetaFiles()
+    {
+        return [
+            'php'  => new Meta\Base,
+            'js'   => new Meta\Base,
+            'css'  => new Meta\Base,
+            'twig' => new Meta\Twig,
         ];
     }
 }
