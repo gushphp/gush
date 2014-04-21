@@ -39,7 +39,7 @@ class MetaHeaderCommandTest extends BaseTestCase
 
     public function tearDown()
     {
-        // Revert meta-files back to it's original state, so the changed files doesn't get committed
+        // Revert meta-files back to their original state, so the changed files don't get committed
         exec('git checkout tests/Fixtures/meta');
     }
 

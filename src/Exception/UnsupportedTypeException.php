@@ -25,7 +25,7 @@ class UnsupportedTypeException extends \RuntimeException
         $message = sprintf('The type "%s" is unsupported.', $type);
 
         if (!empty($supported)) {
-            $message .= sprintf(' The supported types is: "%s"', implode('", "', $supported));
+            $message .= sprintf(' The supported types are: "%s"', implode('", "', $supported));
         }
 
         parent::__construct($message);
