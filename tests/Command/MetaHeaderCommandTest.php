@@ -61,7 +61,7 @@ class MetaHeaderCommandTest extends BaseTestCase
             'tests/Fixtures/meta/metatest.php',
             'tests/Fixtures/meta/metatest.css',
             'tests/Fixtures/meta/metatest.js',
-            'tests/Fixtures/meta/metatest.twig'
+            'tests/Fixtures/meta/metatest.twig',
         ];
 
         $gitHelper = $this
