@@ -36,10 +36,10 @@ class MetaHelper extends Helper
     }
 
     /**
-     * @param string             $fileType
-     * @param Meta\MetaInterface $class
+     * @param string    $fileType
+     * @param Meta\Meta $class
      */
-    public function registerFileType($fileType, Meta\MetaInterface $class)
+    public function registerFileType($fileType, Meta\Meta $class)
     {
         $this->supportedFiles[$fileType] = $class;
     }
@@ -76,7 +76,7 @@ class MetaHelper extends Helper
     /**
      * @param string $type
      *
-     * @return Meta\MetaInterface
+     * @return Meta\Meta
      * @throws UnsupportedTypeException
      */
     public function getMetaClass($type)

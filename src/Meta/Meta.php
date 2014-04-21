@@ -14,7 +14,7 @@ namespace Gush\Meta;
 /**
  * @author Pierre du Plessis <pdples@gmail.com>
  */
-interface MetaInterface
+interface Meta
 {
     /**
      * @return string

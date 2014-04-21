@@ -14,7 +14,7 @@ namespace Gush\Meta;
 /**
  * @author Pierre du Plessis <pdples@gmail.com>
  */
-class Twig implements MetaInterface
+class Twig implements Meta
 {
     /**
      * {@inheritDoc}

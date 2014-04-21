@@ -46,8 +46,6 @@ class MetaHeaderCommandTest extends BaseTestCase
     private function getTestCommand()
     {
         $gitHelper = $this->expectGitHelper();
-
-        //$this->expectsConfig();
         $tester = $this->getCommandTester($command = new MetaHeaderCommand());
         $command->getHelperSet()->set($gitHelper, 'git');
         $command->getHelperSet()->set(new MetaHelper(), 'meta');
@@ -67,7 +65,6 @@ class MetaHeaderCommandTest extends BaseTestCase
         $gitHelper = $this
             ->getMockBuilder('Gush\Helper\GitHelper')
             ->disableOriginalConstructor()
-            ->setMethods(['listFiles'])
             ->getMock()
         ;
         $gitHelper->expects($this->once())

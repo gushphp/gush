@@ -14,7 +14,7 @@ namespace Gush\Meta;
 /**
  * @author Pierre du Plessis <pdples@gmail.com>
  */
-class Base implements MetaInterface
+class Base implements Meta
 {
     /**
      * {@inheritDoc}
