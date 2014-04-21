@@ -282,6 +282,8 @@ class Application extends BaseApplication
 
         $this->validateAdapterClass($adapterClass);
 
+        $this->config->merge(['adapter' => $adapter]);
+
         $rawConfig = $this->config->raw();
         unset($rawConfig['adapters']);
 
