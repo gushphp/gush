@@ -12,9 +12,9 @@
 namespace Gush\Command;
 
 use Gush\Exception\InvalidStateException;
-use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\GitHubFeature;
 use Gush\Feature\TableFeature;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,8 +64,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $state       = $input->getOption('state');
-        $adapter     = $this->getAdapter();
+        $state = $input->getOption('state');
+        $adapter = $this->getAdapter();
         $validStates = $adapter->getPullRequestStates();
 
         if (!empty($state) && !in_array($state, $validStates)) {
