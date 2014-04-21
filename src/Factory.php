@@ -72,7 +72,11 @@ class Factory
         $config = new Config();
 
         // add dirs to the config
-        $config->merge(['home' => $home, 'cache-dir' => $cacheDir]);
+        $config->merge([
+                'home' => $home,
+                'cache-dir' => $cacheDir,
+                'local' => getcwd()
+            ]);
 
         return $config;
     }

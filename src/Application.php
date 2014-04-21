@@ -57,6 +57,9 @@ class Application extends BaseApplication
      */
     protected $dispatcher;
 
+    /** @var  array */
+    protected $adapters = [];
+
     public function __construct($name = 'Gush', $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
@@ -88,6 +91,10 @@ class Application extends BaseApplication
         parent::__construct($name, $version);
         $this->setHelperSet($helperSet);
         $this->addCommands($this->getCommands());
+
+        $this->registerAdapter('\\Gush\\Adapter\\GitHubAdapter');
+        $this->registerAdapter('\\Gush\\Adapter\\BitbucketAdapter');
+        $this->registerAdapter('\\Gush\\Adapter\\GitLabAdapter');
     }
 
     /**
@@ -233,6 +240,30 @@ class Application extends BaseApplication
         return $adapter;
     }
 
+    /**
+     * @param string $adapterClass
+     */
+    public function registerAdapter($adapterClass)
+    {
+        $name = $this->validateAdapterClass($adapterClass);
+
+        $this->adapters[$name] = $adapterClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdapters()
+    {
+        return $this->adapters;
+    }
+
+    /**
+     * @param string $adapterClass
+     *
+     * @return string
+     * @throws Exception\AdapterException
+     */
     public function validateAdapterClass($adapterClass)
     {
         if (!class_exists($adapterClass)) {

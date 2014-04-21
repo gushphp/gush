@@ -46,13 +46,12 @@ class CoreConfigureCommand extends BaseCommand implements GitHubFeature
     {
         $this
             ->setName('core:configure')
-            ->setDescription('Configure the github credentials and the cache folder')
+            ->setDescription('Configure adapter credentials and the cache folder')
             ->addOption(
                 'adapter',
                 'a',
                 InputOption::VALUE_OPTIONAL,
-                "What adapter should be used? (GitHub)",
-                '\\Gush\\Adapter\\GitHubAdapter'
+                "What adapter should be used? (github, bitbucket, gitlab)"
             )
             ->setHelp(
                 <<<EOF
@@ -97,17 +96,31 @@ EOF
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $input->getOption('adapter');
-        $adapterName = $this->getApplication()->validateAdapterClass($adapter);
+        $application = $this->getApplication();
+        $adapters = $application->getAdapters();
+        $adapterName = $input->getOption('adapter');
+
+        /** @var DialogHelper $dialog */
+        $dialog = $this->getHelper('dialog');
+
+        if (null === $adapterName) {
+            $selection = $dialog->select(
+                $output,
+                'Choose adapter: ',
+                array_keys($adapters),
+                0
+            );
+
+            $adapterName = array_keys($adapters)[$selection];
+        }
+
+        $adapter = $adapters[$adapterName];
 
         $isAuthenticated    = false;
         $username           = null;
         $passwordOrToken    = null;
         $authenticationType = null;
         $versionEyeToken    = null;
-
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
 
         $validator = function ($field) {
             if (empty($field)) {
@@ -122,12 +135,12 @@ EOF
             $authenticationType = $dialog->select(
                 $output,
                 'Select among these: ',
-                $this->authenticationOptions,
+                $this->authenticationOptions, // @TODO: we should only show authentication options that is valid for the adapter
                 0
             );
 
             $authenticationType = $this->authenticationOptions[$authenticationType];
-            $output->writeln('<comment>Insert your Hub Credentials:</comment>');
+            $output->writeln(sprintf('<comment>Insert your %s Credentials:</comment>', $adapterName));
             $username            = $dialog->askAndValidate(
                 $output,
                 'username: ',
@@ -143,7 +156,7 @@ EOF
 
             $this->config->merge(
                 [
-                    'adapter_class'  => $input->getOption('adapter'),
+                    'adapter_class'  => $adapter,
                     'authentication' => [
                         'username'          => $username,
                         'password-or-token' => $passwordOrToken,
