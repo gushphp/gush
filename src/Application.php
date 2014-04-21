@@ -207,7 +207,7 @@ class Application extends BaseApplication
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new \RuntimeException('The adapter type could not be determined. Please run the gush init command');
+            throw new \RuntimeException('The adapter type could not be determined. Please run the init command');
         }
 
         $remoteUrl = strtolower($process->getOutput());
@@ -263,12 +263,6 @@ class Application extends BaseApplication
             try {
                 $parsed = $yaml->parse($localFilename);
                 $this->config->merge($parsed);
-
-                /*if (!$this->config->isValid()) {
-                    throw new \RuntimeException(
-                        'The .gush.yml is not properly configured. Please run the core:configure command.'
-                    );
-                }*/
             } catch (\Exception $e) {
                 throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
             }

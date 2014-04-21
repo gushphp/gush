@@ -19,6 +19,9 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 class Config
 {
+    /**
+     * @var array
+     */
     public static $defaultConfig = [
         'cache-dir' => '{$home}/cache',
         'adapters' => []
@@ -52,6 +55,7 @@ class Config
      * Returns a setting
      *
      * @param  string $key
+     *
      * @return mixed
      */
     public function get($key)
@@ -72,7 +76,7 @@ class Config
 
                 try {
                     return $accessor->getValue($this->config, $key);
-                } catch(NoSuchPropertyException $e) {
+                } catch (NoSuchPropertyException $e) {
                     if (!isset($this->config[$key])) {
                         return null;
                     }
@@ -82,6 +86,9 @@ class Config
         }
     }
 
+    /**
+     * @return array
+     */
     public function raw()
     {
         return $this->config;
@@ -90,7 +97,7 @@ class Config
     /**
      * Checks whether a setting exists
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function has($key)
@@ -105,10 +112,7 @@ class Config
      */
     public function isValid()
     {
-        if (//isset($this->config['authentication']['username'])
-            //&& isset($this->config['authentication']['password-or-token'])
-            //&& isset($this->config['authentication']['http-auth-type'])
-            count($this->config['adapters']) > 0
+        if (count($this->config['adapters']) > 0
             && isset($this->config['versioneye-token'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))
