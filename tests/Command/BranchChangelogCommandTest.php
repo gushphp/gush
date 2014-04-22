@@ -45,18 +45,23 @@ class BranchChangelogCommandTest extends BaseTestCase
         $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG, trim($tester->getDisplay()));
     }
 
-    public function testCommandForRepositoriesWithTagsFormatted()
+    /**
+     * @test
+     */
+    public function itSupportsCustomLogFormats()
     {
         $gitHelperWithTags = $this->expectGitHelperWithTags();
 
         $tester = $this->getCommandTester($command = new BranchChangelogCommand());
         $command->getHelperSet()->set($gitHelperWithTags, 'git');
 
-        $tester->execute([
-            '--org' => 'gushphp',
-            '--repo' => 'gush',
-            '--log-format' => '#%number%: %title% - <info>%assignee.login%</info>'
-        ]);
+        $tester->execute(
+            [
+                '--org' => 'gushphp',
+                '--repo' => 'gush',
+                '--log-format' => '#%number%: %title% - <info>%assignee.login%</info>',
+            ]
+        );
 
         $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_FORMATTED, trim($tester->getDisplay()));
     }
