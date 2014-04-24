@@ -117,7 +117,7 @@ EOF
                 sprintf(
                     'The adapter "%s" is invalid. Available adapters is "%s"',
                     $adapterName,
-                    implode('", "',array_keys($adapters))
+                    implode('", "', array_keys($adapters))
                 )
             );
         }
@@ -171,7 +171,7 @@ EOF
                             'authentication' => [
                                 'username'          => $username,
                                 'password-or-token' => $passwordOrToken,
-                                'http-auth-type'    => $authenticationType
+                                'http-auth-type'    => $authenticationType,
                             ],
                         ]
                     ]

@@ -93,9 +93,9 @@ class Application extends BaseApplication
         $this->setHelperSet($helperSet);
         $this->addCommands($this->getCommands());
 
-        $this->registerAdapter('\\Gush\\Adapter\\GitHubAdapter');
-        $this->registerAdapter('\\Gush\\Adapter\\BitbucketAdapter');
-        $this->registerAdapter('\\Gush\\Adapter\\GitLabAdapter');
+        $this->registerAdapter('Gush\Adapter\GitHubAdapter');
+        $this->registerAdapter('Gush\Adapter\BitbucketAdapter');
+        $this->registerAdapter('Gush\Adapter\GitLabAdapter');
     }
 
     /**
@@ -243,10 +243,8 @@ class Application extends BaseApplication
             );
         }
 
-        $yaml = new Yaml();
-
         try {
-            $parsed = $yaml->parse($homeFilename);
+            $parsed = Yaml::parse($homeFilename);
             $this->config->merge($parsed['parameters']);
 
             if (!$this->config->isValid()) {
@@ -261,7 +259,7 @@ class Application extends BaseApplication
         // merge the local config
         if (file_exists($localFilename)) {
             try {
-                $parsed = $yaml->parse($localFilename);
+                $parsed = Yaml::parse($localFilename);
                 $this->config->merge($parsed);
             } catch (\Exception $e) {
                 throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");

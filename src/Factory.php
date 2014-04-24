@@ -72,13 +72,15 @@ class Factory
         $config = new Config();
 
         // add dirs to the config
-        $config->merge([
+        $config->merge(
+            [
                 'home'         => $home,
                 'home_config'  => $home.'/.gush.yml',
                 'cache-dir'    => $cacheDir,
                 'local'        => getcwd(),
-                'local_config' => getcwd().'/.gush.yml'
-            ]);
+                'local_config' => getcwd().'/.gush.yml',
+            ]
+        );
 
         return $config;
     }

@@ -43,6 +43,7 @@ class InitCommand extends BaseCommand
 The <info>%command.name%</info> configure parameters Gush will use:
 
     <info>$ gush %command.full_name%</info>
+
 EOF
             )
         ;
