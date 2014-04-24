@@ -93,9 +93,10 @@ class Application extends BaseApplication
         $this->setHelperSet($helperSet);
         $this->addCommands($this->getCommands());
 
-        $this->registerAdapter('Gush\Adapter\GitHubAdapter');
-        $this->registerAdapter('Gush\Adapter\BitbucketAdapter');
-        $this->registerAdapter('Gush\Adapter\GitLabAdapter');
+        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter');
+        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter', 'github_enterprise');
+        $this->registerAdapter('Gush\\Adapter\\BitbucketAdapter');
+        $this->registerAdapter('Gush\\Adapter\\GitLabAdapter');
     }
 
     /**
@@ -309,10 +310,15 @@ class Application extends BaseApplication
 
     /**
      * @param string $adapterClass
+     * @param string $adapterName
      */
-    public function registerAdapter($adapterClass)
+    public function registerAdapter($adapterClass, $adapterName = null)
     {
         $name = $this->validateAdapterClass($adapterClass);
+
+        if (null !== $adapterName) {
+            $name = $adapterName;
+        }
 
         $this->adapters[$name] = $adapterClass;
     }
