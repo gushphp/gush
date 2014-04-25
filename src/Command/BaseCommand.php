@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Gush\Adapter\Adapter;
+use Gush\Application;
 use Gush\Event\GushEvents;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
@@ -26,6 +27,17 @@ class BaseCommand extends Command
 {
     const COMMAND_SUCCESS = 1;
     const COMMAND_FAILURE = 0;
+
+    /**
+     * @param Application $application
+     * @param string      $name
+     */
+    public function __construct(Application $application = null, $name = null)
+    {
+        $this->setApplication($application);
+
+        parent::__construct($name);
+    }
 
     /**
      * Gets the current adapter

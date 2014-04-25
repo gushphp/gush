@@ -49,6 +49,13 @@ interface Adapter
     public function getName();
 
     /**
+     * Returns the Documentation class for the adapter
+     *
+     * @return DocumentationInterface
+     */
+    public function getDocumentation();
+
+    /**
      * Authenticates the Adapter
      *
      * @return bool

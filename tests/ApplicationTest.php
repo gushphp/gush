@@ -35,10 +35,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $config = new Config();
-
         $this->application = new TestableApplication();
-        $this->application->setConfig($config);
         $this->application->setAutoExit(false);
     }
 

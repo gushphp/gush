@@ -21,11 +21,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class BaseAdapter implements Adapter
 {
     const NAME = 'unknown';
+    const DOCUMENTATION_CLASS = '\Gush\Adapter\BaseDocumentation';
 
     /**
      * @var Config
      */
     protected $configuration;
+
+    /**
+     * @var DocumentationInterface
+     */
+    protected $documentation;
 
     /**
      * @var null|string
@@ -44,6 +50,9 @@ abstract class BaseAdapter implements Adapter
     {
         $this->configuration = $configuration;
 
+        $documentationClass  = static::DOCUMENTATION_CLASS;
+        $this->documentation = new $documentationClass;
+
         $this->initialize();
     }
 
@@ -53,6 +62,14 @@ abstract class BaseAdapter implements Adapter
     public function getName()
     {
         return self::NAME;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDocumentation()
+    {
+        return $this->documentation;
     }
 
     /**

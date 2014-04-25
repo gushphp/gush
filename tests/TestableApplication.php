@@ -25,16 +25,19 @@ class TestableApplication extends Application
      */
     public function buildAdapter(InputInterface $input = null, Config $config = null)
     {
-        return new TestAdapter($this->config, 'gushphp', 'gush');
-    }
+        $adapter = new TestAdapter($this->config, 'gushphp', 'gush');
+        $this->setAdapter($adapter);
 
-    public function setConfig(Config $config)
-    {
-        $this->config = $config;
+        return $adapter;
     }
 
     public function getDispatcher()
     {
         return $this->dispatcher;
+    }
+
+    protected function readParameters()
+    {
+        $this->setConfig(\PHPUnit_Framework_MockObject_Generator::getMock('Gush\Config'));
     }
 }

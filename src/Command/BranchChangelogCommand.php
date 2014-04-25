@@ -11,8 +11,11 @@
 
 namespace Gush\Command;
 
+use Gush\Adapter\BaseDocumentation;
+use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gush\Feature\GitHubFeature;
 
@@ -31,6 +34,17 @@ class BranchChangelogCommand extends BaseCommand implements GitHubFeature
      */
     protected function configure()
     {
+        $output           = new BufferedOutput();
+        $issueTokensTable = new TableHelper();
+        $issueTokensTable->setHeaders(array('Token', 'Description'));
+
+        $issues = $this->flattenIssue($this->getAdapter()->getDocumentation()->getIssueTokens());
+        foreach ($issues as $token => $description) {
+            $issueTokensTable->addRow([$token, $description]);
+        }
+
+        $issueTokensTable->render($output);
+
         $this
             ->setName('branch:changelog')
             ->setDescription('Reports what got fixed or closed since last release on current branch')
@@ -44,7 +58,7 @@ class BranchChangelogCommand extends BaseCommand implements GitHubFeature
                 'log-format',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Log format, check the GitHub issue API for valid tokens',
+                "Log format. Valid tokens for your adapter:\n".$output->fetch(),
                 '#%number%: %title%   <info>%html_url%</info>'
             )
             ->setHelp(

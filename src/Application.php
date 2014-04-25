@@ -58,6 +58,9 @@ class Application extends BaseApplication
 
     public function __construct($name = 'Gush', $version = '@package_version@')
     {
+        $this->readParameters();
+        $this->buildAdapter();
+
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
         }
@@ -296,7 +299,7 @@ class Application extends BaseApplication
             new Cmd\BranchSyncCommand(),
             new Cmd\BranchDeleteCommand(),
             new Cmd\BranchForkCommand(),
-            new Cmd\BranchChangelogCommand(),
+            new Cmd\BranchChangelogCommand($this),
             new Cmd\LabelIssuesCommand(),
             new Cmd\CoreConfigureCommand(),
             new Cmd\CoreAliasCommand(),

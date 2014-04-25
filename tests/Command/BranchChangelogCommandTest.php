@@ -13,6 +13,8 @@ namespace Gush\Tests\Command;
 
 use Gush\Command\BranchChangelogCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Gush\Tests\TestableApplication;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @author Anton Babenko <anton@antonbabenko.com>
@@ -20,12 +22,16 @@ use Gush\Tests\Fixtures\OutputFixtures;
 class BranchChangelogCommandTest extends BaseTestCase
 {
     const TEST_TAG_NAME = '1.2.3';
+    const COMMAND = '\Gush\Command\BranchChangelogCommand';
 
     public function testCommandForRepositoriesWithoutTags()
     {
         $gitHelperWithoutTags = $this->expectGitHelperWithoutTags();
 
-        $tester = $this->getCommandTester($command = new BranchChangelogCommand());
+        $tester = $this->getCommandTester(self::COMMAND);
+        $refl = new \ReflectionProperty($tester, 'command');
+        $refl->setAccessible(true);
+        $command = $refl->getValue($tester);
         $command->getHelperSet()->set($gitHelperWithoutTags, 'git');
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
@@ -37,7 +43,10 @@ class BranchChangelogCommandTest extends BaseTestCase
     {
         $gitHelperWithTags = $this->expectGitHelperWithTags();
 
-        $tester = $this->getCommandTester($command = new BranchChangelogCommand());
+        $tester = $this->getCommandTester(self::COMMAND);
+        $refl = new \ReflectionProperty($tester, 'command');
+        $refl->setAccessible(true);
+        $command = $refl->getValue($tester);
         $command->getHelperSet()->set($gitHelperWithTags, 'git');
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
@@ -52,7 +61,10 @@ class BranchChangelogCommandTest extends BaseTestCase
     {
         $gitHelperWithTags = $this->expectGitHelperWithTags();
 
-        $tester = $this->getCommandTester($command = new BranchChangelogCommand());
+        $tester = $this->getCommandTester(self::COMMAND);
+        $refl = new \ReflectionProperty($tester, 'command');
+        $refl->setAccessible(true);
+        $command = $refl->getValue($tester);
         $command->getHelperSet()->set($gitHelperWithTags, 'git');
 
         $tester->execute(
