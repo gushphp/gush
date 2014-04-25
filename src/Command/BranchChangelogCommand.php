@@ -40,7 +40,7 @@ class BranchChangelogCommand extends BaseCommand implements GitHubFeature
 
         $issues = $this->flattenIssue($this->getAdapter()->getDocumentation()->getIssueTokens());
         foreach ($issues as $token => $description) {
-            $issueTokensTable->addRow([$token, $description]);
+            $issueTokensTable->addRow(['%'.$token.'%', $description]);
         }
 
         $issueTokensTable->render($output);
