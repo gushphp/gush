@@ -73,7 +73,7 @@ class TestAdapter extends BaseAdapter
     {
         return [
             'number'       => $id,
-            'state'        => "open",
+            'state'        => 'closed',
             'user'         => ['login' => 'weaverryan'],
             'assignee'     => ['login' => 'cordoval'],
             'pull_request' => [],
