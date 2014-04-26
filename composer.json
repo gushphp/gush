@@ -43,7 +43,10 @@
         "ddd/slug": "~1.0",
         "herrera-io/version": "~1.0@dev",
         "kherge/amend": "~3.0",
-        "gushphp/gush-github-adapter": "dev-master@dev"
+        "symfony/property-access": "~2.4",
+        "gushphp/gush-github-adapter": "dev-master@dev",
+        "gushphp/gush-bitbucket-adapter": "dev-master@dev",
+        "gushphp/gush-gitlab-adapter": "dev-master@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~3.7",

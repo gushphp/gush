@@ -50,11 +50,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config = new Config();
         $config->merge(
             [
-                'adapter_class' => '\\Gush\\Tester\\Adapter\\TestAdapter',
-                'authentication' => [
-                    'username' => 'foo',
-                    'password-or-token' => 'bar',
-                    'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
+                'adapters' => [
+                    'github' => [
+                        'adapter_class' => '\\Gush\\Tester\\Adapter\\TestAdapter',
+                        'authentication' => [
+                            'username' => 'foo',
+                            'password-or-token' => 'bar',
+                            'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
+                        ],
+                    ]
                 ],
                 'cache-dir' => sys_get_temp_dir(),
                 'versioneye-token' => '1234',

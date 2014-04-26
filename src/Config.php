@@ -11,14 +11,20 @@
 
 namespace Gush;
 
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
 class Config
 {
+    /**
+     * @var array
+     */
     public static $defaultConfig = [
         'cache-dir' => '{$home}/cache',
-        'adapter_class' => '\\Gush\\Adapter\\GitHubAdapter'
+        'adapters' => []
     ];
 
     /**
@@ -49,6 +55,7 @@ class Config
      * Returns a setting
      *
      * @param  string $key
+     *
      * @return mixed
      */
     public function get($key)
@@ -64,14 +71,24 @@ class Config
                 return rtrim($this->config[$key], '/\\');
 
             default:
-                if (!isset($this->config[$key])) {
-                    return null;
-                }
 
-                return $this->config[$key];
+                $accessor = PropertyAccess::createPropertyAccessor();
+
+                try {
+                    return $accessor->getValue($this->config, $key);
+                } catch (NoSuchPropertyException $e) {
+                    if (!isset($this->config[$key])) {
+                        return null;
+                    }
+
+                    return $this->config[$key];
+                }
         }
     }
 
+    /**
+     * @return array
+     */
     public function raw()
     {
         return $this->config;
@@ -80,12 +97,12 @@ class Config
     /**
      * Checks whether a setting exists
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->config);
+        return null !== $this->get($key);
     }
 
     /**
@@ -95,9 +112,7 @@ class Config
      */
     public function isValid()
     {
-        if (isset($this->config['authentication']['username'])
-            && isset($this->config['authentication']['password-or-token'])
-            && isset($this->config['authentication']['http-auth-type'])
+        if (count($this->config['adapters']) > 0
             && isset($this->config['versioneye-token'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))

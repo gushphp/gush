@@ -31,6 +31,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
@@ -56,6 +57,9 @@ class Application extends BaseApplication
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $dispatcher;
+
+    /** @var  array */
+    protected $adapters = [];
 
     public function __construct($name = 'Gush', $version = '@package_version@')
     {
@@ -88,6 +92,11 @@ class Application extends BaseApplication
         parent::__construct($name, $version);
         $this->setHelperSet($helperSet);
         $this->addCommands($this->getCommands());
+
+        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter');
+        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter', 'github_enterprise');
+        $this->registerAdapter('Gush\\Adapter\\BitbucketAdapter');
+        $this->registerAdapter('Gush\\Adapter\\GitLabAdapter');
     }
 
     /**
@@ -166,7 +175,11 @@ class Application extends BaseApplication
             $this->readParameters();
 
             if (null === $this->adapter) {
-                $this->adapter = $this->buildAdapter();
+                if (null === $adapter = $this->config->get('adapter')) {
+                    $adapter = $this->determineAdapter();
+                }
+
+                $this->adapter = $this->buildAdapter($adapter);
             }
 
             if (null === $this->versionEyeClient) {
@@ -183,6 +196,38 @@ class Application extends BaseApplication
         parent::doRunCommand($command, $input, $output);
     }
 
+    private function determineAdapter()
+    {
+        $builder = new ProcessBuilder(['git', 'config', '--get', 'remote.origin.url']);
+        $builder
+            ->setWorkingDirectory(getcwd())
+            ->setTimeout(3600)
+        ;
+        $process = $builder->getProcess();
+
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException('The adapter type could not be determined. Please run the init command');
+        }
+
+        $remoteUrl = strtolower($process->getOutput());
+
+        if (strpos($remoteUrl, 'github.com')) {
+            return 'github';
+        }
+
+        if (strpos($remoteUrl, 'bitbucket.org')) {
+            return 'bitbucket';
+        }
+
+        if (strpos($remoteUrl, 'gitlab.com')) {
+            return 'gitlab';
+        }
+
+        return 'github';
+    }
+
     protected function readParameters()
     {
         if ($this->config) {
@@ -191,17 +236,17 @@ class Application extends BaseApplication
 
         $this->config = Factory::createConfig();
 
-        $localFilename = $this->config->get('home').'/.gush.yml';
+        $homeFilename = $this->config->get('home_config');
+        $localFilename = $this->config->get('local_config');
 
-        if (!file_exists($localFilename)) {
+        if (!file_exists($homeFilename)) {
             throw new FileNotFoundException(
                 'The .gush.yml file doest not exist, please run the core:configure command.'
             );
         }
 
         try {
-            $yaml = new Yaml();
-            $parsed = $yaml->parse($localFilename);
+            $parsed = Yaml::parse($homeFilename);
             $this->config->merge($parsed['parameters']);
 
             if (!$this->config->isValid()) {
@@ -212,20 +257,50 @@ class Application extends BaseApplication
         } catch (\Exception $e) {
             throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
         }
+
+        if (file_exists($localFilename)) {
+            try {
+                $parsed = Yaml::parse($localFilename);
+                $this->config->merge($parsed);
+            } catch (\Exception $e) {
+                throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
+            }
+        }
     }
 
     /**
      * Builds the adapter for the application
      *
+     * @param string $adapter
+     *
      * @return Adapter
      */
-    public function buildAdapter()
+    public function buildAdapter($adapter)
     {
-        $adapterClass = $this->config->get('adapter_class');
+        $adapterClass = $this->config->get(sprintf('[adapters][%s][adapter_class]', $adapter));
+
         $this->validateAdapterClass($adapterClass);
 
+        $this->config->merge(['adapter' => $adapter]);
+
+        $rawConfig = $this->config->raw();
+        unset($rawConfig['adapters']);
+
+        $config = new Config;
+
+        // This is for BC compatibility with existing adapters
+        $config->merge(
+            array_merge(
+                $rawConfig,
+                [
+                    $adapter => $this->config->get(sprintf('[adapters][%s][config]', $adapter)),
+                    'authentication' => $this->config->get(sprintf('[adapters][%s][authentication]', $adapter)),
+                ]
+            )
+        );
+
         /** @var Adapter $adapter */
-        $adapter = new $adapterClass($this->config);
+        $adapter = new $adapterClass($config);
         $adapter->authenticate();
 
         $this->setAdapter($adapter);
@@ -233,6 +308,35 @@ class Application extends BaseApplication
         return $adapter;
     }
 
+    /**
+     * @param string $adapterClass
+     * @param string $adapterName
+     */
+    public function registerAdapter($adapterClass, $adapterName = null)
+    {
+        $name = $this->validateAdapterClass($adapterClass);
+
+        if (null !== $adapterName) {
+            $name = $adapterName;
+        }
+
+        $this->adapters[$name] = $adapterClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdapters()
+    {
+        return $this->adapters;
+    }
+
+    /**
+     * @param string $adapterClass
+     *
+     * @return string
+     * @throws Exception\AdapterException
+     */
     public function validateAdapterClass($adapterClass)
     {
         if (!class_exists($adapterClass)) {
@@ -302,6 +406,7 @@ class Application extends BaseApplication
             new Cmd\LabelIssuesCommand(),
             new Cmd\CoreConfigureCommand(),
             new Cmd\CoreAliasCommand(),
+            new Cmd\InitCommand(),
             new Cmd\PullRequestVersionEyeCommand(),
         ];
     }

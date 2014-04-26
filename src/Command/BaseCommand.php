@@ -45,7 +45,14 @@ class BaseCommand extends Command
      */
     public function getParameter($key)
     {
-        return $this->getApplication()->getConfig()->get($key);
+        $config = $this->getApplication()->getConfig();
+        $adapter = $config->get('adapter');
+
+        if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
+            return $value;
+        }
+        
+        return $config->get($key);
     }
 
     /**

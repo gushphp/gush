@@ -23,7 +23,7 @@ class TestableApplication extends Application
     /**
      * {@inheritdoc}
      */
-    public function buildAdapter()
+    public function buildAdapter($adapter)
     {
         return new TestAdapter($this->config);
     }
