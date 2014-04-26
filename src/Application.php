@@ -213,7 +213,6 @@ class Application extends BaseApplication
 
         $remoteUrl = strtolower($process->getOutput());
 
-        // @TODO: we should get a different way of determining the adapter type based on the remote url
         if (strpos($remoteUrl, 'github.com')) {
             return 'github';
         }
@@ -225,6 +224,8 @@ class Application extends BaseApplication
         if (strpos($remoteUrl, 'gitlab.com')) {
             return 'gitlab';
         }
+
+        return 'github';
     }
 
     protected function readParameters()
@@ -257,7 +258,6 @@ class Application extends BaseApplication
             throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
         }
 
-        // merge the local config
         if (file_exists($localFilename)) {
             try {
                 $parsed = Yaml::parse($localFilename);
