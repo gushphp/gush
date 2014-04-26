@@ -143,7 +143,7 @@ EOF
             $authenticationType = $dialog->select(
                 $output,
                 'Select among these: ',
-                $this->authenticationOptions, // @TODO: we should only show authentication options that is valid for the adapter
+                $this->authenticationOptions, // @TODO: we should only show authentication options that are valid for the adapter
                 0
             );
 
