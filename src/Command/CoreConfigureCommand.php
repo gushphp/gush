@@ -115,7 +115,7 @@ EOF
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
-                    'The adapter "%s" is invalid. Available adapters is "%s"',
+                    'The adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
                     implode('", "', array_keys($adapters))
                 )
