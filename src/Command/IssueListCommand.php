@@ -34,7 +34,16 @@ class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeatur
             ->setName('issue:list')
             ->setDescription('List issues')
             ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Specify a label')
-            ->addOption('filter', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'filter'))
+            ->addOption('milestone', null, InputOption::VALUE_REQUIRED, '')
+            ->addOption(
+                'assignee',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Can be the name of a user. Pass in none for issues with no assigned user',
+                false
+            )
+            ->addOption('creator', null, InputOption::VALUE_OPTIONAL, 'The user that created the issue.', false)
+            ->addOption('mentioned', null, InputOption::VALUE_OPTIONAL, 'A user that’s mentioned in the issue.', false)
             ->addOption('state', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'state'))
             ->addOption('sort', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'sort'))
             ->addOption('direction', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'direction'))
@@ -46,12 +55,12 @@ The <info>%command.name%</info> command lists issues from either the current or 
 and repository:
 
     <info>$ php %command.full_name%</info>
-    <info>$ php %command.full_name% --filter=created --sort=created --direction=desc --since="6 months ago"
+    <info>$ php %command.full_name% --creator --sort=created --direction=desc --since="6 months ago"
     --type=pr</info>
 
 All of the parameters provided by the github API are supported:
 
-    http://developer.github.com/v3/issues/#list-issues
+    https://developer.github.com/v3/issues/#list-issues-for-a-repository
 
 With the addition of the <info>--type</info> option which enables you to filter show only pull-requests or only issues.
 EOF
@@ -73,21 +82,33 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
+        $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'sort', 'direction']);
+        $username = $this->getParameter('authentication')['username'];
+        $options = ['creator', 'assignee', 'mentioned'];
 
-        $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'filter', 'sort', 'direction']);
-
-        if ($v = $input->getOption('label')) {
-            $params['labels'] = implode(',', $v);
+        foreach ($options as $option) {
+            $parameterOption = $input->getParameterOption('--'.$option);
+            if (null === $parameterOption) {
+                $params[$option] = $username;
+            } else if (false !== $parameterOption) {
+                $params[$option] = $parameterOption;
+            }
         }
 
-        if ($v = $input->getOption('since')) {
-            $ts = strtotime($v);
+        $params['milestone'] = $input->getOption('milestone');
 
-            if (false === $ts) {
-                throw new \InvalidArgumentException($v . ' is not a valid date');
+        if ($label = $input->getOption('label')) {
+            $params['labels'] = implode(',', $label);
+        }
+
+        if ($since = $input->getOption('since')) {
+            $timeStamp = strtotime($since);
+
+            if (false === $timeStamp) {
+                throw new \InvalidArgumentException($since . ' is not a valid date');
             }
 
-            $params['since'] = date('c', $ts);
+            $params['since'] = date('c', $timeStamp);
         }
 
         $issues  = $adapter->getIssues($params);
@@ -97,12 +118,12 @@ EOF
             $isPr = isset($issue['pull_request']['html_url']);
             $issue['_type'] = $isPr ? 'pr' : 'issue';
 
-            if ($v = $input->getOption('type')) {
-                GitRepoHelper::validateEnum('issue', 'type', $v);
+            if ($type = $input->getOption('type')) {
+                GitRepoHelper::validateEnum('issue', 'type', $type);
 
-                if ($v == 'pr' && false === $isPr) {
+                if ($type == 'pr' && false === $isPr) {
                     unset($issues[$i]);
-                } elseif ($v == 'issue' && true === $isPr) {
+                } elseif ($type == 'issue' && true === $isPr) {
                     unset($issues[$i]);
                 }
             }
