@@ -94,6 +94,12 @@ class Factory
         return $config;
     }
 
+    /**
+     * @param Config $config
+     *
+     * @throws \RuntimeException
+     * @throws Exception\FileNotFoundException
+     */
     protected static function readParameters(Config $config)
     {
         $homeFilename = $config->get('home_config');
@@ -111,11 +117,15 @@ class Factory
 
             if (!$config->isValid()) {
                 throw new \RuntimeException(
-                    'The .gush.yml is not properly configured. Please run the core:configure command.'
+                    'The .gush.yml is not properly configured.'
                 );
             }
-        } catch (\Exception $e) {
-            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
+        } catch (\Exception $exception) {
+            throw new \RuntimeException(
+                "{$exception->getMessage()}.\nPlease run the core:configure command.",
+                $exception->getCode(),
+                $exception
+            );
         }
 
         // merge the local config
@@ -123,8 +133,12 @@ class Factory
             try {
                 $parsed = Yaml::parse($localFilename);
                 $config->merge($parsed);
-            } catch (\Exception $e) {
-                throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
+            } catch (\Exception $exception) {
+                throw new \RuntimeException(
+                    "{$exception->getMessage()}.\nPlease run the core:configure command.",
+                    $exception->getCode(),
+                    $exception
+                );
             }
         }
     }

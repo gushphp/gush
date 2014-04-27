@@ -226,8 +226,6 @@ class Application extends BaseApplication
         return 'github';
     }
 
-
-
     /**
      * Builds the adapter for the application
      *
