@@ -153,12 +153,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gushphp/gush-github-adapter.git",
-                "reference": "da5d80b187343cdc91d4efcc51a5a2d62d51b6b0"
+                "reference": "7b7663f823fa844aa014c375ddfba64c943f46ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gushphp/gush-github-adapter/zipball/da5d80b187343cdc91d4efcc51a5a2d62d51b6b0",
-                "reference": "da5d80b187343cdc91d4efcc51a5a2d62d51b6b0",
+                "url": "https://api.github.com/repos/gushphp/gush-github-adapter/zipball/7b7663f823fa844aa014c375ddfba64c943f46ef",
+                "reference": "7b7663f823fa844aa014c375ddfba64c943f46ef",
                 "shasum": ""
             },
             "type": "library",
@@ -185,7 +185,7 @@
                 }
             ],
             "description": "GitHub adapter for Gush",
-            "time": "2014-04-19 12:30:35"
+            "time": "2014-04-27 07:46:12"
         },
         {
             "name": "gushphp/gush-gitlab-adapter",
