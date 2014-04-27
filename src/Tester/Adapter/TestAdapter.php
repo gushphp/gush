@@ -302,18 +302,6 @@ class TestAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function getPullRequestStates()
-    {
-        return [
-            'open',
-            'closed',
-            'all',
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createRelease($name, array $parameters = [])
     {
     }
