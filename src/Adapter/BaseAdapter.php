@@ -192,6 +192,16 @@ abstract class BaseAdapter implements Adapter
     abstract public function mergePullRequest($id, $message);
 
     /**
+     * {@inheritDoc}
+     */
+    abstract public function getPullRequests($state = null);
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract public function getPullRequestStates();
+
+    /**
      * {@inheritdoc}
      */
     abstract public function createRelease($name, array $parameters = []);

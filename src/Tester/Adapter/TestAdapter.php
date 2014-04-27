@@ -250,6 +250,70 @@ class TestAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
+    public function getPullRequests($state = null)
+    {
+        return [
+            [
+                'number'     => 17,
+                'title'      => 'New feature added',
+                'state'      => 'open',
+                'created_at' => '2014-04-14 17:24:12',
+                'head'       => [
+                    'user' => [
+                        'login' => 'pierredup'
+                    ]
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPullRequests($state = null)
+    {
+        return [
+            [
+                'number'     => 17,
+                'title'      => 'New feature added',
+                'state'      => 'open',
+                'created_at' => '2014-04-14 17:24:12',
+                'head'       => [
+                    'user' => [
+                        'login' => 'pierredup'
+                    ]
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPullRequestStates()
+    {
+        return [
+            'open',
+            'closed',
+            'all',
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPullRequestStates()
+    {
+        return [
+            'open',
+            'closed',
+            'all',
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createRelease($name, array $parameters = [])
     {
     }
