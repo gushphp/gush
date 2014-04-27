@@ -15,7 +15,6 @@ use Gush\Adapter\Adapter;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
-use Gush\Exception\FileNotFoundException;
 use Gush\Exception\AdapterException;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
@@ -32,7 +31,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Process\ProcessBuilder;
-use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
 {
@@ -94,7 +92,7 @@ class Application extends BaseApplication
         $this->addCommands($this->getCommands());
 
         $this->registerAdapter('Gush\\Adapter\\GitHubAdapter');
-        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter', 'github_enterprise');
+        $this->registerAdapter('Gush\\Adapter\\GitHubEnterpriseAdapter');
         $this->registerAdapter('Gush\\Adapter\\BitbucketAdapter');
         $this->registerAdapter('Gush\\Adapter\\GitLabAdapter');
     }
@@ -172,7 +170,7 @@ class Application extends BaseApplication
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
         if ('core:configure' !== $this->getCommandName($input)) {
-            $this->readParameters();
+            $this->config = Factory::createConfig();
 
             if (null === $this->adapter) {
                 if (null === $adapter = $this->config->get('adapter')) {
@@ -228,46 +226,6 @@ class Application extends BaseApplication
         return 'github';
     }
 
-    protected function readParameters()
-    {
-        if ($this->config) {
-            return;
-        }
-
-        $this->config = Factory::createConfig();
-
-        $homeFilename = $this->config->get('home_config');
-        $localFilename = $this->config->get('local_config');
-
-        if (!file_exists($homeFilename)) {
-            throw new FileNotFoundException(
-                'The .gush.yml file doest not exist, please run the core:configure command.'
-            );
-        }
-
-        try {
-            $parsed = Yaml::parse($homeFilename);
-            $this->config->merge($parsed['parameters']);
-
-            if (!$this->config->isValid()) {
-                throw new \RuntimeException(
-                    'The .gush.yml is not properly configured. Please run the core:configure command.'
-                );
-            }
-        } catch (\Exception $e) {
-            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
-        }
-
-        if (file_exists($localFilename)) {
-            try {
-                $parsed = Yaml::parse($localFilename);
-                $this->config->merge($parsed);
-            } catch (\Exception $e) {
-                throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
-            }
-        }
-    }
-
     /**
      * Builds the adapter for the application
      *
@@ -310,15 +268,10 @@ class Application extends BaseApplication
 
     /**
      * @param string $adapterClass
-     * @param string $adapterName
      */
-    public function registerAdapter($adapterClass, $adapterName = null)
+    public function registerAdapter($adapterClass)
     {
         $name = $this->validateAdapterClass($adapterClass);
-
-        if (null !== $adapterName) {
-            $name = $adapterName;
-        }
 
         $this->adapters[$name] = $adapterClass;
     }

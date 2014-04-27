@@ -47,16 +47,9 @@ $app = new Gush\Application();
 if (!file_exists(__DIR__.'/../.first-time-run')) {
     @file_put_contents(__DIR__.'/../.first-time-run', '');
 
-    $config = Gush\Factory::createConfig();
-    $localFilename = $config->get('home').'/.gush.yml';
-
-    if (file_exists($localFilename)) {
-        $yaml = new Symfony\Component\Yaml\Yaml();
-        $parsed = $yaml->parse($localFilename);
-        $config->merge($parsed['parameters']);
-    }
-
-    if (!$config->isValid()) {
+    try {
+        $config = Gush\Factory::createConfig();
+    } catch (Gush\Exception\FileNotFoundException $exception) {
         $app->run(new Symfony\Component\Console\Input\ArrayInput(['command' => 'core:configure']));
     }
 }
