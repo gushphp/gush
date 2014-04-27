@@ -26,6 +26,12 @@ class MetaHeaderCommand extends BaseCommand implements TemplateFeature
         $this
             ->setName('meta:header')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do not change anything, output files')
+            ->addOption(
+                'no-local',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not use the local meta header if it is available'
+            )
             ->setHelp(
                 <<<EOT
 The <info>%command.name%</info> command asserts that headers are present
@@ -65,7 +71,11 @@ EOT
         $dryRun = $input->getOption('dry-run');
         $template = $input->getOption('template');
 
-        $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
+        $config = $this->getApplication()->getConfig();
+
+        if (null === ($metaHeader = $config->get('meta-header')) || $input->getOption('no-local')) {
+            $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
+        }
 
         $allFiles = $this->getHelper('git')->listFiles();
         $meta = $this->getHelper('meta');
