@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Gush\Exception\FileNotFoundException;
 use Gush\Factory;
 use Gush\Feature\GitHubFeature;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -68,7 +69,11 @@ EOF
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->config = Factory::createConfig();
+        try {
+            $this->config = Factory::createConfig();
+        } catch (FileNotFoundException $exception) {
+            $this->config = Factory::createConfig(false);
+        }
     }
 
     /**
@@ -162,21 +167,19 @@ EOF
                 $validator
             );
 
-            $this->config->merge(
-                [
-                    'adapters' => [
-                        $adapterName => [
-                            'config' => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog]),
-                            'adapter_class'  => $adapter,
-                            'authentication' => [
-                                'username'          => $username,
-                                'password-or-token' => $passwordOrToken,
-                                'http-auth-type'    => $authenticationType,
-                            ],
-                        ]
-                    ]
-                ]
-            );
+            $rawConfig = $this->config->raw();
+
+            $rawConfig['adapters'][$adapterName] = [
+                'config' => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog]),
+                'adapter_class'  => $adapter,
+                'authentication' => [
+                    'username'          => $username,
+                    'password-or-token' => $passwordOrToken,
+                    'http-auth-type'    => $authenticationType,
+                ],
+            ];
+
+            $this->config->merge($rawConfig);
 
             try {
                 $isAuthenticated = $this->isCredentialsValid($adapterName);

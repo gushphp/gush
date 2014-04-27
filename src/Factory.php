@@ -11,6 +11,9 @@
 
 namespace Gush;
 
+use Gush\Exception\FileNotFoundException;
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Creates the default directory structure to run Gush
  *
@@ -19,10 +22,12 @@ namespace Gush;
 class Factory
 {
     /**
+     * @param bool $loadParameters If false, will return an empty config object
+     *
      * @throws \RuntimeException
      * @return Config
      */
-    public static function createConfig()
+    public static function createConfig($loadParameters = true)
     {
         // determine home and cache dirs
         $home = getenv('GUSH_HOME');
@@ -82,6 +87,45 @@ class Factory
             ]
         );
 
+        if (true === $loadParameters) {
+            self::readParameters($config);
+        }
+
         return $config;
+    }
+
+    protected static function readParameters(Config $config)
+    {
+        $homeFilename = $config->get('home_config');
+        $localFilename = $config->get('local_config');
+
+        if (!file_exists($homeFilename)) {
+            throw new FileNotFoundException(
+                'The .gush.yml file doest not exist, please run the core:configure command.'
+            );
+        }
+
+        try {
+            $parsed = Yaml::parse($homeFilename);
+            $config->merge($parsed['parameters']);
+
+            if (!$config->isValid()) {
+                throw new \RuntimeException(
+                    'The .gush.yml is not properly configured. Please run the core:configure command.'
+                );
+            }
+        } catch (\Exception $e) {
+            throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
+        }
+
+        // merge the local config
+        if (file_exists($localFilename)) {
+            try {
+                $parsed = Yaml::parse($localFilename);
+                $config->merge($parsed);
+            } catch (\Exception $e) {
+                throw new \RuntimeException("{$e->getMessage()}.\nPlease run the core:configure command.");
+            }
+        }
     }
 }
