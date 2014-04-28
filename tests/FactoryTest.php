@@ -58,7 +58,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         define('PHP_WINDOWS_VERSION_MAJOR', 1);
-        $cacheDir = $home;
         $home = $home.'/Gush';
 
         @mkdir($home, 0777, true);
@@ -71,7 +70,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = Factory::createConfig(false);
 
-        $this->assertEquals($cacheDir, $config->get('cache-dir'));
+        $this->assertEquals($home.'/Gush', $config->get('cache-dir'));
         $this->assertEquals($home, $config->get('home'));
         $this->assertFileExists($home.'/.htaccess');
 
