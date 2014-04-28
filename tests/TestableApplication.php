@@ -14,7 +14,6 @@ namespace Gush\Tests;
 use Gush\Application;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Config;
-use Symfony\Component\Console\Input\InputInterface;
 
 class TestableApplication extends Application
 {
