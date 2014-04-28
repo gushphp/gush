@@ -24,6 +24,7 @@ use Symfony\Component\Yaml\Yaml;
  * Configure the settings needed to run the Commands
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
+ * @author Luis Cordova <cordoval@gmail.com>
  */
 class CoreConfigureCommand extends BaseCommand implements GitHubFeature
 {

@@ -45,20 +45,7 @@ EOT
      */
     protected function setUp()
     {
-        $home = getenv('GUSH_HOME');
-        $cacheDir = getenv('GUSH_CACHE_DIR');
-
-        if (!$home || !$cacheDir) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
-        }
-
-        @mkdir($home, 0777, true);
-
-        putenv("HOME={$home}");
-        $this->gushFile = $home.'/.gush/.gush.yml';
-        @mkdir($home.'/.gush', 0777, true);
-        touch($this->gushFile);
-        file_put_contents($this->gushFile, self::GUSH_FILE);
+        @unlink(getcwd().'/.first-time-run');
 
         $config = new Config();
 
@@ -70,10 +57,8 @@ EOT
     public function testApplicationFirstRun()
     {
         $applicationTester = new ApplicationTester($this->application);
-        $applicationTester->run(['command' => 'list']);
+        $applicationTester->run(['command' => 'core:configure'], ['interactive' => false]);
 
-        $this->assertRegExp('/Available commands/', $applicationTester->getDisplay());
-
-        @unlink($this->gushFile);
+        $this->assertRegExp('/Configuration file saved successfully./', $applicationTester->getDisplay());
     }
 }
