@@ -38,8 +38,8 @@ class ConfigureCommandTest extends BaseTestCase
                 'cache-dir' => $homeDir.'/cache',
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
-                'local' => $localDir.'/gushphp/gush',
-                'local_config' => $localDir.'/gushphp/gush/.gush.yml',
+                'local' => $localDir,
+                'local_config' => $localDir.'/.gush.yml',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
                 'adapters' => [
                     'github_enterprise' => [
