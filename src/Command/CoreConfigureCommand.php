@@ -154,14 +154,14 @@ EOF
 
             $authenticationType = $this->authenticationOptions[$authenticationType];
             $output->writeln(sprintf('<comment>Insert your %s Credentials:</comment>', $adapterName));
-            $username            = $dialog->askAndValidate(
+            $username = $dialog->askAndValidate(
                 $output,
                 'username: ',
                 $validator
             );
 
             $passwordOrTokenText = $authenticationType == self::AUTH_HTTP_PASSWORD ? 'password: ' : 'token: ';
-            $passwordOrToken     = $dialog->askHiddenResponseAndValidate(
+            $passwordOrToken = $dialog->askHiddenResponseAndValidate(
                 $output,
                 $passwordOrTokenText,
                 $validator
@@ -220,7 +220,7 @@ EOF
 
         $this->config->merge(
             [
-                'cache-dir'        => $cacheDir,
+                'cache-dir' => $cacheDir,
                 'versioneye-token' => $versionEyeToken,
             ]
         );
