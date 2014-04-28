@@ -74,7 +74,13 @@ class BranchPushCommandTest extends BaseTestCase
     private function expectsConfig()
     {
         $this->config
-            ->expects($this->once())
+            ->expects($this->at(0))
+            ->method('get')
+            ->with('adapter')
+            ->will($this->returnValue('github'))
+        ;
+        $this->config
+            ->expects($this->at(1))
             ->method('get')
             ->with('authentication')
             ->will($this->returnValue(['username' => 'cordoval']))

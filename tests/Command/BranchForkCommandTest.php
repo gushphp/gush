@@ -58,12 +58,12 @@ class BranchForkCommandTest extends BaseTestCase
             ->expects($this->at(0))
             ->method('get')
             ->with('adapter')
-            ->will($this->returnValue('Test1'))
+            ->will($this->returnValue('github_enterprise'))
         ;
         $this->config
             ->expects($this->at(1))
             ->method('get')
-            ->with('authentication')
+            ->with('[adapters][github_enterprise][authentication]')
             ->will($this->returnValue(['username' => 'cordoval']))
         ;
     }
