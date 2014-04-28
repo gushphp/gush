@@ -244,7 +244,7 @@ class Application extends BaseApplication
         $rawConfig = $this->config->raw();
         unset($rawConfig['adapters']);
 
-        $config = new Config;
+        $config = new Config();
 
         // This is for BC compatibility with existing adapters
         $config->merge(

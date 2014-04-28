@@ -55,7 +55,13 @@ class BranchForkCommandTest extends BaseTestCase
     private function expectsConfig()
     {
         $this->config
-            ->expects($this->once())
+            ->expects($this->at(0))
+            ->method('get')
+            ->with('adapter')
+            ->will($this->returnValue('Test1'))
+        ;
+        $this->config
+            ->expects($this->at(1))
             ->method('get')
             ->with('authentication')
             ->will($this->returnValue(['username' => 'cordoval']))
