@@ -56,6 +56,7 @@ EOT
 
         putenv("HOME={$home}");
         $this->gushFile = $home.'/.gush/.gush.yml';
+        @mkdir($home.'/.gush', 0777, true);
         touch($this->gushFile);
         file_put_contents($this->gushFile, self::GUSH_FILE);
 

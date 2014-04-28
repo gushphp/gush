@@ -98,7 +98,7 @@ class Factory
      * @param Config $config
      *
      * @throws \RuntimeException
-     * @throws Exception\FileNotFoundException
+     * @throws FileNotFoundException
      */
     protected static function readParameters(Config $config)
     {

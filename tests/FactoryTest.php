@@ -58,6 +58,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         define('PHP_WINDOWS_VERSION_MAJOR', 1);
+        $cacheDir = $home;
         $home = $home.'/Gush';
 
         @mkdir($home, 0777, true);
