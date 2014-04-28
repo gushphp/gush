@@ -70,7 +70,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = Factory::createConfig(false);
 
-        $this->assertEquals($home, $config->get('cache-dir'));
+        $this->assertEquals($cacheDir, $config->get('cache-dir'));
         $this->assertEquals($home, $config->get('home'));
         $this->assertFileExists($home.'/.htaccess');
 
