@@ -74,9 +74,15 @@ class BranchDeleteCommandTest extends BaseTestCase
     private function expectsConfig()
     {
         $this->config
-            ->expects($this->once())
+            ->expects($this->at(0))
             ->method('get')
-            ->with('authentication')
+            ->with('adapter')
+            ->will($this->returnValue('github_enterprise'))
+        ;
+        $this->config
+            ->expects($this->at(1))
+            ->method('get')
+            ->with('[adapters][github_enterprise][authentication]')
             ->will($this->returnValue(['username' => 'cordoval']))
         ;
     }
