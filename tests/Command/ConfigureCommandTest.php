@@ -32,14 +32,14 @@ class ConfigureCommandTest extends BaseTestCase
         }
 
         $gushFilename = $homeDir.'/.gush.yml';
-
+        $localDir = getcwd();
         $expected = [
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
                 'home' => $homeDir,
-                'home_config' => $homeDir.'/.gush/.gush.yml',
-                'local' => $homeDir.'/gush',
-                'local_config' => $homeDir.'/gush/.gush.yml',
+                'home_config' => $homeDir.'/.gush.yml',
+                'local' => $localDir.'/gushphp/gush',
+                'local_config' => $localDir.'/gushphp/gush/.gush.yml',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
                 'adapters' => [
                     'github_enterprise' => [
