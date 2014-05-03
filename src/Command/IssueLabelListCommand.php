@@ -36,7 +36,8 @@ class IssueLabelListCommand extends BaseCommand implements TableFeature, GitHubF
 The <info>%command.name%</info> command lists the issue's labels for either the current or the given organization
 and repository:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

@@ -63,6 +63,14 @@ class ReleaseCreateCommand extends BaseCommand implements GitHubFeature
                 'Content types corresponding to asset-files (default: application/zip)'
             )
             ->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name')
+            ->setHelp(
+                <<<EOF
+The <info>%command.name%</info> command :
+
+    <info>$ gush %command.name%</info>
+
+EOF
+            )
         ;
     }
 

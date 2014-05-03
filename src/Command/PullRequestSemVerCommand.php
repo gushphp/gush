@@ -42,7 +42,8 @@ class PullRequestSemVerCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command provides information about semver version of a pull request:
 
-    <info>$ gush %command.full_name% 12</info>
+    <info>$ gush %command.name% 12</info>
+
 EOF
             )
         ;

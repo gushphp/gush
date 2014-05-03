@@ -35,7 +35,8 @@ class CoreAliasCommand extends BaseCommand
                 <<<EOF
 The <info>%command.name%</info> outputs an alias snippet to wrap Gush will use:
 
-    <info>$ gush %command.full_name% -s</info>
+    <info>$ gush %command.name% -s</info>
+
 EOF
             )
         ;

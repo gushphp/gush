@@ -37,7 +37,8 @@ class IssueAssignCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command assigns an issue to a user:
 
-    <info>$ gush %command.full_name% 3 cordoval</info>
+    <info>$ gush %command.name% 3 cordoval</info>
+
 EOF
             )
         ;

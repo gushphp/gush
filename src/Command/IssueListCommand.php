@@ -50,8 +50,8 @@ class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeatur
 The <info>%command.name%</info> command lists issues from either the current or the given organization
 and repository:
 
-    <info>$ php %command.full_name%</info>
-    <info>$ php %command.full_name% --creator=cordoval --sort=created --direction=desc --since="6 months ago"
+    <info>$ php %command.name%</info>
+    <info>$ php %command.name% --creator=cordoval --sort=created --direction=desc --since="6 months ago"
     --type=pr</info>
 
 All of the parameters provided by the github API are supported:
@@ -59,6 +59,7 @@ All of the parameters provided by the github API are supported:
     https://developer.github.com/v3/issues/#list-issues-for-a-repository
 
 With the addition of the <info>--type</info> option which enables you to filter show only pull-requests or only issues.
+
 EOF
             )
         ;

@@ -38,7 +38,8 @@ class IssueCloseCommand extends BaseCommand implements GitHubFeature
 The <info>%command.name%</info> command closes an issue for either the current or the given organization
 and repository:
 
-    <info>$ gush %command.full_name% 12 -m"let's try to keep it low profile guys."</info>
+    <info>$ gush %command.name% 12 -m"let's try to keep it low profile guys."</info>
+
 EOF
             )
         ;

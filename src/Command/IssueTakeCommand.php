@@ -37,7 +37,8 @@ class IssueTakeCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command takes an issue from GitHub repository list:
 
-    <info>$ gush %command.full_name% 3</info>
+    <info>$ gush %command.name% 3</info>
+
 EOF
             )
         ;

@@ -36,7 +36,8 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitHubFeatur
                 <<<EOF
 The <info>%command.name%</info> command gives a pat on the back to a PR's author with a random template:
 
-    <info>$ gush %command.full_name% 12</info>
+    <info>$ gush %command.name% 12</info>
+
 EOF
             )
         ;

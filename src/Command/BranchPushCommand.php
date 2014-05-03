@@ -40,7 +40,8 @@ class BranchPushCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command pushes the current local branch into user own fork:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

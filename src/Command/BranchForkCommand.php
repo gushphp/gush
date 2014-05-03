@@ -40,7 +40,8 @@ class BranchForkCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command forks the current upstream repository:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

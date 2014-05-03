@@ -43,7 +43,8 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitHubFeat
 The <info>%command.name%</info> command labels issue or pull requests for either the current or the given organization
 and repo:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;
