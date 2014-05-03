@@ -65,6 +65,16 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         ;
         $process = $builder->getProcess();
 
+        $remover = function ($untrimmed) {
+            return ltrim(rtrim($untrimmed, "'"), "'");
+        };
+        if ($this->output instanceof OutputInterface) {
+            if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                $commandLine = implode(' ', array_map($remover, explode(' ', $process->getCommandLine())));
+                $this->output->writeln('<comment>OUT ></comment> ' . $commandLine);
+            }
+        }
+
         $process->run($callback);
 
         if (!$process->isSuccessful() && !$allowFailures) {
