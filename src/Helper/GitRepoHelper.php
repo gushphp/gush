@@ -21,16 +21,6 @@ class GitRepoHelper extends Helper
      */
     public static $enum = [
         'issue' => [
-            'filter' => [
-                'desc' => 'Filter to apply to issues',
-                'values' => [
-                    'assigned',
-                    'created',
-                    'mentioned',
-                    'subscribed',
-                    'all',
-                ],
-            ],
             'state' => [
                 'desc' => 'Issue state',
                 'values' => [
