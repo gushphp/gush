@@ -37,6 +37,7 @@ class PullRequestSquashCommand extends BaseCommand implements GitHubFeature
 The <info>%command.name%</info> command squashes all commits of a PR:
 
     <info>$ gush %command.full_name% 12</info>
+
 EOF
             )
         ;
@@ -48,14 +49,18 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $prNumber = $input->getArgument('pr_number');
-
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
+
+        $username = $this->getParameter('authentication')['username'];
+        if ($pr['head']['user']['login'] !== $username) {
+            $output->writeln('You cannot squash PRs not your own.');
+
+            return self::COMMAND_FAILURE;
+        }
+
         $base = $pr['base']['ref'];
         $head = $pr['head']['ref'];
-
-        $credentials = $this->getParameter('authentication');
-        $username = $credentials['username'];
 
         $commands = [
             [
