@@ -36,7 +36,8 @@ class ReleaseRemoveCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command removes a given release:
 
-    <info>$ gush %command.full_name% 3</info>
+    <info>$ gush %command.name% 3</info>
+
 EOF
             )
         ;

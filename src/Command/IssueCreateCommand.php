@@ -40,7 +40,8 @@ class IssueCreateCommand extends BaseCommand implements GitHubFeature
 The <info>%command.name%</info> command creates a new issue for either the current or the given organization
 and repository:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

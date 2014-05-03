@@ -36,7 +36,7 @@ class PullRequestSquashCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command squashes all commits of a PR:
 
-    <info>$ gush %command.full_name% 12</info>
+    <info>$ gush %command.name% 12</info>
 
 EOF
             )

@@ -53,18 +53,18 @@ class PullRequestCreateCommand extends BaseCommand implements GitHubFeature, Tem
 The <info>%command.name%</info> command is used to make a github pull request
 against the configured organization and repository.
 
-    <info>$ %command.full_name%</info>
+    <info>$ gush %command.name%</info>
 
 The remote branch to make the PR against can be specified with the
 <info>base</info> option, and the local organization / branch with the <info>source-org</info> /
 <info>source-branch</info> options, when these options are omitted they are determined from the current
 context.
 
-    <info>$ %command.full_name% --source-branch=my_branch --source-org=my_org --base=dev</info>
+    <info>$ gush %command.name% --source-branch=my_branch --source-org=my_org --base=dev</info>
 
 A pull request template can be specified with the <info>template</info> option:
 
-    <info>$ %command.full_name% --template=symfony</info>
+    <info>$ gush %command.name% --template=symfony</info>
 
 This will use the symfony specific pull request template, the full list of
 available templates is displayed in the description of the <info>template</info>
@@ -72,12 +72,13 @@ option.
 
 The command also can accept an issue number along with the other options:
 
-    <info>$ %command.full_name% --issue=10430</info>
+    <info>$ gush %command.name% --issue=10430</info>
 
 Passing an issue number would turn the issue into a pull request provided permissions
 allow it.
 
 When using a template you will be prompted to fill out the required parameters.
+
 EOF
             )
         ;

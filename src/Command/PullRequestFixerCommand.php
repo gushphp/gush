@@ -37,7 +37,8 @@ class PullRequestFixerCommand extends BaseCommand
                 <<<EOF
 The <info>%command.name%</info> runs the coding style fixer and commits fix:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

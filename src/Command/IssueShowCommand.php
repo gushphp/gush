@@ -37,7 +37,8 @@ class IssueShowCommand extends BaseCommand implements GitHubFeature
 The <info>%command.name%</info> command shows issue details for either the current or the given organization
 and repo:
 
-    <info>$ gush %command.full_name% 60</info>
+    <info>$ gush %command.name% 60</info>
+
 EOF
             )
         ;

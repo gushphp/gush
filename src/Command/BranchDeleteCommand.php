@@ -41,7 +41,8 @@ class BranchDeleteCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command deletes remote and local branch with the current or given name:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

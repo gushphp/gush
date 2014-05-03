@@ -59,7 +59,8 @@ class CoreConfigureCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> configure parameters Gush will use:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;

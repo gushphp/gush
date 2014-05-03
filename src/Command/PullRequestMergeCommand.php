@@ -44,7 +44,8 @@ class PullRequestMergeCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command merges the pull request given:
 
-    <info>$ gush %command.full_name% 12</info>
+    <info>$ gush %command.name% 12</info>
+
 EOF
             )
         ;

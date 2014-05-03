@@ -36,7 +36,8 @@ class BranchSyncCommand extends BaseCommand implements GitHubFeature
                 <<<EOF
 The <info>%command.name%</info> command syncs local branch with its upstream version:
 
-    <info>$ gush %command.full_name% develop</info>
+    <info>$ gush %command.name% develop</info>
+
 EOF
             )
         ;

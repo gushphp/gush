@@ -35,7 +35,8 @@ class ReleaseListCommand extends BaseCommand implements TableFeature, GitHubFeat
                 <<<EOF
 The <info>%command.name%</info> command lists the available releases:
 
-    <info>$ gush %command.full_name%</info>
+    <info>$ gush %command.name%</info>
+
 EOF
             )
         ;
