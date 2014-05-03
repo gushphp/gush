@@ -1,0 +1,103 @@
+---------------------------------------------------------------------------
+
+by aik099 at 2014-04-29T18:00:23Z
+
+I guess that `ERR >` might be displayed when exit code of previous command (which isn\'t displayed by the way) was non-zero.
+
+---------------------------------------------------------------------------
+
+by pierredup at 2014-04-30T16:03:01Z
+
+@aik099 You are right, the `ERR` is displayed if the process is marked in not successful, which is returned by the git process that runs. So I don\'t think there is an easy way around this
+
+---------------------------------------------------------------------------
+
+by aik099 at 2014-04-30T18:56:30Z
+
+Does the `branch:sync` pull all the changes from the upstream repo\'s origin branch (the branch from which current branch was created)?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-03T17:10:31Z
+
+@romainneutron do you see a way to distinguish and not flag ERR the command output? any ideas please would be helpful to fix this
+
+```php
+    /**
+     * Run a series of shell command through a Process
+     *
+     * @param array $commands
+     */
+    public function runCommands(array $commands)
+    {
+        $output = $this->output;
+
+        $callback = function ($type, $buffer) use ($output) {
+            if (Process::ERR === $type) {
+                $output->write(\'<error>ERR ></error> \'.$buffer);
+            } else {
+                $output->write(\'<comment>OUT ></comment> \'.$buffer);
+            }
+        };
+
+        foreach ($commands as $command) {
+            $this->runCommand($command[\'line\'], $command[\'allow_failures\'], $callback);
+        }
+    }
+```
+
+---------------------------------------------------------------------------
+
+by romainneutron at 2014-05-03T19:29:29Z
+
+I dont know this specific case, but there are several options:
+
+- redirect stderr to stdout in the command line
+- find the appropriate option in git to avoid output in stderr
+- discard stderr
+
+> On 3 mai 2014, at 19:10, Luis Cordova <notifications@github.com> wrote:
+>
+> @romainneutron do you see a way to distinguish and not flag ERR the command output? any ideas please would be helpful to fix this
+>
+>     /**
+>      * Run a series of shell command through a Process
+>      *
+>      * @param array $commands
+>      */
+>     public function runCommands(array $commands)
+>     {
+>         $output = $this->output;
+>
+>         $callback = function ($type, $buffer) use ($output) {
+>             if (Process::ERR === $type) {
+>                 $output->write(\'<error>ERR ></error> \'.$buffer);
+>             } else {
+>                 $output->write(\'<comment>OUT ></comment> \'.$buffer);
+>             }
+>         };
+>
+>         foreach ($commands as $command) {
+>             $this->runCommand($command[\'line\'], $command[\'allow_failures\'], $callback);
+>         }
+>     }
+> —
+> Reply to this email directly or view it on GitHub.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-03T19:32:50Z
+
+@romainneutron thanks
+
+- so redirecting is ugly though (not sure if i have understood it well though)
+- this one seems good yet it implies messing with git options which could/vary from setup
+- discard stderr is a not option since we want to see errors
+
+i will PR in a few
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-05-03T19:37:04Z
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/a1300dd6-a317-4146-ad74-c7c86d839e85) was created.
