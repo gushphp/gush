@@ -98,8 +98,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        ladybug_dump_die($this->getParameter('promote'));
-
         $org = $input->getOption('org');
         $base = $input->getOption('base');
         $issueNumber = $input->getOption('issue');
@@ -121,7 +119,9 @@ EOF
 
         $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
 
-        $body = $this->appendShamelessPlug($body);
+        if (!$this->getParameter('remove-promote')) {
+            $body = $this->appendShamelessPlug($body);
+        }
 
         if (true === $input->getOption('verbose')) {
             $message = sprintf(
