@@ -71,7 +71,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         if ($this->output instanceof OutputInterface) {
             if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
                 $commandLine = implode(' ', array_map($remover, explode(' ', $process->getCommandLine())));
-                $this->output->writeln('<comment>OUT ></comment> ' . $commandLine);
+                $this->output->writeln('<question>CMD ></question> '.$commandLine);
             }
         }
 
@@ -110,7 +110,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
 
         $callback = function ($type, $buffer) use ($output) {
             if (Process::ERR === $type) {
-                $output->write('<error>ERR ></error> '.$buffer);
+                $output->write('<info>OUT ></info> '.$buffer);
             } else {
                 $output->write('<comment>OUT ></comment> '.$buffer);
             }
