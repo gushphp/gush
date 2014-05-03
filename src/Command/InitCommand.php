@@ -44,6 +44,12 @@ class InitCommand extends BaseCommand
                 InputOption::VALUE_NONE,
                 'Add a local meta template'
             )
+            ->addOption(
+                'meta',
+                'm',
+                InputOption::VALUE_NONE,
+                "Add a local meta template"
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> configure parameters Gush will use:
