@@ -36,13 +36,13 @@ class InitCommand extends BaseCommand
                 'adapter',
                 'a',
                 InputOption::VALUE_OPTIONAL,
-                "What adapter should be used? (github, bitbucket, gitlab)"
+                'What adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
                 'meta',
                 'm',
                 InputOption::VALUE_NONE,
-                "Add a local meta template"
+                'Add a local meta template'
             )
             ->setHelp(
                 <<<EOF
@@ -82,7 +82,7 @@ EOF
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
-                    'The adapter "%s" is invalid. Available adapters is "%s"',
+                    'The adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
                     implode('", "',array_keys($adapters))
                 )

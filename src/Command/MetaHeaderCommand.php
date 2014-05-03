@@ -42,6 +42,7 @@ Supported Files:
     - js
     - css
     - twig
+
 EOT
             )
         ;
