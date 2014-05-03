@@ -36,7 +36,13 @@ class InitCommand extends BaseCommand
                 'adapter',
                 'a',
                 InputOption::VALUE_OPTIONAL,
-                "What adapter should be used? (github, bitbucket, gitlab)"
+                'What adapter should be used? (github, bitbucket, gitlab)'
+            )
+            ->addOption(
+                'meta',
+                'm',
+                InputOption::VALUE_NONE,
+                'Add a local meta template'
             )
             ->setHelp(
                 <<<EOF
@@ -76,7 +82,7 @@ EOF
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
-                    'The adapter "%s" is invalid. Available adapters is "%s"',
+                    'The adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
                     implode('", "',array_keys($adapters))
                 )
@@ -95,6 +101,10 @@ EOF
             'adapter' => $adapterName
         ];
 
+        if ($input->getOption('meta')) {
+            $params['meta-header'] = $this->getMetaHeader($output);
+        }
+
         if (file_exists($filename)) {
             $params = array_merge(Yaml::parse(file_get_contents($filename)), $params);
         }
@@ -106,5 +116,22 @@ EOF
         $output->writeln('<info>Configuration file saved successfully.</info>');
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function getMetaHeader($output)
+    {
+        $template = $this->getHelper('template');
+        $available = $template->getNamesForDomain('meta-header');
+        $dialog = $this->getHelper('dialog');
+
+        $selection = $dialog->select(
+            $output,
+            'Choose License: ',
+            $available
+        );
+
+        $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $available[$selection]);
+
+        return $metaHeader;
     }
 }
