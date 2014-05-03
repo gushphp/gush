@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-05-03T17:02:41Z
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/c98043e8-701f-4041-8e07-0cbcedf33695) was created.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-03T17:03:41Z
+
+@lisachenko I guess now that is totally centralized I think there is no need for AOP, however I hope we can find another use for it in Gush or in other projects. Good job on your library man! :+1:
