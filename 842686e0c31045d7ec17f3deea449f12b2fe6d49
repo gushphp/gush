@@ -1,0 +1,32 @@
+---------------------------------------------------------------------------
+
+by pierredup at 2014-04-27T20:55:33Z
+
+I think this is an issue with github\'s API.
+```
+curl -XGET -u \"username:password\" https://api.github.com/repos/quailjs/quail/issues?filter=created
+```
+gives all open issues
+
+---------------------------------------------------------------------------
+
+by pierredup at 2014-04-27T21:00:15Z
+
+Actually, the filter parameter is only for the `/user/issues` endpoint.
+The issue:list command uses `/repos/:owner/:repo/issues`, which doesn\'t have a filter param, but does have other parameters to filter by created, assigned etc (https://developer.github.com/v3/issues/#list-issues-for-a-repository).
+So I think we need to update the command to better reflect the api
+
+---------------------------------------------------------------------------
+
+by attiks at 2014-04-27T21:08:05Z
+
+@pierredup you\'re right, the following is what I expected
+```
+curl -XGET https://api.github.com/repos/quailjs/quail/issues?assignee=attiks
+```
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-05-03T14:56:37Z
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/85a39c92-2652-44d0-9fe2-179b4987dc97) was created.
