@@ -64,7 +64,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
             ->setTimeout(3600)
         ;
         $process = $builder->getProcess();
-
+        if ($this->output instanceof OutputInterface) {
+            $this->output->writeln($process->getCommandLine());
+        }
         $process->run($callback);
 
         if (!$process->isSuccessful() && !$allowFailures) {
