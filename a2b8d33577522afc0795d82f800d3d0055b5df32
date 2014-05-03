@@ -1,0 +1,34 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-03T13:02:33Z
+
+closing as it is not pointing to anything that seems strange to me.
+Went to bldr related issue and is the same, no hint on what was it or what the problem was.
+I believe you got confused by the branch names and defaults. Those are fine because the defaults vary according to where you are.
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-05-03T17:38:52Z
+
+The command example at the bottom—
+Sent from Mailbox
+
+On Sat, May 3, 2014 at 6:02 AM, Luis Cordova <notifications@github.com>
+wrote:
+
+> closing as it is not pointing to anything that seems strange to me
+> ---
+> Reply to this email directly or view it on GitHub:
+> https://github.com/gushphp/gush/issues/155#issuecomment-42104553
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-03T17:41:01Z
+
+oh i see, i will fix that thanks for clarifying!
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-05-03T19:00:26Z
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/b3f4702a-2632-4be6-bbd9-2ec2c16719b6) was created.
