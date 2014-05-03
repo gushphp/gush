@@ -22,6 +22,8 @@ use Gush\Helper\GitRepoHelper;
  * Lists the issues
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ * @author Luis Cordova <cordoval@gmail.com>
+ * @author Pierre du Plessis <pdples@gmail.com>
  */
 class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeature
 {
@@ -33,8 +35,11 @@ class IssueListCommand extends BaseCommand implements TableFeature, GitHubFeatur
         $this
             ->setName('issue:list')
             ->setDescription('List issues')
-            ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Specify a label')
-            ->addOption('filter', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'filter'))
+            ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY)
+            ->addOption('milestone', null, InputOption::VALUE_REQUIRED)
+            ->addOption('assignee', null, InputOption::VALUE_REQUIRED, 'Username assignee. None for unassigned.')
+            ->addOption('creator', null, InputOption::VALUE_REQUIRED, 'The user that created the issue.')
+            ->addOption('mentioned', null, InputOption::VALUE_REQUIRED, 'The user mentioned in the issue.')
             ->addOption('state', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'state'))
             ->addOption('sort', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'sort'))
             ->addOption('direction', null, InputOption::VALUE_REQUIRED, GitRepoHelper::formatEnum('issue', 'direction'))
@@ -46,12 +51,12 @@ The <info>%command.name%</info> command lists issues from either the current or 
 and repository:
 
     <info>$ php %command.full_name%</info>
-    <info>$ php %command.full_name% --filter=created --sort=created --direction=desc --since="6 months ago"
+    <info>$ php %command.full_name% --creator=cordoval --sort=created --direction=desc --since="6 months ago"
     --type=pr</info>
 
 All of the parameters provided by the github API are supported:
 
-    http://developer.github.com/v3/issues/#list-issues
+    https://developer.github.com/v3/issues/#list-issues-for-a-repository
 
 With the addition of the <info>--type</info> option which enables you to filter show only pull-requests or only issues.
 EOF
@@ -73,21 +78,24 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
+        $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'sort', 'direction']);
 
-        $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'filter', 'sort', 'direction']);
-
-        if ($v = $input->getOption('label')) {
-            $params['labels'] = implode(',', $v);
+        foreach (['creator', 'assignee', 'mentioned', 'milestone'] as $option) {
+            $params[$option] = $input->getOption($option);
         }
 
-        if ($v = $input->getOption('since')) {
-            $ts = strtotime($v);
+        if ($label = $input->getOption('label')) {
+            $params['labels'] = implode(',', $label);
+        }
 
-            if (false === $ts) {
-                throw new \InvalidArgumentException($v . ' is not a valid date');
+        if ($since = $input->getOption('since')) {
+            $timeStamp = strtotime($since);
+
+            if (false === $timeStamp) {
+                throw new \InvalidArgumentException($since.' is not a valid date');
             }
 
-            $params['since'] = date('c', $ts);
+            $params['since'] = date('c', $timeStamp);
         }
 
         $issues  = $adapter->getIssues($params);
@@ -97,12 +105,12 @@ EOF
             $isPr = isset($issue['pull_request']['html_url']);
             $issue['_type'] = $isPr ? 'pr' : 'issue';
 
-            if ($v = $input->getOption('type')) {
-                GitRepoHelper::validateEnum('issue', 'type', $v);
+            if ($type = $input->getOption('type')) {
+                GitRepoHelper::validateEnum('issue', 'type', $type);
 
-                if ($v == 'pr' && false === $isPr) {
+                if ($type == 'pr' && false === $isPr) {
                     unset($issues[$i]);
-                } elseif ($v == 'issue' && true === $isPr) {
+                } elseif ($type == 'issue' && true === $isPr) {
                     unset($issues[$i]);
                 }
             }
