@@ -119,6 +119,10 @@ EOF
 
         $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
 
+        if (!$this->getParameter('remove-promote')) {
+            $body = $this->appendShamelessPlug($body);
+        }
+
         if (true === $input->getOption('verbose')) {
             $message = sprintf(
                 'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
@@ -150,5 +154,12 @@ EOF
         $output->writeln($pullRequest['html_url']);
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function appendShamelessPlug($outputString)
+    {
+        $outputString .= "\n Sent using [Gush](https://github.com/gushphp/gush)";
+
+        return $outputString;
     }
 }
