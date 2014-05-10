@@ -75,7 +75,9 @@ class GitHelper extends Helper
      */
     public function getVendorName()
     {
-        $output = $this->processHelper->runCommand('git remote show -n origin');
+        $remotes = $this->splitLines($this->processHelper->runCommand('git remote'));
+        $remote = in_array('upstream', $remotes, true) ? 'upstream' : 'origin';
+        $output = $this->processHelper->runCommand(sprintf('git remote show -n %s', $remote));
 
         $outputLines = $this->splitLines(trim($output));
 
