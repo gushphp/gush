@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-05-11T03:58:40Z
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/b3633e77-873b-4d37-a701-68c42cd2594c) was created.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-11T04:01:15Z
+
+@gushphp/contributor please make sure you test this, I will go ahead and merge, but it may need some fine tuning down the road. Thanks!
