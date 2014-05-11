@@ -114,11 +114,15 @@ EOF
             $sourceBranch = $this->getHelper('git')->getBranchName();
         }
 
-        if (!$title = $input->getOption('title')) {
-            $title = $this->getHelper('dialog')->ask($output, 'Title: ');
-        }
+        $title = '';
+        $body = '';
+        if (null === $issueNumber) {
+            if (!$title = $input->getOption('title')) {
+                $title = $this->getHelper('dialog')->ask($output, 'Title: ');
+            }
 
-        $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
+            $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
+        }
 
         if (!$this->getParameter('remove-promote')) {
             $body = $this->appendShamelessPlug($body);
