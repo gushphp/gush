@@ -29,6 +29,10 @@
         {
             "name": "Pierre du Plessis",
             "email": "pdples@gmail.com"
+        },
+       {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
         }
     ],
     "require": {
