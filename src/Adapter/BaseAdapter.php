@@ -16,12 +16,13 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
+ * Provides a base class for adapting Gush to use different providers.
+ * E.g. Github, GitLab, Bitbucket
+ *
  * @author Aaron Scherer <aequasi@gmail.com>
  */
 abstract class BaseAdapter implements Adapter
 {
-    const NAME = 'unknown';
-
     /**
      * @var Config
      */
@@ -43,14 +44,6 @@ abstract class BaseAdapter implements Adapter
     public function __construct(Config $configuration)
     {
         $this->configuration = $configuration;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return self::NAME;
     }
 
     /**
