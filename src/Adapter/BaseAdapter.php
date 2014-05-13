@@ -16,12 +16,13 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
+ * Provides a base class for adapting Gush to use different providers.
+ * E.g. Github, GitLab, Bitbucket
+ *
  * @author Aaron Scherer <aequasi@gmail.com>
  */
 abstract class BaseAdapter implements Adapter
 {
-    const NAME = 'unknown';
-
     /**
      * @var Config
      */
@@ -43,14 +44,6 @@ abstract class BaseAdapter implements Adapter
     public function __construct(Config $configuration)
     {
         $this->configuration = $configuration;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return self::NAME;
     }
 
     /**
@@ -95,129 +88,4 @@ abstract class BaseAdapter implements Adapter
     {
         return $this->repository;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function authenticate();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function isAuthenticated();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getTokenGenerationUrl();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function createFork($org);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function openIssue($subject, $body, array $options = []);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getIssue($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getIssueUrl($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getIssues(array $parameters = []);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function updateIssue($id, array $parameters);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function closeIssue($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function createComment($id, $message);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getComments($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getLabels();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getMilestones(array $parameters = []);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function openPullRequest($base, $head, $subject, $body, array $parameters = []);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getPullRequest($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getPullRequestUrl($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getPullRequestCommits($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function mergePullRequest($id, $message);
-
-    /**
-     * {@inheritDoc}
-     */
-    abstract public function getPullRequests($state = null);
-
-    /**
-     * {@inheritDoc}
-     */
-    abstract public function getPullRequestStates();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function createRelease($name, array $parameters = []);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getReleases();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function removeRelease($id);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function createReleaseAssets($id, $name, $contentType, $content);
 }
