@@ -60,7 +60,7 @@ EOF
         $releases = $adapter->getReleases();
 
         $table = $this->getHelper('table');
-        $table->setHeaders(['ID', 'Name', 'Tag', 'Commitish', 'Draft', 'Prerelease', 'Created', 'Published']);
+        $table->setHeaders(['ID', 'Name', 'Tag', 'Draft', 'Prerelease', 'Created', 'Published']);
         $table->formatRows($releases, $this->getRowBuilderCallback());
         $table->setFooter(sprintf('%s release(s)', count($releases)));
         $table->render($output, $table);
@@ -75,11 +75,10 @@ EOF
                 $release['id'],
                 $release['name'] ? : 'not set',
                 $release['tag_name'],
-                $release['target_commitish'],
                 $release['draft'] ? 'yes': 'no',
                 $release['prerelease'] ? 'yes' : 'no',
-                $release['created_at'],
-                $release['published_at'],
+                $release['created_at']->format('Y-m-d H:i'),
+                null !== $release['published_at'] ? $release['published_at']->format('Y-m-d H:i') : '',
             ];
         };
     }

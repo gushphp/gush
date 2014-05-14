@@ -92,7 +92,7 @@ EOF
 
         $adapter = $this->getAdapter();
         $issues = $adapter->getIssues($params);
-        $labels = $adapter->getLabels();
+        $labelNames = $adapter->getLabels();
 
         if (!$issues) {
             $new = $input->getOption('new') ? 'new ' : '';
@@ -101,37 +101,31 @@ EOF
             return self::COMMAND_FAILURE;
         }
 
-        if (!$labels) {
+        if (!$labelNames) {
             $output->writeln('<error>No Labels found.</error>');
 
             return self::COMMAND_FAILURE;
         }
 
-        // we only need the labels name
-        $labelsName = [];
-        foreach ($labels as $label) {
-            $labelsName[] = $label['name'];
-        }
-
         $issueTitleFormat = '<comment>[<info>#%s</info>] %s</comment>';
 
         foreach ($issues as $issue) {
-            if ($isOnlyPullRequest && !isset($issue['pull_request'])) {
+            if ($isOnlyPullRequest && $issue['pull_request']) {
                 continue;
             }
 
-            if ($isOnlyIssue && isset($issue['pull_request'])) {
+            if ($isOnlyIssue && $issue['pull_request']) {
                 continue;
             }
 
             $output->writeln(sprintf($issueTitleFormat, $issue['number'], $issue['title']));
             $output->writeln('<info>current labels:</info> ' . $this->getIssueLabels($issue));
-            $this->showLabels($output, $labelsName);
+            $this->showLabels($output, $labelNames);
 
-            $validation = function ($label) use ($labelsName) {
+            $validation = function ($label) use ($labelNames) {
                 $labels = explode(',', $label);
                 foreach ($labels as $item) {
-                    if (!in_array($item, array_values($labelsName))) {
+                    if (!in_array($item, array_values($labelNames))) {
                         throw new \InvalidArgumentException(sprintf('Label "%s" is invalid.', $item));
                     }
                 }
@@ -148,7 +142,7 @@ EOF
                     $validation,
                     false,
                     null,
-                    $labelsName
+                    $labelNames
                 );
             }
 
@@ -169,11 +163,6 @@ EOF
 
     private function getIssueLabels(array $issue)
     {
-        $labels = [];
-        foreach ($issue['labels'] as $label) {
-            $labels[] = $label['name'];
-        }
-
-        return count($labels) ? join(', ', $labels) : 'N/A';
+        return count($issue['labels']) ? join(', ', $issue['labels']) : 'N/A';
     }
 }

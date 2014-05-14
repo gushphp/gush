@@ -19,11 +19,11 @@ namespace Gush\Tests\Fixtures;
 class OutputFixtures
 {
     const RELEASE_LIST = <<<EOT
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-| ID  | Name              | Tag      | Commitish | Draft | Prerelease | Created    | Published  |
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-| 123 | This is a Release | Tag name | 123123    | yes   | yes        | 2014-01-05 | 2014-01-05 |
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
++----+--------+--------+-------+------------+------------------+------------------+
+| ID | Name   | Tag    | Draft | Prerelease | Created          | Published        |
++----+--------+--------+-------+------------+------------------+------------------+
+| 1  | v1.0.0 | v1.0.0 | no    | no         | 2014-01-05 10:00 | 2014-01-05 10:00 |
++----+--------+--------+-------+------------+------------------+------------------+
 
 1 release(s)
 EOT;
@@ -36,18 +36,17 @@ EOT;
 +----+-------------------+-------+---------------------+-----------+-----------------------------------------+
 
 1 pull request(s)
-
 EOT;
 
     const ISSUE_SHOW = <<<EOT
 Issue #60 (open): by weaverryan [cordoval]
 Type: Pull Request
-Milestone: Conquer the world
+Milestone: v1.0
 Labels: actionable, easy pick
 Title: Write a behat test to launch strategy
 Link: https://github.com/gushphp/gush/issues/60
 
-Help me conquer the world. Teach them to use gush.
+Help me conquer the world. Teach them to use Gush.
 EOT;
 
     const ISSUE_LIST = <<<EOT

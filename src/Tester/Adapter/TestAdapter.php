@@ -88,6 +88,7 @@ class TestAdapter extends BaseAdapter
             'created_at'   => new \DateTime('2014-05-14T15:30:00+0100'),
             'updated_at'   => new \DateTime('2014-05-14T15:30:00+0100'),
             'closed_by'    => null,
+            'pull_request' => true,
         ];
     }
 
@@ -228,9 +229,10 @@ class TestAdapter extends BaseAdapter
                 'repo' => 'gush',
             ],
             'base' => [
-              'ref'  => 'base_ref',
-              'sha'  => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
-              'repo' => 'gush',
+              'ref'   => 'base_ref',
+              'label' => 'base_ref',
+              'sha'   => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+              'repo'  => 'gush',
             ],
         ];
     }
@@ -276,31 +278,33 @@ class TestAdapter extends BaseAdapter
     public function getPullRequests($state = null, $page = 1, $perPage = 30)
     {
         return [
-            'url'          =>  'http://github.com/gushphp/gush/pull/17',
-            'number'       =>  17,
-            'state'        =>  'open',
-            'title'        =>  'New feature added',
-            'body'         =>  'Help me conquer the world. Teach them to use gush.',
-            'labels'       =>  ['actionable', 'easy pick'],
-            'milestone'    =>  'some_good_stuff',
-            'created_at'   =>  new \DateTime('2014-04-14T17:24:12+0100'),
-            'updated_at'   =>  new \DateTime('2014-04-14T17:24:12+0100'),
-            'user'         =>  'pierredup',
-            'assignee'     =>  'cordoval',
-            'merge_commit' =>  null, // empty as the pull request is not merged
-            'merged'       =>  false,
-            'merged_by'    =>  null,
-            'head' => [
-                'ref'  =>  'head_ref',
-                'sha'  =>  '6dcb09b5b57875f334f61aebed695e2e4193db5e',
-                'user' =>  'pierredup',
-                'repo' =>  'gush',
-            ],
-            'base' => [
-                'ref'  =>  'base_ref',
-                'sha'  =>  '6dcb09b5b57875f334f61acmes695e2e4193db5e',
-                'repo' =>  'gush',
-            ],
+            [
+                'url'          =>  'http://github.com/gushphp/gush/pull/17',
+                'number'       =>  17,
+                'state'        =>  'open',
+                'title'        =>  'New feature added',
+                'body'         =>  'Help me conquer the world. Teach them to use gush.',
+                'labels'       =>  ['actionable', 'easy pick'],
+                'milestone'    =>  'some_good_stuff',
+                'created_at'   =>  new \DateTime('2014-04-14T17:24:12+0100'),
+                'updated_at'   =>  new \DateTime('2014-04-14T17:24:12+0100'),
+                'user'         =>  'pierredup',
+                'assignee'     =>  'cordoval',
+                'merge_commit' =>  null, // empty as the pull request is not merged
+                'merged'       =>  false,
+                'merged_by'    =>  null,
+                'head' => [
+                    'ref'  =>  'head_ref',
+                    'sha'  =>  '6dcb09b5b57875f334f61aebed695e2e4193db5e',
+                    'user' =>  'pierredup',
+                    'repo' =>  'gush',
+                ],
+                'base' => [
+                    'ref'  =>  'base_ref',
+                    'sha'  =>  '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+                    'repo' =>  'gush',
+                ],
+            ]
         ];
     }
 

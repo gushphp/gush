@@ -104,7 +104,7 @@ EOF
 
         // post filter
         foreach ($issues as $i => &$issue) {
-            $isPr = isset($issue['pull_request']['html_url']);
+            $isPr = isset($issue['pull_request']);
             $issue['_type'] = $isPr ? 'pr' : 'issue';
 
             if ($type = $input->getOption('type')) {
@@ -122,20 +122,16 @@ EOF
         $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link']);
 
         $table->formatRows($issues, function ($issue) {
-            $labels = array_map(function ($label) {
-                return $label['name'];
-            }, $issue['labels']);
-
             return [
                 $issue['number'],
                 $issue['state'],
-                $issue['_type'] == 'pr' ? 'PR' : '',
+                $issue['_type'] === 'pr' ? 'PR' : '',
                 $this->getHelper('text')->truncate($issue['title'], 40),
-                $issue['user']['login'],
-                $issue['assignee']['login'],
-                $this->getHelper('text')->truncate($issue['milestone']['title'], 15),
-                $this->getHelper('text')->truncate(implode(',', $labels), 30),
-                date('Y-m-d', strtotime($issue['created_at'])),
+                $issue['user'],
+                $issue['assignee'],
+                $this->getHelper('text')->truncate($issue['milestone'], 15),
+                $this->getHelper('text')->truncate(implode(',', $issue['labels']), 30),
+                null !== $issue['created_at'] ? $issue['created_at']->format('Y-m-d H:i') : '',
                 $issue['html_url'],
             ];
         });
