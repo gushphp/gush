@@ -257,9 +257,12 @@ interface Adapter
      * "state":         "open"
      * "title":         "new-feature"
      * "body":          "Please pull these awesome changes"
+     * "labels":        ["bug"]
+     * "milestone":     "v1.0"
      * "created_at":    "DateTime Object"
      * "updated_at":    "DateTime Object"
      * "user":          "username"
+     * "assignee":      "username"
      * "merge_commit":  "e5bd3914e2e596debea16f433f57875b5b90bcd6"
      * "merged":        false
      * "merged_by":     "username"
