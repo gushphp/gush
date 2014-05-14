@@ -32,7 +32,7 @@ class PullRequestPatOnTheBackCommandTest extends BaseTestCase
             ['interactive' => false]
         );
 
-        $this->assertEquals(OutputFixtures::PULL_REQUEST_PAT_ON_THE_BACK, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::PULL_REQUEST_PAT_ON_THE_BACK, trim($tester->getDisplay(true)));
     }
 
     private function expectTemplateHelper()

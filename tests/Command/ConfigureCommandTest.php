@@ -60,6 +60,10 @@ class ConfigureCommandTest extends BaseTestCase
 
         @mkdir($homeDir, 0777, true);
 
+        if (file_exists($gushFilename)) {
+            unlink($gushFilename);
+        }
+
         $dialog = $this->expectDialogParameters($homeDir);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
         $command->getHelperSet()->set($dialog, 'dialog');

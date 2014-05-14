@@ -43,7 +43,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command);
         $tester->execute($args, ['interactive' => false]);
 
-        $res = trim($tester->getDisplay());
+        $res = trim($tester->getDisplay(true));
         $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 
@@ -58,7 +58,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command);
         $tester->execute($args, ['interactive' => false]);
 
-        $res = trim($tester->getDisplay());
+        $res = trim($tester->getDisplay(true));
         $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 
@@ -75,7 +75,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $command->getHelperSet()->set($process, 'process');
         $tester->execute($args, ['interactive' => false]);
 
-        $res = trim($tester->getDisplay());
+        $res = trim($tester->getDisplay(true));
         $this->assertContains('Making PR from cordoval:issue-145 to gushphp:master', $res);
     }
 
@@ -91,7 +91,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester = $this->getCommandTester($command);
         $tester->execute($args, ['interactive' => false]);
 
-        $res = trim($tester->getDisplay());
+        $res = trim($tester->getDisplay(true));
         $this->assertContains('Making PR from '.$args['--source-org'].':issue-145 to gushphp:master', $res);
     }
 

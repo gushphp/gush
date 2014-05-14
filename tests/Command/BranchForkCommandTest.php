@@ -30,7 +30,7 @@ class BranchForkCommandTest extends BaseTestCase
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_FORK, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::BRANCH_FORK, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()

@@ -205,7 +205,7 @@ class TestAdapter extends BaseAdapter
             'title'        => 'Write a behat test to launch strategy',
             'body'         => 'Help me conquer the world. Teach them to use gush.',
             'base'         => ['label' => 'master', 'ref' => 'base_ref'],
-            'head'         => ['ref' => 'head_ref']
+            'head'         => ['ref' => 'head_ref', 'user' => ['login' => 'cordoval']]
         ];
     }
 

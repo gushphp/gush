@@ -45,6 +45,6 @@ class IssueListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new IssueListCommand());
         $tester->execute($args, ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::ISSUE_LIST, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::ISSUE_LIST, trim($tester->getDisplay(true)));
     }
 }

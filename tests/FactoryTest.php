@@ -20,6 +20,9 @@ use Symfony\Component\Process\Process;
  */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function testCreateConfigUnixEnv()
     {
         $home = getenv('GUSH_HOME');
@@ -27,6 +30,10 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         if (!$home || !$cacheDir) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
+        }
+
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->markTestSkipped('This test only runs on POSIX systems.');
         }
 
         @mkdir($home, 0777, true);
@@ -57,8 +64,9 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
         }
 
-        define('PHP_WINDOWS_VERSION_MAJOR', 1);
-        $home = $home.'/Gush';
+        if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->markTestSkipped('This test only runs on Windows.');
+        }
 
         @mkdir($home, 0777, true);
 
@@ -71,7 +79,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $config = Factory::createConfig(false);
 
         $this->assertEquals($home.'/Gush', $config->get('cache-dir'));
-        $this->assertEquals($home, $config->get('home'));
+        $this->assertEquals($home.'/Gush', $config->get('home'));
         $this->assertFileExists($home.'/.htaccess');
 
         $process = new Process("rm -rf {$home}");

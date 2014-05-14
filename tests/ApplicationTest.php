@@ -59,6 +59,6 @@ EOT
         $applicationTester = new ApplicationTester($this->application);
         $applicationTester->run(['command' => 'core:configure'], ['interactive' => false]);
 
-        $this->assertRegExp('/Configuration file saved successfully./', $applicationTester->getDisplay());
+        $this->assertRegExp('/Configuration file saved successfully./', $applicationTester->getDisplay(true));
     }
 }

@@ -24,6 +24,6 @@ class PullRequestListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new PullRequestListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(trim(OutputFixtures::PULL_REQUEST_LIST), trim($tester->getDisplay()));
+        $this->assertEquals(trim(OutputFixtures::PULL_REQUEST_LIST), trim($tester->getDisplay(true)));
     }
 }
