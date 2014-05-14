@@ -58,24 +58,18 @@ EOF
             "\nIssue #%s (%s): by %s [%s]",
             $issue['number'],
             $issue['state'],
-            $issue['user']['login'],
-            $issue['assignee']['login']
+            $issue['user'],
+            $issue['assignee']
         ));
 
-        if (isset($issue['pull_request'])) {
+        if ($issue['pull_request']) {
             $output->writeln('Type: Pull Request');
         } else {
             $output->writeln('Type: Issue');
         }
-        $output->writeln('Milestone: '.$issue['milestone']['title']);
+        $output->writeln('Milestone: '.$issue['milestone']);
         if ($issue['labels'] > 0) {
-            $labels = array_map(
-                function ($label) {
-                    return $label['name'];
-                },
-                $issue['labels']
-            );
-            $output->writeln('Labels: '.implode(', ', $labels));
+            $output->writeln('Labels: '.implode(', ', $issue['labels']));
         }
         $output->writeln('Title: '.$issue['title']);
         $output->writeln('');

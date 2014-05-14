@@ -53,8 +53,8 @@ EOF
         $pr = $adapter->getPullRequest($prNumber);
 
         $username = $this->getParameter('authentication')['username'];
-        if ($pr['head']['user']['login'] !== $username) {
-            $output->writeln('You cannot squash PRs not your own.');
+        if ($pr['head']['user'] !== $username) {
+            $output->writeln('You cannot squash PRs that are not your own.');
 
             return self::COMMAND_FAILURE;
         }

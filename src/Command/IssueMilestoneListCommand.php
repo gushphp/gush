@@ -69,7 +69,7 @@ EOF
     private function getRowBuilderCallback()
     {
         return function ($milestone) {
-            return [$milestone['title']];
+            return [$milestone];
         };
     }
 }
