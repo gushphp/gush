@@ -23,6 +23,6 @@ class IssueLabelListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new IssueLabelListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals('bug', trim($tester->getDisplay()));
+        $this->assertEquals('bug', trim($tester->getDisplay(true)));
     }
 }

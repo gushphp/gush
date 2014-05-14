@@ -29,7 +29,7 @@ class PullRequestFixerCommandTest extends BaseTestCase
 
         $tester->execute([]);
 
-        $this->assertEquals(OutputFixtures::PULL_REQUEST_FIXER, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::PULL_REQUEST_FIXER, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()

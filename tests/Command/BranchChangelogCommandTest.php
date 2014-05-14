@@ -30,7 +30,7 @@ class BranchChangelogCommandTest extends BaseTestCase
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_EMPTY, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_EMPTY, trim($tester->getDisplay(true)));
     }
 
     public function testCommandForRepositoriesWithTags()
@@ -42,7 +42,7 @@ class BranchChangelogCommandTest extends BaseTestCase
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
-        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG, trim($tester->getDisplay(true)));
     }
 
     private function expectGitHelperWithoutTags()

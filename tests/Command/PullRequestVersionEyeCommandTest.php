@@ -26,7 +26,7 @@ class PullRequestVersionEyeCommandTest extends BaseTestCase
         $command->getHelperSet()->set($processHelper, 'process');
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush-sandbox'], ['interactive' => false]);
 
-        $res = trim($tester->getDisplay());
+        $res = trim($tester->getDisplay(true));
         $this->assertEquals(OutputFixtures::PULL_REQUEST_VERSIONEYE, $res);
     }
 

@@ -32,7 +32,7 @@ class BranchPushCommandTest extends BaseTestCase
 
         $tester->execute(['--org' => 'cordoval', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_PUSH, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::BRANCH_PUSH, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()

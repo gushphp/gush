@@ -37,7 +37,7 @@ class IssueAssignCommandTest extends BaseTestCase
                 'Issue https://github.com/gushphp/gush/issues/%s was assigned to cordoval!',
                 TestAdapter::ISSUE_NUMBER
             ),
-            trim($tester->getDisplay())
+            trim($tester->getDisplay(true))
         );
     }
 }

@@ -33,7 +33,7 @@ class BranchDeleteCommandTest extends BaseTestCase
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()

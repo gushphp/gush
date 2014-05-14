@@ -28,6 +28,12 @@ class GitRepoHelper extends Helper
                     'closed',
                 ],
             ],
+            'filter' => [
+                'desc' => 'Issue filter',
+                'values' => [
+                    'assigned'
+                ],
+            ],
             'sort' => [
                 'desc' => 'Sort issues by',
                 'values' => [
@@ -94,7 +100,7 @@ class GitRepoHelper extends Helper
 
         if (!isset(self::$enum[$domain][$type])) {
             throw new \InvalidArgumentException(
-                sprintf('Unknown enum type "%s" in domain "%s', $domain, $type)
+                sprintf('Unknown enum type "%s" in domain "%s"', $domain, $type)
             );
         }
     }

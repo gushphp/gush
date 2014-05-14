@@ -24,6 +24,6 @@ class IssueShowCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new IssueShowCommand());
         $tester->execute(['issue_number' => 60, '--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(trim(OutputFixtures::ISSUE_SHOW), trim($tester->getDisplay()));
+        $this->assertEquals(trim(OutputFixtures::ISSUE_SHOW), trim($tester->getDisplay(true)));
     }
 }

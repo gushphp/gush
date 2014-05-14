@@ -24,6 +24,6 @@ class ReleaseListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new ReleaseListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(trim(OutputFixtures::RELEASE_LIST), trim($tester->getDisplay()));
+        $this->assertEquals(trim(OutputFixtures::RELEASE_LIST), trim($tester->getDisplay(true)));
     }
 }

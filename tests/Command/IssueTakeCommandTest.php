@@ -36,7 +36,7 @@ class IssueTakeCommandTest extends BaseTestCase
 
         $this->assertEquals(
             sprintf('Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
-            trim($tester->getDisplay())
+            trim($tester->getDisplay(true))
         );
     }
 

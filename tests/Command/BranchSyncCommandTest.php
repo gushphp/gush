@@ -31,7 +31,7 @@ class BranchSyncCommandTest extends BaseTestCase
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()
