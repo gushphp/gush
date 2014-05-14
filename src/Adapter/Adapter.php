@@ -379,20 +379,46 @@ interface Adapter
      * Note. Size is in bytes, url contains link to asset but may not necessary
      * download the actual asset. State can be: "uploaded", "empty", or "uploading".
      *
+     * "url":           "https://github.com/octocat/Hello-World/releases/v1.0.0"
+     * "id":            1
+     * "name":          "v1.0.0"
+     * "tag_name":      "v1.0.0"
+     * "body":          "Description of the release"
+     * "draft":         false
+     * "prerelease":    false
+     * "created_at":    "DateTime Object"
+     * "published_at":  "DateTime Object"
+     * "user":          "username"
+     *
+     * @return array[] [['id' => 1, ...]]
+     */
+    public function getReleases();
+
+    /**
+     * Gets all available release assets of an release.
+     *
+     * Returned value must be an array with the following data per entry (values are by example).
+     * If a value is not supported null must be used instead.
+     *
+     * Note. Size is in bytes, url contains link to asset but may not necessary
+     * download the actual asset. State can be: "uploaded", "empty", or "uploading".
+     *
      * "url":           "https://api.github.com/repos/octocat/Hello-World/releases/assets/1"
      * "id":            1
      * "name":          "example.zip"
      * "label":         "short description"
-     * "state":         "uploaded",
+     * "state":         "uploaded"
      * "content_type":  "application/zip"
      * "size":          1024
      * "created_at":    "DateTime Object"
      * "updated_at":    "DateTime Object"
      * "uploader":      "username"
      *
+     * @param int $id Id of the release (must exist)
+     *
      * @return array[] [['id' => 1, ...]]
      */
-    public function getReleases();
+    public function getReleaseAssets($id);
 
     /**
      * Deletes a release.
