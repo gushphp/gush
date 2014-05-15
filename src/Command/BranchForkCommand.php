@@ -68,7 +68,7 @@ EOF
                     'line' => sprintf(
                         'git remote add %s %s',
                         $org,
-                        $fork['remote_url']
+                        $fork['git_url']
                     ),
                     'allow_failures' => true
                 ]

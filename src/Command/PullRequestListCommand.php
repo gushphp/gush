@@ -91,13 +91,13 @@ EOF
 
     private function getRowBuilderCallback()
     {
-        return function ($release) {
+        return function ($pullRequest) {
             return [
-                $release['number'],
-                $release['title'],
-                ucfirst($release['state']),
-                $release['created_at'],
-                $release['head']['user']['login'],
+                $pullRequest['number'],
+                $pullRequest['title'],
+                ucfirst($pullRequest['state']),
+                $pullRequest['created_at']->format('Y-m-d H:i'),
+                $pullRequest['head']['user'],
             ];
         };
     }

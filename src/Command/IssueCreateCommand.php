@@ -80,7 +80,7 @@ EOF
 
         $issue = $adapter->openIssue($title, $body);
 
-        $url = $adapter->getIssueUrl($issue['number']);
+        $url = $adapter->getIssueUrl($issue);
         $output->writeln("Created issue {$url}");
 
         return self::COMMAND_SUCCESS;

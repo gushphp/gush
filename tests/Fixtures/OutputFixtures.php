@@ -19,43 +19,42 @@ namespace Gush\Tests\Fixtures;
 class OutputFixtures
 {
     const RELEASE_LIST = <<<EOT
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-| ID  | Name              | Tag      | Commitish | Draft | Prerelease | Created    | Published  |
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
-| 123 | This is a Release | Tag name | 123123    | yes   | yes        | 2014-01-05 | 2014-01-05 |
-+-----+-------------------+----------+-----------+-------+------------+------------+------------+
++----+--------+--------+-------+------------+------------------+------------------+
+| ID | Name   | Tag    | Draft | Prerelease | Created          | Published        |
++----+--------+--------+-------+------------+------------------+------------------+
+| 1  | v1.0.0 | v1.0.0 | no    | no         | 2014-01-05 10:00 | 2014-01-05 10:00 |
++----+--------+--------+-------+------------+------------------+------------------+
 
 1 release(s)
 EOT;
 
     const PULL_REQUEST_LIST = <<<EOT
-+----+-------------------+-------+---------------------+-----------+
-| ID | Title             | State | Created             | User      |
-+----+-------------------+-------+---------------------+-----------+
-| 17 | New feature added | Open  | 2014-04-14 17:24:12 | pierredup |
-+----+-------------------+-------+---------------------+-----------+
++----+-------------------+-------+------------------+-----------+
+| ID | Title             | State | Created          | User      |
++----+-------------------+-------+------------------+-----------+
+| 17 | New feature added | Open  | 2014-04-14 17:24 | pierredup |
++----+-------------------+-------+------------------+-----------+
 
 1 pull request(s)
-
 EOT;
 
     const ISSUE_SHOW = <<<EOT
 Issue #60 (open): by weaverryan [cordoval]
 Type: Pull Request
-Milestone: Conquer the world
+Milestone: v1.0
 Labels: actionable, easy pick
 Title: Write a behat test to launch strategy
 
-Help me conquer the world. Teach them to use gush.
+Help me conquer the world. Teach them to use Gush.
 EOT;
 
     const ISSUE_LIST = <<<EOT
-+---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
-| # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created    |
-+---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
-| 1 | open  |     | easy issue | cordoval   | cordoval | some good st... | critic,easy pick | 1969-12-31 |
-| 2 | open  |     | hard issue | weaverryan | cordoval | some good st... | critic           | 1969-12-31 |
-+---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------------+
+| # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created          |
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------------+
+| 1 | open  |     | easy issue | cordoval   | cordoval | good_release    | critic,easy pick | 1969-12-31 10:00 |
+| 2 | open  |     | hard issue | weaverryan | cordoval | some_good_stuff | critic           | 1969-12-31 10:00 |
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------------+
 
 2 issues
 EOT;

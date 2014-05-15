@@ -156,7 +156,7 @@ EOF
                 $parameters
             );
 
-        $output->writeln($pullRequest['html_url']);
+        $output->writeln($pullRequest);
 
         return self::COMMAND_SUCCESS;
     }

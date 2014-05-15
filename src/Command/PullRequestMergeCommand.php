@@ -11,6 +11,7 @@
 
 namespace Gush\Command;
 
+use Gush\Exception\AdapterException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -72,19 +73,20 @@ EOF
             ]
         );
 
-        $merge = $adapter->mergePullRequest($prNumber, $message);
-
-        if ($merge['merged']) {
+        try {
+            $merge = $adapter->mergePullRequest($prNumber, $message);
             if (!$input->getOption('no-comments')) {
                 $comments = $adapter->getComments($prNumber);
-                $this->addCommentsToMergeCommit($comments, $merge['sha'], $input->getOption('remote'));
+                $this->addCommentsToMergeCommit($comments, $merge, $input->getOption('remote'));
             }
-            $output->writeln($merge['message']);
-        } else {
-            $output->writeln('There was a problem merging: '.$merge['message']);
-        }
+            $output->writeln('Pull Request successfully merged.');
 
-        return self::COMMAND_SUCCESS;
+            return self::COMMAND_SUCCESS;
+        } catch (AdapterException $e) {
+            $output->writeln('There was a problem merging: '.$e->getMessage());
+
+            return self::COMMAND_FAILURE;
+        }
     }
 
     private function addCommentsToMergeCommit($comments, $sha, $remote)
@@ -98,8 +100,8 @@ EOF
             $commentText .= $this->render(
                 'comment',
                 [
-                    'login' => $comment['user']['login'],
-                    'created_at' => $comment['created_at'],
+                    'login' => $comment['user'],
+                    'created_at' => $comment['created_at']->format('Y-m-d H:i'),
                     'body' => $comment['body'],
                 ]
             );
@@ -145,8 +147,8 @@ EOF
             $commitsString .= sprintf(
                 "%s %s %s\n",
                 $commit['sha'],
-                $commit['commit']['message'],
-                $commit['author']['login']
+                $commit['message'],
+                $commit['user']
             );
         }
 

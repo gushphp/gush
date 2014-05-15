@@ -62,7 +62,7 @@ EOF
 
         $table = $this->getHelper('table');
         $table->formatRows($labels, function ($label) {
-            return [$label['name']];
+            return [$label];
         });
         $table->render($output, $table);
 

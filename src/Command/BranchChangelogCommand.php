@@ -86,7 +86,7 @@ EOF
             $issue = $adapter->getIssue($id);
 
             $output->writeln(
-                sprintf("%s: %s   <info>%s</info>", $id, $issue['title'], $issue['html_url'])
+                sprintf("%s: %s   <info>%s</info>", $id, $issue['title'], $issue['url'])
             );
         }
 
