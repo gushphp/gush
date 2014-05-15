@@ -123,6 +123,7 @@ interface Adapter
      * "created_at":  "DateTime Object"
      * "updated_at":  "DateTime Object"
      * "closed_by":   "username"
+     * "pull_request": false
      *
      * @param int $id
      *
@@ -351,7 +352,7 @@ interface Adapter
      * @param string $name
      * @param array  $parameters
      *
-     * @return string Returns the web-URL to the release
+     * @return array Returns an array with url and id of the created release
      */
     public function createRelease($name, array $parameters = []);
 

@@ -89,6 +89,11 @@ abstract class BaseAdapter implements Adapter
         return $this->repository;
     }
 
+    public function createReleaseAssets($id, $name, $contentType, $content)
+    {
+        // noop
+    }
+
     public function getReleaseAssets($id)
     {
         return [];
