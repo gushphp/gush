@@ -199,7 +199,10 @@ class TestAdapter extends BaseAdapter
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = [])
     {
-        return 'http://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER;
+        return [
+            'html_url' => 'http://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
+            'number' => self::PULL_REQUEST_NUMBER,
+        ];
     }
 
     /**
