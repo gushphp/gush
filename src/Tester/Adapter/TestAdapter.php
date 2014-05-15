@@ -25,7 +25,7 @@ class TestAdapter extends BaseAdapter
 
     const RELEASE_ASSET_NUMBER = 1;
 
-    public function getName()
+    public static function getName()
     {
         return 'test';
     }

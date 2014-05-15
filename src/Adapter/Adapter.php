@@ -54,7 +54,7 @@ interface Adapter
      *
      * @return string name in lowercase without adapter suffix, eg. 'github'
      */
-    public function getName();
+    public static function getName();
 
     /**
      * Authenticates the Adapter.
