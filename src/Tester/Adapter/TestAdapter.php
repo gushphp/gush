@@ -376,8 +376,8 @@ class TestAdapter extends BaseAdapter
                 'state'         => 'uploaded',
                 'content_type'  => 'application/zip',
                 'size'          => 1024,
-                'created_at'    => 'DateTime Object',
-                'updated_at'    => 'DateTime Object',
+                'created_at'    => new \DateTime('2014-01-05T10:00:12+0100'),
+                'updated_at'    => new \DateTime('2014-01-05T10:00:12+0100'),
                 'uploader'      => 'username',
             ]
         ];
