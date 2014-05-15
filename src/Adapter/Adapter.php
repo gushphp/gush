@@ -241,7 +241,7 @@ interface Adapter
      * @param string $body
      * @param array  $parameters
      *
-     * @return string URL to pull-request ex. https://github.com/octocat/Hello-World/pull/1
+     * @return array An array the with following keys: html_url, number
      *
      * @throws AdapterException when the pull request are disabled for the repository
      */
