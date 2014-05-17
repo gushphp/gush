@@ -12,6 +12,7 @@
 namespace Gush;
 
 use Gush\Adapter\Adapter;
+use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
@@ -45,6 +46,11 @@ class Application extends BaseApplication
      * @var null|Adapter $adapter The Hub Adapter
      */
     protected $adapter;
+
+    /**
+     * @var null|IssueTracker IssueTracker
+     */
+    protected $issueTracker;
 
     /**
      * @var \Guzzle\Http\Client $versionEyeClient The VersionEye Client
@@ -135,6 +141,22 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param IssueTracker $issueTracker
+     */
+    public function setIssueTracker($issueTracker)
+    {
+        $this->issueTracker = $issueTracker;
+    }
+
+    /**
+     * @return IssueTracker|null
+     */
+    public function getIssueTracker()
+    {
+        return $this->issueTracker;
+    }
+
+    /**
      * @return \Guzzle\Http\Client
      */
     public function getVersionEyeClient()
@@ -178,6 +200,7 @@ class Application extends BaseApplication
     {
         if ('core:configure' !== $this->getCommandName($input)) {
             $this->config = Factory::createConfig();
+            $adapter = null;
 
             if (null === $this->adapter) {
                 if (null === $adapter = $this->config->get('adapter')) {
@@ -185,6 +208,14 @@ class Application extends BaseApplication
                 }
 
                 $this->adapter = $this->buildAdapter($adapter);
+            }
+
+            if (null === $this->issueTracker) {
+                if (null === $issueTracker = $this->config->get('issue_tracker')) {
+                    $issueTracker = $adapter ?: $this->determineAdapter();
+                }
+
+                $this->issueTracker = $this->buildIssueTracker($issueTracker);
             }
 
             if (null === $this->versionEyeClient) {
@@ -253,6 +284,28 @@ class Application extends BaseApplication
         $this->setAdapter($adapter);
 
         return $adapter;
+    }
+
+    /**
+     * Builds the issue-tracker for the application.
+     *
+     * @param string $issueTrackerName
+     * @param array  $config
+     *
+     * @return IssueTracker
+     */
+    public function buildIssueTracker($issueTrackerName, array $config = null)
+    {
+        $issueTracker = $this->adapterFactory->createIssueTracker(
+            $issueTrackerName,
+            $config ?: $this->config->get(sprintf('[issue_trackers][%s][config]', $issueTrackerName)),
+            $this->config
+        );
+
+        $issueTracker->authenticate();
+        $this->setIssueTracker($issueTracker);
+
+        return $issueTracker;
     }
 
     protected function buildVersionEyeClient()

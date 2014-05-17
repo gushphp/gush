@@ -56,7 +56,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $milestones = $adapter->getMilestones();
 
         $table = $this->getHelper('table');

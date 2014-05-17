@@ -155,7 +155,7 @@ interface IssueTracker
      *
      * @return void
      *
-     * @throws AdapterException when closing of issue failed (eg. disabled or not authorized)
+     * @throws AdapterException when updating of the issue failed (eg. disabled or not authorized)
      */
     public function updateIssue($id, array $parameters);
 
@@ -166,7 +166,7 @@ interface IssueTracker
      *
      * @return void
      *
-     * @throws AdapterException when closing of issue failed (eg. disabled or not authorized)
+     * @throws AdapterException when closing of the issue failed (eg. disabled or not authorized)
      */
     public function closeIssue($id);
 

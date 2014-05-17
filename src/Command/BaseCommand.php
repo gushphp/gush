@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Gush\Adapter\Adapter;
+use Gush\Adapter\IssueTracker;
 use Gush\Event\GushEvents;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
@@ -35,6 +36,16 @@ class BaseCommand extends Command
     public function getAdapter()
     {
         return $this->getApplication()->getAdapter();
+    }
+
+    /**
+     * Gets the current adapter
+     *
+     * @return IssueTracker
+     */
+    public function getIssueTracker()
+    {
+        return $this->getApplication()->getIssueTracker();
     }
 
     /**

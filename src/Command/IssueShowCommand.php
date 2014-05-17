@@ -51,7 +51,7 @@ EOF
     {
         $issueNumber = $input->getArgument('issue_number');
 
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $issue   = $adapter->getIssue($issueNumber);
 
         $output->writeln(sprintf(

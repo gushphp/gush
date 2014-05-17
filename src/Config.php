@@ -24,7 +24,8 @@ class Config
      */
     public static $defaultConfig = [
         'cache-dir' => '{$home}/cache',
-        'adapters' => []
+        'adapters' => [],
+        'issue_trackers' => [],
     ];
 
     /**
