@@ -90,7 +90,7 @@ EOF
             touch($filename);
         }
 
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $issues = $adapter->getIssues($params);
         $labelNames = $adapter->getLabels();
 

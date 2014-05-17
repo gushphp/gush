@@ -54,7 +54,7 @@ EOF
         $issueNumber    = $input->getArgument('issue_number');
         $closingComment = $input->getOption('message');
 
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
 
         $adapter->closeIssue($issueNumber);
 

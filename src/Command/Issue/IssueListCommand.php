@@ -79,7 +79,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'sort', 'direction']);
 
         foreach (['creator', 'assignee', 'mentioned', 'milestone'] as $option) {

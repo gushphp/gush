@@ -53,7 +53,7 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
         $username = $input->getArgument('username');
 
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $adapter->updateIssue($issueNumber, ['assignee' => $username]);
 
         $url = $adapter->getIssueUrl($issueNumber);

@@ -53,7 +53,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $emptyValidator = function ($string) {
             if (trim($string) == '') {
                 throw new \Exception('This value can not be empty');

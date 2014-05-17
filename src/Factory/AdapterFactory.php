@@ -13,6 +13,7 @@ namespace Gush\Factory;
 
 use Gush\Adapter\Adapter;
 use Gush\Adapter\Configurator;
+use Gush\Adapter\IssueTracker;
 use Gush\Config;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -29,13 +30,18 @@ class AdapterFactory
     private $adapters = [];
 
     /**
+     * @var array[]
+     */
+    private $issueTrackers;
+
+    /**
      * @param string   $name
      * @param callback $adapterFactory
      * @param callback $adapterConfigurator
      *
      * @return AdapterFactory
      *
-     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function registerAdapter($name, $adapterFactory, $adapterConfigurator)
     {
@@ -66,6 +72,46 @@ class AdapterFactory
     public function getAdapters()
     {
         return $this->adapters;
+    }
+
+    /**
+     * @param string   $name
+     * @param callback $issueTrackerFactory
+     * @param callback $issueTrackerConfigurator
+     *
+     * @return AdapterFactory
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function registerIssueTracker($name, $issueTrackerFactory, $issueTrackerConfigurator)
+    {
+        if (isset($this->issueTrackers[$name])) {
+            throw new \InvalidArgumentException(sprintf('An issue-tracker with name "%s" is already registered.', $name));
+        }
+
+        $this->issueTrackers[$name] = [$issueTrackerFactory, $issueTrackerConfigurator];
+    }
+
+    /**
+     * Returns whether issue-tracker by name registered.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasIssueTracker($name)
+    {
+        return isset($this->issueTrackers[$name]);
+    }
+
+    /**
+     * Returns the registered issue trackers.
+     *
+     * @return array[]
+     */
+    public function getIssueTrackers()
+    {
+        return $this->issueTrackers;
     }
 
     /**
@@ -122,6 +168,73 @@ class AdapterFactory
         }
 
         $configurator = $this->adapters[$name][1]($helperSet);
+
+        if (!$configurator instanceof Configurator) {
+            throw new \LogicException(
+                sprintf(
+                    'Configurator-Factory callback is expected to return a Gush\Adapter\Configurator instance, got "%s" instead.',
+                    is_object($configurator) ? get_class($configurator) : gettype($configurator)
+                )
+            );
+        }
+
+        return $configurator;
+    }
+
+    /**
+     * Creates a new IssueTracker object with the given Configuration.
+     *
+     * @param string $name
+     * @param array  $issueTrackerConfig
+     * @param Config $globalConfig
+     *
+     * @return IssueTracker
+     *
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     */
+    public function createIssueTracker($name, array $issueTrackerConfig, Config $globalConfig)
+    {
+        if (!isset($this->issueTrackers[$name])) {
+            throw new \InvalidArgumentException(
+                sprintf('No IssueTracker with name "%s" is registered.', $name)
+            );
+        }
+
+        $issueTracker = $this->issueTrackers[$name][0]($issueTrackerConfig, $globalConfig);
+
+        if (!$issueTracker instanceof IssueTracker) {
+            throw new \LogicException(
+                sprintf(
+                    'IssueTracker-Factory callback is expected to return a Gush\Adapter\IssueTracker instance, got "%s" instead.',
+                    is_object($issueTracker) ? get_class($issueTracker) : gettype($issueTracker)
+                )
+            );
+        }
+
+        return $issueTracker;
+    }
+
+    /**
+     * Creates a new Configurator instance for the given issueTracker.
+     *
+     * @param string    $name      Name of the issueTracker (must be registered)
+     * @param HelperSet $helperSet HelperSet object
+     *
+     * @return Configurator
+     *
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     */
+    public function createIssueTrackerConfiguration($name, HelperSet $helperSet)
+    {
+        if (!isset($this->issueTrackers[$name])) {
+            throw new \InvalidArgumentException(
+                sprintf('No IssueTracker with name "%s" is registered.', $name)
+            );
+        }
+
+        $configurator = $this->issueTrackers[$name][1]($helperSet);
 
         if (!$configurator instanceof Configurator) {
             throw new \LogicException(

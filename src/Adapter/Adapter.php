@@ -202,6 +202,27 @@ interface Adapter
     public function mergePullRequest($id, $message);
 
     /**
+     * Updates the state of a pull-request by id.
+     *
+     * @param int   $id
+     * @param array $parameters
+     *
+     * @return void
+     *
+     * @throws AdapterException when updating of the pull-request failed (eg. disabled or not authorized)
+     */
+    public function updateIssue($id, array $parameters);
+
+    /**
+     * Close a pull-request by id.
+     *
+     * @param int $id
+     *
+     * @throws AdapterException when closing of a the pull-request failed (eg. already closed or not authorized)
+     */
+    public function closePullRequest($id);
+
+    /**
      * Gets the pull-requests.
      *
      * Returned value must be an array with the following data per entry (values are by example).

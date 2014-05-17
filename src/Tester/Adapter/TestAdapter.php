@@ -12,6 +12,7 @@
 namespace Gush\Tester\Adapter;
 
 use Gush\Adapter\BaseAdapter;
+use Gush\Exception\AdapterException;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
@@ -268,6 +269,13 @@ class TestAdapter extends BaseAdapter
     public function mergePullRequest($id, $message)
     {
         return '32fe234332fe234332fe234332fe234332fe2343';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function closePullRequest($id)
+    {
     }
 
     /**
