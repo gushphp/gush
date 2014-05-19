@@ -28,35 +28,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface IssueTracker
 {
     /**
-     * Constructor.
-     *
-     * @param Config $configuration Configuration for the adapter
-     */
-    public function __construct(Config $configuration);
-
-    /**
-     * Configures the tracker for usage.
-     *
-     * This methods is called for building the tracker configuration
-     * which will be used every time a command is executed with tracker.
-     *
-     * @param OutputInterface $output
-     * @param DialogHelper    $dialog
-     *
-     * @return array Validated and normalized configuration as associative array
-     *
-     * @throws \Exception When any of the validators returns an error
-     */
-    public static function doConfiguration(OutputInterface $output, DialogHelper $dialog);
-
-    /**
-     * Returns the unique name of the tracker.
-     *
-     * @return string name in lowercase without adapter suffix, eg. 'jira'
-     */
-    public static function getName();
-
-    /**
      * Authenticates the tracker.
      *
      * @return bool

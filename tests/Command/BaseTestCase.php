@@ -17,6 +17,7 @@ use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Factory\AdapterFactory;
 use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tester\Adapter\TestIssueTracker;
 use Gush\Tests\TestableApplication;
 use Guzzle\Http\Client;
 use Prophecy\Prophet;
@@ -76,10 +77,23 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
              function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub Enterprise', '', ''); }
         );
 
+        $adapterFactory->registerIssueTracker(
+            'github',
+             function ($config) { return new TestIssueTracker($config); },
+             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub', 'https://api.github.com/', 'https://github.com'); }
+        );
+
+        $adapterFactory->registerIssueTracker(
+            'jira',
+             function ($config) { return new TestIssueTracker($config); },
+             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'Jira', '', ''); }
+        );
+
         $application = new TestableApplication($adapterFactory);
         $application->setAutoExit(false);
         $application->setConfig($this->config);
         $application->setAdapter($this->adapter);
+        $application->setIssueTracker($this->adapter);
         $application->setVersionEyeClient($this->buildVersionEyeClient());
 
         $command->setApplication($application);

@@ -30,18 +30,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
 {
-    const AUTH_HTTP_PASSWORD = 'http_password';
-    const AUTH_HTTP_TOKEN = 'http_token';
-
     /**
      * @var \Gush\Config $config
      */
     private $config;
-
-    protected $authenticationOptions = [
-        0 => self::AUTH_HTTP_PASSWORD,
-        1 => self::AUTH_HTTP_TOKEN,
-    ];
 
     /**
      * {@inheritdoc}
@@ -55,7 +47,13 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
                 'adapter',
                 'a',
                 InputOption::VALUE_OPTIONAL,
-                "What adapter should be used? (github, bitbucket, gitlab)"
+                'What adapter should be used? (github, bitbucket, gitlab)'
+            )
+            ->addOption(
+                'issue-tracker',
+                'it',
+                InputOption::VALUE_OPTIONAL,
+                'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
             )
             ->setHelp(
                 <<<EOF
@@ -109,8 +107,12 @@ EOF
         /** @var \Gush\Application $application */
 
         $adapters = $application->getAdapterFactory()->getAdapters();
+        $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
+
         $adapterName = $input->getOption('adapter');
+        $issueTrackerName = $input->getOption('issue-tracker');
         $versionEyeToken = null;
+        $selection = 0;
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -139,6 +141,36 @@ EOF
         $currentDefault = $this->config->get('adapter');
         if ($adapterName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would like to make "%s" the default adapter?', $adapterName), null === $currentDefault)) {
             $this->config->merge(['adapter' => $adapterName]);
+        }
+
+        if (null === $issueTrackerName) {
+            if (!array_key_exists($adapterName, $issueTrackers)) {
+                $selection = null;
+            }
+
+            $selection = $dialog->select(
+                $output,
+                'Choose issue-tracker: ',
+                array_keys($issueTrackers),
+                $selection
+            );
+
+            $issueTrackerName = array_keys($issueTrackers)[$selection];
+        } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
+            throw new \Exception(
+                sprintf(
+                    'The issue-tracker "%s" is invalid. Available adapters are "%s"',
+                    $issueTrackerName,
+                    implode('", "', array_keys($issueTrackers))
+                )
+            );
+        }
+
+        $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
+
+        $currentDefault = $this->config->get('issue_tracker');
+        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would like to make "%s" the default issue-tracker?', $issueTrackerName), null === $currentDefault)) {
+            $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
 
         $cacheDir = $dialog->askAndValidate(
@@ -181,7 +213,7 @@ EOF
         );
     }
 
-    private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName)
+    private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName, $configName = 'adapters')
     {
         $application = $this->getApplication();
         /** @var \Gush\Application $application */
@@ -189,10 +221,17 @@ EOF
         $authenticationAttempts = 0;
         $config = [];
 
-        $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
-            $adapterName,
-            $application->getHelperSet()
-        );
+        if ('adapters' === $configName) {
+            $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
+                $adapterName,
+                $application->getHelperSet()
+            );
+        } else {
+            $configurator = $application->getAdapterFactory()->createIssueTrackerConfiguration(
+                $adapterName,
+                $application->getHelperSet()
+            );
+        }
 
         while (!$isAuthenticated) {
             // Prevent endless loop with a broken test
@@ -205,7 +244,11 @@ EOF
             $config = $configurator->interact($input, $output);
 
             try {
-                $isAuthenticated = $this->isAdapterCredentialsValid($adapterName, $config);
+                if ('adapters' !== $configName) {
+                    $isAuthenticated = $this->isIssueTrackerCredentialsValid($adapterName, $config);
+                } else {
+                    $isAuthenticated = $this->isAdapterCredentialsValid($adapterName, $config);
+                }
             } catch (\Exception $e) {
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
@@ -220,7 +263,7 @@ EOF
 
         if ($isAuthenticated) {
             $rawConfig = $this->config->raw();
-            $rawConfig['adapters'][$adapterName] = $config;
+            $rawConfig[$configName][$adapterName] = $config;
 
             $this->config->merge($rawConfig);
         }
@@ -234,5 +277,14 @@ EOF
         $adapter = $application->buildAdapter($name, $config);
 
         return $adapter->isAuthenticated();
+    }
+
+    private function isIssueTrackerCredentialsValid($name, array $config)
+    {
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $issueTracker = $application->buildIssueTracker($name, $config);
+
+        return $issueTracker->isAuthenticated();
     }
 }

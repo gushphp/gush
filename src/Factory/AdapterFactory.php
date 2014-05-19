@@ -32,7 +32,7 @@ class AdapterFactory
     /**
      * @var array[]
      */
-    private $issueTrackers;
+    private $issueTrackers = [];
 
     /**
      * @param string   $name
