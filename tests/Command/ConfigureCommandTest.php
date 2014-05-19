@@ -24,6 +24,7 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigureCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';
+    const TOKEN = 'foo';
     const USERNAME = 'bar';
     const VERSIONEYE_TOKEN = 'token';
 
@@ -49,11 +50,26 @@ class ConfigureCommandTest extends BaseTestCase
                         'repo_domain_url' => 'https://company.com',
                     ],
                 ],
+                'issue_trackers' => [
+                    'jira' => [
+                        'authentication' => [
+                            'http-auth-type' => Client::AUTH_HTTP_TOKEN,
+                            'username' => self::USERNAME,
+                            'password-or-token' => self::TOKEN,
+                        ],
+                        'base_url' => 'https://jira.company.com/api/v2/',
+                        'repo_domain_url' => 'https://jira.company.com/',
+                    ]
+
+                ],
+
+
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
                 'local' => $localDir,
                 'local_config' => $localDir.'/.gush.yml',
                 'adapter' => 'github_enterprise',
+                'issue_tracker' => 'jira',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
@@ -95,13 +111,13 @@ class ConfigureCommandTest extends BaseTestCase
             0
         )->willReturn(1);
 
-        // Configurator Start
+        // AdapterConfigurator Start
         $dialog->select(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::containingString('Choose GitHub Enterprise authentication type:'),
             ['Password', 'Token'],
             0
-        )->willReturn(1);
+        )->willReturn(0);
 
         $dialog->askAndValidate(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
@@ -130,13 +146,59 @@ class ConfigureCommandTest extends BaseTestCase
             false,
             ''
         )->willReturn('https://company.com');
-        // Configurator End
+        // AdapterConfigurator End
 
         $dialog->askConfirmation(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             'Would like to make "github_enterprise" the default adapter?',
             true
         )->willReturn(true);
+
+
+        $dialog->select(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::containingString('Choose issue-tracker:'),
+            ['github', 'jira'],
+            null
+        )->willReturn(1);
+
+        // IssueTrackerConfigurator Start
+        $dialog->select(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::containingString('Choose Jira authentication type:'),
+            ['Password', 'Token'],
+            0
+        )->willReturn(1);
+
+        $dialog->askHiddenResponseAndValidate(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::containingString('Token:'),
+            Argument::any()
+        )->willReturn(self::TOKEN);
+
+        $dialog->askAndValidate(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::containingString('Enter your Jira api url []:'),
+            Argument::any(),
+            false,
+            ''
+        )->willReturn('https://jira.company.com/api/v2/');
+
+        $dialog->askAndValidate(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::containingString('Enter your Jira repo url []:'),
+            Argument::any(),
+            false,
+            ''
+        )->willReturn('https://jira.company.com/');
+        // IssueTrackerConfigurator End
+
+        $dialog->askConfirmation(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            'Would like to make "jira" the default issue-tracker?',
+            true
+        )->willReturn(true);
+
 
         $dialog->askAndValidate(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),

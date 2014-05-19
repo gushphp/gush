@@ -39,6 +39,12 @@ class InitCommand extends BaseCommand
                 'What adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
+                'issue-tracker',
+                'it',
+                InputOption::VALUE_OPTIONAL,
+                "What issue tracker should be used? (jira, github, bitbucket, gitlab)"
+            )
+            ->addOption(
                 'meta',
                 'm',
                 InputOption::VALUE_NONE,
@@ -63,7 +69,9 @@ EOF
         $application = $this->getApplication();
         $config = $application->getConfig();
         $adapters = $application->getAdapters();
+        $issueTrackers = $application->getIssueTrackers();
         $adapterName = $input->getOption('adapter');
+        $issueTrackerName = $input->getOption('issue-tracker');
 
         $filename = $config->get('local_config');
 
@@ -93,12 +101,46 @@ EOF
 
         if (null === $adapterClass) {
             throw new \Exception(
-                sprintf('The adapter "%s" is not yet configured. Please run the core:configure command', $adapterName)
+                sprintf(
+                    'The adapter "%s" is not yet configured. Please run the core:configure command',
+                    $adapterName
+                )
+            );
+        }
+
+        if (null === $issueTrackerName) {
+            $selection = $dialog->select(
+                $output,
+                'Choose issue tracker: ',
+                array_keys($issueTrackers),
+                0
+            );
+
+            $issueTrackerName = array_keys($issueTrackers)[$selection];
+        } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
+            throw new \Exception(
+                sprintf(
+                    'The issue tracker "%s" is invalid. Available adapters are "%s"',
+                    $issueTrackerName,
+                    implode('", "',array_keys($issueTrackers))
+                )
+            );
+        }
+
+        $issueTrackerClass = $config->get(sprintf('[issue_trackers][%s][adapter_class]', $issueTrackerName));
+
+        if (null === $issueTrackerClass) {
+            throw new \Exception(
+                sprintf(
+                    'The issue-tracker "%s" is not yet configured. Please run the core:configure command',
+                    $issueTrackerName
+                )
             );
         }
 
         $params = [
-            'adapter' => $adapterName
+            'adapter' => $adapterName,
+            'issue_tracker' => $issueTrackerClass,
         ];
 
         if ($input->getOption('meta')) {
