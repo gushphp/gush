@@ -308,7 +308,7 @@ class Application extends BaseApplication
             );
         }
 
-        return $reflection->getConstant('NAME');
+        return $adapterClass::getName();
     }
 
     protected function buildVersionEyeClient()
