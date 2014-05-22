@@ -29,11 +29,11 @@ class OutputFixtures
 EOT;
 
     const PULL_REQUEST_LIST = <<<EOT
-+----+-------------------+-------+---------------------+-----------+
-| ID | Title             | State | Created             | User      |
-+----+-------------------+-------+---------------------+-----------+
-| 17 | New feature added | Open  | 2014-04-14 17:24:12 | pierredup |
-+----+-------------------+-------+---------------------+-----------+
++----+-------------------+-------+---------------------+-----------+-------------------------------------------+
+| ID | Title             | State | Created             | User      | Link                                      |
++----+-------------------+-------+---------------------+-----------+-------------------------------------------+
+| 17 | New feature added | Open  | 2014-04-14 17:24:12 | pierredup | https://github.com/gushphp/gush/issues/17 |
++----+-------------------+-------+---------------------+-----------+-------------------------------------------+
 
 1 pull request(s)
 
@@ -45,17 +45,18 @@ Type: Pull Request
 Milestone: Conquer the world
 Labels: actionable, easy pick
 Title: Write a behat test to launch strategy
+Link: https://github.com/gushphp/gush/issues/60
 
 Help me conquer the world. Teach them to use gush.
 EOT;
 
     const ISSUE_LIST = <<<EOT
-+---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
-| # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created    |
-+---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
-| 1 | open  |     | easy issue | cordoval   | cordoval | some good st... | critic,easy pick | 1969-12-31 |
-| 2 | open  |     | hard issue | weaverryan | cordoval | some good st... | critic           | 1969-12-31 |
-+---+-------+-----+------------+------------+----------+-----------------+------------------+------------+
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------+------------------------------------------+
+| # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created    | Link                                     |
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------+------------------------------------------+
+| 1 | open  |     | easy issue | cordoval   | cordoval | some good st... | critic,easy pick | 1969-12-31 | https://github.com/gushphp/gush/issues/1 |
+| 2 | open  |     | hard issue | weaverryan | cordoval | some good st... | critic           | 1969-12-31 | https://github.com/gushphp/gush/issues/2 |
++---+-------+-----+------------+------------+----------+-----------------+------------------+------------+------------------------------------------+
 
 2 issues
 EOT;

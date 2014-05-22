@@ -118,7 +118,7 @@ EOF
         }
 
         $table = $this->getHelper('table');
-        $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created']);
+        $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link']);
 
         $table->formatRows($issues, function ($issue) {
             $labels = array_map(function ($label) {
@@ -135,6 +135,7 @@ EOF
                 $this->getHelper('text')->truncate($issue['milestone']['title'], 15),
                 $this->getHelper('text')->truncate(implode(',', $labels), 30),
                 date('Y-m-d', strtotime($issue['created_at'])),
+                $issue['html_url'],
             ];
         });
 
