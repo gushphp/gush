@@ -109,6 +109,7 @@ class TestAdapter extends BaseAdapter
                 'assignee'   => ['login' => 'cordoval'],
                 'milestone'  => ['title' => 'some good stuff release'],
                 'created_at' => '1969-12-31',
+                'html_url'   => $this->getIssueUrl('1'),
             ],
             [
                 'number'     => '2',
@@ -120,6 +121,7 @@ class TestAdapter extends BaseAdapter
                 'assignee'   => ['login' => 'cordoval'],
                 'milestone'  => ['title' => 'some good stuff release'],
                 'created_at' => '1969-12-31',
+                'html_url'   => $this->getIssueUrl('2'),
             ],
         ];
     }
@@ -205,7 +207,8 @@ class TestAdapter extends BaseAdapter
             'title'        => 'Write a behat test to launch strategy',
             'body'         => 'Help me conquer the world. Teach them to use gush.',
             'base'         => ['label' => 'master', 'ref' => 'base_ref'],
-            'head'         => ['ref' => 'head_ref', 'user' => ['login' => 'cordoval']]
+            'head'         => ['ref' => 'head_ref', 'user' => ['login' => 'cordoval']],
+            'link'         => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
         ];
     }
 

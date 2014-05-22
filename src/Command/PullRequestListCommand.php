@@ -81,7 +81,7 @@ EOF
         $pullRequests = $adapter->getPullRequests($state);
 
         $table = $this->getHelper('table');
-        $table->setHeaders(['ID', 'Title', 'State', 'Created', 'User']);
+        $table->setHeaders(['ID', 'Title', 'State', 'Created', 'User', 'Link']);
         $table->formatRows($pullRequests, $this->getRowBuilderCallback());
         $table->setFooter(sprintf('%s pull request(s)', count($pullRequests)));
         $table->render($output, $table);
@@ -98,6 +98,7 @@ EOF
                 ucfirst($release['state']),
                 $release['created_at'],
                 $release['head']['user']['login'],
+                $release['html_url'],
             ];
         };
     }
