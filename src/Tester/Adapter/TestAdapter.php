@@ -208,7 +208,7 @@ class TestAdapter extends BaseAdapter
             'body'         => 'Help me conquer the world. Teach them to use gush.',
             'base'         => ['label' => 'master', 'ref' => 'base_ref'],
             'head'         => ['ref' => 'head_ref', 'user' => ['login' => 'cordoval']],
-            'link'         => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
+            'html_url'     => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
         ];
     }
 
@@ -266,6 +266,7 @@ class TestAdapter extends BaseAdapter
                         'login' => 'pierredup'
                     ]
                 ],
+                'html_url'     => 'https://github.com/gushphp/gush/pull/17',
             ]
         ];
     }
