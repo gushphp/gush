@@ -25,11 +25,6 @@ class TestAdapter extends BaseAdapter
 
     const RELEASE_ASSET_NUMBER = 1;
 
-    public static function getName()
-    {
-        return 'test';
-    }
-
     public function isAuthenticated()
     {
         return true;

@@ -20,6 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * E.g. Github, GitLab, Bitbucket
  *
  * @author Aaron Scherer <aequasi@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 abstract class BaseAdapter implements Adapter
 {
@@ -37,22 +38,6 @@ abstract class BaseAdapter implements Adapter
      * @var null|string
      */
     protected $repository;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(Config $configuration)
-    {
-        $this->configuration = $configuration;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function doConfiguration(OutputInterface $output, DialogHelper $dialog)
-    {
-        return [];
-    }
 
     /**
      * @param string $username
