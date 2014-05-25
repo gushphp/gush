@@ -53,6 +53,7 @@ class ConfigureCommandTest extends BaseTestCase
                 'home_config' => $homeDir.'/.gush.yml',
                 'local' => $localDir,
                 'local_config' => $localDir.'/.gush.yml',
+                'adapter' => 'github_enterprise',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
@@ -130,6 +131,12 @@ class ConfigureCommandTest extends BaseTestCase
             ''
         )->willReturn('https://company.com');
         // Configurator End
+
+        $dialog->askConfirmation(
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            'Would like to make "github_enterprise" the default adapter?',
+            true
+        )->willReturn(true);
 
         $dialog->askAndValidate(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),

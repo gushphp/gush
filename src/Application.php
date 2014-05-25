@@ -243,9 +243,6 @@ class Application extends BaseApplication
      */
     public function buildAdapter($adapterName, array $config = null)
     {
-        // FIXME ask which one should used by default instead (in CoreConfigure command)
-        $this->config->merge(['adapter' => $adapterName]);
-
         $adapter = $this->adapterFactory->createAdapter(
             $adapterName,
             $config ?: $this->config->get(sprintf('[adapters][%s][config]', $adapterName)),

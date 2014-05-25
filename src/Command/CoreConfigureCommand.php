@@ -135,6 +135,11 @@ EOF
 
         $this->configureAdapter($input, $output, $adapterName);
 
+        $currentDefault = $this->config->get('adapter');
+        if ($adapterName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would like to make "%s" the default adapter?', $adapterName), null === $currentDefault)) {
+            $this->config->merge(['adapter' => $adapterName]);
+        }
+
         $cacheDir = $dialog->askAndValidate(
             $output,
             "Cache folder [{$this->config->get('cache-dir')}]: ",
