@@ -15,7 +15,7 @@ use Gush\Adapter\Adapter;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
-use Gush\Exception\AdapterException;
+use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Meta as Meta;
@@ -56,10 +56,12 @@ class Application extends BaseApplication
      */
     protected $dispatcher;
 
-    /** @var  array */
-    protected $adapters = [];
+    /**
+     * @var AdapterFactory
+     */
+    protected $adapterFactory;
 
-    public function __construct($name = 'Gush', $version = '@package_version@')
+    public function __construct(AdapterFactory $adapterFactory, $name = 'Gush', $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
@@ -91,10 +93,7 @@ class Application extends BaseApplication
         $this->setHelperSet($helperSet);
         $this->addCommands($this->getCommands());
 
-        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter');
-        $this->registerAdapter('Gush\\Adapter\\GitHubEnterpriseAdapter');
-        $this->registerAdapter('Gush\\Adapter\\BitbucketAdapter');
-        $this->registerAdapter('Gush\\Adapter\\GitLabAdapter');
+        $this->adapterFactory = $adapterFactory;
     }
 
     /**
@@ -165,6 +164,14 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return AdapterFactory
+     */
+    public function getAdapterFactory()
+    {
+        return $this->adapterFactory;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
@@ -229,86 +236,26 @@ class Application extends BaseApplication
     /**
      * Builds the adapter for the application
      *
-     * @param string $adapter
+     * @param string $adapterName
+     * @param array  $config
      *
      * @return Adapter
      */
-    public function buildAdapter($adapter)
+    public function buildAdapter($adapterName, array $config = null)
     {
-        $adapterClass = $this->config->get(sprintf('[adapters][%s][adapter_class]', $adapter));
+        // FIXME ask which one should used by default instead (in CoreConfigure command)
+        $this->config->merge(['adapter' => $adapterName]);
 
-        $this->validateAdapterClass($adapterClass);
-
-        $this->config->merge(['adapter' => $adapter]);
-
-        $rawConfig = $this->config->raw();
-        unset($rawConfig['adapters']);
-
-        $config = new Config();
-
-        // This is for BC compatibility with existing adapters
-        $config->merge(
-            array_merge(
-                $rawConfig,
-                [
-                    $adapter => $this->config->get(sprintf('[adapters][%s][config]', $adapter)),
-                    'authentication' => $this->config->get(sprintf('[adapters][%s][authentication]', $adapter)),
-                ]
-            )
+        $adapter = $this->adapterFactory->createAdapter(
+            $adapterName,
+            $config ?: $this->config->get(sprintf('[adapters][%s][config]', $adapterName)),
+            $this->config
         );
 
-        /** @var Adapter $adapter */
-        $adapter = new $adapterClass($config);
         $adapter->authenticate();
-
         $this->setAdapter($adapter);
 
         return $adapter;
-    }
-
-    /**
-     * @param string $adapterClass
-     */
-    public function registerAdapter($adapterClass)
-    {
-        $name = $this->validateAdapterClass($adapterClass);
-
-        $this->adapters[$name] = $adapterClass;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAdapters()
-    {
-        return $this->adapters;
-    }
-
-    /**
-     * @param string $adapterClass
-     *
-     * @return string
-     * @throws Exception\AdapterException
-     */
-    public function validateAdapterClass($adapterClass)
-    {
-        if (!class_exists($adapterClass)) {
-            throw new AdapterException(sprintf('The adapter class "%s" doesn\'t exist.', $adapterClass));
-        }
-
-        $reflection = new \ReflectionClass($adapterClass);
-        $interface  = "Gush\\Adapter\\Adapter";
-        if (!$reflection->implementsInterface($interface)) {
-            throw new AdapterException(
-                sprintf(
-                    'The adapter class "%s" does not implement "%s"',
-                    $adapterClass,
-                    $interface
-                )
-            );
-        }
-
-        return $adapterClass::getName();
     }
 
     protected function buildVersionEyeClient()
