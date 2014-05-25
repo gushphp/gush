@@ -17,7 +17,7 @@ use Gush\Config;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
- * AdapterFactory create new Adapter and Configurator instances.
+ * AdapterFactory creates new Adapter and Configurator instances.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -47,6 +47,8 @@ class AdapterFactory
     }
 
     /**
+     * Returns whether adapter by name registered.
+     *
      * @param string $name
      *
      * @return bool
@@ -57,6 +59,8 @@ class AdapterFactory
     }
 
     /**
+     * Returns registered adapters.
+     *
      * @return array[]
      */
     public function getAdapters()
