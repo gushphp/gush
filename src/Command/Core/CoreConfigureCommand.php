@@ -181,6 +181,7 @@ EOF
         $application = $this->getApplication();
         /** @var \Gush\Application $application */
         $isAuthenticated = false;
+        $authenticationAttempts = 0;
         $config = [];
 
         $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
@@ -189,6 +190,13 @@ EOF
         );
 
         while (!$isAuthenticated) {
+            // Prevent endless loop with a broken test
+            if ($authenticationAttempts > 500) {
+                $output->writeln("<error>To many attempts, aborting.</error>");
+
+                break;
+            }
+
             $config = $configurator->interact($input, $output);
 
             try {
@@ -201,14 +209,13 @@ EOF
                     $output->writeln("You can create valid access tokens at {$url}.");
                 }
             }
+
+            $authenticationAttempts++;
         }
 
         if ($isAuthenticated) {
             $rawConfig = $this->config->raw();
-
-            $rawConfig['adapters'][$adapterName] = [
-                $config,
-            ];
+            $rawConfig['adapters'][$adapterName] = $config;
 
             $this->config->merge($rawConfig);
         }

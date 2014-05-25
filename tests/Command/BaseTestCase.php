@@ -11,12 +11,15 @@
 
 namespace Gush\Tests\Command;
 
+use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
+use Gush\Factory\AdapterFactory;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\TestableApplication;
 use Guzzle\Http\Client;
+use Prophecy\Prophet;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Input\InputAwareInterface;
@@ -36,10 +39,21 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected $config;
 
+    /**
+     * @var Prophet
+     */
+    protected $prophet;
+
     public function setUp()
     {
         $this->config = $this->getMock('Gush\Config');
         $this->adapter = $this->buildAdapter();
+        $this->prophet = new Prophet();
+    }
+
+    public function tearDown()
+    {
+        $this->prophet->checkPredictions();
     }
 
     /**
@@ -49,7 +63,20 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getCommandTester(Command $command)
     {
-        $application = new TestableApplication();
+        $adapterFactory = new AdapterFactory();
+        $adapterFactory->registerAdapter(
+            'github',
+             function ($config) { return new TestAdapter($config); },
+             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub', 'https://api.github.com/', 'https://github.com'); }
+        );
+
+        $adapterFactory->registerAdapter(
+            'github_enterprise',
+             function ($config) { return new TestAdapter($config); },
+             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub Enterprise', '', ''); }
+        );
+
+        $application = new TestableApplication($adapterFactory);
         $application->setAutoExit(false);
         $application->setConfig($this->config);
         $application->setAdapter($this->adapter);
