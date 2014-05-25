@@ -26,6 +26,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  * @author Luis Cordova <cordoval@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
 {
@@ -105,8 +106,11 @@ EOF
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $application = $this->getApplication();
-        $adapters = $application->getAdapters();
+        /** @var \Gush\Application $application */
+
+        $adapters = $application->getAdapterFactory()->getAdapters();
         $adapterName = $input->getOption('adapter');
+        $versionEyeToken = null;
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -121,7 +125,7 @@ EOF
 
             $adapterName = array_keys($adapters)[$selection];
         } elseif (!array_key_exists($adapterName, $adapters)) {
-            throw new \Exception(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'The adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
@@ -130,70 +134,7 @@ EOF
             );
         }
 
-        $adapter = $adapters[$adapterName];
-
-        $isAuthenticated    = false;
-        $username           = null;
-        $passwordOrToken    = null;
-        $authenticationType = null;
-        $versionEyeToken    = null;
-
-        $validator = function ($field) {
-            if (empty($field)) {
-                throw new \InvalidArgumentException('The field cannot be empty.');
-            }
-
-            return $field;
-        };
-
-        while (!$isAuthenticated) {
-            $output->writeln('<comment>Enter Hub Connection type:</comment>');
-            $authenticationType = $dialog->select(
-                $output,
-                'Select among these: ',
-                $this->authenticationOptions, // @TODO: we should only show authentication options that are valid for the adapter
-                0
-            );
-
-            $authenticationType = $this->authenticationOptions[$authenticationType];
-            $output->writeln(sprintf('<comment>Insert your %s Credentials:</comment>', $adapterName));
-            $username = $dialog->askAndValidate(
-                $output,
-                'username: ',
-                $validator
-            );
-
-            $passwordOrTokenText = $authenticationType == self::AUTH_HTTP_PASSWORD ? 'password: ' : 'token: ';
-            $passwordOrToken = $dialog->askHiddenResponseAndValidate(
-                $output,
-                $passwordOrTokenText,
-                $validator
-            );
-
-            $rawConfig = $this->config->raw();
-
-            $rawConfig['adapters'][$adapterName] = [
-                'config' => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog]),
-                'adapter_class'  => $adapter,
-                'authentication' => [
-                    'username'          => $username,
-                    'password-or-token' => $passwordOrToken,
-                    'http-auth-type'    => $authenticationType,
-                ],
-            ];
-
-            $this->config->merge($rawConfig);
-
-            try {
-                $isAuthenticated = $this->isCredentialsValid($adapterName);
-            } catch (\Exception $e) {
-                $output->writeln("<error>{$e->getMessage()}</error>");
-                $output->writeln('');
-                if (null !== $url = $this->getAdapter()->getTokenGenerationUrl()) {
-                    $output->writeln("You can create valid access tokens at {$url}.");
-                }
-            }
-        }
+        $this->configureAdapter($input, $output, $adapterName);
 
         $cacheDir = $dialog->askAndValidate(
             $output,
@@ -215,8 +156,14 @@ EOF
 
         $versionEyeToken = $dialog->askAndValidate(
             $output,
-            'versioneye token: ',
-            $validator,
+            'VersionEye token: ',
+            function ($field) {
+                if (empty($field)) {
+                    throw new \InvalidArgumentException('This field cannot be empty.');
+                }
+
+                return $field;
+            },
             false,
             'NO_TOKEN'
         );
@@ -229,10 +176,50 @@ EOF
         );
     }
 
-    private function isCredentialsValid($adapterName)
+    private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName)
     {
-        $this->getApplication()->setConfig($this->config);
-        $adapter = $this->getApplication()->buildAdapter($adapterName);
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $isAuthenticated = false;
+        $config = [];
+
+        $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
+            $adapterName,
+            $application->getHelperSet()
+        );
+
+        while (!$isAuthenticated) {
+            $config = $configurator->interact($input, $output);
+
+            try {
+                $isAuthenticated = $this->isAdapterCredentialsValid($adapterName, $config);
+            } catch (\Exception $e) {
+                $output->writeln("<error>{$e->getMessage()}</error>");
+                $output->writeln('');
+
+                if (null !== $this->getAdapter() && null !== $url = $this->getAdapter()->getTokenGenerationUrl()) {
+                    $output->writeln("You can create valid access tokens at {$url}.");
+                }
+            }
+        }
+
+        if ($isAuthenticated) {
+            $rawConfig = $this->config->raw();
+
+            $rawConfig['adapters'][$adapterName] = [
+                $config,
+            ];
+
+            $this->config->merge($rawConfig);
+        }
+    }
+
+    private function isAdapterCredentialsValid($name, array $config)
+    {
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $application->setConfig($this->config);
+        $adapter = $application->buildAdapter($name, $config);
 
         return $adapter->isAuthenticated();
     }
