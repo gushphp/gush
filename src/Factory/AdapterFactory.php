@@ -16,6 +16,11 @@ use Gush\Adapter\Configurator;
 use Gush\Config;
 use Symfony\Component\Console\Helper\HelperSet;
 
+/**
+ * AdapterFactory create new Adapter and Configurator instances.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class AdapterFactory
 {
     /**
@@ -81,7 +86,7 @@ class AdapterFactory
 
         $adapter = $this->adapters[$name][0]($adapterConfig, $globalConfig);
 
-        if ($adapter instanceof Adapter) {
+        if (!$adapter instanceof Adapter) {
             throw new \LogicException(
                 sprintf(
                     'Adapter-Factory callback is expected to return a Gush\Adapter\Adapter instance, got "%s" instead.',
@@ -114,7 +119,7 @@ class AdapterFactory
 
         $configurator = $this->adapters[$name][1]($helperSet);
 
-        if ($configurator instanceof Configurator) {
+        if (!$configurator instanceof Configurator) {
             throw new \LogicException(
                 sprintf(
                     'Configurator-Factory callback is expected to return a Gush\Adapter\Configurator instance, got "%s" instead.',
