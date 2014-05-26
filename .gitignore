@@ -8,3 +8,4 @@
 /build
 /web
 /bldr.phar
+/composer.lock

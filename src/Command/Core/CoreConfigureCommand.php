@@ -49,7 +49,7 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
     {
         $this
             ->setName('core:configure')
-            ->setDescription('Configure adapter credentials and the cache folder')
+            ->setDescription('Configure adapter credentials.')
             ->addOption(
                 'adapter',
                 'a',
@@ -195,24 +195,6 @@ EOF
             }
         }
 
-        $cacheDir = $dialog->askAndValidate(
-            $output,
-            "Cache folder [{$this->config->get('cache-dir')}]: ",
-            function ($dir) {
-                if (!is_dir($dir)) {
-                    throw new \InvalidArgumentException('Cache folder does not exist.');
-                }
-
-                if (!is_writable($dir)) {
-                    throw new \InvalidArgumentException('Cache folder is not writable.');
-                }
-
-                return $dir;
-            },
-            false,
-            $this->config->get('cache-dir')
-        );
-
         $versionEyeToken = $dialog->askAndValidate(
             $output,
             'versioneye token: ',
@@ -223,7 +205,6 @@ EOF
 
         $this->config->merge(
             [
-                'cache-dir' => $cacheDir,
                 'versioneye-token' => $versionEyeToken,
             ]
         );
