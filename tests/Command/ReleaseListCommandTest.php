@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\ReleaseListCommand;
+use Gush\Command\Release\ReleaseListCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

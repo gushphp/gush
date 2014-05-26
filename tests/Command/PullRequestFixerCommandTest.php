@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequestFixerCommand;
+use Gush\Command\PullRequest\PullRequestFixerCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

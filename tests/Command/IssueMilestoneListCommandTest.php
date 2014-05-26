@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\IssueMilestoneListCommand;
+use Gush\Command\Issue\IssueMilestoneListCommand;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>

@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\BranchChangelogCommand;
+use Gush\Command\Branch\BranchChangelogCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

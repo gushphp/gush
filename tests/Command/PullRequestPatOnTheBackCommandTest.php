@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequestPatOnTheBackCommand;
+use Gush\Command\PullRequest\PullRequestPatOnTheBackCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 

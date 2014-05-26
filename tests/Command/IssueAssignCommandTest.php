@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\IssueAssignCommand;
+use Gush\Command\Issue\IssueAssignCommand;
 use Gush\Tester\Adapter\TestAdapter;
 
 /**

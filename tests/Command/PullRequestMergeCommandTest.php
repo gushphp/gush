@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequestMergeCommand;
+use Gush\Command\PullRequest\PullRequestMergeCommand;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>

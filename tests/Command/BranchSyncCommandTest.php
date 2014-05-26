@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\BranchSyncCommand;
+use Gush\Command\Branch\BranchSyncCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

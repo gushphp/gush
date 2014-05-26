@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\IssueCloseCommand;
+use Gush\Command\Issue\IssueCloseCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
