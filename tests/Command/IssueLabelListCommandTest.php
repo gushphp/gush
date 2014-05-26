@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\IssueLabelListCommand;
+use Gush\Command\Issue\IssueLabelListCommand;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>

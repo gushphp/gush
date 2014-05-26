@@ -16,5 +16,4 @@ namespace Gush\Exception;
  */
 class AdapterException extends \RuntimeException
 {
-
 }

@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\IssueShowCommand;
+use Gush\Command\Issue\IssueShowCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

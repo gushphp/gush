@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequestVersionEyeCommand;
+use Gush\Command\PullRequest\PullRequestVersionEyeCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequestListCommand;
+use Gush\Command\PullRequest\PullRequestListCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

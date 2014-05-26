@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\IssueCreateCommand;
+use Gush\Command\Issue\IssueCreateCommand;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>

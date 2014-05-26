@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequestCreateCommand;
+use Gush\Command\PullRequest\PullRequestCreateCommand;
 use Gush\Tester\Adapter\TestAdapter;
 
 /**

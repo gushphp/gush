@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\BranchDeleteCommand;
+use Gush\Command\Branch\BranchDeleteCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**

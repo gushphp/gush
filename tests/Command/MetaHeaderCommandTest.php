@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\MetaHeaderCommand;
+use Gush\Command\Util\MetaHeaderCommand;
 use Gush\Helper\MetaHelper;
 use Gush\Meta as Meta;
 use Gush\Tests\Fixtures\OutputFixtures;

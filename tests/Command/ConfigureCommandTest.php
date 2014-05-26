@@ -12,7 +12,7 @@
 namespace Gush\Tests\Command;
 
 use Github\Client;
-use Gush\Command\CoreConfigureCommand;
+use Gush\Command\Core\CoreConfigureCommand;
 use Symfony\Component\Yaml\Yaml;
 
 /**
