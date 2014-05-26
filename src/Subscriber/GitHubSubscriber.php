@@ -13,7 +13,7 @@ namespace Gush\Subscriber;
 
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
-use Gush\Feature\GitHubFeature;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,7 +41,7 @@ class GitHubSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
 
-        if (!$command instanceof GitHubFeature) {
+        if (!$command instanceof GitRepoFeature) {
             return;
         }
 
@@ -68,7 +68,7 @@ class GitHubSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
 
         /** @var \Gush\Command\BaseCommand $command */
-        if ($command instanceof GitHubFeature) {
+        if ($command instanceof GitRepoFeature) {
             $input = $event->getInput();
 
             /** @var \Gush\Adapter\BaseAdapter $adapter */

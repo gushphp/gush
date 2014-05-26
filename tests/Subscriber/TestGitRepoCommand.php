@@ -11,9 +11,9 @@
 
 namespace Gush\Tests\Subscriber;
 
-use Gush\Feature\GitHubFeature;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Command\Command;
 
-class TestGitRepoCommand extends Command implements GitHubFeature
+class TestGitRepoCommand extends Command implements GitRepoFeature
 {
 }

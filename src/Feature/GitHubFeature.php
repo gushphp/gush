@@ -15,6 +15,6 @@ namespace Gush\Feature;
  * The GitHubSubscriber will act on classes implementing
  * this interface
  */
-interface GitHubFeature
+interface GitRepoFeature
 {
 }
