@@ -1,0 +1,65 @@
+---------------------------------------------------------------------------
+
+by sstok at 2014-05-22T07:02:40Z
+
+What do you mean exactly with Split? You mean a git sub-tree split?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-22T07:05:05Z
+
+no, spit not split
+
+```sh
+gush i:link
+Go to: https://github.com/gushphp/gush/issues/180
+```
+
+in mac you can click the terminal link and it will take you there
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-05-22T08:14:38Z
+
+ah, ok :)
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-05-22T08:25:22Z
+
+To bad you can\'t make text a hyperlink in the terminal :(
+
+But for GitHub there is link shortener, https://github.com/blog/985-git-io-github-url-shortener in issues:list we can (optionally) display this and make it possible to directly go to a page.
+Just a crazy idea for later ;)
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-22T14:19:08Z
+
+this works as just that a hyperlink on the terminal :blush:
+
+good idea
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-22T19:36:30Z
+
+good job @pierredup  on the list, the current:link command is still pending, it is for when a pull request is made i guess and is found ... detects wheter a PR is sent and if so gives url if not then it will say please launch a PR on the current branch. however i believe that it will not have a determination when there are many PRs though gush assumes is one branch per PR
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-26T22:45:00Z
+
+do these kind of changes break your work @sstok ? @pierredup ?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-05-26T22:46:31Z
+
+I am summing up efforts to make Gush to the top level, let\'s do this people :blush:
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-05-26T23:15:08Z
+
+The [inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/e37a12be-40e7-4bf1-82d2-4970cb27cfcd) completed: **122 updated code elements**
