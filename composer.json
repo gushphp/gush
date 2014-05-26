@@ -29,6 +29,10 @@
         {
             "name": "Pierre du Plessis",
             "email": "pdples@gmail.com"
+        },
+        {
+            "name": "Elijah McPherson",
+            "email": "elijahmcpherson21@gmail.com"
         }
     ],
     "require": {
