@@ -9,14 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command;
+namespace Gush\Command\Util;
 
 use Gush\Adapter\GitHubAdapter;
+use Gush\Command\BaseCommand;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Gush\Feature\GitRepoFeature;
 
 /**
  * Applies patches from fabbot-io robot

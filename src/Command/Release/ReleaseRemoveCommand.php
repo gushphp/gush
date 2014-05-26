@@ -9,12 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command;
+namespace Gush\Command\Release;
 
+use Gush\Command\BaseCommand;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Gush\Feature\GitRepoFeature;
 
 /**
  * Removes a release

@@ -9,12 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command;
+namespace Gush\Command\Util;
 
+use Gush\Command\BaseCommand;
+use Gush\Feature\TemplateFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Gush\Feature\TemplateFeature;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
 {
