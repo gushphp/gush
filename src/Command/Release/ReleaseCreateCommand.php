@@ -9,15 +9,16 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command;
+namespace Gush\Command\Release;
 
 use Gush\Adapter\Adapter;
+use Gush\Command\BaseCommand;
 use Gush\Exception\FileNotFoundException;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Gush\Feature\GitRepoFeature;
 
 /**
  * Creates a release

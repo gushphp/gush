@@ -9,8 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command;
+namespace Gush\Command\PullRequest;
 
+use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;

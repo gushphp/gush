@@ -9,11 +9,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command;
+namespace Gush\Command\PullRequest;
 
+use Gush\Command\BaseCommand;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gush\Feature\GitRepoFeature;
 
 class PullRequestVersionEyeCommand extends BaseCommand implements GitRepoFeature
 {
