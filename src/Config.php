@@ -23,7 +23,6 @@ class Config
      * @var array
      */
     public static $defaultConfig = [
-        'cache-dir' => '{$home}/cache',
         'adapters' => []
     ];
 
@@ -61,19 +60,10 @@ class Config
     public function get($key)
     {
         switch ($key) {
-            case 'cache-dir':
-                // convert foo-bar to GUSH_FOO_BAR and check if it exists since it overrides the local config
-                $env = 'GUSH_'.strtoupper(strtr($key, '-', '_'));
-
-                return rtrim(getenv($env) ? : $this->config[$key], '/\\');
-
             case 'home':
                 return rtrim($this->config[$key], '/\\');
-
             default:
-
                 $accessor = PropertyAccess::createPropertyAccessor();
-
                 try {
                     return $accessor->getValue($this->config, $key);
                 } catch (NoSuchPropertyException $e) {
@@ -112,11 +102,7 @@ class Config
      */
     public function isValid()
     {
-        if (count($this->config['adapters']) > 0
-            && isset($this->config['versioneye-token'])
-            && is_dir($this->get('cache-dir'))
-            && is_writable($this->get('cache-dir'))
-        ) {
+        if (count($this->config['adapters']) > 0 && isset($this->config['versioneye-token'])) {
             return true;
         }
 
