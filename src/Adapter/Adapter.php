@@ -211,7 +211,7 @@ interface Adapter
      *
      * @throws AdapterException when updating of the pull-request failed (eg. disabled or not authorized)
      */
-    public function updateIssue($id, array $parameters);
+    public function updatePullRequest($id, array $parameters);
 
     /**
      * Close a pull-request by id.
