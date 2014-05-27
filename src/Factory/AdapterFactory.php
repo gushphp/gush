@@ -40,7 +40,7 @@ class AdapterFactory
     public function registerAdapter($name, $adapterFactory, $adapterConfigurator)
     {
         if (isset($this->adapters[$name])) {
-            throw new \RuntimeException(sprintf('An adapter with name "%s" is already registered.', $name));
+            throw new \InvalidArgumentException(sprintf('An adapter with name "%s" is already registered.', $name));
         }
 
         $this->adapters[$name] = [$adapterFactory, $adapterConfigurator];
@@ -77,13 +77,13 @@ class AdapterFactory
      *
      * @return Adapter
      *
-     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @throws \LogicException
      */
     public function createAdapter($name, array $adapterConfig, Config $globalConfig)
     {
         if (!isset($this->adapters[$name])) {
-            throw new \RuntimeException(
+            throw new \InvalidArgumentException(
                 sprintf('No Adapter with name "%s" is registered.', $name)
             );
         }
@@ -110,13 +110,13 @@ class AdapterFactory
      *
      * @return Configurator
      *
-     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @throws \LogicException
      */
     public function createAdapterConfiguration($name, HelperSet $helperSet)
     {
         if (!isset($this->adapters[$name])) {
-            throw new \RuntimeException(
+            throw new \InvalidArgumentException(
                 sprintf('No Adapter with name "%s" is registered.', $name)
             );
         }
