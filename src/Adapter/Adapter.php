@@ -28,35 +28,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface Adapter
 {
     /**
-     * Constructor.
-     *
-     * @param Config $configuration Configuration for the adapter
-     */
-    public function __construct(Config $configuration);
-
-    /**
-     * Configures the adapter for usage.
-     *
-     * This methods is called for building the adapter configuration
-     * which will be used every time a command is executed with adapter.
-     *
-     * @param OutputInterface $output
-     * @param DialogHelper    $dialog
-     *
-     * @return array Validated and normalized configuration as associative array
-     *
-     * @throws \Exception When any of the validators returns an error
-     */
-    public static function doConfiguration(OutputInterface $output, DialogHelper $dialog);
-
-    /**
-     * Returns the unique name of the adapter.
-     *
-     * @return string name in lowercase without adapter suffix, eg. 'github'
-     */
-    public static function getName();
-
-    /**
      * Authenticates the Adapter.
      *
      * @return bool

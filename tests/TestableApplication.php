@@ -22,9 +22,9 @@ class TestableApplication extends Application
     /**
      * {@inheritdoc}
      */
-    public function buildAdapter($adapter)
+    public function buildAdapter($adapter, array $config = null)
     {
-        return new TestAdapter($this->config);
+        return new TestAdapter();
     }
 
     public function setConfig(Config $config)

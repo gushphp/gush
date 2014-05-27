@@ -51,7 +51,7 @@ class BaseCommand extends Command
         if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
             return $value;
         }
-        
+
         return $config->get($key);
     }
 
