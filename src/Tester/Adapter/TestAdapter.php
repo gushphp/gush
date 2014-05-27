@@ -145,6 +145,13 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
+    public function updatePullRequest($id, array $parameters)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function closeIssue($id)
     {
     }
