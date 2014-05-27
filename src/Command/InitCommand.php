@@ -42,7 +42,7 @@ class InitCommand extends BaseCommand
                 'issue-tracker',
                 'it',
                 InputOption::VALUE_OPTIONAL,
-                "What issue tracker should be used? (jira, github, bitbucket, gitlab)"
+                'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
             )
             ->addOption(
                 'meta',
