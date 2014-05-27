@@ -150,7 +150,7 @@ class ConfigureCommandTest extends BaseTestCase
 
         $dialog->askConfirmation(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would like to make "github_enterprise" the default adapter?',
+            'Would you like to make "github_enterprise" the default adapter?',
             true
         )->willReturn(true);
 
@@ -195,7 +195,7 @@ class ConfigureCommandTest extends BaseTestCase
 
         $dialog->askConfirmation(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would like to make "jira" the default issue-tracker?',
+            'Would you like to make "jira" the default issue-tracker?',
             true
         )->willReturn(true);
 
