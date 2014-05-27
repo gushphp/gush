@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
- bldr=$(which bldr)
+bldr=$(which bldr)
 
 if [ -x "$bldr" ] ; then
     $bldr build -p local
