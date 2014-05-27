@@ -90,7 +90,7 @@ class DefaultConfigurator implements Configurator
     {
         $config = [];
 
-        if (1 === count($this->authenticationOptions)) {
+        if (count($this->authenticationOptions) > 1) {
             $authenticationLabels = array_map(
                 function ($value) {
                     return ucfirst($value[0]);
