@@ -139,7 +139,7 @@ EOF
         $this->configureAdapter($input, $output, $adapterName);
 
         $currentDefault = $this->config->get('adapter');
-        if ($adapterName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would like to make "%s" the default adapter?', $adapterName), null === $currentDefault)) {
+        if ($adapterName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default adapter?', $adapterName), null === $currentDefault)) {
             $this->config->merge(['adapter' => $adapterName]);
         }
 
@@ -169,7 +169,7 @@ EOF
         $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
 
         $currentDefault = $this->config->get('issue_tracker');
-        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would like to make "%s" the default issue-tracker?', $issueTrackerName), null === $currentDefault)) {
+        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default issue-tracker?', $issueTrackerName), null === $currentDefault)) {
             $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
 
