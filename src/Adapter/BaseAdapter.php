@@ -12,8 +12,6 @@
 namespace Gush\Adapter;
 
 use Gush\Config;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides a base class for adapting Gush to use different providers.

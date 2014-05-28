@@ -12,9 +12,6 @@
 namespace Gush\Adapter;
 
 use Gush\Config;
-use Gush\Exception\AdapterException;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides a base class for adapting Gush to use different providers.
@@ -24,53 +21,53 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class BaseIssueTracker implements IssueTracker
 {
-	/**
-	 * @var Config
-	 */
-	protected $configuration;
+    /**
+     * @var Config
+     */
+    protected $configuration;
 
-	/**
-	 * @var null|string
-	 */
-	protected $username;
+    /**
+     * @var null|string
+     */
+    protected $username;
 
-	/**
-	 * @var null|string
-	 */
-	protected $repository;
+    /**
+     * @var null|string
+     */
+    protected $repository;
 
-	/**
-	 * @param string $username
-	 *
-	 * @return $this
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
+    /**
+     * @param string $username
+     *
+     * @return $this
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getUsername()
-	{
-		return $this->username;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
 
-	public function setRepository($repository)
-	{
-		$this->repository = $repository;
+    public function setRepository($repository)
+    {
+        $this->repository = $repository;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getRepository()
-	{
-		return $this->repository;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getRepository()
+    {
+        return $this->repository;
+    }
 }

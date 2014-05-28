@@ -55,7 +55,7 @@ class Config
     /**
      * Returns a setting
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */

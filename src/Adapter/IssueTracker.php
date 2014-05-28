@@ -11,10 +11,7 @@
 
 namespace Gush\Adapter;
 
-use Gush\Config;
 use Gush\Exception\AdapterException;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Adapter is the interface implemented by all Gush Adapter classes.
@@ -109,8 +106,8 @@ interface IssueTracker
      * Gets the issues as array.
      *
      * @param array $parameters
-     * @param int    $page
-     * @param int    $perPage
+     * @param int   $page
+     * @param int   $perPage
      *
      * @return array[] An array where each entry has the same structure as described in getIssue()
      *

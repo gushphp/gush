@@ -11,10 +11,7 @@
 
 namespace Gush\Adapter;
 
-use Gush\Config;
 use Gush\Exception\AdapterException;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Adapter is the interface implemented by all Gush Adapter classes.
@@ -237,7 +234,7 @@ interface Adapter
      * Returned value must be an array with the following data per entry (values are by example).
      * If a value is not supported null must be used instead.
      *
-     * @param string $state    Only get pull-requests with this state (use getPullRequestStates() supported states)
+     * @param string $state   Only get pull-requests with this state (use getPullRequestStates() supported states)
      * @param int    $page
      * @param int    $perPage
      *
@@ -273,10 +270,10 @@ interface Adapter
      * An asset be eg documentation or a full download (library package with vendors).
      * Not every Hub provider supports this however, so implementation is optional.
      *
-     * @param int    $id           Id of the release (must exist)
-     * @param string $name         Name of the asset (including file extension)
-     * @param string $contentType  Mime-type of the asset
-     * @param string $content      Actual asset (in raw-binary form without conversion)
+     * @param int    $id          Id of the release (must exist)
+     * @param string $name        Name of the asset (including file extension)
+     * @param string $contentType Mime-type of the asset
+     * @param string $content     Actual asset (in raw-binary form without conversion)
      *
      * @return int returns the id of the asset
      */

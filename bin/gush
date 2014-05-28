@@ -64,19 +64,19 @@ foreach ($adapters as $adapterName => $factoryClass) {
 }
 
 $issueTrackers = [
-	'gitlab' => 'Gush\Adapter\GitLabFactory',
+    'gitlab' => 'Gush\Adapter\GitLabFactory',
 ];
 
 foreach ($issueTrackers as $trackerName => $factoryClass) {
-	if (!class_exists($factoryClass)) {
-		continue;
-	}
+    if (!class_exists($factoryClass)) {
+        continue;
+    }
 
-	$adapterFactory->registerIssueTracker(
-		$trackerName,
-		[$factoryClass, 'createIssueTracker'],
-		[$factoryClass, 'createIssueTrackerConfigurator']
-	);
+    $adapterFactory->registerIssueTracker(
+        $trackerName,
+        [$factoryClass, 'createIssueTracker'],
+        [$factoryClass, 'createIssueTrackerConfigurator']
+    );
 }
 
 $app = new Gush\Application($adapterFactory);

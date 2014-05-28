@@ -12,9 +12,6 @@
 namespace Gush\Tester\Adapter;
 
 use Gush\Adapter\IssueTracker;
-use Gush\Config;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>

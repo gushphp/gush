@@ -78,12 +78,12 @@ class GitHubSubscriber implements EventSubscriberInterface
                 ->setUsername($input->getOption('org'))
             ;
 
-			/** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
-			$issueTracker = $command->getIssueTracker();
-			$issueTracker
-				->setRepository($input->getOption('repo'))
-				->setUsername($input->getOption('org'))
-			;
+            /** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
+            $issueTracker = $command->getIssueTracker();
+            $issueTracker
+                ->setRepository($input->getOption('repo'))
+                ->setUsername($input->getOption('org'))
+            ;
         }
     }
 }

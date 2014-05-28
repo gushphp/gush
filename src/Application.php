@@ -314,7 +314,7 @@ class Application extends BaseApplication
             );
         }
 
-		$adapter->authenticate();
+        $adapter->authenticate();
         $this->setAdapter($adapter);
 
         return $adapter;
