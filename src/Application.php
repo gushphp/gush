@@ -207,15 +207,22 @@ class Application extends BaseApplication
                     $adapter = $this->determineAdapter();
                 }
 
-                $this->adapter = $this->buildAdapter($adapter);
+                $this->buildAdapter($adapter);
             }
 
             if (null === $this->issueTracker) {
-                if (null === $issueTracker = $this->config->get('issue_tracker')) {
-                    $issueTracker = $adapter ?: $this->determineAdapter();
-                }
+                $issueTracker = $this->config->get('issue_tracker');
 
-                $this->issueTracker = $this->buildIssueTracker($issueTracker);
+                if ($issueTracker) {
+                    $this->buildIssueTracker($issueTracker);
+                } elseif ($this->adapter instanceof IssueTracker) {
+                    $this->issueTracker = $this->adapter;
+                } else {
+                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue-tracker is configured. '."\n".
+                        'Please run the "init" or "core:configure" command to configure a (default) issue-tracker.';
+
+                    throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
+                }
             }
 
             if (null === $this->versionEyeClient) {
@@ -239,46 +246,73 @@ class Application extends BaseApplication
             ->setWorkingDirectory(getcwd())
             ->setTimeout(3600)
         ;
-        $process = $builder->getProcess();
 
+        $process = $builder->getProcess();
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new \RuntimeException('The adapter type could not be determined. Please run the init command');
+            throw new \RuntimeException(
+                'The adapter type could not be determined (no Git origin configured for this repository). Please run the "init" command.'
+            );
         }
 
         $remoteUrl = strtolower($process->getOutput());
+        $ignoredAdapters = [];
 
-        if (strpos($remoteUrl, 'github.com')) {
-            return 'github';
+        foreach ($this->getAdapterFactory()->getAdapters() as $adapterName) {
+            $config = $this->config->get(sprintf('[adapters][%s][config]', $adapterName));
+
+            // Adapter is not configured ignore
+            if (null === $config) {
+                $ignoredAdapters[] = $adapterName;
+
+                continue;
+            }
+
+            $adapter = $this->adapterFactory->createAdapter(
+                $adapterName,
+                $config,
+                $this->config
+            );
+
+            if ($adapter->supportsRepository($remoteUrl)) {
+                return $adapter;
+            };
         }
 
-        if (strpos($remoteUrl, 'bitbucket.org')) {
-            return 'bitbucket';
+        $exceptionMessage = 'The adapter type could not be determined.';
+
+        if ([] !== $ignoredAdapters) {
+            $exceptionMessage .= sprintf(
+                'Note, the following adapters (may support this repository) but are current not configured: "%s".',
+                implode('", "', $ignoredAdapters)
+            );
+
+            $exceptionMessage .= ' Please configure the adapters or run the "init" command.';
+        } else {
+            $exceptionMessage .= ' Please run the "init" command.';
         }
 
-        if (strpos($remoteUrl, 'gitlab.com')) {
-            return 'gitlab';
-        }
-
-        return 'github';
+        throw new \RuntimeException($exceptionMessage);
     }
 
     /**
      * Builds the adapter for the application
      *
-     * @param string $adapterName
-     * @param array  $config
+     * @param string|Adapter $adapter
+     * @param array          $config
      *
      * @return Adapter
      */
-    public function buildAdapter($adapterName, array $config = null)
+    public function buildAdapter($adapter, array $config = null)
     {
-        $adapter = $this->adapterFactory->createAdapter(
-            $adapterName,
-            $config ?: $this->config->get(sprintf('[adapters][%s][config]', $adapterName)),
-            $this->config
-        );
+        if (!$adapter instanceof Adapter) {
+            $adapter = $this->adapterFactory->createAdapter(
+                $adapter,
+                $config ?: $this->config->get(sprintf('[adapters][%s][config]', $adapter)),
+                $this->config
+            );
+        }
 
         $adapter->authenticate();
         $this->setAdapter($adapter);

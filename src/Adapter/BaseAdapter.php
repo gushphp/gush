@@ -40,6 +40,15 @@ abstract class BaseAdapter implements Adapter
     protected $repository;
 
     /**
+     * {@inheritdoc}
+     */
+    public function supportsRepository($remoteUrl)
+    {
+        // always returns false as its not save to determine this by default
+        return false;
+    }
+
+    /**
      * @param string $username
      *
      * @return $this

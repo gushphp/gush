@@ -26,6 +26,17 @@ class TestAdapter extends BaseAdapter implements IssueTracker
 
     const RELEASE_ASSET_NUMBER = 1;
 
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsRepository($remoteUrl)
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isAuthenticated()
     {
         return true;

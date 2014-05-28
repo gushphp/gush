@@ -28,6 +28,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface Adapter
 {
     /**
+     * Returns whether the repository is supported by this adapter.
+     *
+     * @param string $remoteUrl
+     *
+     * @return bool
+     */
+    public function supportsRepository($remoteUrl);
+
+    /**
      * Authenticates the Adapter.
      *
      * @return bool
