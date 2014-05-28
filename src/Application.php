@@ -309,12 +309,12 @@ class Application extends BaseApplication
         if (!$adapter instanceof Adapter) {
             $adapter = $this->adapterFactory->createAdapter(
                 $adapter,
-                $config ?: $this->config->get(sprintf('[adapters][%s][config]', $adapter)),
+                $config ?: $this->config->get(sprintf('[adapters][%s]', $adapter)),
                 $this->config
             );
         }
 
-        $adapter->authenticate();
+		$adapter->authenticate();
         $this->setAdapter($adapter);
 
         return $adapter;
@@ -332,7 +332,7 @@ class Application extends BaseApplication
     {
         $issueTracker = $this->adapterFactory->createIssueTracker(
             $issueTrackerName,
-            $config ?: $this->config->get(sprintf('[issue_trackers][%s][config]', $issueTrackerName)),
+            $config ?: $this->config->get(sprintf('[issue_trackers][%s]', $issueTrackerName)),
             $this->config
         );
 
