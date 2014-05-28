@@ -11,7 +11,7 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\InitCommand;
+use Gush\Command\Core\InitCommand;
 use Prophecy\Argument;
 use Symfony\Component\Yaml\Yaml;
 

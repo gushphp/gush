@@ -73,7 +73,7 @@ EOF
             $output->writeln('Labels: '.implode(', ', $issue['labels']));
         }
         $output->writeln('Title: '.$issue['title']);
-        $output->writeln('Link: '.$issue['html_url']);
+        $output->writeln('Link: '.$issue['url']);
         $output->writeln('');
         $output->writeln($issue['body']);
 
