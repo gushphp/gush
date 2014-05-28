@@ -22,6 +22,7 @@ use Symfony\Component\Yaml\Yaml;
  * Initializes a local config
  *
  * @author Pierre du Plessis <pdples@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class InitCommand extends BaseCommand
 {
@@ -32,7 +33,7 @@ class InitCommand extends BaseCommand
     {
         $this
             ->setName('init')
-            ->setDescription('Creates a local .gush.yml config file')
+            ->setDescription('Configures a local .gush.yml config file')
             ->addOption(
                 'adapter',
                 'a',
@@ -68,9 +69,10 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $application = $this->getApplication();
+        /** @var \Gush\Application $application */
         $config = $application->getConfig();
-        $adapters = $application->getAdapters();
-        $issueTrackers = $application->getIssueTrackers();
+        $adapters = $application->getAdapterFactory()->getAdapters();
+        $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
         $adapterName = $input->getOption('adapter');
         $issueTrackerName = $input->getOption('issue-tracker');
 
@@ -80,60 +82,62 @@ EOF
         $dialog = $this->getHelper('dialog');
 
         if (null === $adapterName) {
+            $issueTrackerIdxs = array_keys($adapters);
+            $currentValue = (int) array_search($config->get('adapter'), $issueTrackerIdxs);
+
             $selection = $dialog->select(
                 $output,
                 'Choose adapter: ',
-                array_keys($adapters),
-                0
+                $issueTrackerIdxs,
+                $currentValue
             );
 
-            $adapterName = array_keys($adapters)[$selection];
+            $adapterName = $issueTrackerIdxs[$selection];
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
-                    'The adapter "%s" is invalid. Available adapters are "%s"',
+                    'Adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
-                    implode('", "',array_keys($adapters))
+                    implode('", "', array_keys($adapters))
                 )
             );
         }
 
-        $adapterClass = $config->get(sprintf('[adapters][%s][adapter_class]', $adapterName));
-
-        if (null === $adapterClass) {
+        if (!$config->has(sprintf('[adapters][%s]', $adapterName))) {
             throw new \Exception(
                 sprintf(
-                    'The adapter "%s" is not yet configured. Please run the core:configure command',
+                    'Adapter "%s" is not yet configured. Please run the "core:configure" command.',
                     $adapterName
                 )
             );
         }
 
         if (null === $issueTrackerName) {
+            $issueTrackerIdxs = array_keys($issueTrackers);
+            $currentValue = (int) array_search($config->get('issue_tracker'), $issueTrackerIdxs);
+
             $selection = $dialog->select(
                 $output,
-                'Choose issue tracker: ',
-                array_keys($issueTrackers),
-                0
+                'Choose issue-tracker: ',
+                $issueTrackerIdxs,
+                $currentValue
             );
 
-            $issueTrackerName = array_keys($issueTrackers)[$selection];
+            $issueTrackerName = $issueTrackerIdxs[$selection];
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
-                    'The issue tracker "%s" is invalid. Available adapters are "%s"',
+                    'Issue tracker "%s" is invalid. Available adapters are "%s".',
                     $issueTrackerName,
                     implode('", "',array_keys($issueTrackers))
                 )
             );
         }
 
-        $issueTrackerClass = $config->get(sprintf('[issue_trackers][%s][adapter_class]', $issueTrackerName));
-
-        if (null === $issueTrackerClass) {
+        if (!$config->has(sprintf('[issue_trackers][%s]', $issueTrackerName))) {
             throw new \Exception(
                 sprintf(
-                    'The issue-tracker "%s" is not yet configured. Please run the core:configure command',
+                    'The issue-tracker "%s" is not yet configured. Please run the "core:configure" command.',
                     $issueTrackerName
                 )
             );
@@ -141,7 +145,7 @@ EOF
 
         $params = [
             'adapter' => $adapterName,
-            'issue_tracker' => $issueTrackerClass,
+            'issue_tracker' => $issueTrackerName,
         ];
 
         if ($input->getOption('meta')) {
@@ -152,7 +156,7 @@ EOF
             $params = array_merge(Yaml::parse(file_get_contents($filename)), $params);
         }
 
-        if (!@file_put_contents($filename, Yaml::dump($params), 0644)) {
+        if (!file_put_contents($filename, Yaml::dump($params), 0644)) {
             $output->writeln('<error>Configuration file cannot be saved.</error>');
         }
 

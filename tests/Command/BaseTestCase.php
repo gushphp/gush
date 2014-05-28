@@ -36,7 +36,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected $adapter;
 
     /**
-     * @var Config
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
