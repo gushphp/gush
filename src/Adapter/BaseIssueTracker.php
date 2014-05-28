@@ -17,13 +17,10 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Adapter is the interface implemented by all Gush Adapter classes.
+ * Provides a base class for adapting Gush to use different providers.
+ * E.g. Github, GitLab, Bitbucket
  *
- * Note that each adapter instance can be only used for one repository.
- *
- * @author Aaron Scherer <aequasi@gmail.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Julien Bianchi <contact@jubianchi.fr>
  */
 abstract class BaseIssueTracker implements IssueTracker
 {
