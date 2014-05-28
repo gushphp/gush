@@ -203,7 +203,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     public function openPullRequest($base, $head, $subject, $body, array $parameters = [])
     {
         return [
-            'html_url' => 'http://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
+            'html_url' => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
             'number' => self::PULL_REQUEST_NUMBER,
         ];
     }
@@ -214,7 +214,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     public function getPullRequest($id)
     {
         return [
-            'url'          => 'http://github.com/gushphp/gush/pull/'.$id,
+            'url'          => 'https://github.com/gushphp/gush/pull/'.$id,
             'number'       => $id,
             'state'        => 'open',
             'title'        => 'Write a behat test to launch strategy',
@@ -292,7 +292,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                'url'          =>  'http://github.com/gushphp/gush/pull/17',
+                'url'          =>  'https://github.com/gushphp/gush/pull/17',
                 'number'       =>  17,
                 'state'        =>  'open',
                 'title'        =>  'New feature added',
