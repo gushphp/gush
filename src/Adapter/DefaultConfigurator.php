@@ -154,7 +154,7 @@ class DefaultConfigurator implements Configurator
 
     public function validateUrl($url)
     {
-        if (empty($value)) {
+        if (empty($url)) {
             throw new \InvalidArgumentException('The field cannot be empty.');
         }
 
