@@ -64,6 +64,10 @@ EOT;
 Closed https://github.com/gushphp/gush/issues/7
 EOT;
 
+    const PULL_REQUEST_CLOSE = <<<EOT
+Closed https://github.com/gushphp/gush/pull/40
+EOT;
+
     const BRANCH_SYNC = <<<EOT
 Branch test_branch has been synced upstream!
 EOT;

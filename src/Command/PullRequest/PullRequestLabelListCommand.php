@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command\Issue;
+namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
@@ -18,11 +18,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Lists the available milestones for a issue.
+ * Lists the available labels for a pull-request.
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class IssueMilestoneListCommand extends BaseCommand implements TableFeature, GitRepoFeature
+class PullRequestLabelListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -30,11 +31,11 @@ class IssueMilestoneListCommand extends BaseCommand implements TableFeature, Git
     protected function configure()
     {
         $this
-            ->setName('issue:list:milestones')
-            ->setDescription('Lists the issue\'s milestones')
+            ->setName('pull-request:label:list')
+            ->setDescription('Lists the pull-request\'s labels')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command lists the issue's available milestones for either the current
+The <info>%command.name%</info> command lists the pull-request's available labels for either the current
 or the given organization and repository:
 
     <info>$ gush %command.name%</info>
@@ -57,20 +58,15 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getIssueTracker();
-        $milestones = $adapter->getMilestones();
+        $adapter = $this->getAdapter();
+        $labels = $adapter->getLabels();
 
         $table = $this->getHelper('table');
-        $table->formatRows($milestones, $this->getRowBuilderCallback());
+        $table->formatRows($labels, function ($label) {
+            return [$label];
+        });
         $table->render($output, $table);
 
-        return $milestones;
-    }
-
-    private function getRowBuilderCallback()
-    {
-        return function ($milestone) {
-            return [$milestone];
-        };
+        return $labels;
     }
 }

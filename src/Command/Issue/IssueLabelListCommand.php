@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Lists the labels for the issues
+ * Lists the available labels for an issues.
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  */
@@ -34,7 +34,7 @@ class IssueLabelListCommand extends BaseCommand implements TableFeature, GitRepo
             ->setDescription('Lists the issue\'s labels')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command lists the issue's labels for either the current or the given organization
+The <info>%command.name%</info> command lists the issue's available labels for either the current or the given organization
 and repository:
 
     <info>$ gush %command.name%</info>
@@ -58,7 +58,6 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getIssueTracker();
-
         $labels = $adapter->getLabels();
 
         $table = $this->getHelper('table');
