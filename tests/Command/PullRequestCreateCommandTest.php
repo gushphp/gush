@@ -44,7 +44,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
-        $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
+        $this->assertEquals('https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 
     /**
@@ -59,7 +59,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
-        $this->assertEquals('http://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
+        $this->assertEquals('https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
     }
 
     /**

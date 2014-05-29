@@ -12,6 +12,7 @@
 namespace Gush\Command;
 
 use Gush\Adapter\Adapter;
+use Gush\Adapter\IssueTracker;
 use Gush\Event\GushEvents;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
@@ -38,6 +39,16 @@ class BaseCommand extends Command
     }
 
     /**
+     * Gets the current adapter
+     *
+     * @return IssueTracker
+     */
+    public function getIssueTracker()
+    {
+        return $this->getApplication()->getIssueTracker();
+    }
+
+    /**
      * Gets a specific parameter
      *
      * @param  string $key
@@ -51,7 +62,7 @@ class BaseCommand extends Command
         if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
             return $value;
         }
-        
+
         return $config->get($key);
     }
 

@@ -11,7 +11,11 @@
 
 namespace Gush\Tests;
 
+use Gush\Adapter\DefaultConfigurator;
 use Gush\Application;
+use Gush\Factory\AdapterFactory;
+use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tester\Adapter\TestIssueTracker;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Gush\Config;
 
@@ -49,7 +53,21 @@ EOT
 
         $config = new Config();
 
-        $this->application = new TestableApplication();
+        $adapterFactory = new AdapterFactory();
+
+        $adapterFactory->registerAdapter(
+            'github',
+             function ($config) { return new TestAdapter($config); },
+             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub', 'https://api.github.com/', 'https://github.com'); }
+        );
+
+        $adapterFactory->registerIssueTracker(
+            'github',
+             function ($config) { return new TestIssueTracker($config); },
+             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub IssueTracker', 'https://api.github.com/', 'https://github.com'); }
+        );
+
+        $this->application = new TestableApplication($adapterFactory);
         $this->application->setConfig($config);
         $this->application->setAutoExit(false);
     }

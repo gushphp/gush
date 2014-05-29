@@ -24,7 +24,8 @@ class Config
      */
     public static $defaultConfig = [
         'cache-dir' => '{$home}/cache',
-        'adapters' => []
+        'adapters' => [],
+        'issue_trackers' => [],
     ];
 
     /**
@@ -54,7 +55,7 @@ class Config
     /**
      * Returns a setting
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */

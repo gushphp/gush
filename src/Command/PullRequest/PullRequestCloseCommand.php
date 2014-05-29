@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command\Issue;
+namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
@@ -19,24 +19,25 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Closes an issue
+ * Closes a PullRequest.
  *
  * @author Luis Cordova <cordoval@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class IssueCloseCommand extends BaseCommand implements GitRepoFeature
+class PullRequestCloseCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('issue:close')
-            ->setDescription('Closes an issue')
-            ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number to be closed')
+        $this->setName('pull-request:close')
+            ->setDescription('Closes a pull request')
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number to be closed')
             ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Closing comment')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command closes an issue for either the current or the given organization
+The <info>%command.name%</info> command closes a Pull Request for either the current or the given organization
 and repository:
 
     <info>$ gush %command.name% 12 -m"let's try to keep it low profile guys."</info>
@@ -51,18 +52,18 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $issueNumber    = $input->getArgument('issue_number');
+        $prNumber = $input->getArgument('pr_number');
         $closingComment = $input->getOption('message');
 
-        $adapter = $this->getIssueTracker();
+        $adapter = $this->getAdapter();
 
-        $adapter->closeIssue($issueNumber);
+        $adapter->closePullRequest($prNumber);
 
         if ($input->getOption('message')) {
-            $adapter->createComment($issueNumber, $closingComment);
+            $adapter->createComment($prNumber, $closingComment);
         }
 
-        $url = $adapter->getIssueUrl($issueNumber);
+        $url = $adapter->getPullRequest($prNumber)['url'];
         $output->writeln("Closed {$url}");
 
         return self::COMMAND_SUCCESS;

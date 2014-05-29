@@ -11,52 +11,37 @@
 
 namespace Gush\Adapter;
 
-use Gush\Config;
 use Gush\Exception\AdapterException;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Provides a base class for adapting Gush to use different providers.
- * E.g. Github, Gitlab, Bitbucket
+ * Adapter is the interface implemented by all Gush Adapter classes.
+ *
+ * Note that each adapter instance can be only used for one repository.
  *
  * @author Aaron Scherer <aequasi@gmail.com>
  * @author Luis Cordova <cordoval@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface Adapter
 {
     /**
-     * @param Config $configuration Configuration for the adapter
+     * Returns whether the repository is supported by this adapter.
+     *
+     * @param string $remoteUrl
+     *
+     * @return bool
      */
-    public function __construct(Config $configuration);
+    public function supportsRepository($remoteUrl);
 
     /**
-     * Runs the configuration and returns the values as an array
-     *
-     * @param OutputInterface $output
-     * @param DialogHelper    $dialog
-     *
-     * @return array
-     */
-    public static function doConfiguration(OutputInterface $output, DialogHelper $dialog);
-
-    /**
-     * Returns the name of the adapter
-     *
-     * @throws AdapterException
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * Authenticates the Adapter
+     * Authenticates the Adapter.
      *
      * @return bool
      */
     public function authenticate();
 
     /**
-     * Returns true if the adapter is authenticated, false otherwise
+     * Returns true if the adapter is authenticated, false otherwise.
      *
      * @return bool
      */
@@ -64,7 +49,9 @@ interface Adapter
 
     /**
      * Returns the URL for generating a token.
-     * If the adapter does not support tokens, returns null
+     *
+     * If the adapter doesn't support tokens,
+     * this will return null instead.
      *
      * @return null|string
      */
@@ -72,158 +59,278 @@ interface Adapter
 
     /**
      * Creates a fork from upstream and returns an array
-     * with the forked url e.g. git@github.com:cordoval/repoName.git
+     * with the forked url e.g. 'git@github.com:cordoval/repoName.git'
      *
-     * @param string $org
+     * @param string $org Organisation name
      *
-     * @return array
+     * @return array An array the with following keys: git_url, html_url
+     *
+     * @throws AdapterException when creating a fork failed, eg. not authorized or limit reached
      */
     public function createFork($org);
 
     /**
-     * @param string $subject
-     * @param string $body
-     * @param array  $options
+     * Creates a new a comment on an issue/pull-request.
      *
-     * @return mixed
-     */
-    public function openIssue($subject, $body, array $options = []);
-
-    /**
-     * @param int $id
+     * @param int    $id
+     * @param string $message
      *
-     * @return mixed
-     */
-    public function getIssue($id);
-
-    /**
-     * @param int $id
+     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/pull/1347#issuecomment-1
      *
-     * @return mixed
-     */
-    public function getIssueUrl($id);
-
-    /**
-     * @param array $parameters
-     *
-     * @return mixed
-     */
-    public function getIssues(array $parameters = []);
-
-    /**
-     * @param int $id
-     * @param array   $parameters
-     *
-     * @return mixed
-     */
-    public function updateIssue($id, array $parameters);
-
-    /**
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function closeIssue($id);
-
-    /**
-     * @param int $id
-     * @param string  $message
-     *
-     * @return mixed
+     * @throws AdapterException when creating of command failed (eg. disabled or not authorized)
      */
     public function createComment($id, $message);
 
     /**
-     * @param $id
+     * Gets comments of a pull-request..
      *
-     * @return mixed
+     * Returned value must be an array with the following data per entry (values are by example).
+     * If a value is not supported null must be used instead.
+     *
+     * "id":         1
+     * "url":        "https://github.com/octocat/Hello-World/pull/1347#issuecomment-1"
+     * "body":       "Me too"
+     * "user":       "username"
+     * "created_at": "DateTime Object"
+     * "updated_at": "DateTime Object"
+     *
+     * @param int $id
+     *
+     * @return array[] [['id' => 1, ...]]
      */
     public function getComments($id);
 
     /**
-     * @return mixed
+     * Gets the supported labels.
+     *
+     * When the issue tracker does not support labels,
+     * this will return an empty array.
+     *
+     * @return string[]
      */
     public function getLabels();
 
     /**
+     * Gets the supported milestones.
+     *
      * @param array $parameters
      *
-     * @return mixed
+     * @return string[]
      */
     public function getMilestones(array $parameters = []);
 
     /**
+     * Opens a new pull-request.
+     *
      * @param string $base
      * @param string $head
      * @param string $subject
      * @param string $body
      * @param array  $parameters
      *
-     * @return mixed
+     * @return array An array the with following keys: html_url, number
+     *
+     * @throws AdapterException when the pull request are disabled for the repository
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = []);
 
     /**
+     * Gets the information of a pull-request by id.
+     *
+     * Returned value must be an array with the following data (values are by example).
+     * If a value is not supported null must be used instead.
+     *
+     * "url":           "https://github.com/octocat/Hello-World/pull/1"
+     * "number":        1
+     * "state":         "open"
+     * "title":         "new-feature"
+     * "body":          "Please pull these awesome changes"
+     * "labels":        ["bug"]
+     * "milestone":     "v1.0"
+     * "created_at":    "DateTime Object"
+     * "updated_at":    "DateTime Object"
+     * "user":          "username"
+     * "assignee":      "username"
+     * "merge_commit":  "e5bd3914e2e596debea16f433f57875b5b90bcd6"
+     * "merged":        false
+     * "merged_by":     "username"
+     * "head": [
+     *     "ref":   "new-topic"
+     *     "sha":   "6dcb09b5b57875f334f61aebed695e2e4193db5e"
+     *     "user":  "username"
+     *     "repo":  "Hello-World"
+     * ]
+     * "base": [
+     *     "label": "master"
+     *     "ref":   "master"
+     *     "sha":   "6dcb09b5b57875f334f61aebed695e2e4193db5e"
+     *     "repo":  "Hello-World"
+     * ]
+     *
      * @param int $id
      *
-     * @return mixed
+     * @return array
+     *
+     * @throws AdapterException when pull request are disabled for the repository,
+     *                          or if the pull request does not exist (anymore)
      */
     public function getPullRequest($id);
 
     /**
+     * Gets the version-commits of a pull-request.
+     *
+     * Returned value must be an array with the following data per entry (values are by example).
+     * If a value is not supported null must be used instead.
+     *
+     * 'sha':     '6dcb09b5b57875f334f61aebed695e2e4193db5e'
+     * 'message': 'Fix all the bugs'
+     * 'user':    'username'
+     *
      * @param int $id
      *
-     * @return mixed
+     * @return array[] [['sha1' => 'dcb09b5b57875f334f61aebed695e2e4193db5e', ...]]
+     *
+     * @throws AdapterException when pull request are disabled for the repository,
+     *                          or if the pull request does not exist (anymore)
      */
     public function getPullRequestCommits($id);
 
     /**
+     * Merges a pull-request by id.
+     *
      * @param int    $id
      * @param string $message
      *
-     * @return mixed
+     * @return string sha1 of the merge commit
+     *
+     * @throws AdapterException when merging failed
      */
     public function mergePullRequest($id, $message);
 
     /**
-     * @param  string $state
+     * Updates the state of a pull-request by id.
      *
-     * @return mixed
+     * @param int   $id
+     * @param array $parameters
+     *
+     * @return void
+     *
+     * @throws AdapterException when updating of the pull-request failed (eg. disabled or not authorized)
      */
-    public function getPullRequests($state = null);
+    public function updatePullRequest($id, array $parameters);
 
     /**
-     * @return array
+     * Close a pull-request by id.
+     *
+     * @param int $id
+     *
+     * @throws AdapterException when closing of a the pull-request failed (eg. already closed or not authorized)
+     */
+    public function closePullRequest($id);
+
+    /**
+     * Gets the pull-requests.
+     *
+     * @param string $state   Only get pull-requests with this state (use getPullRequestStates() supported states)
+     * @param int    $page
+     * @param int    $perPage
+     *
+     * @return array[] An array where each entry has the same structure as described in getPullRequest()
+     *
+     * @throws AdapterException when state is unsupported
+     */
+    public function getPullRequests($state = null, $page = 1, $perPage = 30);
+
+    /**
+     * Gets the supported pull-request states.
+     *
+     * @return string[]
      */
     public function getPullRequestStates();
 
     /**
+     * Creates a new release.
+     *
+     * For clarity, a release is a tagged version
+     * with additional information like a changelog.
+     *
      * @param string $name
      * @param array  $parameters
      *
-     * @return string
+     * @return array Returns an array with url and id of the created release
      */
     public function createRelease($name, array $parameters = []);
 
     /**
-     * @return mixed
+     * Creates a new release asset.
+     *
+     * An asset can be eg documentation or a full download (library package with vendors).
+     * Not every Hub provider supports this however, so implementation is optional.
+     *
+     * @param int    $id          Id of the release (must exist)
+     * @param string $name        Name of the asset (including file extension)
+     * @param string $contentType Mime-type of the asset
+     * @param string $content     Actual asset (in raw-binary form without conversion)
+     *
+     * @return int returns the id of the asset
+     */
+    public function createReleaseAssets($id, $name, $contentType, $content);
+
+    /**
+     * Gets all available created-releases.
+     *
+     * Returned value must be an array with the following data per entry (values are by example).
+     * If a value is not supported null must be used instead.
+     *
+     * "url":           "https://github.com/octocat/Hello-World/releases/v1.0.0"
+     * "id":            1
+     * "name":          "v1.0.0"
+     * "tag_name":      "v1.0.0"
+     * "body":          "Description of the release"
+     * "draft":         false
+     * "prerelease":    false
+     * "created_at":    "DateTime Object"
+     * "published_at":  "DateTime Object"
+     * "user":          "username"
+     *
+     * @return array[] [['id' => 1, ...]]
      */
     public function getReleases();
 
     /**
-     * @param int $id
+     * Gets all available release assets of an release.
      *
-     * @return mixed
+     * Returned value must be an array with the following data per entry (values are by example).
+     * If a value is not supported null must be used instead.
+     *
+     * Note. Size is in bytes, url contains a link to the asset. but may not necessarily
+     * download the actual asset. State can be: "uploaded", "empty", or "uploading".
+     *
+     * "url":           "https://api.github.com/repos/octocat/Hello-World/releases/assets/1"
+     * "id":            1
+     * "name":          "example.zip"
+     * "label":         "short description"
+     * "state":         "uploaded"
+     * "content_type":  "application/zip"
+     * "size":          1024
+     * "created_at":    "DateTime Object"
+     * "updated_at":    "DateTime Object"
+     * "uploader":      "username"
+     *
+     * @param int $id Id of the release (must exist)
+     *
+     * @return array[] [['id' => 1, ...]]
      */
-    public function removeRelease($id);
+    public function getReleaseAssets($id);
 
     /**
-     * @param int    $id
-     * @param string $name
-     * @param string $contentType
-     * @param string $content
+     * Deletes a release.
      *
-     * @return mixed
+     * @param int $id
+     *
+     * @return void
+     *
+     * @throws AdapterException when deleting of release failed
      */
-    public function createReleaseAssets($id, $name, $contentType, $content);
+    public function removeRelease($id);
 }

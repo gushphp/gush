@@ -41,8 +41,8 @@ class MetaHelper extends Helper
     }
 
     /**
-     * @param string    $fileType
-     * @param Meta $class
+     * @param string $fileType
+     * @param Meta   $class
      */
     public function registerFileType($fileType, Meta $class)
     {

@@ -26,21 +26,14 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @author Daniel Gomes <me@danielcsgomes.com>
  * @author Luis Cordova <cordoval@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
 {
-    const AUTH_HTTP_PASSWORD = 'http_password';
-    const AUTH_HTTP_TOKEN = 'http_token';
-
     /**
      * @var \Gush\Config $config
      */
     private $config;
-
-    protected $authenticationOptions = [
-        0 => self::AUTH_HTTP_PASSWORD,
-        1 => self::AUTH_HTTP_TOKEN,
-    ];
 
     /**
      * {@inheritdoc}
@@ -54,7 +47,13 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
                 'adapter',
                 'a',
                 InputOption::VALUE_OPTIONAL,
-                "What adapter should be used? (github, bitbucket, gitlab)"
+                'What adapter should be used? (github, bitbucket, gitlab)'
+            )
+            ->addOption(
+                'issue tracker',
+                'it',
+                InputOption::VALUE_OPTIONAL,
+                'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
             )
             ->setHelp(
                 <<<EOF
@@ -105,8 +104,15 @@ EOF
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $application = $this->getApplication();
-        $adapters = $application->getAdapters();
+        /** @var \Gush\Application $application */
+
+        $adapters = $application->getAdapterFactory()->getAdapters();
+        $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
+
         $adapterName = $input->getOption('adapter');
+        $issueTrackerName = $input->getOption('issue tracker');
+        $versionEyeToken = null;
+        $selection = 0;
 
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelper('dialog');
@@ -121,7 +127,7 @@ EOF
 
             $adapterName = array_keys($adapters)[$selection];
         } elseif (!array_key_exists($adapterName, $adapters)) {
-            throw new \Exception(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'The adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
@@ -130,69 +136,41 @@ EOF
             );
         }
 
-        $adapter = $adapters[$adapterName];
+        $this->configureAdapter($input, $output, $adapterName);
 
-        $isAuthenticated    = false;
-        $username           = null;
-        $passwordOrToken    = null;
-        $authenticationType = null;
-        $versionEyeToken    = null;
+        $currentDefault = $this->config->get('adapter');
+        if ($adapterName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default adapter?', $adapterName), null === $currentDefault)) {
+            $this->config->merge(['adapter' => $adapterName]);
+        }
 
-        $validator = function ($field) {
-            if (empty($field)) {
-                throw new \InvalidArgumentException('The field cannot be empty.');
+        if (null === $issueTrackerName) {
+            if (!array_key_exists($adapterName, $issueTrackers)) {
+                $selection = null;
             }
 
-            return $field;
-        };
-
-        while (!$isAuthenticated) {
-            $output->writeln('<comment>Enter Hub Connection type:</comment>');
-            $authenticationType = $dialog->select(
+            $selection = $dialog->select(
                 $output,
-                'Select among these: ',
-                $this->authenticationOptions, // @TODO: we should only show authentication options that are valid for the adapter
-                0
+                'Choose issue tracker: ',
+                array_keys($issueTrackers),
+                $selection
             );
 
-            $authenticationType = $this->authenticationOptions[$authenticationType];
-            $output->writeln(sprintf('<comment>Insert your %s Credentials:</comment>', $adapterName));
-            $username = $dialog->askAndValidate(
-                $output,
-                'username: ',
-                $validator
+            $issueTrackerName = array_keys($issueTrackers)[$selection];
+        } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
+            throw new \Exception(
+                sprintf(
+                    'The issue tracker "%s" is invalid. Available adapters are "%s"',
+                    $issueTrackerName,
+                    implode('", "', array_keys($issueTrackers))
+                )
             );
+        }
 
-            $passwordOrTokenText = $authenticationType == self::AUTH_HTTP_PASSWORD ? 'password: ' : 'token: ';
-            $passwordOrToken = $dialog->askHiddenResponseAndValidate(
-                $output,
-                $passwordOrTokenText,
-                $validator
-            );
+        $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
 
-            $rawConfig = $this->config->raw();
-
-            $rawConfig['adapters'][$adapterName] = [
-                'config' => call_user_func_array([$adapter, 'doConfiguration'], [$output, $dialog]),
-                'adapter_class'  => $adapter,
-                'authentication' => [
-                    'username'          => $username,
-                    'password-or-token' => $passwordOrToken,
-                    'http-auth-type'    => $authenticationType,
-                ],
-            ];
-
-            $this->config->merge($rawConfig);
-
-            try {
-                $isAuthenticated = $this->isCredentialsValid($adapterName);
-            } catch (\Exception $e) {
-                $output->writeln("<error>{$e->getMessage()}</error>");
-                $output->writeln('');
-                if (null !== $url = $this->getAdapter()->getTokenGenerationUrl()) {
-                    $output->writeln("You can create valid access tokens at {$url}.");
-                }
-            }
+        $currentDefault = $this->config->get('issue_tracker');
+        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName), null === $currentDefault)) {
+            $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
 
         $cacheDir = $dialog->askAndValidate(
@@ -215,8 +193,14 @@ EOF
 
         $versionEyeToken = $dialog->askAndValidate(
             $output,
-            'versioneye token: ',
-            $validator,
+            'VersionEye token: ',
+            function ($field) {
+                if (empty($field)) {
+                    throw new \InvalidArgumentException('This field cannot be empty.');
+                }
+
+                return $field;
+            },
             false,
             'NO_TOKEN'
         );
@@ -229,11 +213,84 @@ EOF
         );
     }
 
-    private function isCredentialsValid($adapterName)
+    private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName, $configName = 'adapters')
     {
-        $this->getApplication()->setConfig($this->config);
-        $adapter = $this->getApplication()->buildAdapter($adapterName);
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $isAuthenticated = false;
+        $authenticationAttempts = 0;
+        $config = [];
+
+        if ('adapters' === $configName) {
+            $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
+                $adapterName,
+                $application->getHelperSet()
+            );
+        } else {
+            $configurator = $application->getAdapterFactory()->createIssueTrackerConfiguration(
+                $adapterName,
+                $application->getHelperSet()
+            );
+        }
+
+        while (!$isAuthenticated) {
+            // Prevent endless loop with a broken test
+            if ($authenticationAttempts > 500) {
+                $output->writeln("<error>To many attempts, aborting.</error>");
+
+                break;
+            }
+
+            $config = $configurator->interact($input, $output);
+
+            try {
+                if ('adapters' !== $configName) {
+                    $isAuthenticated = $this->isIssueTrackerCredentialsValid($adapterName, $config);
+                } else {
+                    $isAuthenticated = $this->isAdapterCredentialsValid($adapterName, $config);
+                }
+            } catch (\Exception $e) {
+                $output->writeln("<error>{$e->getMessage()}</error>");
+                $output->writeln('');
+
+                if ('adapters' !== $configName) {
+                    $adapter = $this->getIssueTracker();
+                } else {
+                    $adapter = $this->getAdapter();
+                }
+
+                if (null !== $adapter && null !== $url = $adapter->getTokenGenerationUrl()) {
+                    $output->writeln("You can create valid access tokens at {$url}.");
+                }
+            }
+
+            $authenticationAttempts++;
+        }
+
+        if ($isAuthenticated) {
+            $rawConfig = $this->config->raw();
+            $rawConfig[$configName][$adapterName] = $config;
+
+            $this->config->merge($rawConfig);
+        }
+    }
+
+    private function isAdapterCredentialsValid($name, array $config)
+    {
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $application->setConfig($this->config);
+        $adapter = $application->buildAdapter($name, $config);
 
         return $adapter->isAuthenticated();
+    }
+
+    private function isIssueTrackerCredentialsValid($name, array $config)
+    {
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $issueTracker = $application->buildIssueTracker($name, $config);
+
+        return $issueTracker->isAuthenticated();
     }
 }

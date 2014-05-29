@@ -12,10 +12,11 @@
 namespace Gush;
 
 use Gush\Adapter\Adapter;
+use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
-use Gush\Exception\AdapterException;
+use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Meta as Meta;
@@ -47,6 +48,11 @@ class Application extends BaseApplication
     protected $adapter;
 
     /**
+     * @var null|IssueTracker IssueTracker
+     */
+    protected $issueTracker;
+
+    /**
      * @var \Guzzle\Http\Client $versionEyeClient The VersionEye Client
      */
     protected $versionEyeClient = null;
@@ -56,10 +62,12 @@ class Application extends BaseApplication
      */
     protected $dispatcher;
 
-    /** @var  array */
-    protected $adapters = [];
+    /**
+     * @var AdapterFactory
+     */
+    protected $adapterFactory;
 
-    public function __construct($name = 'Gush', $version = '@package_version@')
+    public function __construct(AdapterFactory $adapterFactory, $name = 'Gush', $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
@@ -91,10 +99,7 @@ class Application extends BaseApplication
         $this->setHelperSet($helperSet);
         $this->addCommands($this->getCommands());
 
-        $this->registerAdapter('Gush\\Adapter\\GitHubAdapter');
-        $this->registerAdapter('Gush\\Adapter\\GitHubEnterpriseAdapter');
-        $this->registerAdapter('Gush\\Adapter\\BitbucketAdapter');
-        $this->registerAdapter('Gush\\Adapter\\GitLabAdapter');
+        $this->adapterFactory = $adapterFactory;
     }
 
     /**
@@ -136,6 +141,22 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param IssueTracker $issueTracker
+     */
+    public function setIssueTracker($issueTracker)
+    {
+        $this->issueTracker = $issueTracker;
+    }
+
+    /**
+     * @return IssueTracker|null
+     */
+    public function getIssueTracker()
+    {
+        return $this->issueTracker;
+    }
+
+    /**
      * @return \Guzzle\Http\Client
      */
     public function getVersionEyeClient()
@@ -165,19 +186,43 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return AdapterFactory
+     */
+    public function getAdapterFactory()
+    {
+        return $this->adapterFactory;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-        if ('core:configure' !== $this->getCommandName($input)) {
+        if ('core:configure' !== $this->getCommandName($input) && 'init' !== $this->getCommandName($input) ) {
             $this->config = Factory::createConfig();
+            $adapter = null;
 
             if (null === $this->adapter) {
                 if (null === $adapter = $this->config->get('adapter')) {
                     $adapter = $this->determineAdapter();
                 }
 
-                $this->adapter = $this->buildAdapter($adapter);
+                $this->buildAdapter($adapter);
+            }
+
+            if (null === $this->issueTracker) {
+                $issueTracker = $this->config->get('issue_tracker');
+
+                if ($issueTracker) {
+                    $this->buildIssueTracker($issueTracker);
+                } elseif ($this->adapter instanceof IssueTracker) {
+                    $this->issueTracker = $this->adapter;
+                } else {
+                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '."\n".
+                        'Please run the "init" or "core:configure" command to configure a (default) issue tracker.';
+
+                    throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
+                }
             }
 
             if (null === $this->versionEyeClient) {
@@ -201,114 +246,100 @@ class Application extends BaseApplication
             ->setWorkingDirectory(getcwd())
             ->setTimeout(3600)
         ;
-        $process = $builder->getProcess();
 
+        $process = $builder->getProcess();
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new \RuntimeException('The adapter type could not be determined. Please run the init command');
+            throw new \RuntimeException(
+                'The adapter type could not be determined (no Git origin configured for this repository). Please run the "init" command.'
+            );
         }
 
         $remoteUrl = strtolower($process->getOutput());
+        $ignoredAdapters = [];
 
-        if (strpos($remoteUrl, 'github.com')) {
-            return 'github';
+        foreach ($this->getAdapterFactory()->getAdapters() as $adapterName) {
+            $config = $this->config->get(sprintf('[adapters][%s][config]', $adapterName));
+
+            // Adapter is not configured ignore
+            if (null === $config) {
+                $ignoredAdapters[] = $adapterName;
+
+                continue;
+            }
+
+            $adapter = $this->adapterFactory->createAdapter(
+                $adapterName,
+                $config,
+                $this->config
+            );
+
+            if ($adapter->supportsRepository($remoteUrl)) {
+                return $adapter;
+            };
         }
 
-        if (strpos($remoteUrl, 'bitbucket.org')) {
-            return 'bitbucket';
+        $exceptionMessage = 'The adapter type could not be determined.';
+
+        if ([] !== $ignoredAdapters) {
+            $exceptionMessage .= sprintf(
+                'Note, the following adapters (may support this repository) but are currently not configured: "%s".',
+                implode('", "', $ignoredAdapters)
+            );
+
+            $exceptionMessage .= ' Please configure the adapters or run the "init" command.';
+        } else {
+            $exceptionMessage .= ' Please run the "init" command.';
         }
 
-        if (strpos($remoteUrl, 'gitlab.com')) {
-            return 'gitlab';
-        }
-
-        return 'github';
+        throw new \RuntimeException($exceptionMessage);
     }
 
     /**
      * Builds the adapter for the application
      *
-     * @param string $adapter
+     * @param string|Adapter $adapter
+     * @param array          $config
      *
      * @return Adapter
      */
-    public function buildAdapter($adapter)
+    public function buildAdapter($adapter, array $config = null)
     {
-        $adapterClass = $this->config->get(sprintf('[adapters][%s][adapter_class]', $adapter));
+        if (!$adapter instanceof Adapter) {
+            $adapter = $this->adapterFactory->createAdapter(
+                $adapter,
+                $config ?: $this->config->get(sprintf('[adapters][%s]', $adapter)),
+                $this->config
+            );
+        }
 
-        $this->validateAdapterClass($adapterClass);
-
-        $this->config->merge(['adapter' => $adapter]);
-
-        $rawConfig = $this->config->raw();
-        unset($rawConfig['adapters']);
-
-        $config = new Config();
-
-        // This is for BC compatibility with existing adapters
-        $config->merge(
-            array_merge(
-                $rawConfig,
-                [
-                    $adapter => $this->config->get(sprintf('[adapters][%s][config]', $adapter)),
-                    'authentication' => $this->config->get(sprintf('[adapters][%s][authentication]', $adapter)),
-                ]
-            )
-        );
-
-        /** @var Adapter $adapter */
-        $adapter = new $adapterClass($config);
         $adapter->authenticate();
-
         $this->setAdapter($adapter);
 
         return $adapter;
     }
 
     /**
-     * @param string $adapterClass
-     */
-    public function registerAdapter($adapterClass)
-    {
-        $name = $this->validateAdapterClass($adapterClass);
-
-        $this->adapters[$name] = $adapterClass;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAdapters()
-    {
-        return $this->adapters;
-    }
-
-    /**
-     * @param string $adapterClass
+     * Builds the issue tracker for the application.
      *
-     * @return string
-     * @throws Exception\AdapterException
+     * @param string $issueTrackerName
+     * @param array  $config
+     *
+     * @return IssueTracker
      */
-    public function validateAdapterClass($adapterClass)
+    public function buildIssueTracker($issueTrackerName, array $config = null)
     {
-        if (!class_exists($adapterClass)) {
-            throw new AdapterException(sprintf('The adapter class "%s" doesn\'t exist.', $adapterClass));
-        }
+        $issueTracker = $this->adapterFactory->createIssueTracker(
+            $issueTrackerName,
+            $config ?: $this->config->get(sprintf('[issue_trackers][%s]', $issueTrackerName)),
+            $this->config
+        );
 
-        $reflection = new \ReflectionClass($adapterClass);
-        $interface  = "Gush\\Adapter\\Adapter";
-        if (!$reflection->implementsInterface($interface)) {
-            throw new AdapterException(
-                sprintf(
-                    'The adapter class "%s" does not implement "%s"',
-                    $adapterClass,
-                    $interface
-                )
-            );
-        }
+        $issueTracker->authenticate();
+        $this->setIssueTracker($issueTracker);
 
-        return $reflection->getConstant('NAME');
+        return $issueTracker;
     }
 
     protected function buildVersionEyeClient()
@@ -333,11 +364,15 @@ class Application extends BaseApplication
             $updateCommand,
             new Cmd\PullRequest\PullRequestCreateCommand(),
             new Cmd\PullRequest\PullRequestMergeCommand(),
+            new Cmd\PullRequest\PullRequestCloseCommand(),
             new Cmd\PullRequest\PullRequestPatOnTheBackCommand(),
+            new Cmd\PullRequest\PullRequestAssignCommand(),
             new Cmd\PullRequest\PullRequestSwitchBaseCommand(),
             new Cmd\PullRequest\PullRequestSquashCommand(),
             new Cmd\PullRequest\PullRequestSemVerCommand(),
             new Cmd\PullRequest\PullRequestListCommand(),
+            new Cmd\PullRequest\PullRequestLabelListCommand(),
+            new Cmd\PullRequest\PullRequestMilestoneListCommand(),
             new Cmd\PullRequest\PullRequestFixerCommand(),
             new Cmd\PullRequest\PullRequestVersionEyeCommand(),
             new Cmd\Util\FabbotIoCommand(),

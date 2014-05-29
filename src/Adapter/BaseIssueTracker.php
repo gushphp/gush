@@ -17,10 +17,9 @@ use Gush\Config;
  * Provides a base class for adapting Gush to use different providers.
  * E.g. Github, GitLab, Bitbucket
  *
- * @author Aaron Scherer <aequasi@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Julien Bianchi <contact@jubianchi.fr>
  */
-abstract class BaseAdapter implements Adapter
+abstract class BaseIssueTracker implements IssueTracker
 {
     /**
      * @var Config
@@ -36,15 +35,6 @@ abstract class BaseAdapter implements Adapter
      * @var null|string
      */
     protected $repository;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsRepository($remoteUrl)
-    {
-        // always returns false as its not save to determine this by default
-        return false;
-    }
 
     /**
      * @param string $username
@@ -66,11 +56,6 @@ abstract class BaseAdapter implements Adapter
         return $this->username;
     }
 
-    /**
-     * @param string $repository
-     *
-     * @return $this
-     */
     public function setRepository($repository)
     {
         $this->repository = $repository;
@@ -84,29 +69,5 @@ abstract class BaseAdapter implements Adapter
     public function getRepository()
     {
         return $this->repository;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createReleaseAssets($id, $name, $contentType, $content)
-    {
-        // noop
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getReleaseAssets($id)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeRelease($id)
-    {
-        // noop
     }
 }

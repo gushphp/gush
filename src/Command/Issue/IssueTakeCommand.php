@@ -53,7 +53,7 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
 
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
         $issue = $adapter->getIssue($issueNumber);
 
         $slugTitle = $this->getHelper('text')->slugify(

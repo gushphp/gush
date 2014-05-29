@@ -10,6 +10,8 @@
  * with this source code in the file LICENSE.
  */
 
+use Gush\Adapter;
+
 $paths[] = __DIR__.'/../vendor';
 $paths[] = __DIR__.'/../../..';
 
@@ -24,10 +26,10 @@ foreach ($paths as $path) {
 }
 
 if (null === $filename) {
-        echo "Cannot find an autoupload.php file, have you executed composer install command?\n";
+        echo "Cannot find an autoload.php file, have you executed composer install command?\n";
         exit(1);
 }
-    
+
 require_once $filename;
 
 error_reporting(-1);
@@ -40,7 +42,47 @@ if (!$process->isSuccessful()) {
     throw new \RuntimeException('Git is required.');
 }
 
-$app = new Gush\Application();
+$adapterFactory = new Gush\Factory\AdapterFactory();
+
+$adapters = [
+    'github' => 'Gush\Adapter\GitHubFactory',
+    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
+    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
+    'gitlab' => 'Gush\Adapter\GitLabFactory',
+];
+
+foreach ($adapters as $adapterName => $factoryClass) {
+    if (!class_exists($factoryClass)) {
+        continue;
+    }
+
+    $adapterFactory->registerAdapter(
+        $adapterName,
+        [$factoryClass, 'createAdapter'],
+        [$factoryClass, 'createAdapterConfigurator']
+    );
+}
+
+$issueTrackers = [
+    'github' => 'Gush\Adapter\GitHubFactory',
+    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
+    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
+    'gitlab' => 'Gush\Adapter\GitLabFactory',
+];
+
+foreach ($issueTrackers as $trackerName => $factoryClass) {
+    if (!class_exists($factoryClass)) {
+        continue;
+    }
+
+    $adapterFactory->registerIssueTracker(
+        $trackerName,
+        [$factoryClass, 'createIssueTracker'],
+        [$factoryClass, 'createIssueTrackerConfigurator']
+    );
+}
+
+$app = new Gush\Application($adapterFactory);
 
 // The first time the application runs it will configure the github credentials
 // and create the cache folder
