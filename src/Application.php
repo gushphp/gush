@@ -218,8 +218,8 @@ class Application extends BaseApplication
                 } elseif ($this->adapter instanceof IssueTracker) {
                     $this->issueTracker = $this->adapter;
                 } else {
-                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue-tracker is configured. '."\n".
-                        'Please run the "init" or "core:configure" command to configure a (default) issue-tracker.';
+                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '."\n".
+                        'Please run the "init" or "core:configure" command to configure a (default) issue tracker.';
 
                     throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
                 }
@@ -284,7 +284,7 @@ class Application extends BaseApplication
 
         if ([] !== $ignoredAdapters) {
             $exceptionMessage .= sprintf(
-                'Note, the following adapters (may support this repository) but are current not configured: "%s".',
+                'Note, the following adapters (may support this repository) but are currently not configured: "%s".',
                 implode('", "', $ignoredAdapters)
             );
 
@@ -321,7 +321,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * Builds the issue-tracker for the application.
+     * Builds the issue tracker for the application.
      *
      * @param string $issueTrackerName
      * @param array  $config

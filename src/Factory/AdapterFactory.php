@@ -53,7 +53,7 @@ class AdapterFactory
     }
 
     /**
-     * Returns whether adapter by name registered.
+     * Returns whether adapter by name is registered.
      *
      * @param string $name
      *
@@ -86,14 +86,14 @@ class AdapterFactory
     public function registerIssueTracker($name, $issueTrackerFactory, $issueTrackerConfigurator)
     {
         if (isset($this->issueTrackers[$name])) {
-            throw new \InvalidArgumentException(sprintf('An issue-tracker with name "%s" is already registered.', $name));
+            throw new \InvalidArgumentException(sprintf('An issue tracker with name "%s" is already registered.', $name));
         }
 
         $this->issueTrackers[$name] = [$issueTrackerFactory, $issueTrackerConfigurator];
     }
 
     /**
-     * Returns whether issue-tracker by name registered.
+     * Returns whether issue tracker by name is registered.
      *
      * @param string $name
      *
@@ -115,7 +115,7 @@ class AdapterFactory
     }
 
     /**
-     * Creates a new Adapter object with the given Configuration.
+     * Creates a new Adapter object with the given configuration.
      *
      * @param string $name
      * @param array  $adapterConfig
@@ -182,7 +182,7 @@ class AdapterFactory
     }
 
     /**
-     * Creates a new IssueTracker object with the given Configuration.
+     * Creates a new IssueTracker object with the given configuration.
      *
      * @param string $name
      * @param array  $issueTrackerConfig
@@ -216,9 +216,9 @@ class AdapterFactory
     }
 
     /**
-     * Creates a new Configurator instance for the given issueTracker.
+     * Creates a new Configurator instance for the given issue tracker.
      *
-     * @param string    $name      Name of the issueTracker (must be registered)
+     * @param string    $name      Name of the issue tracker (must be registered)
      * @param HelperSet $helperSet HelperSet object
      *
      * @return Configurator
@@ -230,7 +230,7 @@ class AdapterFactory
     {
         if (!isset($this->issueTrackers[$name])) {
             throw new \InvalidArgumentException(
-                sprintf('No IssueTracker with name "%s" is registered.', $name)
+                sprintf('No issue tracker with name "%s" is registered.', $name)
             );
         }
 
@@ -239,7 +239,7 @@ class AdapterFactory
         if (!$configurator instanceof Configurator) {
             throw new \LogicException(
                 sprintf(
-                    'Configurator-Factory callback is expected to return a Gush\Adapter\Configurator instance, got "%s" instead.',
+                    'Issue tracker configurator-Factory callback is expected to return a Gush\Adapter\Configurator instance, got "%s" instead.',
                     is_object($configurator) ? get_class($configurator) : gettype($configurator)
                 )
             );

@@ -62,8 +62,6 @@ class ConfigureCommandTest extends BaseTestCase
                     ]
 
                 ],
-
-
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
                 'local' => $localDir,
@@ -157,7 +155,7 @@ class ConfigureCommandTest extends BaseTestCase
 
         $dialog->select(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose issue-tracker:'),
+            Argument::containingString('Choose issue tracker:'),
             ['github', 'jira'],
             null
         )->willReturn(1);
@@ -195,7 +193,7 @@ class ConfigureCommandTest extends BaseTestCase
 
         $dialog->askConfirmation(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would you like to make "jira" the default issue-tracker?',
+            'Would you like to make "jira" the default issue tracker?',
             true
         )->willReturn(true);
 

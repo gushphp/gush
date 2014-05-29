@@ -74,17 +74,7 @@ class DefaultConfigurator implements Configurator
     }
 
     /**
-     * Configures the adapter for usage.
-     *
-     * This methods is called for building the adapter configuration
-     * which will be used every time a command is executed with adapter.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return array Validated and normalized configuration as associative array
-     *
-     * @throws \Exception When any of the validators returns an error
+     * {@inheritdoc}
      */
     public function interact(InputInterface $input, OutputInterface $output)
     {
@@ -143,6 +133,15 @@ class DefaultConfigurator implements Configurator
         return $config;
     }
 
+    /**
+     * Validates if the value is none-empty.
+     *
+     * @param $value
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return mixed original value when valid
+     */
     public function validateNoneEmpty($value)
     {
         if (empty($value)) {
@@ -152,6 +151,15 @@ class DefaultConfigurator implements Configurator
         return $value;
     }
 
+    /**
+     * Validates if the value is none-empty and a valid URL.
+     *
+     * @param string $url
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string
+     */
     public function validateUrl($url)
     {
         if (empty($url)) {

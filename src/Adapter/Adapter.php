@@ -75,20 +75,20 @@ interface Adapter
      * @param int    $id
      * @param string $message
      *
-     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/issues/1347#issuecomment-1
+     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/pull/1347#issuecomment-1
      *
      * @throws AdapterException when creating of command failed (eg. disabled or not authorized)
      */
     public function createComment($id, $message);
 
     /**
-     * Gets commands of an issue/pull-request.
+     * Gets comments of a pull-request..
      *
      * Returned value must be an array with the following data per entry (values are by example).
      * If a value is not supported null must be used instead.
      *
      * "id":         1
-     * "url":        "https://api.github.com/repos/octocat/Hello-World/issues/comments/1"
+     * "url":        "https://github.com/octocat/Hello-World/pull/1347#issuecomment-1"
      * "body":       "Me too"
      * "user":       "username"
      * "created_at": "DateTime Object"
@@ -104,7 +104,7 @@ interface Adapter
      * Gets the supported labels.
      *
      * When the issue tracker does not support labels,
-     * this will return an empty array
+     * this will return an empty array.
      *
      * @return string[]
      */
@@ -231,9 +231,6 @@ interface Adapter
     /**
      * Gets the pull-requests.
      *
-     * Returned value must be an array with the following data per entry (values are by example).
-     * If a value is not supported null must be used instead.
-     *
      * @param string $state   Only get pull-requests with this state (use getPullRequestStates() supported states)
      * @param int    $page
      * @param int    $perPage
@@ -245,7 +242,7 @@ interface Adapter
     public function getPullRequests($state = null, $page = 1, $perPage = 30);
 
     /**
-     * Get the supported pull-request states.
+     * Gets the supported pull-request states.
      *
      * @return string[]
      */
@@ -267,7 +264,7 @@ interface Adapter
     /**
      * Creates a new release asset.
      *
-     * An asset be eg documentation or a full download (library package with vendors).
+     * An asset can be eg documentation or a full download (library package with vendors).
      * Not every Hub provider supports this however, so implementation is optional.
      *
      * @param int    $id          Id of the release (must exist)
@@ -284,9 +281,6 @@ interface Adapter
      *
      * Returned value must be an array with the following data per entry (values are by example).
      * If a value is not supported null must be used instead.
-     *
-     * Note. Size is in bytes, url contains link to asset but may not necessary
-     * download the actual asset. State can be: "uploaded", "empty", or "uploading".
      *
      * "url":           "https://github.com/octocat/Hello-World/releases/v1.0.0"
      * "id":            1
@@ -309,7 +303,7 @@ interface Adapter
      * Returned value must be an array with the following data per entry (values are by example).
      * If a value is not supported null must be used instead.
      *
-     * Note. Size is in bytes, url contains link to asset but may not necessary
+     * Note. Size is in bytes, url contains a link to the asset. but may not necessarily
      * download the actual asset. State can be: "uploaded", "empty", or "uploading".
      *
      * "url":           "https://api.github.com/repos/octocat/Hello-World/releases/assets/1"

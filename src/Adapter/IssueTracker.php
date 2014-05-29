@@ -14,9 +14,9 @@ namespace Gush\Adapter;
 use Gush\Exception\AdapterException;
 
 /**
- * Adapter is the interface implemented by all Gush Adapter classes.
+ * IssueTracker is the interface implemented by all Gush IssueTracker classes.
  *
- * Note that each adapter instance can be only used for one repository.
+ * Note that each IssueTracker instance can be only used once per issue tracker system.
  *
  * @author Aaron Scherer <aequasi@gmail.com>
  * @author Luis Cordova <cordoval@gmail.com>
@@ -151,13 +151,13 @@ interface IssueTracker
     public function createComment($id, $message);
 
     /**
-     * Gets commands of an issue/pull-request.
+     * Gets comments of an issue.
      *
      * Returned value must be an array with the following data per entry (values are by example).
      * If a value is not supported null must be used instead.
      *
      * "id":         1
-     * "url":        "https://api.github.com/repos/octocat/Hello-World/issues/comments/1"
+     * "url":        "https://github.com/octocat/Hello-World/issues/1347#issuecomment-1"
      * "body":       "Me too"
      * "user":       "username"
      * "created_at": "DateTime Object"

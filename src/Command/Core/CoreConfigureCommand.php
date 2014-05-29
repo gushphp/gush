@@ -50,7 +50,7 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
                 'What adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
-                'issue-tracker',
+                'issue tracker',
                 'it',
                 InputOption::VALUE_OPTIONAL,
                 'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
@@ -110,7 +110,7 @@ EOF
         $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
 
         $adapterName = $input->getOption('adapter');
-        $issueTrackerName = $input->getOption('issue-tracker');
+        $issueTrackerName = $input->getOption('issue tracker');
         $versionEyeToken = null;
         $selection = 0;
 
@@ -150,7 +150,7 @@ EOF
 
             $selection = $dialog->select(
                 $output,
-                'Choose issue-tracker: ',
+                'Choose issue tracker: ',
                 array_keys($issueTrackers),
                 $selection
             );
@@ -159,7 +159,7 @@ EOF
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
-                    'The issue-tracker "%s" is invalid. Available adapters are "%s"',
+                    'The issue tracker "%s" is invalid. Available adapters are "%s"',
                     $issueTrackerName,
                     implode('", "', array_keys($issueTrackers))
                 )
@@ -169,7 +169,7 @@ EOF
         $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
 
         $currentDefault = $this->config->get('issue_tracker');
-        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default issue-tracker?', $issueTrackerName), null === $currentDefault)) {
+        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName), null === $currentDefault)) {
             $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
 
@@ -253,7 +253,13 @@ EOF
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln('');
 
-                if (null !== $this->getAdapter() && null !== $url = $this->getAdapter()->getTokenGenerationUrl()) {
+                if ('adapters' !== $configName) {
+                    $adapter = $this->getIssueTracker();
+                } else {
+                    $adapter = $this->getAdapter();
+                }
+
+                if (null !== $adapter && null !== $url = $adapter->getTokenGenerationUrl()) {
                     $output->writeln("You can create valid access tokens at {$url}.");
                 }
             }

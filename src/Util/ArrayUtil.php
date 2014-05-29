@@ -12,7 +12,7 @@
 namespace Gush\Util;
 
 /**
- * ArrayUtil class
+ * ArrayUtil class.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

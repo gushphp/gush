@@ -66,6 +66,11 @@ abstract class BaseAdapter implements Adapter
         return $this->username;
     }
 
+    /**
+     * @param string $repository
+     *
+     * @return $this
+     */
     public function setRepository($repository)
     {
         $this->repository = $repository;
@@ -81,16 +86,25 @@ abstract class BaseAdapter implements Adapter
         return $this->repository;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function createReleaseAssets($id, $name, $contentType, $content)
     {
         // noop
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getReleaseAssets($id)
     {
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function removeRelease($id)
     {
         // noop

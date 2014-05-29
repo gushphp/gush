@@ -104,7 +104,7 @@ EOF
 
         // post filter
         foreach ($issues as $i => &$issue) {
-            $isPr = isset($issue['pull_request']);
+            $isPr = $issue['pull_request'];
             $issue['_type'] = $isPr ? 'pr' : 'issue';
 
             if ($type = $input->getOption('type')) {

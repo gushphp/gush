@@ -41,7 +41,7 @@ class InitCommand extends BaseCommand
                 'What adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
-                'issue-tracker',
+                'issue tracker',
                 'it',
                 InputOption::VALUE_OPTIONAL,
                 'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
@@ -74,7 +74,7 @@ EOF
         $adapters = $application->getAdapterFactory()->getAdapters();
         $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
         $adapterName = $input->getOption('adapter');
-        $issueTrackerName = $input->getOption('issue-tracker');
+        $issueTrackerName = $input->getOption('issue tracker');
 
         $filename = $config->get('local_config');
 
@@ -82,17 +82,17 @@ EOF
         $dialog = $this->getHelper('dialog');
 
         if (null === $adapterName) {
-            $issueTrackerIdxs = array_keys($adapters);
-            $currentValue = (int) array_search($config->get('adapter'), $issueTrackerIdxs);
+            $adaptersIdxs = array_keys($adapters);
+            $currentValue = (int) array_search($config->get('adapter'), $adaptersIdxs);
 
             $selection = $dialog->select(
                 $output,
                 'Choose adapter: ',
-                $issueTrackerIdxs,
+                $adaptersIdxs,
                 $currentValue
             );
 
-            $adapterName = $issueTrackerIdxs[$selection];
+            $adapterName = $adaptersIdxs[$selection];
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
@@ -118,7 +118,7 @@ EOF
 
             $selection = $dialog->select(
                 $output,
-                'Choose issue-tracker: ',
+                'Choose issue tracker: ',
                 $issueTrackerIdxs,
                 $currentValue
             );
@@ -137,7 +137,7 @@ EOF
         if (!$config->has(sprintf('[issue_trackers][%s]', $issueTrackerName))) {
             throw new \Exception(
                 sprintf(
-                    'The issue-tracker "%s" is not yet configured. Please run the "core:configure" command.',
+                    'The issue tracker "%s" is not yet configured. Please run the "core:configure" command.',
                     $issueTrackerName
                 )
             );
@@ -156,7 +156,7 @@ EOF
             $params = array_merge(Yaml::parse(file_get_contents($filename)), $params);
         }
 
-        if (!file_put_contents($filename, Yaml::dump($params), 0644)) {
+        if (!@file_put_contents($filename, Yaml::dump($params), 0644)) {
             $output->writeln('<error>Configuration file cannot be saved.</error>');
         }
 

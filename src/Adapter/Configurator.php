@@ -29,7 +29,7 @@ interface Configurator
      * Configures the adapter for usage.
      *
      * This methods is called for building the adapter configuration
-     * which will be used every time a command is executed with adapter.
+     * which will be used every time a command is executed with the adapter.
      *
      * @param InputInterface  $input
      * @param OutputInterface $output

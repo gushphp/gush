@@ -180,7 +180,7 @@ class InitCommandTest extends BaseTestCase
 
         $dialog->select(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose issue-tracker:'),
+            Argument::containingString('Choose issue tracker:'),
             ['github', 'jira'],
             0
         )->willReturn(1);
