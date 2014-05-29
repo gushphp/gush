@@ -100,7 +100,7 @@ EOF
             $params['since'] = date('c', $timeStamp);
         }
 
-        $issues  = $adapter->getIssues($params);
+        $issues = $adapter->getIssues($params);
 
         // post filter
         foreach ($issues as $i => &$issue) {
@@ -132,7 +132,7 @@ EOF
                 $this->getHelper('text')->truncate($issue['milestone'], 15),
                 $this->getHelper('text')->truncate(implode(',', $issue['labels']), 30),
                 null !== $issue['created_at'] ? $issue['created_at']->format('Y-m-d H:i') : '',
-                $issue['html_url'],
+                $issue['url'],
             ];
         });
 

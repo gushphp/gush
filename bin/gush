@@ -64,6 +64,9 @@ foreach ($adapters as $adapterName => $factoryClass) {
 }
 
 $issueTrackers = [
+    'github' => 'Gush\Adapter\GitHubFactory',
+    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
+    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
     'gitlab' => 'Gush\Adapter\GitLabFactory',
 ];
 

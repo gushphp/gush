@@ -126,7 +126,6 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
                 'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
                 'closed_by' => null,
-                'html_url' => $this->getIssueUrl('1'),
                 'pull_request' => true,
             ],
             [
@@ -142,7 +141,6 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
                 'updated_at' => new \DateTime('1969-12-31T12:00:00+0100'),
                 'closed_by' => null,
-                'html_url' => $this->getIssueUrl('2'),
                 'pull_request' => false,
             ],
         ];
