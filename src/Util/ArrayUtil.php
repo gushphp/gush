@@ -23,7 +23,7 @@ class ArrayUtil
         $values = [];
 
         foreach ($array as $item) {
-            $values = $item[$key];
+            $values[] = $item[$key];
         }
 
         return $values;
