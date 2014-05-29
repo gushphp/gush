@@ -366,6 +366,7 @@ class Application extends BaseApplication
             new Cmd\PullRequest\PullRequestMergeCommand(),
             new Cmd\PullRequest\PullRequestCloseCommand(),
             new Cmd\PullRequest\PullRequestPatOnTheBackCommand(),
+            new Cmd\PullRequest\PullRequestAssignCommand(),
             new Cmd\PullRequest\PullRequestSwitchBaseCommand(),
             new Cmd\PullRequest\PullRequestSquashCommand(),
             new Cmd\PullRequest\PullRequestSemVerCommand(),

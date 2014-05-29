@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command\Issue;
+namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
@@ -18,11 +18,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Assigns an issue to a user.
+ * Assigns a pull request to a user.
  *
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class IssueAssignCommand extends BaseCommand implements GitRepoFeature
+class PullRequestAssignCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -30,13 +30,13 @@ class IssueAssignCommand extends BaseCommand implements GitRepoFeature
     protected function configure()
     {
         $this
-            ->setName('issue:assign')
-            ->setDescription('Assigns an issue to a user')
-            ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
+            ->setName('pull-request:assign')
+            ->setDescription('Assigns a pull-request to a user')
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'Number of the pull request')
             ->addArgument('username', InputArgument::REQUIRED, 'Username of the assignee')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command assigns an issue to a user:
+The <info>%command.name%</info> command assigns a pull request to a user:
 
     <info>$ gush %command.name% 3 cordoval</info>
 
@@ -50,14 +50,14 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $issueNumber = $input->getArgument('issue_number');
+        $issueNumber = $input->getArgument('pr_number');
         $username = $input->getArgument('username');
 
-        $adapter = $this->getIssueTracker();
-        $adapter->updateIssue($issueNumber, ['assignee' => $username]);
+        $adapter = $this->getAdapter();
+        $adapter->updatePullRequest($issueNumber, ['assignee' => $username]);
 
-        $url = $adapter->getIssueUrl($issueNumber);
-        $output->writeln("Issue {$url} was assigned to {$username}!");
+        $url = $adapter->getPullRequest($issueNumber)['url'];
+        $output->writeln("Pull request {$url} was assigned to {$username}!");
 
         return self::COMMAND_SUCCESS;
     }
