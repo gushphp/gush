@@ -49,15 +49,25 @@ Link: https://github.com/gushphp/gush/issues/60
 Help me conquer the world. Teach them to use Gush.
 EOT;
 
-    const ISSUE_LIST = <<<EOT
+    const ISSUE_LIST_ALL = <<<EOT
 +---+-------+-----+------------+------------+----------+-----------------+------------------+------------------+------------------------------------------+
 | # | State | PR? | Title      | User       | Assignee | Milestone       | Labels           | Created          | Link                                     |
 +---+-------+-----+------------+------------+----------+-----------------+------------------+------------------+------------------------------------------+
-| 1 | open  |     | easy issue | cordoval   | cordoval | good_release    | critic,easy pick | 1969-12-31 10:00 | https://github.com/gushphp/gush/issues/1 |
+| 1 | open  | PR  | easy issue | cordoval   | cordoval | good_release    | critic,easy pick | 1969-12-31 10:00 | https://github.com/gushphp/gush/issues/1 |
 | 2 | open  |     | hard issue | weaverryan | cordoval | some_good_stuff | critic           | 1969-12-31 10:00 | https://github.com/gushphp/gush/issues/2 |
 +---+-------+-----+------------+------------+----------+-----------------+------------------+------------------+------------------------------------------+
 
 2 issues
+EOT;
+
+    const ISSUE_LIST_NO_PR = <<<EOT
++---+-------+-----+------------+------------+----------+-----------------+--------+------------------+------------------------------------------+
+| # | State | PR? | Title      | User       | Assignee | Milestone       | Labels | Created          | Link                                     |
++---+-------+-----+------------+------------+----------+-----------------+--------+------------------+------------------------------------------+
+| 2 | open  |     | hard issue | weaverryan | cordoval | some_good_stuff | critic | 1969-12-31 10:00 | https://github.com/gushphp/gush/issues/2 |
++---+-------+-----+------------+------------+----------+-----------------+--------+------------------+------------------------------------------+
+
+1 issues
 EOT;
 
     const ISSUE_CLOSE = <<<EOT

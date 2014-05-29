@@ -83,18 +83,18 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     public function getIssue($id)
     {
         return [
-            'url'          => $this->getIssueUrl($id),
-            'number'       => $id,
-            'state'        => 'open',
-            'title'        => 'Write a behat test to launch strategy',
-            'body'         => 'Help me conquer the world. Teach them to use Gush.',
-            'user'         => 'weaverryan',
-            'labels'       => ['actionable', 'easy pick'],
-            'assignee'     => 'cordoval',
-            'milestone'    => 'v1.0',
-            'created_at'   => new \DateTime('2014-05-14T15:30:00+0100'),
-            'updated_at'   => new \DateTime('2014-05-14T15:30:00+0100'),
-            'closed_by'    => null,
+            'url' => $this->getIssueUrl($id),
+            'number' => $id,
+            'state' => 'open',
+            'title' => 'Write a behat test to launch strategy',
+            'body' => 'Help me conquer the world. Teach them to use Gush.',
+            'user' => 'weaverryan',
+            'labels' => ['actionable', 'easy pick'],
+            'assignee' => 'cordoval',
+            'milestone' => 'v1.0',
+            'created_at' => new \DateTime('2014-05-14T15:30:00+0100'),
+            'updated_at' => new \DateTime('2014-05-14T15:30:00+0100'),
+            'closed_by' => null,
             'pull_request' => true,
         ];
     }
@@ -114,34 +114,36 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                'url'          => $this->getIssueUrl(1),
-                'number'       => 1,
-                'state'        => 'open',
-                'title'        => 'easy issue',
-                'body'         => 'this issue is easy',
-                'user'         => 'cordoval',
-                'labels'       => ['critic', 'easy pick'],
-                'assignee'     => 'cordoval',
-                'milestone'    => 'good_release',
-                'created_at'   => new \DateTime('1969-12-31T10:00:00+0100'),
-                'updated_at'   => new \DateTime('1969-12-31T10:00:00+0100'),
-                'closed_by'    => null,
-                'html_url'   => $this->getIssueUrl('1'),
+                'url' => $this->getIssueUrl(1),
+                'number' => 1,
+                'state' => 'open',
+                'title' => 'easy issue',
+                'body' => 'this issue is easy',
+                'user' => 'cordoval',
+                'labels' => ['critic', 'easy pick'],
+                'assignee' => 'cordoval',
+                'milestone' => 'good_release',
+                'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+                'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+                'closed_by' => null,
+                'html_url' => $this->getIssueUrl('1'),
+                'pull_request' => true,
             ],
             [
-                'url'          => $this->getIssueUrl(2),
-                'number'       => 2,
-                'state'        => 'open',
-                'title'        => 'hard issue',
-                'body'         => 'this issue is not so easy',
-                'user'         => 'weaverryan',
-                'labels'       => ['critic'],
-                'assignee'     => 'cordoval',
-                'milestone'    => 'some_good_stuff',
-                'created_at'   => new \DateTime('1969-12-31T10:00:00+0100'),
-                'updated_at'   => new \DateTime('1969-12-31T12:00:00+0100'),
-                'closed_by'    => null,
-                'html_url'   => $this->getIssueUrl('2'),
+                'url' => $this->getIssueUrl(2),
+                'number' => 2,
+                'state' => 'open',
+                'title' => 'hard issue',
+                'body' => 'this issue is not so easy',
+                'user' => 'weaverryan',
+                'labels' => ['critic'],
+                'assignee' => 'cordoval',
+                'milestone' => 'some_good_stuff',
+                'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+                'updated_at' => new \DateTime('1969-12-31T12:00:00+0100'),
+                'closed_by' => null,
+                'html_url' => $this->getIssueUrl('2'),
+                'pull_request' => false,
             ],
         ];
     }
@@ -182,10 +184,10 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                "id"         => 1,
-                "url"        => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
-                "body"       => "Seems good to me",
-                "user"       => "sstok",
+                "id" => 1,
+                "url" => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
+                "body" => "Seems good to me",
+                "user" => "sstok",
                 "created_at" => new \DateTime('1969-12-31T10:00:00+0100'),
                 "updated_at" => new \DateTime('1969-12-31T10:00:00+0100'),
             ]
@@ -225,31 +227,31 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     public function getPullRequest($id)
     {
         return [
-            'url'          => 'https://github.com/gushphp/gush/pull/'.$id,
-            'number'       => $id,
-            'state'        => 'open',
-            'title'        => 'Write a behat test to launch strategy',
-            'body'         => 'Help me conquer the world. Teach them to use gush.',
-            'labels'       => ['actionable', 'easy pick'],
-            'milestone'    => 'some_good_stuff',
-            'created_at'   => new \DateTime('1969-12-31T10:00:00+0100'),
-            'updated_at'   => new \DateTime('1969-12-31T10:00:00+0100'),
-            'user'         => 'weaverryan',
-            'assignee'     => 'cordoval',
+            'url' => 'https://github.com/gushphp/gush/pull/'.$id,
+            'number' => $id,
+            'state' => 'open',
+            'title' => 'Write a behat test to launch strategy',
+            'body' => 'Help me conquer the world. Teach them to use gush.',
+            'labels' => ['actionable', 'easy pick'],
+            'milestone' => 'some_good_stuff',
+            'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+            'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+            'user' => 'weaverryan',
+            'assignee' => 'cordoval',
             'merge_commit' => null, // empty as the pull request is not merged
-            'merged'       => false,
-            'merged_by'    => null,
+            'merged' => false,
+            'merged_by' => null,
             'head' => [
                 'ref' =>  'head_ref',
-                'sha'  => '6dcb09b5b57875f334f61aebed695e2e4193db5e',
+                'sha' => '6dcb09b5b57875f334f61aebed695e2e4193db5e',
                 'user' => 'cordoval',
                 'repo' => 'gush',
             ],
             'base' => [
-              'ref'   => 'base_ref',
+              'ref' => 'base_ref',
               'label' => 'base_ref',
-              'sha'   => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
-              'repo'  => 'gush',
+              'sha' => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+              'repo' => 'gush',
             ],
         ];
     }
@@ -269,14 +271,14 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                'sha'     => '32fe234332fe234332fe234332fe234332fe2343',
+                'sha' => '32fe234332fe234332fe234332fe234332fe2343',
                 'message' => 'added merge pull request feature',
-                'user'    => 'cordoval'
+                'user' => 'cordoval'
             ],
             [
-                'sha'     => 'ab34567812345678123456781234567812345678',
+                'sha' => 'ab34567812345678123456781234567812345678',
                 'message' => 'added final touches',
-                'user'    => 'cordoval'
+                'user' => 'cordoval'
             ],
         ];
     }
@@ -303,29 +305,29 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                'url'          =>  'https://github.com/gushphp/gush/pull/17',
-                'number'       =>  17,
-                'state'        =>  'open',
-                'title'        =>  'New feature added',
-                'body'         =>  'Help me conquer the world. Teach them to use gush.',
-                'labels'       =>  ['actionable', 'easy pick'],
-                'milestone'    =>  'some_good_stuff',
-                'created_at'   =>  new \DateTime('2014-04-14T17:24:12+0100'),
-                'updated_at'   =>  new \DateTime('2014-04-14T17:24:12+0100'),
-                'user'         =>  'pierredup',
-                'assignee'     =>  'cordoval',
+                'url' =>  'https://github.com/gushphp/gush/pull/17',
+                'number' =>  17,
+                'state' =>  'open',
+                'title' =>  'New feature added',
+                'body' =>  'Help me conquer the world. Teach them to use gush.',
+                'labels' =>  ['actionable', 'easy pick'],
+                'milestone' =>  'some_good_stuff',
+                'created_at' =>  new \DateTime('2014-04-14T17:24:12+0100'),
+                'updated_at' =>  new \DateTime('2014-04-14T17:24:12+0100'),
+                'user' =>  'pierredup',
+                'assignee' =>  'cordoval',
                 'merge_commit' =>  null, // empty as the pull request is not merged
-                'merged'       =>  false,
-                'merged_by'    =>  null,
+                'merged' =>  false,
+                'merged_by' =>  null,
                 'head' => [
-                    'ref'  =>  'head_ref',
-                    'sha'  =>  '6dcb09b5b57875f334f61aebed695e2e4193db5e',
+                    'ref' =>  'head_ref',
+                    'sha' =>  '6dcb09b5b57875f334f61aebed695e2e4193db5e',
                     'user' =>  'pierredup',
                     'repo' =>  'gush',
                 ],
                 'base' => [
-                    'ref'  =>  'base_ref',
-                    'sha'  =>  '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+                    'ref' =>  'base_ref',
+                    'sha' =>  '6dcb09b5b57875f334f61acmes695e2e4193db5e',
                     'repo' =>  'gush',
                 ],
             ]
@@ -359,16 +361,16 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                "url"           => "https://github.com/octocat/Hello-World/releases/v1.0.0",
-                "id"            => 1,
-                "name"          => "v1.0.0",
-                "tag_name"      => "v1.0.0",
-                "body"          => "Description of the release",
-                "draft"         => false,
-                "prerelease"    => false,
-                "created_at"    => new \DateTime('2014-01-05T10:00:12+0100'),
-                "published_at"  => new \DateTime('2014-01-05T10:00:12+0100'),
-                "user"          => "username",
+                "url" => "https://github.com/octocat/Hello-World/releases/v1.0.0",
+                "id" => 1,
+                "name" => "v1.0.0",
+                "tag_name" => "v1.0.0",
+                "body" => "Description of the release",
+                "draft" => false,
+                "prerelease" => false,
+                "created_at" => new \DateTime('2014-01-05T10:00:12+0100'),
+                "published_at" => new \DateTime('2014-01-05T10:00:12+0100'),
+                "user" => "username",
             ],
         ];
     }
@@ -395,16 +397,16 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                'url'           => 'https://api.github.com/repos/octocat/Hello-World/releases/assets/'.$id,
-                'id'            => 1,
-                'name'          => 'example.zip',
-                'label'         => 'short description',
-                'state'         => 'uploaded',
-                'content_type'  => 'application/zip',
-                'size'          => 1024,
-                'created_at'    => new \DateTime('2014-01-05T10:00:12+0100'),
-                'updated_at'    => new \DateTime('2014-01-05T10:00:12+0100'),
-                'uploader'      => 'username',
+                'url' => 'https://api.github.com/repos/octocat/Hello-World/releases/assets/'.$id,
+                'id' => 1,
+                'name' => 'example.zip',
+                'label' => 'short description',
+                'state' => 'uploaded',
+                'content_type' => 'application/zip',
+                'size' => 1024,
+                'created_at' => new \DateTime('2014-01-05T10:00:12+0100'),
+                'updated_at' => new \DateTime('2014-01-05T10:00:12+0100'),
+                'uploader' => 'username',
             ]
         ];
     }
