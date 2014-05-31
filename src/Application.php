@@ -261,7 +261,7 @@ class Application extends BaseApplication
 
         foreach ($this->getAdapterFactory()->getAdapters() as $adapterName => $adapterSpec) {
             $factoryClass = $adapterSpec[0][0];
-			$config = $this->config->get(sprintf('[adapters][%s]', $adapterName));
+            $config = $this->config->get(sprintf('[adapters][%s]', $adapterName));
 
             // Adapter is not configured ignore
             if (null === $config) {
