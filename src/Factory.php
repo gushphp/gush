@@ -113,6 +113,10 @@ class Factory
 
         try {
             $parsed = Yaml::parse($homeFilename);
+
+            // Don't overwrite local config
+            unset($parsed['parameters']['local'], $parsed['parameters']['local_config']);
+
             $config->merge($parsed['parameters']);
 
             if (!$config->isValid()) {

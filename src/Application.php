@@ -198,7 +198,7 @@ class Application extends BaseApplication
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-        if ('core:configure' !== $this->getCommandName($input) && 'init' !== $this->getCommandName($input) ) {
+        if ('core:configure' !== $this->getCommandName($input)) {
             $this->config = Factory::createConfig();
             $adapter = null;
 
@@ -303,13 +303,28 @@ class Application extends BaseApplication
      * @param array          $config
      *
      * @return Adapter
+     *
+     * @throws \RuntimeException when the adapter configuration is invalid
      */
     public function buildAdapter($adapter, array $config = null)
     {
         if (!$adapter instanceof Adapter) {
+            if (null === $config) {
+                $config = $this->config->get(sprintf('[adapters][%s]', $adapter));
+            }
+
+            if (null === $config) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'The adapter "%s" is not configured yet. Please run the "core:configure" command to configure.',
+                        $adapter
+                    )
+                );
+            }
+
             $adapter = $this->adapterFactory->createAdapter(
                 $adapter,
-                $config ?: $this->config->get(sprintf('[adapters][%s]', $adapter)),
+                $config,
                 $this->config
             );
         }

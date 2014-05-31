@@ -241,6 +241,10 @@ EOF
                 break;
             }
 
+            if ($authenticationAttempts > 1) {
+                $output->writeln("<error>Authentication failed please try again.</error>");
+            }
+
             $config = $configurator->interact($input, $output);
 
             try {

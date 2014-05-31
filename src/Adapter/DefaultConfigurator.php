@@ -144,6 +144,8 @@ class DefaultConfigurator implements Configurator
      */
     public function validateNoneEmpty($value)
     {
+        $value = trim($value);
+
         if (empty($value)) {
             throw new \InvalidArgumentException('The field cannot be empty.');
         }
