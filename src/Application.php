@@ -259,8 +259,7 @@ class Application extends BaseApplication
         $remoteUrl = strtolower($process->getOutput());
         $ignoredAdapters = [];
 
-        foreach ($this->getAdapterFactory()->getAdapters() as $adapterName => $adapterSpec) {
-            $factoryClass = $adapterSpec[0][0];
+        foreach (array_keys($this->getAdapterFactory()->getAdapters()) as $adapterName) {
             $config = $this->config->get(sprintf('[adapters][%s]', $adapterName));
 
             // Adapter is not configured ignore
@@ -270,7 +269,8 @@ class Application extends BaseApplication
                 continue;
             }
 
-            $adapter = $factoryClass::createAdapter(
+            $adapter = $this->adapterFactory->createAdapter(
+                $adapterName,
                 $config,
                 $this->config
             );
