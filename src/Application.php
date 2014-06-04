@@ -389,7 +389,7 @@ class Application extends BaseApplication
             new Cmd\PullRequest\PullRequestLabelListCommand(),
             new Cmd\PullRequest\PullRequestMilestoneListCommand(),
             new Cmd\PullRequest\PullRequestFixerCommand(),
-            new Cmd\PullRequest\PullRequestVersionEyeCommand(),
+            new Cmd\Util\VersionEyeCommand(),
             new Cmd\Util\FabbotIoCommand(),
             new Cmd\Util\MetaHeaderCommand(),
             new Cmd\Release\ReleaseCreateCommand(),

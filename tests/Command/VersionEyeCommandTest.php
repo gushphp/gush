@@ -11,18 +11,18 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Command\PullRequest\PullRequestVersionEyeCommand;
+use Gush\Command\Util\VersionEyeCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class PullRequestVersionEyeCommandTest extends BaseTestCase
+class VersionEyeCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
         $processHelper = $this->expectProcessHelper();
-        $tester = $this->getCommandTester($command = new PullRequestVersionEyeCommand());
+        $tester = $this->getCommandTester($command = new VersionEyeCommand());
         $command->getHelperSet()->set($processHelper, 'process');
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush-sandbox'], ['interactive' => false]);
 

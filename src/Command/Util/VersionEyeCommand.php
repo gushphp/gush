@@ -9,14 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command\PullRequest;
+namespace Gush\Command\Util;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestVersionEyeCommand extends BaseCommand implements GitRepoFeature
+class VersionEyeCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -24,7 +25,8 @@ class PullRequestVersionEyeCommand extends BaseCommand implements GitRepoFeature
     protected function configure()
     {
         $this
-            ->setName('pull-request:version-eye')
+            ->setName('version-eye:check')
+            ->addOption('stable', null, InputOption::VALUE_NONE, 'Only update dependencies that are stable')
             ->setDescription('Update composer.json dependency versions from versioneye service')
             ->setHelp(
                 <<<EOF
@@ -42,6 +44,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $stable = $input->getOption('stable');
+
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
         $projectName = $org.'/'.$repo;
@@ -61,9 +65,19 @@ EOF
         }
 
         if ('' == $projectId) {
-            $output->writeln("Couldn't resolve the id of the project from the list from version eye.");
+            $output->writeln(
+                "<comment>Couldn't resolve the id of the project from the list from version eye.</comment>"
+            );
 
-            return self::COMMAND_FAILURE;
+            $dialog = $this->getHelper('dialog');
+
+            $project = $dialog->select(
+                $output,
+                'Please choose one of the available projects: ',
+                array_map(function($value) { return $value->name; }, $projectCollection)
+            );
+
+            $projectId = $projectCollection[$project]->id;
         }
 
         $results = $client->get(sprintf('/api/v2/projects/%s', $projectId))->send();
@@ -72,6 +86,11 @@ EOF
 
         foreach ($response->dependencies as $dependency) {
             if ($dependency->outdated) {
+
+                if ($stable && !$dependency->stable) {
+                    continue;
+                }
+
                 $this->getHelper('process')->runCommands(
                     [
                         [
