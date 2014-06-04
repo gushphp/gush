@@ -36,6 +36,8 @@ class TableHelper extends BaseTableHelper implements InputAwareInterface
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->setLayout('default');
     }
 
