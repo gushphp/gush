@@ -29,7 +29,13 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
         $this->input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $this->template = $this->getMock('Gush\Template\TemplateInterface');
 
-        $this->helper = new TemplateHelper($this->dialog);
+        $application = $this->getMockBuilder('Gush\Application')
+            ->disableOriginalConstructor()
+            ->setMethods(['getConfig'])
+            ->getMock()
+        ;
+
+        $this->helper = new TemplateHelper($this->dialog, $application);
         $this->helper->setInput($this->input);
     }
 
