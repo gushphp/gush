@@ -155,7 +155,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      */
     protected function parseProcessArguments($command)
     {
-        if (preg_match_all('/((?:"(?:(?:[^"\\\\]|\\\\.)+)")|(?:\'(?:[^\'\\\\]|\\\\.)+\')|[^ ]+)/i', $command, $result, PREG_PATTERN_ORDER)) {
+        if (preg_match_all('/((?:"(?:(?:[^"\\\\]|\\\\.)+)")|(?:\'(?:[^\'\\\\]|\\\\.)+\')|[^ ]+)/i', $command, $args)) {
             $normalizeCommandArgument = function ($argument) {
                 if ("'" === $argument[0] || '"' === $argument[0]) {
                     $quote = $argument[0];
@@ -168,7 +168,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
                 return $argument;
             };
 
-            return array_map($normalizeCommandArgument, $result[0]);
+            return array_map($normalizeCommandArgument, $args[0]);
         }
 
         throw new \InvalidArgumentException(sprintf('Unable to parse command "%s".', $command));
