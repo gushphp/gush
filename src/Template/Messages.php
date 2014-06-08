@@ -14,12 +14,12 @@ namespace Gush\Template;
 class Messages
 {
     const MERGE = <<<EOT
+{{ type }} #{{ prNumber }} {{ prTitle }} ({{ author }})
+
 This PR was merged into {{ baseBranch }} branch.
 
 Discussion
 ----------
-
-{{ prTitle }}
 
 {{ prBody }}
 

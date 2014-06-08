@@ -35,6 +35,7 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
+            ->addArgument('pr_type', InputArgument::OPTIONAL, 'Pull Request type eg. bug, feature (default is merge)')
             ->addOption(
                 'no-comments',
                 null,
@@ -44,10 +45,11 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
             ->addOption('remote', null, InputOption::VALUE_OPTIONAL, 'Remote to push the notes to', 'origin')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command merges the pull request given:
+The <info>%command.name%</info> command merges the given pull request:
 
     <info>$ gush %command.name% 12</info>
 
+Optionally you prefix can prefix the merge-commit message with a type like bug, feature.
 EOF
             )
         ;
@@ -59,17 +61,25 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $prNumber = $input->getArgument('pr_number');
+        $prType = $input->getArgument('pr_type');
 
         $adapter = $this->getAdapter();
         $pr      = $adapter->getPullRequest($prNumber);
         $commits = $adapter->getPullRequestCommits($prNumber);
 
+        if (null === $prType) {
+            $prType = 'merge';
+        }
+
         $message = $this->render(
             'merge',
             [
+                'type' => $prType,
+                'author' => $pr['user'],
                 'baseBranch' => $pr['base']['label'],
-                'prTitle' => $pr['title'],
-                'prBody' => $pr['body'],
+                'prNumber' => $prNumber,
+                'prTitle' => trim($pr['title']),
+                'prBody' => trim($pr['body']),
                 'commits' => $this->getCommitsString($commits),
             ]
         );
@@ -145,8 +155,13 @@ EOF
     {
         $commitsString = '';
         foreach ($commits as $commit) {
+            // Only use the first line
+            if (strpos($commit['message'], "\n")) {
+                $pr['message'] = explode("\n", $commit['message'])[0];
+            }
+
             $commitsString .= sprintf(
-                "%s %s %s\n",
+                "%s %s (%s)\n",
                 $commit['sha'],
                 $commit['message'],
                 $commit['user']
