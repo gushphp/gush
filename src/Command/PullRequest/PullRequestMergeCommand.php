@@ -49,7 +49,10 @@ The <info>%command.name%</info> command merges the given pull request:
 
     <info>$ gush %command.name% 12</info>
 
-Optionally you prefix can prefix the merge-commit message with a type like bug, feature.
+Optionally you can prefix the merge title with a type like: bug, feature or anything you like.
+<comment>Using a type makes it easier to search for a such a PR-type in your git history.</comment>
+
+    <info>$ gush %command.name% 12 bug</info>
 EOF
             )
         ;
