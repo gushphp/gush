@@ -1,2 +1,10 @@
 adapter: github
 meta-header: "This file is part of Gush package.\n\n(c) 2013-2014 Luis Cordova <cordoval@gmail.com>\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+table-pr:
+    bug_fix: ['Bug Fix?', no]
+    new_feature: ['New Feature?', no]
+    bc_breaks: ['BC Breaks?', no]
+    deprecations: ['Deprecations?', no]
+    tests_pass: ['Tests Pass?', no]
+    fixed_tickets: [Fixed Tickets, '']
+    license: [License, MIT]

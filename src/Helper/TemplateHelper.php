@@ -11,12 +11,14 @@
 
 namespace Gush\Helper;
 
+use Gush\Application;
 use Gush\Template\Meta\Header\GPL3Template;
 use Gush\Template\Meta\Header\MITTemplate;
 use Gush\Template\Meta\Header\NoLicenseTemplate;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create\DefaultTemplate;
 use Gush\Template\PullRequest\Create\EnterpriseTemplate;
+use Gush\Template\PullRequest\Create\PullRequestCustomTemplate;
 use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
 use Gush\Template\PullRequest\Create\ZendFrameworkDocTemplate;
@@ -26,7 +28,6 @@ use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\Helper;
 
 class TemplateHelper extends Helper implements InputAwareInterface
@@ -36,11 +37,12 @@ class TemplateHelper extends Helper implements InputAwareInterface
     protected $dialog;
     protected $input;
 
-    public function __construct(HelperInterface $dialog)
+    public function __construct(HelperInterface $dialog, Application $application)
     {
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
         $this->registerTemplate(new EnterpriseTemplate());
+        $this->registerTemplate(new PullRequestCustomTemplate($application));
         $this->registerTemplate(new PatTemplate());
         $this->registerTemplate(new DefaultTemplate());
         $this->registerTemplate(new ZendFrameworkDocTemplate());
