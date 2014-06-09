@@ -50,12 +50,14 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      * @param \Closure $callback      Callback for Process (e.g. for logging output in realtime)
      *
      * @return string
+     *
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function runCommand($command, $allowFailures = false, $callback = null)
     {
         if (is_string($command)) {
-            $command = explode(' ', $command);
+            $command = $this->parseProcessArguments($command);
         }
 
         $builder = new ProcessBuilder($command);
@@ -85,12 +87,17 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     }
 
     /**
-     * @param  string[]       $arguments
+     * @param string|string[] $command
+     *
      * @return ProcessBuilder
      */
-    public function getProcessBuilder($arguments)
+    public function getProcessBuilder($command)
     {
-        $builder = new ProcessBuilder($arguments);
+        if (is_string($command)) {
+            $command = $this->parseProcessArguments($command);
+        }
+
+        $builder = new ProcessBuilder($command);
         $builder
             ->setWorkingDirectory(getcwd())
             ->setTimeout(3600)
@@ -137,5 +144,33 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         if (!$process->isSuccessful()) {
             throw new \RuntimeException('Please install php-cs-fixer');
         }
+    }
+
+    /**
+     * @param string $command
+     *
+     * @return string[]
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function parseProcessArguments($command)
+    {
+        if (preg_match_all('/((?:"(?:(?:[^"\\\\]|\\\\.)+)")|(?:\'(?:[^\'\\\\]|\\\\.)+\')|[^ ]+)/i', $command, $args)) {
+            $normalizeCommandArgument = function ($argument) {
+                if ("'" === $argument[0] || '"' === $argument[0]) {
+                    $quote = $argument[0];
+
+                    $argument = substr($argument, 1, -1);
+                    $argument = str_replace('\\'.$quote, $quote, $argument);
+                    $argument = str_replace('\\\\', '\\', $argument);
+                }
+
+                return $argument;
+            };
+
+            return array_map($normalizeCommandArgument, $args[0]);
+        }
+
+        throw new \InvalidArgumentException(sprintf('Unable to parse command "%s".', $command));
     }
 }

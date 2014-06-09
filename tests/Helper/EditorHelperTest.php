@@ -12,6 +12,8 @@
 namespace Gush\Tests\Helper;
 
 use Gush\Helper\EditorHelper;
+use Gush\Helper\ProcessHelper;
+use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
@@ -23,7 +25,15 @@ class EditorHelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $helperSet = new HelperSet(
+            [
+                new ProcessHelper()
+            ]
+        );
+
         $this->helper = new EditorHelper();
+        $this->helper->setHelperSet($helperSet);
+
         putenv('EDITOR=cat');
     }
 

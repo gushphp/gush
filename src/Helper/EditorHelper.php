@@ -13,7 +13,6 @@ namespace Gush\Helper;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Helper for launching external editor
@@ -50,7 +49,9 @@ class EditorHelper extends Helper
         }
 
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            $process = ProcessBuilder::create([$editor, $tmpName])->getProcess();
+            $processHelper = $this->getHelperSet()->get('process');
+            /** @var ProcessHelper $processHelper */
+            $process = $processHelper->getProcessBuilder($editor.' "'.$tmpName.'"')->getProcess();
             $process->setTimeout(null);
             $process->start();
 
