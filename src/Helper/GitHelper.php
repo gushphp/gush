@@ -12,14 +12,13 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Console\Helper\HelperInterface;
 
 class GitHelper extends Helper
 {
     /** @var \Gush\Helper\ProcessHelper */
     protected $processHelper;
 
-    public function __construct(HelperInterface $processHelper)
+    public function __construct(ProcessHelper $processHelper)
     {
         $this->processHelper = $processHelper;
     }
