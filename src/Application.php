@@ -200,7 +200,6 @@ class Application extends BaseApplication
     {
         if ('core:configure' !== $this->getCommandName($input)) {
             $this->config = Factory::createConfig();
-            $adapter = null;
 
             if (null === $this->adapter) {
                 if (null === $adapter = $this->config->get('adapter')) {

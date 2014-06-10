@@ -54,7 +54,8 @@ class DefaultConfigurator implements Configurator
      * @param string       $label                 Label of the Configurator (eg. GitHub or GitHub IssueTracker)
      * @param string       $apiUrl                Default URL to API service (eg. 'https://api.github.com/')
      * @param string       $repoUrl               Default URL to repository (eg. 'https://github.com')
-     * @param string[]     $authenticationOptions Numeric array with supported authentication options [idx => [label, value]]
+     * @param string[]     $authenticationOptions Numeric array with supported authentication options
+     *                                            [idx => [label, value]]
      */
     public function __construct(DialogHelper $dialog, $label, $apiUrl, $repoUrl, $authenticationOptions = [])
     {
