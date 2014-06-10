@@ -65,7 +65,7 @@ EOF
         // Filter commits that reference an issue
         $issues = [];
 
-        $adapter = $this->getAdapter();
+        $adapter = $this->getIssueTracker();
 
         foreach (explode("\n", $commits) as $commit) {
             // Cut issue id from branch name (merge commits)

@@ -229,7 +229,9 @@ class Application extends BaseApplication
             }
         }
 
-        foreach ($command->getHelperSet() as $helper) {
+        /** @var \Symfony\Component\Console\Helper\Helper[] $helperSet */
+        $helperSet = $command->getHelperSet();
+        foreach ($helperSet as $helper) {
             if ($helper instanceof OutputAwareInterface) {
                 $helper->setOutput($output);
             }
