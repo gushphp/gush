@@ -157,6 +157,7 @@ EOF
     private function getCommitsString($commits)
     {
         $commitsString = '';
+        $pr = [];
         foreach ($commits as $commit) {
             // Only use the first line
             if (strpos($commit['message'], "\n")) {
