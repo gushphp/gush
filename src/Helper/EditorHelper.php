@@ -51,7 +51,7 @@ class EditorHelper extends Helper
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
             $processHelper = $this->getHelperSet()->get('process');
             /** @var ProcessHelper $processHelper */
-            $process = $processHelper->getProcessBuilder($editor.' "'.$tmpName.'"')->getProcess();
+            $process = $processHelper->getProcessBuilder($editor.' '. escapeshellarg($tmpName))->getProcess();
             $process->setTimeout(null);
             $process->start();
 
