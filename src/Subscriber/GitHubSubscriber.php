@@ -14,8 +14,8 @@ namespace Gush\Subscriber;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Event\ConsoleEvent;
-use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -24,7 +24,7 @@ class GitHubSubscriber implements EventSubscriberInterface
     /** @var \Gush\Helper\GitHelper */
     private $gitHelper;
 
-    public function __construct(HelperInterface $gitHelper)
+    public function __construct(GitHelper $gitHelper)
     {
         $this->gitHelper = $gitHelper;
     }
