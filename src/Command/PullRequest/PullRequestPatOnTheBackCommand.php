@@ -65,7 +65,7 @@ EOF
 
         $adapter->createComment($prNumber, $patMessage);
 
-        $url = $adapter->getPullRequestUrl($prNumber);
+        $url = $adapter->getPullRequest($prNumber)['url'];
         $output->writeln("Pat on the back pushed to {$url}");
 
         return self::COMMAND_SUCCESS;
