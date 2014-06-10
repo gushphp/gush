@@ -111,7 +111,6 @@ EOF
 
         $adapterName = $input->getOption('adapter');
         $issueTrackerName = $input->getOption('issue tracker');
-        $versionEyeToken = null;
         $selection = 0;
 
         /** @var DialogHelper $dialog */
@@ -139,7 +138,13 @@ EOF
         $this->configureAdapter($input, $output, $adapterName);
 
         $currentDefault = $this->config->get('adapter');
-        if ($adapterName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default adapter?', $adapterName), null === $currentDefault)) {
+        if ($adapterName !== $currentDefault &&
+            $dialog->askConfirmation(
+                $output,
+                sprintf('Would you like to make "%s" the default adapter?', $adapterName),
+                null === $currentDefault
+            )
+        ) {
             $this->config->merge(['adapter' => $adapterName]);
         }
 
@@ -169,7 +174,12 @@ EOF
         $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
 
         $currentDefault = $this->config->get('issue_tracker');
-        if ($issueTrackerName !== $currentDefault && $dialog->askConfirmation($output, sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName), null === $currentDefault)) {
+        if ($issueTrackerName !== $currentDefault &&
+            $dialog->askConfirmation(
+                $output,
+                sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
+                null === $currentDefault)
+        ) {
             $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
 
@@ -213,8 +223,12 @@ EOF
         );
     }
 
-    private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName, $configName = 'adapters')
-    {
+    private function configureAdapter(
+        InputInterface $input,
+        OutputInterface $output,
+        $adapterName,
+        $configName = 'adapters'
+    ) {
         $application = $this->getApplication();
         /** @var \Gush\Application $application */
         $isAuthenticated = false;
