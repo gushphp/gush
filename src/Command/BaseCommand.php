@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
+ * @author Luis Cordova <cordoval@gmail.com>
  */
 class BaseCommand extends Command
 {
@@ -35,7 +36,7 @@ class BaseCommand extends Command
      */
     public function getAdapter()
     {
-        return $this->getApplication()->getAdapter();
+        return $this->getGushApplication()->getAdapter();
     }
 
     /**
@@ -45,7 +46,7 @@ class BaseCommand extends Command
      */
     public function getIssueTracker()
     {
-        return $this->getApplication()->getIssueTracker();
+        return $this->getGushApplication()->getIssueTracker();
     }
 
     /**
@@ -56,7 +57,7 @@ class BaseCommand extends Command
      */
     public function getParameter($key)
     {
-        $config = $this->getApplication()->getConfig();
+        $config = $this->getGushApplication()->getConfig();
         $adapter = $config->get('adapter');
 
         if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
@@ -93,9 +94,17 @@ class BaseCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->getDispatcher()->dispatch(
+        $this->getGushApplication()->getDispatcher()->dispatch(
             GushEvents::INITIALIZE,
             new ConsoleEvent($this, $input, $output)
         );
+    }
+
+    /**
+     * @return \Gush\Application $application
+     */
+    public function getGushApplication()
+    {
+        return $this->getApplication();
     }
 }
