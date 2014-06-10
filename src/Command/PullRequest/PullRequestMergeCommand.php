@@ -157,11 +157,10 @@ EOF
     private function getCommitsString($commits)
     {
         $commitsString = '';
-        $pr = [];
         foreach ($commits as $commit) {
             // Only use the first line
             if (strpos($commit['message'], "\n")) {
-                $pr['message'] = explode("\n", $commit['message'])[0];
+                $commit['message'] = explode("\n", $commit['message'])[0];
             }
 
             $commitsString .= sprintf(
