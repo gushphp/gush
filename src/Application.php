@@ -251,7 +251,8 @@ class Application extends BaseApplication
 
         if (!$process->isSuccessful()) {
             throw new \RuntimeException(
-                'The adapter type could not be determined (no Git origin configured for this repository). Please run the "init" command.'
+                'The adapter type could not be determined (no Git origin configured for this repository). '.
+                'Please run the "init" command.'
             );
         }
 
