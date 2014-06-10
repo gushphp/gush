@@ -24,7 +24,7 @@ use Gush\Template\PullRequest\Create\SymfonyTemplate;
 use Gush\Template\PullRequest\Create\ZendFrameworkDocTemplate;
 use Gush\Template\PullRequest\Create\ZendFrameworkTemplate;
 use Gush\Template\TemplateInterface;
-use Symfony\Component\Console\Helper\HelperInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,7 +37,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
     protected $dialog;
     protected $input;
 
-    public function __construct(HelperInterface $dialog, Application $application)
+    public function __construct(DialogHelper $dialog, Application $application)
     {
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
