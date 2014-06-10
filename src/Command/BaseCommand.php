@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>
+ * @author Luis Cordova <cordoval@gmail.com>
  */
 class BaseCommand extends Command
 {
@@ -35,7 +36,12 @@ class BaseCommand extends Command
      */
     public function getAdapter()
     {
-        return $this->getApplication()->getAdapter();
+        /**
+         * @var \Gush\Application $application
+         */
+        $application = $this->getApplication();
+
+        return $application->getAdapter();
     }
 
     /**
