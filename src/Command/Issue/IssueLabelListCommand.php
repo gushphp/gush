@@ -34,8 +34,8 @@ class IssueLabelListCommand extends BaseCommand implements TableFeature, GitRepo
             ->setDescription('Lists the issue\'s labels')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command lists the issue's available labels for either the current or the given organization
-and repository:
+The <info>%command.name%</info> command lists the issue's available labels for either the current or the given
+organization and repository:
 
     <info>$ gush %command.name%</info>
 
