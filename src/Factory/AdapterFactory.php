@@ -86,7 +86,9 @@ class AdapterFactory
     public function registerIssueTracker($name, $issueTrackerFactory, $issueTrackerConfigurator)
     {
         if (isset($this->issueTrackers[$name])) {
-            throw new \InvalidArgumentException(sprintf('An issue tracker with name "%s" is already registered.', $name));
+            throw new \InvalidArgumentException(
+                sprintf('An issue tracker with name "%s" is already registered.', $name)
+            );
         }
 
         $this->issueTrackers[$name] = [$issueTrackerFactory, $issueTrackerConfigurator];
@@ -172,7 +174,7 @@ class AdapterFactory
         if (!$configurator instanceof Configurator) {
             throw new \LogicException(
                 sprintf(
-                    'Configurator-Factory callback is expected to return a Gush\Adapter\Configurator instance, got "%s" instead.',
+                    'Configurator-Factory callback returns an Gush\Adapter\Configurator instance, got "%s" instead.',
                     is_object($configurator) ? get_class($configurator) : gettype($configurator)
                 )
             );
@@ -206,7 +208,7 @@ class AdapterFactory
         if (!$issueTracker instanceof IssueTracker) {
             throw new \LogicException(
                 sprintf(
-                    'IssueTracker-Factory callback is expected to return a Gush\Adapter\IssueTracker instance, got "%s" instead.',
+                    'IssueTracker-Factory callback returns a Gush\Adapter\IssueTracker instance, got "%s" instead.',
                     is_object($issueTracker) ? get_class($issueTracker) : gettype($issueTracker)
                 )
             );
@@ -239,7 +241,8 @@ class AdapterFactory
         if (!$configurator instanceof Configurator) {
             throw new \LogicException(
                 sprintf(
-                    'Issue tracker configurator-Factory callback is expected to return a Gush\Adapter\Configurator instance, got "%s" instead.',
+                    'Tracker configurator-Factory callback returns a Gush\Adapter\Configurator instance,'.
+                    'got "%s" instead.',
                     is_object($configurator) ? get_class($configurator) : gettype($configurator)
                 )
             );

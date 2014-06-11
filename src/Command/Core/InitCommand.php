@@ -129,7 +129,7 @@ EOF
                 sprintf(
                     'Issue tracker "%s" is invalid. Available adapters are "%s".',
                     $issueTrackerName,
-                    implode('", "',array_keys($issueTrackers))
+                    implode('", "', array_keys($issueTrackers))
                 )
             );
         }

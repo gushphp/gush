@@ -74,7 +74,12 @@ EOF
             $project = $dialog->select(
                 $output,
                 'Please choose one of the available projects: ',
-                array_map(function($value) { return $value->name; }, $projectCollection)
+                array_map(
+                    function ($value) {
+                        return $value->name;
+                    },
+                    $projectCollection
+                )
             );
 
             $projectId = $projectCollection[$project]->id;

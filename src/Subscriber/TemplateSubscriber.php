@@ -14,7 +14,7 @@ namespace Gush\Subscriber;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Feature\TemplateFeature;
-use Symfony\Component\Console\Helper\HelperInterface;
+use Gush\Helper\TemplateHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,7 +24,7 @@ class TemplateSubscriber implements EventSubscriberInterface
     /** @var \Gush\Helper\TemplateHelper */
     protected $templateHelper;
 
-    public function __construct(HelperInterface $templateHelper)
+    public function __construct(TemplateHelper $templateHelper)
     {
         $this->templateHelper = $templateHelper;
     }

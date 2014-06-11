@@ -119,7 +119,9 @@ EOF
         }
 
         $table = $this->getHelper('table');
-        $table->setHeaders(['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link']);
+        $table->setHeaders(
+            ['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link']
+        );
 
         $table->formatRows($issues, function ($issue) {
             return [
