@@ -57,7 +57,8 @@ class PullRequestCustomTemplate extends AbstractSymfonyTemplate
             if (!is_array($rowData) || count($rowData) <> 2) {
                 throw new \RuntimeException(
                     sprintf(
-                        'table-pr table row-data "%s" must be an array with exactly two values like: [Label, default value].'.
+                        'table-pr table row-data "%s" must be an array with exactly two values like: ',
+                        '[Label, default value].'.
                         "\n".'please check your local .gush.yml',
                         $name
                     )

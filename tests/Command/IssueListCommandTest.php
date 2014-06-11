@@ -45,7 +45,7 @@ class IssueListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new IssueListCommand());
         $tester->execute($args, ['interactive' => false]);
 
-        if (isset($args['--type']) && 'issue' === $args['--type'] ) {
+        if (isset($args['--type']) && 'issue' === $args['--type']) {
             $this->assertEquals(OutputFixtures::ISSUE_LIST_NO_PR, trim($tester->getDisplay(true)));
         } else {
             $this->assertEquals(OutputFixtures::ISSUE_LIST_ALL, trim($tester->getDisplay(true)));

@@ -76,7 +76,7 @@ EOF
         $branchName = $pr['head']['ref'];
 
         // closes PR
-        $this->getIssueTracker()->closeIssue($prNumber);
+        $adapter->closePullRequest($prNumber);
 
         $commands = [
             [
