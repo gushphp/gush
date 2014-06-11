@@ -32,7 +32,7 @@ class PatTemplate extends AbstractTemplate
 
     public function render()
     {
-        if (null === $this->parameters) {
+        if (empty($this->parameters)) {
             throw new \RuntimeException('Template has not been bound');
         }
 

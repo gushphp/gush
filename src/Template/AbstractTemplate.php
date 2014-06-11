@@ -19,12 +19,12 @@ abstract class AbstractTemplate implements TemplateInterface
     /**
      * @var array
      */
-    protected $parameters = null;
+    protected $parameters = [];
 
     /**
      * {@inheritDoc}
      */
-    public function bind($parameters)
+    public function bind(array $parameters)
     {
         $this->parameters = $parameters;
 

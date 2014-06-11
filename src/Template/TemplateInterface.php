@@ -26,7 +26,7 @@ interface TemplateInterface
     /**
      * @param array
      */
-    public function bind($params);
+    public function bind(array $params);
 
     /**
      * Returns all the variables required by the template

@@ -57,31 +57,31 @@ EOT
 
         $adapterFactory->registerAdapter(
             'github',
-             function ($config) {
-                 return new TestAdapter();
-             },
-             function ($helperSet) {
-                 return new DefaultConfigurator(
-                     $helperSet->get('dialog'),
-                     'GitHub', 'https://api.github.com/',
-                     'https://github.com'
-                 );
-             }
+            function ($config) {
+                return new TestAdapter();
+            },
+            function ($helperSet) {
+                return new DefaultConfigurator(
+                    $helperSet->get('dialog'),
+                    'GitHub', 'https://api.github.com/',
+                    'https://github.com'
+                );
+            }
         );
 
         $adapterFactory->registerIssueTracker(
             'github',
-             function ($config) {
-                 return new TestIssueTracker();
-             },
-             function ($helperSet) {
-                 return new DefaultConfigurator(
-                     $helperSet->get('dialog'),
-                     'GitHub IssueTracker',
-                     'https://api.github.com/',
-                     'https://github.com'
-                 );
-             }
+            function ($config) {
+                return new TestIssueTracker();
+            },
+            function ($helperSet) {
+                return new DefaultConfigurator(
+                    $helperSet->get('dialog'),
+                    'GitHub IssueTracker',
+                    'https://api.github.com/',
+                    'https://github.com'
+                );
+            }
         );
 
         $this->application = new TestableApplication($adapterFactory);
