@@ -106,8 +106,12 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
         $adapterFactory->registerIssueTracker(
             'jira',
-             function ($config) { return new TestIssueTracker($config); },
-             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'Jira', '', ''); }
+             function ($config) {
+                 return new TestIssueTracker($config);
+             },
+             function ($helperSet) {
+                 return new DefaultConfigurator($helperSet->get('dialog'), 'Jira', '', '');
+             }
         );
 
         $application = new TestableApplication($adapterFactory);

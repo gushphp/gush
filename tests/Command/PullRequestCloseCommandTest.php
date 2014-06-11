@@ -23,7 +23,8 @@ class PullRequestCloseCommandTest extends BaseTestCase
     {
         $tester = $this->getCommandTester(new \Gush\Command\PullRequest\PullRequestCloseCommand());
         $tester->execute(
-            ['--org' => 'gushphp', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER], ['interactive' => false]
+            ['--org' => 'gushphp', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER],
+            ['interactive' => false]
         );
 
         $this->assertEquals(OutputFixtures::PULL_REQUEST_CLOSE, trim($tester->getDisplay(true)));
