@@ -156,7 +156,11 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $configurator
         );
 
-        $this->setExpectedException('LogicException', 'Adapter-Factory callback returns a Gush\Adapter\Adapter instance, got "stdClass" instead.');
+        $this->setExpectedException(
+             'LogicException',
+             'Adapter-Factory callback should return a Gush\Adapter\Adapter instance, got "stdClass"'
+        );
+
         $this->adapterFactory->createAdapter('test', [], $config);
     }
 
@@ -175,7 +179,11 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $configuratorFactory
         );
 
-        $this->setExpectedException('LogicException', 'Configurator-Factory callback returns a Gush\Adapter\Configurator instance, got "stdClass" instead.');
+        $this->setExpectedException(
+            'LogicException',
+            'Configurator-Factory callback should return a Gush\Adapter\Configurator instance, got "stdClass"'
+        );
+
         $this->adapterFactory->createAdapterConfiguration('test', $helperSetMock);
     }
 

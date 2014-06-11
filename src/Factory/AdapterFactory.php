@@ -141,7 +141,7 @@ class AdapterFactory
         if (!$adapter instanceof Adapter) {
             throw new \LogicException(
                 sprintf(
-                    'Adapter-Factory callback is expected to return a Gush\Adapter\Adapter instance, got "%s" instead.',
+                    'Adapter-Factory callback should return a Gush\Adapter\Adapter instance, got "%s"',
                     is_object($adapter) ? get_class($adapter) : gettype($adapter)
                 )
             );
@@ -174,7 +174,7 @@ class AdapterFactory
         if (!$configurator instanceof Configurator) {
             throw new \LogicException(
                 sprintf(
-                    'Configurator-Factory callback returns an Gush\Adapter\Configurator instance, got "%s" instead.',
+                    'Configurator-Factory callback should return a Gush\Adapter\Configurator instance, got "%s"',
                     is_object($configurator) ? get_class($configurator) : gettype($configurator)
                 )
             );
@@ -208,7 +208,7 @@ class AdapterFactory
         if (!$issueTracker instanceof IssueTracker) {
             throw new \LogicException(
                 sprintf(
-                    'IssueTracker-Factory callback returns a Gush\Adapter\IssueTracker instance, got "%s" instead.',
+                    'IssueTracker-Factory callback should returns a Gush\Adapter\IssueTracker instance, got "%s"',
                     is_object($issueTracker) ? get_class($issueTracker) : gettype($issueTracker)
                 )
             );
@@ -241,8 +241,8 @@ class AdapterFactory
         if (!$configurator instanceof Configurator) {
             throw new \LogicException(
                 sprintf(
-                    'Tracker configurator-Factory callback returns a Gush\Adapter\Configurator instance,'.
-                    'got "%s" instead.',
+                    'IssueTracker configurator-Factory callback should return a Gush\Adapter\Configurator instance,'.
+                    'got "%s"',
                     is_object($configurator) ? get_class($configurator) : gettype($configurator)
                 )
             );
