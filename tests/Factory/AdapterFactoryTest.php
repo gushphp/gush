@@ -70,8 +70,12 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapterFactory->registerAdapter(
             'test',
-            function () {},
-            function () {}
+            function () {
+                // no op
+            },
+            function () {
+                // no op
+            }
         );
 
         $this->setExpectedException('InvalidArgumentException', 'An adapter with name "test" is already registered.');
@@ -89,7 +93,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAdapter()
     {
-        $configurator = function () {};
+        $configurator = function () {
+            // no op
+        };
 
         $adapterMock = $this->getMock('Gush\Adapter\Adapter');
         $config = $this->getMockBuilder('Gush\Config')->disableOriginalConstructor()->getMock();
