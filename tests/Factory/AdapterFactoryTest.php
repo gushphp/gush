@@ -182,8 +182,8 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->setExpectedException(
-             'LogicException',
-             'Adapter-Factory callback should return a Gush\Adapter\Adapter instance, got "stdClass"'
+            'LogicException',
+            'Adapter-Factory callback should return a Gush\Adapter\Adapter instance, got "stdClass"'
         );
 
         $this->adapterFactory->createAdapter('test', [], $config);
