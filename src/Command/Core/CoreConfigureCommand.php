@@ -178,7 +178,8 @@ EOF
             $dialog->askConfirmation(
                 $output,
                 sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
-                null === $currentDefault)
+                null === $currentDefault
+            )
         ) {
             $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
