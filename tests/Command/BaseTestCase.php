@@ -68,7 +68,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory->registerAdapter(
             'github',
              function ($config) {
-                 return new TestAdapter($config);
+                 return new TestAdapter();
              },
              function ($helperSet) {
                  return new DefaultConfigurator(
@@ -82,7 +82,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory->registerAdapter(
             'github_enterprise',
              function ($config) {
-                 return new TestAdapter($config);
+                 return new TestAdapter();
              },
              function ($helperSet) {
                  return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub Enterprise', '', '');
@@ -92,7 +92,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory->registerIssueTracker(
             'github',
              function ($config) {
-                 return new TestIssueTracker($config);
+                 return new TestIssueTracker();
              },
              function ($helperSet) {
                  return new DefaultConfigurator(
@@ -107,7 +107,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory->registerIssueTracker(
             'jira',
              function ($config) {
-                 return new TestIssueTracker($config);
+                 return new TestIssueTracker();
              },
              function ($helperSet) {
                  return new DefaultConfigurator($helperSet->get('dialog'), 'Jira', '', '');
@@ -128,16 +128,18 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             new CommandEvent($command)
         );
 
-        $application->getDispatcher()->addListener(GushEvents::INITIALIZE, function ($event) {
-            $command = $event->getCommand();
-            $input = $event->getInput();
+        $application->getDispatcher()->addListener(
+            GushEvents::INITIALIZE, function ($event) {
+                $command = $event->getCommand();
+                $input = $event->getInput();
 
-            foreach ($command->getHelperSet() as $helper) {
-                if ($helper instanceof InputAwareInterface) {
-                    $helper->setInput($input);
+                foreach ($command->getHelperSet() as $helper) {
+                    if ($helper instanceof InputAwareInterface) {
+                        $helper->setInput($input);
+                    }
                 }
             }
-        });
+        );
 
         return new CommandTester($command);
     }
@@ -147,7 +149,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function buildAdapter()
     {
-        return new TestAdapter($this->config);
+        return new TestAdapter();
     }
 
     protected function buildVersionEyeClient()
