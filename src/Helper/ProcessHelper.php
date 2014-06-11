@@ -45,7 +45,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     /**
      * Run a command through the ProcessBuilder
      *
-     * @param array    $command
+     * @param string|array    $command
      * @param bool     $allowFailures
      * @param \Closure $callback      Callback for Process (e.g. for logging output in realtime)
      *
