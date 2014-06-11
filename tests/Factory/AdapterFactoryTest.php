@@ -27,14 +27,18 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapterFactory->registerAdapter(
             'test',
-            function () {},
-            function () {}
+            function () {
+                // no op
+            },
+            function () {
+                // no op
+            }
         );
 
         $this->adapterFactory->registerAdapter(
             'test2',
-            array($this, 'createAdapterCallback'),
-            array($this, 'createAdapterCallback')
+            [$this, 'createAdapterCallback'],
+            [$this, 'createAdapterCallback']
         );
 
         $this->assertTrue($this->adapterFactory->hasAdapter('test'));
@@ -46,8 +50,12 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([], $this->adapterFactory->getAdapters());
 
-        $adapter = function () {};
-        $configurator = function () {};
+        $adapter = function () {
+            // no op
+        };
+        $configurator = function () {
+            // no op
+        };
 
         $this->adapterFactory->registerAdapter(
             'test',
@@ -70,8 +78,12 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->adapterFactory->registerAdapter(
             'test',
-            function () {},
-            function () {}
+            function () {
+                // no op
+            },
+            function () {
+                // no op
+            }
         );
     }
 
@@ -120,9 +132,14 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateConfigurator()
     {
-        $adapter = function () {};
+        $adapter = function () {
+            // no op
+        };
 
-        $helperSetMock = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')->disableOriginalConstructor()->getMock();
+        $helperSetMock = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $configuratorMock = $this->getMock('Gush\Adapter\Configurator');
 
         $configuratorFactory = function ($helperSet) use ($helperSetMock, $configuratorMock) {
@@ -143,7 +160,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAdapterWithInvalidReturn()
     {
-        $configurator = function () {};
+        $configurator = function () {
+            // no op
+        };
         $config = $this->getMockBuilder('Gush\Config')->disableOriginalConstructor()->getMock();
 
         $adapterFactory = function () {
@@ -166,8 +185,13 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateConfiguratorWithInvalidReturn()
     {
-        $adapter = function () {};
-        $helperSetMock = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')->disableOriginalConstructor()->getMock();
+        $adapter = function () {
+            // no op
+        };
+        $helperSetMock = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
         $configuratorFactory = function () {
             return new \stdClass();
@@ -189,7 +213,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAdapterWithNoneExistentName()
     {
-        $configurator = function () {};
+        $configurator = function () {
+            // no op
+        };
         $config = $this->getMockBuilder('Gush\Config')->disableOriginalConstructor()->getMock();
 
         $adapterFactory = function () {
@@ -208,8 +234,13 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateConfiguratorWithNoneExistentName()
     {
-        $adapter = function () {};
-        $helperSetMock = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')->disableOriginalConstructor()->getMock();
+        $adapter = function () {
+            // no op
+        };
+        $helperSetMock = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
         $configuratorFactory = function () {
             return new \stdClass();
