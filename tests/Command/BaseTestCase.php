@@ -67,20 +67,41 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory = new AdapterFactory();
         $adapterFactory->registerAdapter(
             'github',
-             function ($config) { return new TestAdapter($config); },
-             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub', 'https://api.github.com/', 'https://github.com'); }
+             function ($config) {
+                 return new TestAdapter($config);
+             },
+             function ($helperSet) {
+                 return new DefaultConfigurator(
+                     $helperSet->get('dialog'),
+                     'GitHub',
+                     'https://api.github.com/',
+                     'https://github.com');
+             }
         );
 
         $adapterFactory->registerAdapter(
             'github_enterprise',
-             function ($config) { return new TestAdapter($config); },
-             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub Enterprise', '', ''); }
+             function ($config) {
+                 return new TestAdapter($config);
+             },
+             function ($helperSet) {
+                 return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub Enterprise', '', '');
+             }
         );
 
         $adapterFactory->registerIssueTracker(
             'github',
-             function ($config) { return new TestIssueTracker($config); },
-             function ($helperSet) { return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub', 'https://api.github.com/', 'https://github.com'); }
+             function ($config) {
+                 return new TestIssueTracker($config);
+             },
+             function ($helperSet) {
+                 return new DefaultConfigurator(
+                     $helperSet->get('dialog'),
+                     'GitHub',
+                     'https://api.github.com/',
+                     'https://github.com'
+                 );
+             }
         );
 
         $adapterFactory->registerIssueTracker(
