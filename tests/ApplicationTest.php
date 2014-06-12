@@ -57,7 +57,7 @@ EOT
 
         $adapterFactory->registerAdapter(
             'github',
-            function ($config) {
+            function () {
                 return new TestAdapter();
             },
             function ($helperSet) {
@@ -71,7 +71,7 @@ EOT
 
         $adapterFactory->registerIssueTracker(
             'github',
-            function ($config) {
+            function () {
                 return new TestIssueTracker();
             },
             function ($helperSet) {
