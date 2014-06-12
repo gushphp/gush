@@ -63,7 +63,8 @@ EOT
             function ($helperSet) {
                 return new DefaultConfigurator(
                     $helperSet->get('dialog'),
-                    'GitHub', 'https://api.github.com/',
+                    'GitHub',
+                    'https://api.github.com/',
                     'https://github.com'
                 );
             }
