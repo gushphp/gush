@@ -67,47 +67,47 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory = new AdapterFactory();
         $adapterFactory->registerAdapter(
             'github',
-             function () {
-                 return new TestAdapter();
-             },
-             function ($helperSet) {
-                 return new DefaultConfigurator(
-                     $helperSet->get('dialog'),
-                     'GitHub',
-                     'https://api.github.com/',
-                     'https://github.com'
-                 );
-             }
+            function () {
+                return new TestAdapter();
+            },
+            function ($helperSet) {
+                return new DefaultConfigurator(
+                    $helperSet->get('dialog'),
+                    'GitHub',
+                    'https://api.github.com/',
+                    'https://github.com'
+                );
+            }
         );
 
         $adapterFactory->registerAdapter(
             'github_enterprise',
-             function () {
-                 return new TestAdapter();
-             },
-             function ($helperSet) {
-                 return new DefaultConfigurator(
-                     $helperSet->get('dialog'),
-                     'GitHub Enterprise',
-                     '',
-                     ''
-                 );
-             }
+            function () {
+                return new TestAdapter();
+            },
+            function ($helperSet) {
+                return new DefaultConfigurator(
+                    $helperSet->get('dialog'),
+                    'GitHub Enterprise',
+                    '',
+                    ''
+                );
+            }
         );
 
         $adapterFactory->registerIssueTracker(
             'github',
-             function () {
-                 return new TestIssueTracker();
-             },
-             function ($helperSet) {
-                 return new DefaultConfigurator(
-                     $helperSet->get('dialog'),
-                     'GitHub',
-                     'https://api.github.com/',
-                     'https://github.com'
-                 );
-             }
+            function () {
+                return new TestIssueTracker();
+            },
+            function ($helperSet) {
+                return new DefaultConfigurator(
+                    $helperSet->get('dialog'),
+                    'GitHub',
+                    'https://api.github.com/',
+                    'https://github.com'
+                );
+            }
         );
 
         $adapterFactory->registerIssueTracker(
