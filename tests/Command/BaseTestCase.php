@@ -67,7 +67,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory = new AdapterFactory();
         $adapterFactory->registerAdapter(
             'github',
-             function ($config) {
+             function () {
                  return new TestAdapter();
              },
              function ($helperSet) {
@@ -75,23 +75,29 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
                      $helperSet->get('dialog'),
                      'GitHub',
                      'https://api.github.com/',
-                     'https://github.com');
+                     'https://github.com'
+                 );
              }
         );
 
         $adapterFactory->registerAdapter(
             'github_enterprise',
-             function ($config) {
+             function () {
                  return new TestAdapter();
              },
              function ($helperSet) {
-                 return new DefaultConfigurator($helperSet->get('dialog'), 'GitHub Enterprise', '', '');
+                 return new DefaultConfigurator(
+                     $helperSet->get('dialog'),
+                     'GitHub Enterprise',
+                     '',
+                     ''
+                 );
              }
         );
 
         $adapterFactory->registerIssueTracker(
             'github',
-             function ($config) {
+             function () {
                  return new TestIssueTracker();
              },
              function ($helperSet) {
@@ -106,7 +112,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
         $adapterFactory->registerIssueTracker(
             'jira',
-             function ($config) {
+             function () {
                  return new TestIssueTracker();
              },
              function ($helperSet) {
@@ -129,7 +135,8 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         );
 
         $application->getDispatcher()->addListener(
-            GushEvents::INITIALIZE, function ($event) {
+            GushEvents::INITIALIZE,
+            function ($event) {
                 $command = $event->getCommand();
                 $input = $event->getInput();
 
