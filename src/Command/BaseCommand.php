@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Daniel Gomes <me@danielcsgomes.com>
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class BaseCommand extends Command implements GushCommand
+class BaseCommand extends Command
 {
     const COMMAND_SUCCESS = 1;
     const COMMAND_FAILURE = 0;
