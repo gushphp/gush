@@ -57,13 +57,14 @@ EOT
 
         $adapterFactory->registerAdapter(
             'github',
-            function ($config) {
+            function () {
                 return new TestAdapter();
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
                     $helperSet->get('dialog'),
-                    'GitHub', 'https://api.github.com/',
+                    'GitHub',
+                    'https://api.github.com/',
                     'https://github.com'
                 );
             }
@@ -71,7 +72,7 @@ EOT
 
         $adapterFactory->registerIssueTracker(
             'github',
-            function ($config) {
+            function () {
                 return new TestIssueTracker();
             },
             function ($helperSet) {

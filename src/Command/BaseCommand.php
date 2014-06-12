@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Daniel Gomes <me@danielcsgomes.com>
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class BaseCommand extends Command implements GushCommand
+class BaseCommand extends Command
 {
     const COMMAND_SUCCESS = 1;
     const COMMAND_FAILURE = 0;
@@ -36,7 +36,7 @@ class BaseCommand extends Command implements GushCommand
      */
     public function getAdapter()
     {
-        return $this->getGushApplication()->getAdapter();
+        return $this->getApplication()->getAdapter();
     }
 
     /**
@@ -46,7 +46,7 @@ class BaseCommand extends Command implements GushCommand
      */
     public function getIssueTracker()
     {
-        return $this->getGushApplication()->getIssueTracker();
+        return $this->getApplication()->getIssueTracker();
     }
 
     /**
@@ -57,7 +57,7 @@ class BaseCommand extends Command implements GushCommand
      */
     public function getParameter($key)
     {
-        $config = $this->getGushApplication()->getConfig();
+        $config = $this->getApplication()->getConfig();
         $adapter = $config->get('adapter');
 
         if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
@@ -94,17 +94,9 @@ class BaseCommand extends Command implements GushCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->getGushApplication()->getDispatcher()->dispatch(
+        $this->getApplication()->getDispatcher()->dispatch(
             GushEvents::INITIALIZE,
             new ConsoleEvent($this, $input, $output)
         );
-    }
-
-    /**
-     * @return \Gush\Application
-     */
-    public function getGushApplication()
-    {
-        return $this->getApplication();
     }
 }
