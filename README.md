@@ -29,7 +29,7 @@ water and blood.
 
 ### What is this?
 
-Gush is an app console whose intention is to automate common maintainer and contributor tasks.
+Gush is a php console utility whose intention is to automate common maintainer and contributor tasks.
 
 - creates a Pull Request with a formatted table description of the changes
 - creates github release notes
@@ -51,7 +51,7 @@ $ composer global require gushphp/gush=dev-master
 If it is the first time you globally install a dependency then make sure
 you include `~/.composer/vendor/bin` in $PATH as shown [here](http://getcomposer.org/doc/03-cli.md#global).
 
-### Keep your Gush install always updated:
+### Always keep your Gush installation up to date:
 
 ```bash
 $ composer global update gushphp/gush
