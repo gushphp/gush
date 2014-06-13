@@ -42,7 +42,7 @@ abstract class BaseAdapter implements Adapter
      */
     public function supportsRepository($remoteUrl)
     {
-        // always returns false as its not save to determine this by default
+        // always returns false as it is not safe to determine this by default
         return false;
     }
 
