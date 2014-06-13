@@ -64,7 +64,7 @@ EOF
         $input = new ArrayInput(
             [
                 'command' => 'pull-request:squash',
-                'pr_number' => $prNumber
+                'pr_number' => $prNumber,
             ]
         );
         $command->run($input, $output);
@@ -81,23 +81,23 @@ EOF
         $commands = [
             [
                 'line' => sprintf('git remote update'),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git checkout -b %s-switched origin/%s', $branchName, $baseBranch),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git cherry-pick %s', $commitSha1),
-                'allow_failures' => false
+                'allow_failures' => false,
             ],
             [
                 'line' => sprintf('git push -u origin :%s', $branchName),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git push -u origin %s-switched', $branchName),
-                'allow_failures' => true
+                'allow_failures' => true,
             ]
         ];
 
@@ -107,7 +107,7 @@ EOF
         $input = new ArrayInput(
             [
                 'command' => 'pull-request:create',
-                'base_branch' => $baseBranch
+                'base_branch' => $baseBranch,
             ]
         );
         $command->run($input, $output);

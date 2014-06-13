@@ -126,7 +126,7 @@ EOF
         }
 
         if (!$this->getParameter('remove-promote')) {
-            $body = $this->appendShamelessPlug($body);
+            $body = $this->appendPlug($body);
         }
 
         if (true === $input->getOption('verbose')) {
@@ -162,10 +162,8 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function appendShamelessPlug($outputString)
+    private function appendPlug($outputString)
     {
-        $outputString .= "\n Sent using [Gush](https://github.com/gushphp/gush)";
-
-        return $outputString;
+        return $outputString."\n Sent using [Gush](https://github.com/gushphp/gush)";
     }
 }

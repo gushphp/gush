@@ -71,7 +71,7 @@ EOF
                         $org,
                         $fork['git_url']
                     ),
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ]
             ]
         );
