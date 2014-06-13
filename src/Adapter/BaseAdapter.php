@@ -91,7 +91,7 @@ abstract class BaseAdapter implements Adapter
      */
     public function createReleaseAssets($id, $name, $contentType, $content)
     {
-        // noop
+        // no-op
     }
 
     /**
@@ -107,6 +107,6 @@ abstract class BaseAdapter implements Adapter
      */
     public function removeRelease($id)
     {
-        // noop
+        // no-op
     }
 }

@@ -16,6 +16,6 @@ namespace Gush\Exception;
  *
  * @author Julien Bianchi <contact@jubianchi.fr>
  */
-class UnsuportedOperationException extends AdapterException
+class UnsupportedOperationException extends AdapterException
 {
 }
