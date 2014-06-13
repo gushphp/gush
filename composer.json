@@ -36,26 +36,26 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "ext-curl": "*",
         "symfony/console": "~2.5.0",
-        "symfony/process": "~2.4",
-        "symfony/filesystem": "~2.3",
-        "symfony/yaml": "~2.3",
-        "symfony/event-dispatcher": "~2.3",
-        "knplabs/github-api": "~1.2",
-        "ddd/slug": "~1.0",
+        "symfony/process": "~2.5.0",
+        "symfony/filesystem": "~2.5.0",
+        "symfony/yaml": "~2.5.0",
+        "symfony/event-dispatcher": "~2.5.0",
+        "symfony/property-access": "~2.5.0",
+        "knplabs/github-api": "~1.2.0",
+        "ddd/slug": "~1.0.0",
         "herrera-io/version": "~1.0@dev",
-        "kherge/amend": "~3.0",
-        "symfony/property-access": "~2.4",
+        "kherge/amend": "~3.0.0",
         "gushphp/gush-github-adapter": "dev-master@dev",
         "gushphp/gush-bitbucket-adapter": "dev-master@dev",
         "gushphp/gush-gitlab-adapter": "dev-master@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "~3.7",
-        "raulfraile/ladybug": "~1.0",
-        "phpspec/prophecy": "~1.0"
+        "phpunit/phpunit": "~4.1.0",
+        "raulfraile/ladybug": "~1.0.0",
+        "phpspec/prophecy": "~1.0.0"
     },
     "bin": [
         "bin/gush"
