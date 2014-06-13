@@ -59,7 +59,7 @@ foreach ($adapters as $adapterName => $factoryClass) {
     $adapterFactory->registerAdapter(
         $adapterName,
         [$factoryClass, 'createAdapter'],
-        [$factoryClass, 'createAdapterConfigurator']
+        [$factoryClass, 'createAdapterConfigurator'],
     );
 }
 
