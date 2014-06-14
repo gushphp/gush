@@ -49,6 +49,6 @@ abstract class AbstractSymfonyTemplate extends AbstractTemplate
         $out[] = $output->fetch();
         $out[] = $description;
 
-        return implode("\n", $out);
+        return implode(PHP_EOL, $out);
     }
 }

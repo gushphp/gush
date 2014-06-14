@@ -22,7 +22,7 @@ class DefaultTemplate extends AbstractTemplate
     {
         $out = [];
 
-        return implode("\n", $out);
+        return implode(PHP_EOL, $out);
     }
 
     /**

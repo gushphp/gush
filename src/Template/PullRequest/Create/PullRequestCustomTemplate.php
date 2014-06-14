@@ -58,7 +58,7 @@ class PullRequestCustomTemplate extends AbstractSymfonyTemplate
                 throw new \RuntimeException(
                     sprintf(
                         'table-pr table row-data "%s" must be an array with exactly two values like: '.
-                        '[Label, default value].'."\n".'please check your local .gush.yml',
+                        '[Label, default value].'.PHP_EOL.'please check your local .gush.yml',
                         $name
                     )
                 );

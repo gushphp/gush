@@ -67,7 +67,7 @@ EOF
 
         $adapter = $this->getIssueTracker();
 
-        foreach (explode("\n", $commits) as $commit) {
+        foreach (explode(PHP_EOL, $commits) as $commit) {
             // Cut issue id from branch name (merge commits)
             if (preg_match('/\/([0-9]+)/i', $commit, $matchesGush) && isset($matchesGush[1])) {
                 $issues[] = $matchesGush[1];

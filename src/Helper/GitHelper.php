@@ -131,6 +131,6 @@ class GitHelper extends Helper
         $process = $builder->getProcess();
         $process->run();
 
-        return explode("\n", $process->getOutput());
+        return explode(PHP_EOL, $process->getOutput());
     }
 }

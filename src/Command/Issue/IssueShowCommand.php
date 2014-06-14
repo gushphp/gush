@@ -57,7 +57,7 @@ EOF
 
         $output->writeln(
             sprintf(
-                "\nIssue #%s (%s): by %s [%s]",
+                PHP_EOL.'Issue #%s (%s): by %s [%s]',
                 $issue['number'],
                 $issue['state'],
                 $issue['user'],

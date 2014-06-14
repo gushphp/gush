@@ -68,12 +68,12 @@ class MetaHelper extends Helper
         $class = $this->getMetaClass($type);
 
         $out = [$class->getStartDelimiter()];
-        foreach (explode("\n", $header) as $line) {
+        foreach (explode(PHP_EOL, $header) as $line) {
             // avoid trailing spaces
             $out[] = ' '.$class->getDelimiter().($line ? ' '.$line : '');
         }
         $out[] = ' '.$class->getEndDelimiter();
-        $out[] = "\n";
+        $out[] = PHP_EOL;
 
         return implode("\n", $out);
     }

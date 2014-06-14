@@ -164,6 +164,6 @@ EOF
 
     private function appendPlug($outputString)
     {
-        return $outputString."\n Sent using [Gush](https://github.com/gushphp/gush)";
+        return $outputString.PHP_EOL.' Sent using [Gush](https://github.com/gushphp/gush)';
     }
 }
