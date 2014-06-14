@@ -72,12 +72,12 @@ class EditorHelper extends Helper
         $source = [];
         $sourceString = '';
         if (null !== $message) {
-            $message = explode("\n", $message);
+            $message = explode(PHP_EOL, $message);
 
             foreach ($message as $line) {
                 $source[] = $messagePrefix.$line;
             }
-            $sourceString = implode("\n", $source).PHP_EOL;
+            $sourceString = implode(PHP_EOL, $source).PHP_EOL;
         }
 
         $sourceString .= $string;

@@ -42,7 +42,7 @@ abstract class BaseAdapter implements Adapter
      */
     public function supportsRepository($remoteUrl)
     {
-        // always returns false as its not save to determine this by default
+        // always returns false as it is not safe to determine this by default
         return false;
     }
 
@@ -91,7 +91,7 @@ abstract class BaseAdapter implements Adapter
      */
     public function createReleaseAssets($id, $name, $contentType, $content)
     {
-        // noop
+        // no-op
     }
 
     /**
@@ -107,6 +107,6 @@ abstract class BaseAdapter implements Adapter
      */
     public function removeRelease($id)
     {
-        // noop
+        // no-op
     }
 }

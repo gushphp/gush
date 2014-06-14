@@ -12,10 +12,10 @@
 namespace Gush\Command\Branch;
 
 use Gush\Command\BaseCommand;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gush\Feature\GitRepoFeature;
 
 /**
  * Deletes remote branch for the given pull request

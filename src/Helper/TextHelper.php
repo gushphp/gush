@@ -11,10 +11,10 @@
 
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\Helper;
 use Ddd\Slug\Infra\SlugGenerator\DefaultSlugGenerator;
 use Ddd\Slug\Infra\Transliterator\TransliteratorCollection;
 use Ddd\Slug\Infra\Transliterator\LatinTransliterator;
+use Symfony\Component\Console\Helper\Helper;
 
 class TextHelper extends Helper
 {

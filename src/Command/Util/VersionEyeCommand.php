@@ -111,7 +111,7 @@ EOF
             }
         }
 
-        $output->writeln("Please check the modifications on your composer.json for\nupdated dependencies.");
+        $output->writeln('Please check the modifications on your composer.json for updated dependencies.');
 
         return self::COMMAND_SUCCESS;
     }

@@ -7,6 +7,14 @@ additions) done in the corresponding version.
 To get the diff for a specific change, go to https://github.com/gushphp/gush/commit/XXX where XXX is the change hash
 To get the diff between two versions, go to https://github.com/gushphp/gush/compare/v1.2.0...v1.2.1
 
+* 1.8.0 (2014-06-13)
+
+ * upgraded to symfony components 2.5.*
+ * renamed GitHubHelperSubscriber?
+ * added TODO.md document
+ *
+
+
 * 1.3.10 (2014-03-12)
 
  * feature implemented i:assign command

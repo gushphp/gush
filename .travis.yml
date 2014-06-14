@@ -19,7 +19,6 @@ env:
   - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
 
 before_script:
-  - composer self-update
   - curl -sS http://bldr.io/installer | php
 
 script:

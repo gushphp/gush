@@ -66,23 +66,23 @@ EOF
         $commands = [
             [
                 'line' => 'git remote update',
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => 'git checkout '.$head,
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => 'git reset --soft '.$base,
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => 'git commit -am '.$head,
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git push -u %s %s -f', $username, $head),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
         ];
 

@@ -70,11 +70,13 @@ class TemplateSubscriber implements EventSubscriberInterface
                 );
 
                 if (!in_array($template, $validTemplates)) {
-                    throw new \InvalidArgumentException(sprintf(
-                        "The specified template \"%s\" does not exist, try one of: \n - %s",
-                        $template,
-                        implode("\n - ", $validTemplates)
-                    ));
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'The specified template "%s" does not exist, try one of: '.PHP_EOL.' - %s',
+                            $template,
+                            implode(PHP_EOL.' - ', $validTemplates)
+                        )
+                    );
                 }
             }
         }

@@ -15,7 +15,7 @@ use Gush\Config;
 
 /**
  * Provides a base class for adapting Gush to use different providers.
- * E.g. Github, GitLab, Bitbucket
+ * E.g. Github, GitLab, Bitbucket, Jira, etc.
  *
  * @author Julien Bianchi <contact@jubianchi.fr>
  */

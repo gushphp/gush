@@ -53,15 +53,17 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
 
         $adapter = $this->getIssueTracker();
-        $issue   = $adapter->getIssue($issueNumber);
+        $issue = $adapter->getIssue($issueNumber);
 
-        $output->writeln(sprintf(
-            "\nIssue #%s (%s): by %s [%s]",
-            $issue['number'],
-            $issue['state'],
-            $issue['user'],
-            $issue['assignee']
-        ));
+        $output->writeln(
+            sprintf(
+                PHP_EOL.'Issue #%s (%s): by %s [%s]',
+                $issue['number'],
+                $issue['state'],
+                $issue['user'],
+                $issue['assignee']
+            )
+        );
 
         if ($issue['pull_request']) {
             $output->writeln('Type: Pull Request');
@@ -72,10 +74,14 @@ EOF
         if ($issue['labels'] > 0) {
             $output->writeln('Labels: '.implode(', ', $issue['labels']));
         }
-        $output->writeln('Title: '.$issue['title']);
-        $output->writeln('Link: '.$issue['url']);
-        $output->writeln('');
-        $output->writeln($issue['body']);
+        $output->writeln(
+            [
+                'Title: '.$issue['title'],
+                'Link: '.$issue['url'],
+                '',
+                $issue['body'],
+            ]
+        );
 
         return self::COMMAND_SUCCESS;
     }

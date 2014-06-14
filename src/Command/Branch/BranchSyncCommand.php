@@ -61,23 +61,23 @@ EOF
             [
                 [
                     'line' => 'git remote update',
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ],
                 [
                     'line' => 'git checkout '.$branchName,
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ],
                 [
                     'line' => 'git reset --hard HEAD~1',
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ],
                 [
                     'line' => 'git pull -u origin '.$branchName,
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ],
                 [
                     'line' => 'git checkout '.$stashedBranchName,
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ]
             ]
         );

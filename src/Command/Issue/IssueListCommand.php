@@ -12,12 +12,12 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Gush\Feature\TableFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitRepoHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Lists the issues

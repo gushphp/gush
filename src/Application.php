@@ -117,7 +117,7 @@ LOGO;
      */
     public function getHelp()
     {
-        return self::GUSH_LOGO . PHP_EOL .  parent::getHelp();
+        return self::GUSH_LOGO.PHP_EOL.parent::getHelp();
     }
 
     /**
@@ -235,8 +235,9 @@ LOGO;
                 } elseif ($this->adapter instanceof IssueTracker) {
                     $this->issueTracker = $this->adapter;
                 } else {
-                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '."\n".
-                        'Please run the "init" or "core:configure" command to configure a (default) issue tracker.';
+                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '.
+                        PHP_EOL.'Please run the "init" or "core:configure" command to configure a (default) issue '.
+                        'tracker.';
 
                     throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
                 }

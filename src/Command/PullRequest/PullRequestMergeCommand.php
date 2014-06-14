@@ -67,7 +67,7 @@ EOF
         $prType = $input->getArgument('pr_type');
 
         $adapter = $this->getAdapter();
-        $pr      = $adapter->getPullRequest($prNumber);
+        $pr = $adapter->getPullRequest($prNumber);
         $commits = $adapter->getPullRequestCommits($prNumber);
 
         if (null === $prType) {
@@ -124,11 +124,11 @@ EOF
         $commands = [
             [
                 'line' => 'git remote update',
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git checkout %s', $sha),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => [
@@ -137,17 +137,17 @@ EOF
                     '--ref=github-comments',
                     'add',
                     sprintf('-m%s', addslashes($commentText)),
-                    $sha
+                    $sha,
                 ],
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => sprintf('git push %s refs/notes/github-comments', $remote),
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
             [
                 'line' => 'git checkout @{-1}',
-                'allow_failures' => true
+                'allow_failures' => true,
             ],
         ];
 
@@ -159,8 +159,8 @@ EOF
         $commitsString = '';
         foreach ($commits as $commit) {
             // Only use the first line
-            if (strpos($commit['message'], "\n")) {
-                $commit['message'] = explode("\n", $commit['message'])[0];
+            if (strpos($commit['message'], PHP_EOL)) {
+                $commit['message'] = explode(PHP_EOL, $commit['message'])[0];
             }
 
             $commitsString .= sprintf(

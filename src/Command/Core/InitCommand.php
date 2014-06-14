@@ -32,7 +32,7 @@ class InitCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('init')
+            ->setName('core:init')
             ->setDescription('Configures a local .gush.yml config file')
             ->addOption(
                 'adapter',

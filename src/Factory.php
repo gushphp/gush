@@ -126,7 +126,7 @@ class Factory
             }
         } catch (\Exception $exception) {
             throw new \RuntimeException(
-                "{$exception->getMessage()}.\nPlease run the core:configure command.",
+                '$exception->getMessage()'.PHP_EOL.'Please run the core:configure command.',
                 $exception->getCode(),
                 $exception
             );
@@ -139,7 +139,7 @@ class Factory
                 $config->merge($parsed);
             } catch (\Exception $exception) {
                 throw new \RuntimeException(
-                    "{$exception->getMessage()}.\nPlease run the core:configure command.",
+                    '$exception->getMessage()'.PHP_EOL.'Please run the core:configure command.',
                     $exception->getCode(),
                     $exception
                 );

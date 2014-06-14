@@ -13,11 +13,11 @@ namespace Gush\Tests;
 
 use Gush\Adapter\DefaultConfigurator;
 use Gush\Application;
+use Gush\Config;
 use Gush\Factory\AdapterFactory;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tester\Adapter\TestIssueTracker;
 use Symfony\Component\Console\Tester\ApplicationTester;
-use Gush\Config;
 
 /**
  * @author Daniel Gomes <me@danielcsgomes.com>

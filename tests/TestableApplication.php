@@ -12,8 +12,8 @@
 namespace Gush\Tests;
 
 use Gush\Application;
-use Gush\Tester\Adapter\TestAdapter;
 use Gush\Config;
+use Gush\Tester\Adapter\TestAdapter;
 
 class TestableApplication extends Application
 {
