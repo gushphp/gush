@@ -37,6 +37,16 @@ class Application extends BaseApplication
 {
     const MANIFESTO_FILE_URL = 'http://gushphp.org/manifest.json';
 
+    const GUSH_LOGO = <<<LOGO
+   _____ _    _  _____ _    _
+  / ____| |  | |/ ____| |  | |
+ | |  __| |  | | (___ | |__| |
+ | | |_ | |  | |\___ \|  __  |
+ | |__| | |__| |____) | |  | |
+  \_____|\____/|_____/|_|  |_|
+
+LOGO;
+
     /**
      * @var Config $config The configuration file
      */
@@ -100,6 +110,14 @@ class Application extends BaseApplication
         $this->addCommands($this->getCommands());
 
         $this->adapterFactory = $adapterFactory;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp()
+    {
+        return self::GUSH_LOGO . PHP_EOL .  parent::getHelp();
     }
 
     /**
