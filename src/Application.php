@@ -117,7 +117,7 @@ LOGO;
      */
     public function getHelp()
     {
-        return self::GUSH_LOGO . PHP_EOL .  parent::getHelp();
+        return self::GUSH_LOGO.PHP_EOL.parent::getHelp();
     }
 
     /**
