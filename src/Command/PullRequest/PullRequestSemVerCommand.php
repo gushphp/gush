@@ -62,7 +62,7 @@ EOF
                 [
                     'line' => 'git remote update',
                     'allow_failures' => true,
-                ]
+                ],
             ]
         );
 

@@ -62,6 +62,8 @@ EOF
             )
         );
 
-        return $this->getAdapter()->removeRelease($id);
+        $this->getAdapter()->removeRelease($id);
+
+        return self::COMMAND_SUCCESS;
     }
 }
