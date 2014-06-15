@@ -12,17 +12,26 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 class TableHelper extends Helper implements InputAwareInterface
 {
     const LAYOUT_GITHUB = 3;
+    const LAYOUT_DEFAULT = 0;
+    const LAYOUT_BORDERLESS = 1;
+    const LAYOUT_COMPACT = 2;
 
     protected $footer;
     protected $input;
+
+    /**
+     * @var Table
+     */
+    private $table;
 
     /**
      * @var array
@@ -36,8 +45,6 @@ class TableHelper extends Helper implements InputAwareInterface
 
     public function __construct()
     {
-        parent::__construct();
-
         $this->setLayout('default');
         $this->table = new Table(new NullOutput());
     }
@@ -51,7 +58,11 @@ class TableHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Sets table layout type.
+     *
+     * @param int $layout self::LAYOUT_*
+     *
+     * @return TableHelper
      */
     public function setLayout($layout)
     {
@@ -61,49 +72,19 @@ class TableHelper extends Helper implements InputAwareInterface
 
         switch ($layout) {
             case self::LAYOUT_BORDERLESS:
-                $this
-                    ->setPaddingChar(' ')
-                    ->setHorizontalBorderChar('=')
-                    ->setVerticalBorderChar(' ')
-                    ->setCrossingChar(' ')
-                    ->setCellHeaderFormat('<info>%s</info>')
-                    ->setCellRowFormat('%s')
-                    ->setCellRowContentFormat(' %s ')
-                    ->setBorderFormat('%s')
-                    ->setPadType(STR_PAD_RIGHT)
-                ;
+                $this->table->setStyle('borderless');
                 break;
 
             case self::LAYOUT_COMPACT:
-                $this
-                    ->setPaddingChar(' ')
-                    ->setHorizontalBorderChar('')
-                    ->setVerticalBorderChar(' ')
-                    ->setCrossingChar('')
-                    ->setCellHeaderFormat('<info>%s</info>')
-                    ->setCellRowFormat('%s')
-                    ->setCellRowContentFormat('%s')
-                    ->setBorderFormat('%s')
-                    ->setPadType(STR_PAD_RIGHT)
-                ;
+                $this->table->setStyle('compact');
                 break;
 
             case self::LAYOUT_DEFAULT:
-                $this
-                    ->setPaddingChar(' ')
-                    ->setHorizontalBorderChar('-')
-                    ->setVerticalBorderChar('|')
-                    ->setCrossingChar('+')
-                    ->setCellHeaderFormat('<info>%s</info>')
-                    ->setCellRowFormat('%s')
-                    ->setCellRowContentFormat(' %s ')
-                    ->setBorderFormat('%s')
-                    ->setPadType(STR_PAD_RIGHT)
-                ;
+                $this->table->setStyle('default');
                 break;
 
             case self::LAYOUT_GITHUB:
-                $this
+                $this->table->getStyle()
                     ->setPaddingChar(' ')
                     ->setHorizontalBorderChar(' ')
                     ->setVerticalBorderChar('|')
@@ -117,7 +98,8 @@ class TableHelper extends Helper implements InputAwareInterface
                 break;
 
             default:
-                throw new InvalidArgumentException(sprintf('Invalid table layout "%s".', $layout));
+                throw new \InvalidArgumentException(sprintf('Invalid table layout "%s".', $layout));
+                break;
         };
 
         return $this;
