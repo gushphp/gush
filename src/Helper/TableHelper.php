@@ -11,13 +11,13 @@
 
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
-class TableHelper extends Table implements InputAwareInterface
+class TableHelper extends Helper implements InputAwareInterface
 {
     const LAYOUT_GITHUB = 3;
 
@@ -39,10 +39,11 @@ class TableHelper extends Table implements InputAwareInterface
         parent::__construct();
 
         $this->setLayout('default');
+        $this->table = new Table(new NullOutput());
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setInput(InputInterface $input)
     {
@@ -50,7 +51,7 @@ class TableHelper extends Table implements InputAwareInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setLayout($layout)
     {
@@ -143,7 +144,7 @@ class TableHelper extends Table implements InputAwareInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function render(OutputInterface $output)
     {
@@ -177,5 +178,13 @@ class TableHelper extends Table implements InputAwareInterface
             $output->writeln('');
             $output->writeln($this->footer);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+
     }
 }

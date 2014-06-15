@@ -29,7 +29,7 @@ Distribution and reproduction are prohibited.
 EOT;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -37,7 +37,7 @@ EOT;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRequirements()
     {
@@ -48,7 +48,7 @@ EOT;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function render()
     {

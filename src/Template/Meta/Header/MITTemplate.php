@@ -28,7 +28,7 @@ with this source code in the file LICENSE.
 EOT;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -36,7 +36,7 @@ EOT;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRequirements()
     {
@@ -48,7 +48,7 @@ EOT;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function render()
     {

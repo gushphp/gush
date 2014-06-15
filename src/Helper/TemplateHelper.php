@@ -54,7 +54,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setInput(InputInterface $input)
     {

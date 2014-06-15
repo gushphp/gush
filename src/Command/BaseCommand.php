@@ -90,7 +90,7 @@ class BaseCommand extends Command
      * where we can dispatch an event which can validate the input when
      * it has been bound with values.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {

@@ -36,7 +36,7 @@ along with {{ package_name }}.  If not, see <http://www.gnu.org/licenses/>.
 EOT;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -44,7 +44,7 @@ EOT;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRequirements()
     {
@@ -54,7 +54,7 @@ EOT;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function render()
     {

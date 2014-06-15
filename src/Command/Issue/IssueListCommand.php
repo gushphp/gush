@@ -67,7 +67,7 @@ EOF
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTableDefaultLayout()
     {

@@ -125,7 +125,7 @@ LOGO;
      * an event enabling subscribers to decorate
      * the command definition.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function add(Command $command)
     {

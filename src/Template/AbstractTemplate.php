@@ -22,7 +22,7 @@ abstract class AbstractTemplate implements TemplateInterface
     protected $parameters = [];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function bind(array $parameters)
     {
