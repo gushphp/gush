@@ -201,4 +201,36 @@ a#someId {
 }
 
 EOT;
+
+const AUTOCOMPLETE_SCRIPT = <<<EOT
+#!/bin/sh
+_gush()
+{
+    local cur prev coms opts
+    COMPREPLY=()
+    cur="\${COMP_WORDS[COMP_CWORD]}"
+    prev="\${COMP_WORDS[COMP_CWORD-1]}"
+    coms="test:command"
+    opts="--stable --org"
+
+    if [[ \${COMP_CWORD} = 1 ]] ; then
+        COMPREPLY=($(compgen -W "\${coms}" -- \${cur}))
+
+        return 0
+    fi
+
+    case "\${prev}" in
+        
+        esac
+
+    COMPREPLY=($(compgen -W "\${opts}" -- \${cur}))
+
+    return 0;
+}
+
+complete -o default -F _gush gush
+COMP_WORDBREAKS=\${COMP_WORDBREAKS//:}
+
+EOT;
+
 }
