@@ -111,8 +111,7 @@ Pat on the back pushed to https://github.com/gushphp/gush/pull/40
 EOT;
 
     const PULL_REQUEST_VERSIONEYE = <<<EOT
-Please check the modifications on your composer.json for
-updated dependencies.
+Please check the modifications on your composer.json for updated dependencies.
 EOT;
 
     const PULL_REQUEST_SQUASH = <<<EOT
