@@ -127,7 +127,20 @@ class TemplateHelper extends Helper implements InputAwareInterface
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
                 list($prompt, $default) = $requirement;
                 $prompt  = $default ? $prompt . ' (' . $default . ')' : $prompt;
-                $v = $this->dialog->ask($output, $prompt . ' ', $default);
+
+                if ('description' === $key) {
+                    $prompt .= ' (enter "e" to open editor)';
+
+                    $v = $this->dialog->ask($output, $prompt.' ', $default);
+
+                    if ('e' === $v) {
+                        $editor = $this->getHelperSet()->get('editor');
+
+                        $v = $editor->fromString('');
+                    }
+                } else {
+                    $v = $this->dialog->ask($output, $prompt.' ', $default);
+                }
             } else {
                 $v = $this->input->getOption($key);
             }
