@@ -11,13 +11,13 @@
 
 namespace Gush\Helper;
 
-use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
-class TableHelper extends BaseTableHelper implements InputAwareInterface
+class TableHelper extends Table implements InputAwareInterface
 {
     const LAYOUT_GITHUB = 3;
 
