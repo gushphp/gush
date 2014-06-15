@@ -83,7 +83,7 @@ class EditorHelper extends Helper
         $sourceString .= $string;
 
         $res = $this->fromString($sourceString);
-        $res = explode("\n", $res);
+        $res = explode(PHP_EOL, $res);
 
         $line = current($res);
 
@@ -98,7 +98,7 @@ class EditorHelper extends Helper
             $line = next($res);
         }
 
-        return implode("\n", $out);
+        return implode(PHP_EOL, $out);
     }
 
     public function getName()

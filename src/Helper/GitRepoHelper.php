@@ -23,35 +23,23 @@ class GitRepoHelper extends Helper
         'issue' => [
             'state' => [
                 'desc' => 'Issue state',
-                'values' => [
-                    'open',
-                    'closed',
-                ],
+                'values' => ['open', 'closed'],
             ],
             'filter' => [
                 'desc' => 'Issue filter',
-                'values' => [
-                    'assigned'
-                ],
+                'values' => ['assigned'],
             ],
             'sort' => [
                 'desc' => 'Sort issues by',
-                'values' => [
-                    'created',
-                    'updated',
-                ],
+                'values' => ['created', 'updated'],
             ],
             'direction' => [
                 'desc' => 'Sort direction',
-                'values' => [
-                    'asc', 'desc',
-                ],
+                'values' => ['asc', 'desc'],
             ],
             'type' => [
                 'desc' => 'Issue type',
-                'values' => [
-                    'pr', 'issue',
-                ],
+                'values' => ['pr', 'issue'],
             ],
         ],
     ];
