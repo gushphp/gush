@@ -27,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PullRequestListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTableDefaultLayout()
     {

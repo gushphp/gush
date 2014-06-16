@@ -56,7 +56,7 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get($path, array $parameters = [], array $headers = [])
     {
@@ -64,7 +64,7 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function post($path, $body = null, array $headers = [])
     {
@@ -72,7 +72,7 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function patch($path, $body = null, array $headers = [])
     {
@@ -80,7 +80,7 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function put($path, $body, array $headers = [])
     {
@@ -88,7 +88,7 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function delete($path, $body = null, array $headers = [])
     {
@@ -96,7 +96,7 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function request($path, $body = null, $httpMethod = 'GET', array $headers = [], array $options = [])
     {
@@ -116,21 +116,21 @@ class TestHttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOption($name, $value)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setHeaders(array $headers)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function authenticate($tokenOrLogin, $password, $authMethod)
     {

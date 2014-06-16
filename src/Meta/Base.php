@@ -17,7 +17,7 @@ namespace Gush\Meta;
 class Base implements Meta
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getStartDelimiter()
     {
@@ -25,7 +25,7 @@ class Base implements Meta
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getDelimiter()
     {
@@ -33,7 +33,7 @@ class Base implements Meta
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getEndDelimiter()
     {

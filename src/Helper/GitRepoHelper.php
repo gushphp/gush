@@ -45,7 +45,7 @@ class GitRepoHelper extends Helper
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

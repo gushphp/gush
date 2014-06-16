@@ -14,8 +14,8 @@ namespace Gush\Command\Issue;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
+use Gush\Helper\TableHelper;
 use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +52,7 @@ EOF
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTableDefaultLayout()
     {

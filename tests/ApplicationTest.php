@@ -45,7 +45,7 @@ EOT
     protected $gushFile;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp()
     {
