@@ -152,7 +152,8 @@ EOF
                 $title,
                 $body,
                 $parameters
-            );
+            )
+        ;
 
         $output->writeln($pullRequest['html_url']);
 
