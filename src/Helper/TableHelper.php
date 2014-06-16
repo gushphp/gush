@@ -138,6 +138,10 @@ class TableHelper extends Helper implements InputAwareInterface
      */
     public function render(OutputInterface $output)
     {
+        $p = new \ReflectionProperty($this->table, 'output');
+        $p->setAccessible(true);
+        $p->setValue($this->table, $output);
+
         if (null !== $this->input) {
             $layout = $this->input->getOption('table-layout');
 
@@ -162,7 +166,7 @@ class TableHelper extends Helper implements InputAwareInterface
             }
         }
 
-        parent::render($output);
+        $this->table->render();
 
         if ($this->footer) {
             $output->writeln('');
@@ -170,11 +174,172 @@ class TableHelper extends Helper implements InputAwareInterface
         }
     }
 
+    public function setHeaders(array $headers)
+    {
+        $this->table->setHeaders($headers);
+
+        return $this;
+    }
+
+    public function setRows(array $rows)
+    {
+        $this->table->setRows($rows);
+
+        return $this;
+    }
+
+    public function addRows(array $rows)
+    {
+        $this->table->addRows($rows);
+
+        return $this;
+    }
+
+    public function addRow(array $row)
+    {
+        $this->table->addRow($row);
+
+        return $this;
+    }
+
+    public function setRow($column, array $row)
+    {
+        $this->table->setRow($column, $row);
+
+        return $this;
+    }
+
+    /**
+     * Sets padding character, used for cell padding.
+     *
+     * @param string $paddingChar
+     *
+     * @return TableHelper
+     */
+    public function setPaddingChar($paddingChar)
+    {
+        $this->table->getStyle()->setPaddingChar($paddingChar);
+
+        return $this;
+    }
+
+    /**
+     * Sets horizontal border character.
+     *
+     * @param string $horizontalBorderChar
+     *
+     * @return TableHelper
+     */
+    public function setHorizontalBorderChar($horizontalBorderChar)
+    {
+        $this->table->getStyle()->setHorizontalBorderChar($horizontalBorderChar);
+
+        return $this;
+    }
+
+    /**
+     * Sets vertical border character.
+     *
+     * @param string $verticalBorderChar
+     *
+     * @return TableHelper
+     */
+    public function setVerticalBorderChar($verticalBorderChar)
+    {
+        $this->table->getStyle()->setVerticalBorderChar($verticalBorderChar);
+
+        return $this;
+    }
+
+    /**
+     * Sets crossing character.
+     *
+     * @param string $crossingChar
+     *
+     * @return TableHelper
+     */
+    public function setCrossingChar($crossingChar)
+    {
+        $this->table->getStyle()->setCrossingChar($crossingChar);
+
+        return $this;
+    }
+
+    /**
+     * Sets header cell format.
+     *
+     * @param string $cellHeaderFormat
+     *
+     * @return TableHelper
+     */
+    public function setCellHeaderFormat($cellHeaderFormat)
+    {
+        $this->table->getStyle()->setCellHeaderFormat($cellHeaderFormat);
+
+        return $this;
+    }
+
+    /**
+     * Sets row cell format.
+     *
+     * @param string $cellRowFormat
+     *
+     * @return TableHelper
+     */
+    public function setCellRowFormat($cellRowFormat)
+    {
+        $this->table->getStyle()->setCellHeaderFormat($cellRowFormat);
+
+        return $this;
+    }
+
+    /**
+     * Sets row cell content format.
+     *
+     * @param string $cellRowContentFormat
+     *
+     * @return TableHelper
+     */
+    public function setCellRowContentFormat($cellRowContentFormat)
+    {
+        $this->table->getStyle()->setCellRowContentFormat($cellRowContentFormat);
+
+        return $this;
+    }
+
+    /**
+     * Sets table border format.
+     *
+     * @param string $borderFormat
+     *
+     * @return TableHelper
+     */
+    public function setBorderFormat($borderFormat)
+    {
+        $this->table->getStyle()->setBorderFormat($borderFormat);
+
+        return $this;
+    }
+
+    /**
+     * Sets cell padding type.
+     *
+     * @param int     $padType STR_PAD_*
+     *
+     * @return TableHelper
+     */
+    public function setPadType($padType)
+    {
+        $this->table->getStyle()->setPadType($padType);
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-
+        return 'table';
     }
 }
