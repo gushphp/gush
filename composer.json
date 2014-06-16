@@ -36,7 +36,7 @@
         }
     ],
     "require": {
-        "php": ">=5.5",
+        "php": ">=5.4",
         "ext-curl": "*",
         "symfony/console": "~2.5.0",
         "symfony/process": "~2.5.0",
