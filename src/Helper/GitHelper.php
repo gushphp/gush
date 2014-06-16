@@ -137,8 +137,7 @@ class GitHelper extends Helper
     public function getIssueNumber()
     {
         try {
-            $branchName = $this->getBranchName();
-            $segments = explode('-', $branchName);
+            $segments = explode('-', $this->getBranchName());
             $issueNumber = $segments[0];
         } catch (\Exception $e) {
             throw new \RuntimeException('Invalid branch name, couldn\'t detect issue number.');
