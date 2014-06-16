@@ -16,6 +16,7 @@ use Symfony\Component\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Create file for Bash Autocomplete
@@ -67,11 +68,8 @@ EOF
 
         $scriptFile = $config->get('home').DIRECTORY_SEPARATOR.self::AUTOCOMPLETE_SCRIPT;
 
-        $file = @file_put_contents($scriptFile, $script);
-
-        if (false === $file) {
-            throw new \Exception(sprintf('Unable to write to file %s', $scriptFile));
-        }
+        $fileSystem = new Filesystem();
+        $fileSystem->dumpFile($scriptFile, $script);
 
         if (OutputInterface::VERBOSITY_DEBUG === $output->getVerbosity()) {
             $output->writeln($script);
