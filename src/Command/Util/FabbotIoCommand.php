@@ -81,6 +81,7 @@ EOF
             $pr['head']['sha']
         );
 
+        // correct this after https://github.com/symfony/symfony/issues/10025 is solved
         $process = new Process($commandLine, getcwd());
         $process->run();
 
