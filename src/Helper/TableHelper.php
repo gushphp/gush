@@ -25,7 +25,14 @@ class TableHelper extends Helper implements InputAwareInterface
     const LAYOUT_BORDERLESS = 1;
     const LAYOUT_COMPACT = 2;
 
+    /**
+     * @var string
+     */
     protected $footer;
+
+    /**
+     * @var InputInterface
+     */
     protected $input;
 
     /**
@@ -45,8 +52,8 @@ class TableHelper extends Helper implements InputAwareInterface
 
     public function __construct()
     {
-        $this->setLayout('default');
         $this->table = new Table(new NullOutput());
+        $this->setLayout('default');
     }
 
     /**
@@ -62,6 +69,7 @@ class TableHelper extends Helper implements InputAwareInterface
      *
      * @param int $layout self::LAYOUT_*
      *
+     * @throws \InvalidArgumentException
      * @return TableHelper
      */
     public function setLayout($layout)
@@ -113,7 +121,7 @@ class TableHelper extends Helper implements InputAwareInterface
     {
         foreach ($rows as $row) {
             $formattedRow = call_user_func($rowFormatter, $row);
-            $this->addRow($formattedRow);
+            $this->table->addRow($formattedRow);
         }
     }
 
