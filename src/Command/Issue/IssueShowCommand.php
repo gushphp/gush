@@ -30,13 +30,13 @@ class IssueShowCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('issue:show')
             ->setDescription('Shows given issue')
-            ->addOption('issue', 'i', InputOption::VALUE_REQUIRED, 'Issue number')
+            ->addOption('issue_number', 'i', InputOption::VALUE_REQUIRED, 'Issue number')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command shows issue details for either the current or the given organization
 and repo:
 
-    <info>$ gush %command.name% --issue=60</info>
+    <info>$ gush %command.name% --issue_number=60</info>
 
 You can also call the command without options to pick up the current issue from the branch name:
 
