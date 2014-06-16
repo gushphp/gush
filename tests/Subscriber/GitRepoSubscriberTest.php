@@ -11,9 +11,9 @@
 
 namespace Gush\Tests\Subscriber;
 
-use Gush\Subscriber\GitHubSubscriber;
+use Gush\Subscriber\GitRepoSubscriber;
 
-class GitHubSubscriberTest extends \PHPUnit_Framework_TestCase
+class GitRepoSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     protected $subscriber;
     protected $event;
@@ -40,7 +40,7 @@ class GitHubSubscriberTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
 
-        $this->subscriber = new GitHubSubscriber($this->gitHelper);
+        $this->subscriber = new GitRepoSubscriber($this->gitHelper);
     }
 
     public function testDecorateDefinition()

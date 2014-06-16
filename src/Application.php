@@ -20,7 +20,7 @@ use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Meta as Meta;
-use Gush\Subscriber\GitHubSubscriber;
+use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
 use Guzzle\Http\Client as GuzzleClient;
@@ -100,7 +100,7 @@ LOGO;
 
         // add our subscribers to the event dispatcher
         $this->dispatcher->addSubscriber(new TableSubscriber());
-        $this->dispatcher->addSubscriber(new GitHubSubscriber($helperSet->get('git')));
+        $this->dispatcher->addSubscriber(new GitRepoSubscriber($helperSet->get('git')));
         $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
 
         // share our dispatcher with the parent class
