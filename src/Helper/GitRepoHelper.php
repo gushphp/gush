@@ -49,7 +49,7 @@ class GitRepoHelper extends Helper
      */
     public function getName()
     {
-        return 'github';
+        return 'gitrepo';
     }
 
     /**

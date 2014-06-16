@@ -12,7 +12,7 @@
 namespace Gush\Feature;
 
 /**
- * The GitHubSubscriber will act on classes implementing
+ * The GitRepoSubscriber will act on classes implementing
  * this interface
  */
 interface GitRepoFeature
