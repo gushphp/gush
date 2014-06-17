@@ -52,7 +52,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (null === $issueNumber = $input->getOption('issue')) {
+        if (null === $issueNumber = $input->getOption('issue_number')) {
             $issueNumber = $this->getHelper('git')->getIssueNumber();
         }
 
