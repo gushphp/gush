@@ -91,6 +91,7 @@ LOGO;
         $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
+        $helperSet->set(new Helpers\AutocompleteHelper());
         $helperSet->set(new UpdateHelper());
 
         // the parent dispatcher is private and has
@@ -433,6 +434,7 @@ LOGO;
             new Cmd\Core\CoreConfigureCommand(),
             new Cmd\Core\CoreAliasCommand(),
             new Cmd\Core\InitCommand(),
+            new Cmd\Core\AutocompleteCommand(),
         ];
     }
 
