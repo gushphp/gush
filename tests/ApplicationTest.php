@@ -58,7 +58,7 @@ EOT
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
-                    $helperSet->get('dialog'),
+                    $helperSet->get('question'),
                     'GitHub',
                     'https://api.github.com/',
                     'https://github.com'
@@ -73,7 +73,7 @@ EOT
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
-                    $helperSet->get('dialog'),
+                    $helperSet->get('question'),
                     'GitHub IssueTracker',
                     'https://api.github.com/',
                     'https://github.com'

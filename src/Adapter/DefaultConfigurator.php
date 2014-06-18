@@ -120,20 +120,22 @@ class DefaultConfigurator implements Configurator
                 ->setHidden(true)
         );
 
-        $config['base_url'] = $this->dialog->askAndValidate(
+        $config['base_url'] = $this->questionHelper->ask(
+            $input,
             $output,
-            sprintf('Enter your '.$this->label.' api url [%s]: ', $this->apiUrl),
-            [$this, 'validateUrl'],
-            false,
-            $this->apiUrl
+            (new Question(
+                sprintf('Enter your %s api url [%s]: ', $this->label, $this->apiUrl),
+                $this->apiUrl
+            ))->setValidator([$this, 'validateUrl'])
         );
 
-        $config['repo_domain_url'] = $this->dialog->askAndValidate(
+        $config['repo_domain_url'] = $this->questionHelper->ask(
+            $input,
             $output,
-            sprintf('Enter your '.$this->label.' repo url [%s]: ', $this->repoUrl),
-            [$this, 'validateUrl'],
-            false,
-            $this->repoUrl
+            (new Question(
+                sprintf('Enter your %s repo url [%s]: ', $this->label, $this->repoUrl),
+                $this->repoUrl
+            ))->setValidator([$this, 'validateUrl'])
         );
 
         return $config;
