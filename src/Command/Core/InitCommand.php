@@ -89,7 +89,7 @@ EOF
                 new ChoiceQuestion('Choose adapter: ', $adaptersIdxs, $currentValue)
             );
 
-            $adapterName = $adaptersIdxs[$selection];
+            $adapterName = $selection;
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
@@ -119,7 +119,7 @@ EOF
                 new ChoiceQuestion('Choose issue tracker: ', $issueTrackerIdxs, $currentValue)
             );
 
-            $issueTrackerName = $issueTrackerIdxs[$selection];
+            $issueTrackerName = $selection;
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
