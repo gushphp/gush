@@ -69,7 +69,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
-                    $helperSet->get('dialog'),
+                    $helperSet->get('question'),
                     'GitHub',
                     'https://api.github.com/',
                     'https://github.com'
@@ -84,7 +84,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
-                    $helperSet->get('dialog'),
+                    $helperSet->get('question'),
                     'GitHub Enterprise',
                     '',
                     ''
@@ -99,7 +99,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
-                    $helperSet->get('dialog'),
+                    $helperSet->get('question'),
                     'GitHub',
                     'https://api.github.com/',
                     'https://github.com'
@@ -114,7 +114,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             },
             function ($helperSet) {
                 return new DefaultConfigurator(
-                    $helperSet->get('dialog'),
+                    $helperSet->get('question'),
                     'Jira',
                     '',
                     ''
