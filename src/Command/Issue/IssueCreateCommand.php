@@ -14,10 +14,11 @@ namespace Gush\Command\Issue;
 use Gush\Command\BaseCommand;
 use Gush\Helper\EditorHelper;
 use Gush\Feature\GitRepoFeature;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Creates an issue
@@ -60,14 +61,14 @@ EOF
             return $string;
         };
 
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
+        /** @var QuestionHelper $questionHelper */
+        $questionHelper = $this->getHelper('question');
 
         if (!$title = $input->getOption('issue_title')) {
-            $title = $dialog->askAndValidate(
+            $title = $questionHelper->ask(
+                $input,
                 $output,
-                'Issue title: ',
-                $emptyValidator
+                (new Question('Issue title: '))->setValidator($emptyValidator)
             );
         }
 

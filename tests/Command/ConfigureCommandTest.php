@@ -75,7 +75,7 @@ class ConfigureCommandTest extends BaseTestCase
 
         $dialog = $this->expectDialogParameters($homeDir);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($dialog, 'question');
         $tester->execute(
             [
                 'command' => 'core:configure',
@@ -92,123 +92,105 @@ class ConfigureCommandTest extends BaseTestCase
 
     private function expectDialogParameters($homeDir)
     {
-        $dialog = $this->prophet->prophesize('Symfony\Component\Console\Helper\DialogHelper');
+        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
 
-        $dialog->getName()->willReturn('dialog');
-        $dialog->setHelperSet(Argument::any())->shouldBeCalled();
+        $questionHelper->getName()->willReturn('question');
+        $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
 
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose adapter:'),
-            ['github', 'github_enterprise'],
-            0
+            Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
         )->willReturn(1);
 
         // AdapterConfigurator Start
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose GitHub Enterprise authentication type:'),
-            ['Password', 'Token'],
-            0
+            Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
         )->willReturn(0);
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Username:'),
-            Argument::any()
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn(self::USERNAME);
 
-        $dialog->askHiddenResponseAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Password:'),
-            Argument::any()
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn(self::PASSWORD);
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your GitHub Enterprise api url []:'),
-            Argument::any(),
-            false,
-            ''
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn('https://company.com/api/v3/');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your GitHub Enterprise repo url []:'),
-            Argument::any(),
-            false,
-            ''
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn('https://company.com');
         // AdapterConfigurator End
 
-        $dialog->askConfirmation(
+        $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would you like to make "github_enterprise" the default adapter?',
-            true
+            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            Argument::type('Symfony\Component\Console\Question\ConfirmationQuestion')
         )->willReturn(true);
 
-
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose issue tracker:'),
-            ['github', 'jira'],
-            null
+            Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
         )->willReturn(1);
 
         // IssueTrackerConfigurator Start
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose Jira authentication type:'),
-            ['Password', 'Token'],
-            0
+            Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
         )->willReturn(1);
 
-        $dialog->askHiddenResponseAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Token:'),
-            Argument::any()
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn(self::TOKEN);
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your Jira api url []:'),
-            Argument::any(),
-            false,
-            ''
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn('https://jira.company.com/api/v2/');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your Jira repo url []:'),
-            Argument::any(),
-            false,
-            ''
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn('https://jira.company.com/');
         // IssueTrackerConfigurator End
 
-        $dialog->askConfirmation(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would you like to make "jira" the default issue tracker?',
-            true
+            Argument::type('Symfony\Component\Console\Question\ConfirmationQuestion')
         )->willReturn(true);
 
-
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Cache folder'),
-            Argument::any(),
-            false,
-            $homeDir.'/cache'
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn($homeDir.'/cache');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('VersionEye token:'),
-            Argument::any(),
-            false,
-            'NO_TOKEN'
+            Argument::type('Symfony\Component\Console\Question\Question')
         )->willReturn(self::VERSIONEYE_TOKEN);
 
-        return $dialog->reveal();
+        return $questionHelper->reveal();
     }
 }
