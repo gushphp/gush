@@ -15,10 +15,11 @@ use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
 use Gush\Helper\TableHelper;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Labels issues and pull requests
@@ -131,16 +132,15 @@ EOF
                 return $label;
             };
 
-            /** @var DialogHelper $dialog */
-            $dialog = $this->getApplication()->getHelperSet()->get('dialog');
+            /** @var QuestionHelper $question */
+            $questionHelper = $this->getHelper('question');
             if (!$label = $input->getOption('label')) {
-                $label = $dialog->askAndValidate(
+                $label = $questionHelper->ask(
+                    $input,
                     $output,
-                    '<comment>Label(s)?</comment> ',
-                    $validation,
-                    false,
-                    null,
-                    $labelNames
+                    (new Question('<comment>Label(s)?</comment> '))
+                        ->setValidator($validation)
+                        ->setAutocompleterValues($labelNames)
                 );
             }
 

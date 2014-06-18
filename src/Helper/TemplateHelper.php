@@ -24,20 +24,21 @@ use Gush\Template\PullRequest\Create\SymfonyTemplate;
 use Gush\Template\PullRequest\Create\ZendFrameworkDocTemplate;
 use Gush\Template\PullRequest\Create\ZendFrameworkTemplate;
 use Gush\Template\TemplateInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Question\Question;
 
 class TemplateHelper extends Helper implements InputAwareInterface
 {
     protected $templates;
-    /** @var \Symfony\Component\Console\Helper\DialogHelper  */
-    protected $dialog;
+    /** @var \Symfony\Component\Console\Helper\QuestionHelper  */
+    protected $question;
     protected $input;
 
-    public function __construct(DialogHelper $dialog, Application $application)
+    public function __construct(QuestionHelper $questionHelper, Application $application)
     {
         $this->registerTemplate(new SymfonyTemplate());
         $this->registerTemplate(new SymfonyDocTemplate());
@@ -50,7 +51,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $this->registerTemplate(new MITTemplate());
         $this->registerTemplate(new GPL3Template());
         $this->registerTemplate(new NoLicenseTemplate());
-        $this->dialog = $dialog;
+        $this->questionHelper = $questionHelper;
     }
 
     /**
@@ -131,7 +132,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
                 if ('description' === $key) {
                     $prompt .= ' (enter "e" to open editor)';
 
-                    $v = $this->dialog->ask($output, $prompt.' ', $default);
+                    $v = $this->questionHelper->ask($this->input, $output, new Question($prompt.' ', $default));
 
                     if ('e' === $v) {
                         $editor = $this->getHelperSet()->get('editor');
@@ -139,7 +140,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
                         $v = $editor->fromString('');
                     }
                 } else {
-                    $v = $this->dialog->ask($output, $prompt.' ', $default);
+                    $v = $this->questionHelper->ask($this->input, $output, new Question($prompt.' ', $default));
                 }
             } else {
                 $v = $this->input->getOption($key);
