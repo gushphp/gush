@@ -122,7 +122,7 @@ EOF
                 new ChoiceQuestion('Choose adapter: ', array_keys($adapters), 0)
             );
 
-            $adapterName = array_keys($adapters)[$selection];
+            $adapterName = $selection;
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \InvalidArgumentException(
                 sprintf(
@@ -160,7 +160,7 @@ EOF
                 new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
             );
 
-            $issueTrackerName = array_keys($issueTrackers)[$selection];
+            $issueTrackerName = $selection;
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
