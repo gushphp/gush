@@ -89,7 +89,7 @@ LOGO;
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
         $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
-        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog'), $this));
+        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('question'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new Helpers\AutocompleteHelper());
         $helperSet->set(new UpdateHelper());
