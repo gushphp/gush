@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+securitychecker=$(which security-checker)
+
+if [ -x "$securitychecker" ] ; then
+    $securitychecker security:check
+else
+    if [ ! -f ./security-checker.phar ]; then
+        wget https://github.com/cordoval/security-checker/releases/download/v1.3.1/security-checker.phar
+    fi
+
+    chmod +x ./security-checker.phar
+    ./security-checker.phar security:check
+fi
