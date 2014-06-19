@@ -6,6 +6,7 @@ bldr:
             description: Travis Profile
             tasks:
                 - prepare
+                - secure
                 - lint
                 - phpcs
                 - test
@@ -36,6 +37,13 @@ bldr:
                 -
                     type: notify
                     message: Prepare Task Finished
+        secure:
+            calls:
+                -
+                    type: exec
+                    failOnError: true
+                    executable: ./secure
+                    arguments: []
         lint:
             description: Lints the files of the project
             calls:
