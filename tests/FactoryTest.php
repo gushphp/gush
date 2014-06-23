@@ -14,10 +14,6 @@ namespace Gush\Tests;
 use Gush\Factory;
 use Symfony\Component\Process\Process;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**

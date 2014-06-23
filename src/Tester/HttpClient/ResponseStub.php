@@ -13,9 +13,6 @@ namespace Gush\Tester\HttpClient;
 
 use Guzzle\Http\Message\Response;
 
-/**
- * @author Daniel T Leech <dantleech@gmail.com>
- */
 class ResponseStub
 {
     protected $client;

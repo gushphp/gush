@@ -15,9 +15,6 @@ use Gush\Exception\UnsupportedTypeException;
 use Gush\Meta\Meta;
 use Symfony\Component\Console\Helper\Helper;
 
-/**
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 class MetaHelper extends Helper
 {
     /**

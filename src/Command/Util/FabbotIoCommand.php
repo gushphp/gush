@@ -21,8 +21,6 @@ use Symfony\Component\Process\Process;
 
 /**
  * Applies patches from fabbot-io robot
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class FabbotIoCommand extends BaseCommand implements GitRepoFeature
 {

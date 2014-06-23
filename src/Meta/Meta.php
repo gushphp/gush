@@ -11,9 +11,6 @@
 
 namespace Gush\Meta;
 
-/**
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 interface Meta
 {
     /**

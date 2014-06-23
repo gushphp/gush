@@ -19,8 +19,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Removes a release
- *
- * @author Daniel Leech <daniel@dantleech.com>
  */
 class ReleaseRemoveCommand extends BaseCommand implements GitRepoFeature
 {

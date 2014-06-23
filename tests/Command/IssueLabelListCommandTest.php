@@ -13,9 +13,6 @@ namespace Gush\Tests\Command;
 
 use Gush\Command\Issue\IssueLabelListCommand;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- */
 class IssueLabelListCommandTest extends BaseTestCase
 {
     public function testCommand()

@@ -16,9 +16,6 @@ use Gush\Config;
 /**
  * Provides a base class for adapting Gush to use different providers.
  * E.g. Github, GitLab, Bitbucket
- *
- * @author Aaron Scherer <aequasi@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 abstract class BaseAdapter implements Adapter
 {

@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Issue\IssueAssignCommand;
 use Gush\Tester\Adapter\TestAdapter;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class IssueAssignCommandTest extends BaseTestCase
 {
     public function testCommand()

@@ -25,9 +25,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Input\InputAwareInterface;
 
-/**
- * @author Daniel Leech <daniel@dantleech.com>
- */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
     /**

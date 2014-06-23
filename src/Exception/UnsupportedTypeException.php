@@ -11,9 +11,6 @@
 
 namespace Gush\Exception;
 
-/**
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 class UnsupportedTypeException extends \RuntimeException
 {
     /**

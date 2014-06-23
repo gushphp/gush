@@ -20,8 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Closes an issue
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class IssueCloseCommand extends BaseCommand implements GitRepoFeature
 {

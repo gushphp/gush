@@ -13,8 +13,6 @@ namespace Gush\Util;
 
 /**
  * ArrayUtil class.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class ArrayUtil
 {

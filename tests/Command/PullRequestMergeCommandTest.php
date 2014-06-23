@@ -13,9 +13,6 @@ namespace Gush\Tests\Command;
 
 use Gush\Command\PullRequest\PullRequestMergeCommand;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestMergeCommandTest extends BaseTestCase
 {
     public function testCommand()

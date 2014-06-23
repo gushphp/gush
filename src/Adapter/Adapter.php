@@ -17,10 +17,6 @@ use Gush\Exception\AdapterException;
  * Adapter is the interface implemented by all Gush Adapter classes.
  *
  * Note that each adapter instance can be only used for one repository.
- *
- * @author Aaron Scherer <aequasi@gmail.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface Adapter
 {

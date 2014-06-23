@@ -13,8 +13,6 @@ namespace Gush\Exception;
 
 /**
  * Exception thrown by adapters when they do not support an operation
- *
- * @author Julien Bianchi <contact@jubianchi.fr>
  */
 class UnsupportedOperationException extends AdapterException
 {

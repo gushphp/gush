@@ -11,9 +11,6 @@
 
 namespace Gush\Template\PullRequest\Create;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class EnterpriseTemplate extends AbstractSymfonyTemplate
 {
     /**

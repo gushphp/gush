@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Issue\IssueShowCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class IssueShowCommandTest extends BaseTestCase
 {
     public function testCommand()

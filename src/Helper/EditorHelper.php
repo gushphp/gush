@@ -16,9 +16,6 @@ use Symfony\Component\Console\Helper\Helper;
 
 /**
  * Helper for launching external editor
- *
- * @author Daniel Leech <daniel@dantleech.com>
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class EditorHelper extends Helper
 {

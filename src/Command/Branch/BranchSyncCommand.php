@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Syncs a local branch with its upstream version
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class BranchSyncCommand extends BaseCommand implements GitRepoFeature
 {

@@ -19,10 +19,6 @@ use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tester\Adapter\TestIssueTracker;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
     const GUSH_FILE = <<<EOT

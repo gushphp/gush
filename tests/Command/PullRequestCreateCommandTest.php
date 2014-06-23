@@ -14,10 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\PullRequest\PullRequestCreateCommand;
 use Gush\Tester\Adapter\TestAdapter;
 
-/**
- * @author Daniel Leech <daniel@dantleech.com>
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestCreateCommandTest extends BaseTestCase
 {
     public function provideCommand()

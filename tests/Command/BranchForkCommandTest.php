@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Branch\BranchForkCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class BranchForkCommandTest extends BaseTestCase
 {
     const TEST_USERNAME = 'cordoval';

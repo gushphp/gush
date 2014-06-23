@@ -13,9 +13,6 @@ namespace Gush\Tests\Command;
 
 use Gush\Command\Issue\IssueCreateCommand;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class IssueCreateCommandTest extends BaseTestCase
 {
     const ISSUE_TITLE = 'bug title';

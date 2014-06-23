@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Gives a pat on the back
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeature
 {

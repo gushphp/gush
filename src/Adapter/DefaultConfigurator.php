@@ -17,8 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * DefaultConfigurator is the default Configurator class for Adapter configuring.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class DefaultConfigurator implements Configurator
 {

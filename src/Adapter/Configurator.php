@@ -16,8 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Configurator is the interface implemented by all Gush Adapter Configurator classes.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface Configurator
 {

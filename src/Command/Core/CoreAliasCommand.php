@@ -18,9 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Outputs help and alias snippet for wrapping gush on git
- *
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Carlos Salvatierra <cslucano@gmail.com>
  */
 class CoreAliasCommand extends BaseCommand
 {

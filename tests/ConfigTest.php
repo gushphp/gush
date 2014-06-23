@@ -14,9 +14,6 @@ namespace Gush\Tests;
 use Github\Client;
 use Gush\Config;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     public function testConfig()

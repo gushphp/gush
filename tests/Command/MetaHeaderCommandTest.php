@@ -16,9 +16,6 @@ use Gush\Helper\MetaHelper;
 use Gush\Meta as Meta;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 class MetaHeaderCommandTest extends BaseTestCase
 {
     private $command;

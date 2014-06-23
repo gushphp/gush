@@ -14,9 +14,6 @@ namespace Gush\Tester\HttpClient;
 use Github\HttpClient\HttpClientInterface;
 use Guzzle\Http\Message\Response;
 
-/**
- * @author Daniel Leech <daniel@dantleech.com>
- */
 class TestHttpClient implements HttpClientInterface
 {
     protected $stubs;

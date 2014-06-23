@@ -16,8 +16,6 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Creates the default directory structure to run Gush
- *
- * @author Daniel Gomes <me@danielcsgomes.com>
  */
 class Factory
 {

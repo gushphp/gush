@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\PullRequest\PullRequestListCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 class PullRequestListCommandTest extends BaseTestCase
 {
     public function testCommand()

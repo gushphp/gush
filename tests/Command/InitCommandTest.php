@@ -15,11 +15,6 @@ use Gush\Command\Core\InitCommand;
 use Prophecy\Argument;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class InitCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';

@@ -14,10 +14,6 @@ namespace Gush\Tester\Adapter;
 use Gush\Adapter\BaseAdapter;
 use Gush\Adapter\IssueTracker;
 
-/**
- * @author Aaron Scherer <aequasi@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class TestAdapter extends BaseAdapter implements IssueTracker
 {
     const PULL_REQUEST_NUMBER = 40;

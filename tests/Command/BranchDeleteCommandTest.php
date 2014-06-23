@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Branch\BranchDeleteCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class BranchDeleteCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';

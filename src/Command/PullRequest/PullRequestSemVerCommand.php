@@ -22,8 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides SemVer information for a PR
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestSemVerCommand extends BaseCommand implements GitRepoFeature
 {

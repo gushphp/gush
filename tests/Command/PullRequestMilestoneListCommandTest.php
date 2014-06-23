@@ -11,9 +11,6 @@
 
 namespace Gush\Tests\Command;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- */
 class PullRequestMilestoneListCommandTest extends BaseTestCase
 {
     public function testCommand()

@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Takes an issue from the GitHub repository issue list
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class IssueTakeCommand extends BaseCommand implements GitRepoFeature
 {

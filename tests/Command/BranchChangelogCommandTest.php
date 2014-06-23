@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Branch\BranchChangelogCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Anton Babenko <anton@antonbabenko.com>
- */
 class BranchChangelogCommandTest extends BaseTestCase
 {
     const TEST_TAG_NAME = '1.2.3';

@@ -13,9 +13,6 @@ namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
 
-/**
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 class AutocompleteHelper extends Helper
 {
     /**

@@ -20,9 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Closes a PullRequest.
- *
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class PullRequestCloseCommand extends BaseCommand implements GitRepoFeature
 {

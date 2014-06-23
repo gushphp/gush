@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Release\ReleaseListCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Daniel T Leech <dantleech@gmail.com>
- */
 class ReleaseListCommandTest extends BaseTestCase
 {
     public function testCommand()

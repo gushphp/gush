@@ -20,8 +20,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Create file for Bash Autocomplete
- *
- * @author Pierre du Plessis <pdples@gmail.com>
  */
 class AutocompleteCommand extends BaseCommand
 {
