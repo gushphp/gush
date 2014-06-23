@@ -13,9 +13,6 @@ namespace Gush\Tests\Command;
 
 use Gush\Command\Issue\IssueMilestoneListCommand;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- */
 class IssueMilestoneListCommandTest extends BaseTestCase
 {
     public function testCommand()

@@ -15,9 +15,6 @@ use Gush\Command\PullRequest\PullRequestPatOnTheBackCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestPatOnTheBackCommandTest extends BaseTestCase
 {
     const TEMPLATE_STRING = "Good catch @weaverryan, thanks for the patch.";

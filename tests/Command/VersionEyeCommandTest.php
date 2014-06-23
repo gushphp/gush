@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Util\VersionEyeCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class VersionEyeCommandTest extends BaseTestCase
 {
     public function testCommand()

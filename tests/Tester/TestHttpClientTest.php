@@ -13,9 +13,6 @@ namespace Gush\Tests\Tester;
 
 use Gush\Tester\HttpClient\TestHttpClient;
 
-/**
- * @author Daniel T Leech <dantleech@gmail.com>
- */
 class TestHttpClientTest extends \PHPUnit_Framework_TestCase
 {
     protected $testHttpClient;

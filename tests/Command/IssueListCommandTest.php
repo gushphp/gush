@@ -14,10 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Issue\IssueListCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Pierre du Plessis <pdples@gmail.com>
- */
 class IssueListCommandTest extends BaseTestCase
 {
     public function provideCommand()

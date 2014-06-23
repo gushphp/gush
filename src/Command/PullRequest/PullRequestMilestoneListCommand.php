@@ -19,9 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Lists the available milestones for a pull request.
- *
- * @author Daniel Gomes <me@danielcsgomes.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class PullRequestMilestoneListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

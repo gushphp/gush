@@ -22,8 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Labels issues and pull requests
- *
- * @author Daniel Gomes <me@danielcsgomes.com>
  */
 class LabelIssuesCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

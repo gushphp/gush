@@ -13,8 +13,6 @@ namespace Gush\Exception;
 
 /**
  * Exception for an invalid state
- *
- * @author Pierre du Plessis <pdples@gmail.com>
  */
 class InvalidStateException extends \RuntimeException
 {

@@ -11,9 +11,6 @@
 
 namespace Gush\Exception;
 
-/**
- * @author Aaron Scherer <aequasi@gmail.com>
- */
 class AdapterException extends \RuntimeException
 {
 }

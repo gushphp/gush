@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Assigns a pull request to a user.
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestAssignCommand extends BaseCommand implements GitRepoFeature
 {

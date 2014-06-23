@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestCloseCommandTest extends BaseTestCase
 {
     public function testCommand()

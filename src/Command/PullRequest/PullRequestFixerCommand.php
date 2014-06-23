@@ -18,8 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Runs cs-fixer
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestFixerCommand extends BaseCommand
 {

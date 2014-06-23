@@ -21,8 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Lists all pull requests
- *
- * @author Pierre du Plessis <pdples@gmail.com>
  */
 class PullRequestListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

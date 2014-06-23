@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Issue\IssueTakeCommand;
 use Gush\Tester\Adapter\TestAdapter;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class IssueTakeCommandTest extends BaseTestCase
 {
     const SLUGIFIED_STRING = 'write-a-behat-test-to-launch-strategy';

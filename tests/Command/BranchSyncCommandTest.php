@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Branch\BranchSyncCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class BranchSyncCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';

@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * List releases
- *
- * @author Daniel Leech <daniel@dantleech.com>
  */
 class ReleaseListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

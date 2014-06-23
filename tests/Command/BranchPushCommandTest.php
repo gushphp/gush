@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\Branch\BranchPushCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class BranchPushCommandTest extends BaseTestCase
 {
     const TEST_USERNAME = 'cordoval';

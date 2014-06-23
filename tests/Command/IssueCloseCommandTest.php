@@ -15,9 +15,6 @@ use Gush\Command\Issue\IssueCloseCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class IssueCloseCommandTest extends BaseTestCase
 {
     public function testCommand()

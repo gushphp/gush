@@ -20,10 +20,6 @@ use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class BaseCommand extends Command
 {
     const COMMAND_SUCCESS = 1;

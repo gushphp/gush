@@ -19,8 +19,6 @@ use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * AdapterFactory creates new Adapter and Configurator instances.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class AdapterFactory
 {

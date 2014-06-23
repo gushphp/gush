@@ -20,8 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Switches the base of a pull request
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
 {

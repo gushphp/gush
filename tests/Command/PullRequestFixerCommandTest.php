@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\PullRequest\PullRequestFixerCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestFixerCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';

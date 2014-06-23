@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\PullRequest\PullRequestAssignCommand;
 use Gush\Tester\Adapter\TestAdapter;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestAssignCommandTest extends BaseTestCase
 {
     public function testCommand()

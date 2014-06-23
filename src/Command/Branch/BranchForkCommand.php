@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Forks upstream repository and creates local remote
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class BranchForkCommand extends BaseCommand implements GitRepoFeature
 {

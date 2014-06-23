@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Lists the available milestones for a issue.
- *
- * @author Daniel Gomes <me@danielcsgomes.com>
  */
 class IssueMilestoneListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

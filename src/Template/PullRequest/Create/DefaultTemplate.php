@@ -13,9 +13,6 @@ namespace Gush\Template\PullRequest\Create;
 
 use Gush\Template\AbstractTemplate;
 
-/**
- * @author Daniel Leech <daniel@dantleech.com>
- */
 class DefaultTemplate extends AbstractTemplate
 {
     public function render()

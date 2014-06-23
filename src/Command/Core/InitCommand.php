@@ -20,9 +20,6 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Initializes a local config
- *
- * @author Pierre du Plessis <pdples@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class InitCommand extends BaseCommand
 {

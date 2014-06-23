@@ -20,9 +20,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Launches a pull request
- *
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Daniel Leech <daniel@dantleech.com>
  */
 class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, TemplateFeature
 {

@@ -21,10 +21,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Lists the issues
- *
- * @author Daniel Leech <daniel@dantleech.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Pierre du Plessis <pdples@gmail.com>
  */
 class IssueListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

@@ -22,8 +22,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Creates a release
- *
- * @author Daniel Leech <daniel@dantleech.com>
  */
 class ReleaseCreateCommand extends BaseCommand implements GitRepoFeature
 {

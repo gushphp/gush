@@ -16,11 +16,6 @@ use Gush\Command\Core\CoreConfigureCommand;
 use Prophecy\Argument;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class ConfigureCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';

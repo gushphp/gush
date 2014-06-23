@@ -21,8 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Merges a pull request
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
 {

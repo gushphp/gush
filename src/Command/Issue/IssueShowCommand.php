@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Shows an issue
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class IssueShowCommand extends BaseCommand implements GitRepoFeature
 {

@@ -14,9 +14,6 @@ namespace Gush;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- */
 class Config
 {
     /**

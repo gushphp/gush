@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Deletes remote branch for the given pull request
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class BranchDeleteCommand extends BaseCommand implements GitRepoFeature
 {

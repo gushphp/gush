@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Reports what got fixed or closed since last release on current branch
  *
- * @author Luis Cordova <cordoval@gmail.com>
- *
  * adapted from lornajane and sebastianbergmann
  * reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
  */

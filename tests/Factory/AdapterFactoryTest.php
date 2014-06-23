@@ -13,9 +13,6 @@ namespace Gush\Tests\Factory;
 
 use Gush\Factory\AdapterFactory;
 
-/**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**

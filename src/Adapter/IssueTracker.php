@@ -17,10 +17,6 @@ use Gush\Exception\AdapterException;
  * IssueTracker is the interface implemented by all Gush IssueTracker classes.
  *
  * Note that each IssueTracker instance can be only used once per issue tracker system.
- *
- * @author Aaron Scherer <aequasi@gmail.com>
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface IssueTracker
 {

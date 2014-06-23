@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Lists the available labels for an issues.
- *
- * @author Daniel Gomes <me@danielcsgomes.com>
  */
 class IssueLabelListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {

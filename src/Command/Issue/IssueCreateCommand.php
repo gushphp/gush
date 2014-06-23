@@ -21,8 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Creates an issue
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class IssueCreateCommand extends BaseCommand implements GitRepoFeature
 {

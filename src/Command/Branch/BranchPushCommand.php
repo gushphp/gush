@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Pushes a local branch and applies tracking to user's fork
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class BranchPushCommand extends BaseCommand implements GitRepoFeature
 {

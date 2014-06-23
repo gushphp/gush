@@ -15,10 +15,6 @@ use Gush\Template\AbstractTemplate;
 use Gush\Helper\TableHelper;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-/**
- * @author Daniel Leech <daniel@dantleech.com>
- * @author Luis Cordova <cordoval@gmail.com>
- */
 abstract class AbstractSymfonyTemplate extends AbstractTemplate
 {
     public function render()

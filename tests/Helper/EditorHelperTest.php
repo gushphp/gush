@@ -15,10 +15,6 @@ use Gush\Helper\EditorHelper;
 use Gush\Helper\ProcessHelper;
 use Symfony\Component\Console\Helper\HelperSet;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- * @author Daniel Leech <daniel@dantleech.com>
- */
 class EditorHelperTest extends \PHPUnit_Framework_TestCase
 {
     protected $helper;

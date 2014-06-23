@@ -13,9 +13,6 @@ namespace Gush\Template\PullRequest\Create;
 
 use Gush\Application;
 
-/**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class PullRequestCustomTemplate extends AbstractSymfonyTemplate
 {
     /**

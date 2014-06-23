@@ -11,9 +11,6 @@
 
 namespace Gush\Template\PullRequest\Create;
 
-/**
- * @author Abdul Malik Ikhsan <samsonasik@gmail.com>
- */
 class ZendFrameworkDocTemplate extends AbstractSymfonyTemplate
 {
     /**

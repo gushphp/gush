@@ -14,9 +14,6 @@ namespace Gush\Tests\Command;
 use Gush\Command\PullRequest\PullRequestSquashCommand;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-/**
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class PullRequestSquashCommandTest extends BaseTestCase
 {
     public function testCommand()

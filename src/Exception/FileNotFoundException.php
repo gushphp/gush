@@ -11,9 +11,6 @@
 
 namespace Gush\Exception;
 
-/**
- * @author Daniel Gomes <me@danielcsgomes.com>
- */
 class FileNotFoundException extends \RuntimeException
 {
 }

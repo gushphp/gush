@@ -11,9 +11,6 @@
 
 namespace Gush\Template;
 
-/**
- * @author Daniel Leech <daniel@dantleech.com>
- */
 interface TemplateInterface
 {
     /**

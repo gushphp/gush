@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Assigns an issue to a user.
- *
- * @author Luis Cordova <cordoval@gmail.com>
  */
 class IssueAssignCommand extends BaseCommand implements GitRepoFeature
 {
