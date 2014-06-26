@@ -110,7 +110,7 @@ EOT
             $confirmed = $this->getHelper('question')->ask(
                 $input,
                 $output,
-                new ConfirmationQuestion('<question>Do you want to continue?</question> (y/n) ', true),
+                new ConfirmationQuestion('<question>Do you want to continue?</question> (y/n) ', true)
             );
 
             if (!$confirmed) {
