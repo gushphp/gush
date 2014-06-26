@@ -73,7 +73,7 @@ class InitCommandTest extends BaseTestCase
 
         $dialog = $this->expectDialogParameters();
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($dialog, 'question');
         $tester->execute(
             [
                 'command' => 'init',
@@ -141,7 +141,7 @@ class InitCommandTest extends BaseTestCase
         $template = $this->expectTemplate();
 
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($dialog, 'question');
         $command->getHelperSet()->set($template, 'template');
         $tester->execute(
             [
