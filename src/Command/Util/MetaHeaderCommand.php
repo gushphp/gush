@@ -16,6 +16,7 @@ use Gush\Feature\TemplateFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
 {
@@ -106,10 +107,10 @@ EOT
                 ]
             );
 
-            $confirmed = $this->getHelper('dialog')->askConfirmation(
+            $confirmed = $this->getHelper('question')->ask(
+                $input,
                 $output,
-                '<question>Do you want to continue?</question> (y/n) ',
-                true
+                new ConfirmationQuestion('<question>Do you want to continue?</question> (y/n) ', true),
             );
 
             if (!$confirmed) {

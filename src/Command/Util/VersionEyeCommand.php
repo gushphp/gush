@@ -16,6 +16,7 @@ use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class VersionEyeCommand extends BaseCommand implements GitRepoFeature
 {
@@ -69,16 +70,19 @@ EOF
                 "<comment>Couldn't resolve the id of the project from the list from version eye.</comment>"
             );
 
-            $dialog = $this->getHelper('dialog');
+            $questionHelper = $this->getHelper('question');
 
-            $project = $dialog->select(
+            $project = $questionHelper->ask(
+                $input,
                 $output,
-                'Please choose one of the available projects: ',
-                array_map(
-                    function ($value) {
-                        return $value->name;
-                    },
-                    $projectCollection
+                new ChoiceQuestion(
+                    'Please choose one of the available projects: ',
+                    array_map(
+                        function ($value) {
+                            return $value->name;
+                        },
+                        $projectCollection
+                    )
                 )
             );
 
