@@ -73,9 +73,9 @@ class ConfigureCommandTest extends BaseTestCase
             unlink($gushFilename);
         }
 
-        $dialog = $this->expectDialogParameters($homeDir);
+        $questionHelper = $this->expectDialogParameters($homeDir);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $command->getHelperSet()->set($dialog, 'question');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $tester->execute(
             [
                 'command' => 'core:configure',

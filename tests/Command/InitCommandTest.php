@@ -71,9 +71,9 @@ class InitCommandTest extends BaseTestCase
             'issue_tracker' => 'jira',
         ];
 
-        $dialog = $this->expectDialogParameters();
+        $questionHelper = $this->expectDialogParameters();
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($dialog, 'question');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $tester->execute(
             [
                 'command' => 'init',
@@ -137,11 +137,11 @@ class InitCommandTest extends BaseTestCase
             'meta-header' => self::META_HEADER,
         ];
 
-        $dialog = $this->expectDialogParameters(true);
+        $questionHelper = $this->expectDialogParameters(true);
         $template = $this->expectTemplate();
 
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($dialog, 'question');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $command->getHelperSet()->set($template, 'template');
         $tester->execute(
             [
