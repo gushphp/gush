@@ -29,7 +29,7 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
             [
                 [],
                 <<<EOF
-                   
+
 |Q            |A  |
 |---          |---|
 |Bug Fix?     |n  |
@@ -40,7 +40,7 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
 |Fixed Tickets|   |
 |License      |MIT|
 |Doc PR       |   |
-                   
+
 
 This is a description
 EOF
@@ -57,7 +57,7 @@ EOF
                     'doc_pr' => 'none',
                 ],
                 <<<EOF
-                      
+
 |Q            |A     |
 |---          |---   |
 |Bug Fix?     |y     |
@@ -68,7 +68,7 @@ EOF
 |Fixed Tickets|none  |
 |License      |Apache|
 |Doc PR       |none  |
-                      
+
 
 This is a description
 EOF
@@ -94,6 +94,16 @@ EOF
 
         $this->template->bind($params);
         $res = $this->template->render();
-        $this->assertEquals($expected, $res);
+
+        $this->assertEquals(self::normalizeWhiteSpace($expected), self::normalizeWhiteSpace($res));
+    }
+
+    private static function normalizeWhiteSpace($input)
+    {
+        $input = str_replace("\r\n", "\n", $input);
+        $input = str_replace("\r", "\n", $input);
+        $input = preg_replace('/^\s+$/m', '', $input);
+
+        return $input;
     }
 }
