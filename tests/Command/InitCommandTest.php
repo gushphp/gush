@@ -12,7 +12,9 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\Core\InitCommand;
+use Gush\Tester\QuestionToken;
 use Prophecy\Argument;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
 class InitCommandTest extends BaseTestCase
@@ -164,26 +166,40 @@ class InitCommandTest extends BaseTestCase
 
         $questionHelper->getName()->willReturn('question');
         $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $questionHelper->setInput(Argument::any())->shouldBeCalled();
 
         $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose adapter:',
+                    ['github', 'github_enterprise']
+                )
+            )
+        )->willReturn('github_enterprise');
 
         $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose issue tracker:',
+                    ['github', 'jira']
+                )
+            )
+        )->willReturn('jira');
 
         if ($withMeta) {
             $questionHelper->ask(
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                Argument::type('Symfony\Component\Console\Question\ChoiceQuestion')
-            )->willReturn(0);
+                new QuestionToken(
+                    new ChoiceQuestion(
+                        'Choose License:',
+                        ['mit', 'gpl3', 'no-license']
+                    )
+                )
+            )->willReturn('mit');
         }
 
         return $questionHelper->reveal();

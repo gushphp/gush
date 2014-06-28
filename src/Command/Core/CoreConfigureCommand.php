@@ -110,19 +110,16 @@ EOF
 
         $adapterName = $input->getOption('adapter');
         $issueTrackerName = $input->getOption('issue tracker');
-        $selection = 0;
 
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
         if (null === $adapterName) {
-            $selection = $questionHelper->ask(
+            $adapterName = $questionHelper->ask(
                 $input,
                 $output,
-                new ChoiceQuestion('Choose adapter: ', array_keys($adapters), 0)
+                new ChoiceQuestion('Choose adapter: ', array_keys($adapters))
             );
-
-            $adapterName = $selection;
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \InvalidArgumentException(
                 sprintf(
@@ -150,17 +147,12 @@ EOF
         }
 
         if (null === $issueTrackerName) {
-            if (!array_key_exists($adapterName, $issueTrackers)) {
-                $selection = null;
-            }
-
-            $selection = $questionHelper->ask(
+            $selection = array_key_exists($adapterName, $issueTrackers) ? $adapterName : null;
+            $issueTrackerName = $questionHelper->ask(
                 $input,
                 $output,
                 new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
             );
-
-            $issueTrackerName = $selection;
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(

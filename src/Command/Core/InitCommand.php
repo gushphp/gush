@@ -80,16 +80,11 @@ EOF
         $questionHelper = $this->getHelper('question');
 
         if (null === $adapterName) {
-            $adaptersIdxs = array_keys($adapters);
-            $currentValue = (int) array_search($config->get('adapter'), $adaptersIdxs);
-
-            $selection = $questionHelper->ask(
+            $adapterName = $questionHelper->ask(
                 $input,
                 $output,
-                new ChoiceQuestion('Choose adapter: ', $adaptersIdxs, $currentValue)
+                new ChoiceQuestion('Choose adapter: ', array_keys($adapters), $config->get('adapter'))
             );
-
-            $adapterName = $selection;
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
@@ -110,16 +105,11 @@ EOF
         }
 
         if (null === $issueTrackerName) {
-            $issueTrackerIdxs = array_keys($issueTrackers);
-            $currentValue = (int) array_search($config->get('issue_tracker'), $issueTrackerIdxs);
-
-            $selection = $questionHelper->ask(
+            $issueTrackerName = $questionHelper->ask(
                 $input,
                 $output,
-                new ChoiceQuestion('Choose issue tracker: ', $issueTrackerIdxs, $currentValue)
+                new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $config->get('issue_tracker'))
             );
-
-            $issueTrackerName = $selection;
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
@@ -167,14 +157,14 @@ EOF
         $available = $template->getNamesForDomain('meta-header');
         $questionHelper = $this->getHelper('question');
 
-        $selection = $questionHelper->ask(
+        $licenseSelection = $questionHelper->ask(
             $input,
             $output,
             new ChoiceQuestion('Choose License: ', $available)
         );
 
         return $this->getHelper('template')
-            ->askAndRender($output, 'meta-header', $available[$selection])
+            ->askAndRender($output, 'meta-header', $licenseSelection)
         ;
     }
 }
