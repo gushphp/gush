@@ -54,8 +54,8 @@ class DefaultConfigurator implements Configurator
      * @param string         $label                 Label of the Configurator (eg. GitHub or GitHub IssueTracker)
      * @param string         $apiUrl                Default URL to API service (eg. 'https://api.github.com/')
      * @param string         $repoUrl               Default URL to repository (eg. 'https://github.com')
-     * @param string[]       $authenticationOptions Numeric array with supported authentication options
-     *                                            [idx => [label, value]]
+     * @param string[]       $authenticationOptions Associative array with supported authentication options
+     *                                              [auth-type => [label]
      */
     public function __construct(QuestionHelper $questionHelper, $label, $apiUrl, $repoUrl, $authenticationOptions = [])
     {
@@ -89,14 +89,17 @@ class DefaultConfigurator implements Configurator
                 $this->authenticationOptions
             );
 
-            $authenticationType = $this->questionHelper->ask(
-                $input,
-                $output,
-                new ChoiceQuestion(
-                    'Choose '.$this->label.' authentication type:',
-                    $authenticationLabels,
-                    0
-                )
+            $authenticationType = array_search(
+                $this->questionHelper->ask(
+                    $input,
+                    $output,
+                    new ChoiceQuestion(
+                        'Choose '.$this->label.' authentication type:',
+                        $authenticationLabels,
+                        $authenticationLabels[0]
+                    )
+                ),
+                $authenticationLabels
             );
         } else {
             $authenticationType = 0;

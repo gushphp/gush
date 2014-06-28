@@ -36,14 +36,11 @@ class PullRequestCustomTemplateTest extends \PHPUnit_Framework_TestCase
 
     public function provideTemplate()
     {
-        $spaces = '                   ';
-        $spaces2 = '                      ';
-
         return [
             [
                 [],
                 <<<EOF
-$spaces
+
 |Q            |A  |
 |---          |---|
 |Bug Fix?     |n  |
@@ -53,7 +50,7 @@ $spaces
 |Tests Pass?  |n  |
 |Fixed Tickets|   |
 |License      |MIT|
-$spaces
+
 
 This is a description
 EOF
@@ -69,7 +66,7 @@ EOF
                     'license' => 'Apache',
                 ],
                 <<<EOF
-$spaces2
+
 |Q            |A     |
 |---          |---   |
 |Bug Fix?     |y     |
@@ -79,7 +76,7 @@ $spaces2
 |Tests Pass?  |yes   |
 |Fixed Tickets|none  |
 |License      |Apache|
-$spaces2
+
 
 This is a description
 EOF
@@ -127,7 +124,8 @@ EOF
 
         $this->template->bind($params);
         $res = $this->template->render();
-        $this->assertEquals($expected, $res);
+
+        $this->assertEquals(self::normalizeWhiteSpace($expected), self::normalizeWhiteSpace($res));
     }
 
     public function testErrorWithEmptyTable()
@@ -192,10 +190,18 @@ EOF
 
         $this->setExpectedException(
             'RuntimeException',
-            'table-pr table row-data "bug_fix" must be an array with exactly two values like: [Label, default value].'.
-            "\n".'please check your local .gush.yml'
+            'table-pr table row-data "bug_fix" must be an array with exactly two values like: [Label, default value].'
         );
 
         $this->template->getRequirements();
+    }
+
+    private static function normalizeWhiteSpace($input)
+    {
+        $input = str_replace("\r\n", "\n", $input);
+        $input = str_replace("\r", "\n", $input);
+        $input = preg_replace('/^\s+$/m', '', $input);
+
+        return $input;
     }
 }
