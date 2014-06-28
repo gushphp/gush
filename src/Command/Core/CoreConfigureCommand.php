@@ -15,10 +15,13 @@ use Gush\Command\BaseCommand;
 use Gush\Exception\FileNotFoundException;
 use Gush\Factory;
 use Gush\Feature\GitRepoFeature;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -107,20 +110,16 @@ EOF
 
         $adapterName = $input->getOption('adapter');
         $issueTrackerName = $input->getOption('issue tracker');
-        $selection = 0;
 
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
+        /** @var QuestionHelper $questionHelper */
+        $questionHelper = $this->getHelper('question');
 
         if (null === $adapterName) {
-            $selection = $dialog->select(
+            $adapterName = $questionHelper->ask(
+                $input,
                 $output,
-                'Choose adapter: ',
-                array_keys($adapters),
-                0
+                new ChoiceQuestion('Choose adapter: ', array_keys($adapters))
             );
-
-            $adapterName = array_keys($adapters)[$selection];
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \InvalidArgumentException(
                 sprintf(
@@ -135,28 +134,25 @@ EOF
 
         $currentDefault = $this->config->get('adapter');
         if ($adapterName !== $currentDefault &&
-            $dialog->askConfirmation(
+            $questionHelper->ask(
+                $input,
                 $output,
-                sprintf('Would you like to make "%s" the default adapter?', $adapterName),
-                null === $currentDefault
+                new ConfirmationQuestion(
+                    sprintf('Would you like to make "%s" the default adapter?', $adapterName),
+                    null === $currentDefault
+                )
             )
         ) {
             $this->config->merge(['adapter' => $adapterName]);
         }
 
         if (null === $issueTrackerName) {
-            if (!array_key_exists($adapterName, $issueTrackers)) {
-                $selection = null;
-            }
-
-            $selection = $dialog->select(
+            $selection = array_key_exists($adapterName, $issueTrackers) ? $adapterName : null;
+            $issueTrackerName = $questionHelper->ask(
+                $input,
                 $output,
-                'Choose issue tracker: ',
-                array_keys($issueTrackers),
-                $selection
+                new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
             );
-
-            $issueTrackerName = array_keys($issueTrackers)[$selection];
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
@@ -171,45 +167,52 @@ EOF
 
         $currentDefault = $this->config->get('issue_tracker');
         if ($issueTrackerName !== $currentDefault &&
-            $dialog->askConfirmation(
+            $questionHelper->ask(
+                $input,
                 $output,
-                sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
-                null === $currentDefault
+                new ConfirmationQuestion(
+                    sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
+                    null === $currentDefault
+                )
             )
         ) {
             $this->config->merge(['issue_tracker' => $issueTrackerName]);
         }
 
-        $cacheDir = $dialog->askAndValidate(
+        $cacheDir = $questionHelper->ask(
+            $input,
             $output,
-            "Cache folder [{$this->config->get('cache-dir')}]: ",
-            function ($dir) {
-                if (!is_dir($dir)) {
-                    throw new \InvalidArgumentException('Cache folder does not exist.');
-                }
+            (new Question(
+                "Cache folder [{$this->config->get('cache-dir')}]: ",
+                $this->config->get('cache-dir')
+            ))->setValidator(
+                function ($dir) {
+                    if (!is_dir($dir)) {
+                        throw new \InvalidArgumentException('Cache folder does not exist.');
+                    }
 
-                if (!is_writable($dir)) {
-                    throw new \InvalidArgumentException('Cache folder is not writable.');
-                }
+                    if (!is_writable($dir)) {
+                        throw new \InvalidArgumentException('Cache folder is not writable.');
+                    }
 
-                return $dir;
-            },
-            false,
-            $this->config->get('cache-dir')
+                    return $dir;
+                }
+            )
         );
 
-        $versionEyeToken = $dialog->askAndValidate(
+        $versionEyeToken = $questionHelper->ask(
+            $input,
             $output,
-            'VersionEye token: ',
-            function ($field) {
-                if (empty($field)) {
-                    throw new \InvalidArgumentException('This field cannot be empty.');
-                }
+            (new Question('VersionEye token: ', 'NO_TOKEN'))
+                ->setValidator(
+                    function ($field) {
+                        if (empty($field)) {
+                            throw new \InvalidArgumentException('This field cannot be empty.');
+                        }
 
-                return $field;
-            },
-            false,
-            'NO_TOKEN'
+                        return $field;
+                    }
+                )
         );
 
         $this->config->merge(

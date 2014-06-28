@@ -11,9 +11,11 @@
 
 namespace Gush\Adapter;
 
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * DefaultConfigurator is the default Configurator class for Adapter configuring.
@@ -21,9 +23,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DefaultConfigurator implements Configurator
 {
     /**
-     * @var \Symfony\Component\Console\Helper\DialogHelper
+     * @var \Symfony\Component\Console\Helper\QuestionHelper
      */
-    protected $dialog;
+    protected $questionHelper;
 
     /**
      * @var string
@@ -48,16 +50,16 @@ class DefaultConfigurator implements Configurator
     /**
      * Constructor.
      *
-     * @param DialogHelper $dialog                DialogHelper instance
-     * @param string       $label                 Label of the Configurator (eg. GitHub or GitHub IssueTracker)
-     * @param string       $apiUrl                Default URL to API service (eg. 'https://api.github.com/')
-     * @param string       $repoUrl               Default URL to repository (eg. 'https://github.com')
-     * @param string[]     $authenticationOptions Numeric array with supported authentication options
-     *                                            [idx => [label, value]]
+     * @param QuestionHelper $questionHelper        QuestionHelper instance
+     * @param string         $label                 Label of the Configurator (eg. GitHub or GitHub IssueTracker)
+     * @param string         $apiUrl                Default URL to API service (eg. 'https://api.github.com/')
+     * @param string         $repoUrl               Default URL to repository (eg. 'https://github.com')
+     * @param string[]       $authenticationOptions Associative array with supported authentication options
+     *                                              [auth-type => [label]
      */
-    public function __construct(DialogHelper $dialog, $label, $apiUrl, $repoUrl, $authenticationOptions = [])
+    public function __construct(QuestionHelper $questionHelper, $label, $apiUrl, $repoUrl, $authenticationOptions = [])
     {
-        $this->dialog = $dialog;
+        $this->questionHelper = $questionHelper;
         $this->label = $label;
         $this->apiUrl = $apiUrl;
         $this->repoUrl = $repoUrl;
@@ -87,11 +89,17 @@ class DefaultConfigurator implements Configurator
                 $this->authenticationOptions
             );
 
-            $authenticationType = $this->dialog->select(
-                $output,
-                'Choose '.$this->label.' authentication type:',
-                $authenticationLabels,
-                0
+            $authenticationType = array_search(
+                $this->questionHelper->ask(
+                    $input,
+                    $output,
+                    new ChoiceQuestion(
+                        'Choose '.$this->label.' authentication type:',
+                        $authenticationLabels,
+                        $authenticationLabels[0]
+                    )
+                ),
+                $authenticationLabels
             );
         } else {
             $authenticationType = 0;
@@ -101,32 +109,36 @@ class DefaultConfigurator implements Configurator
         $config['authentication'] = [];
         $config['authentication']['http-auth-type'] = $this->authenticationOptions[$authenticationType][1];
 
-        $config['authentication']['username'] = $this->dialog->askAndValidate(
+        $config['authentication']['username'] = $this->questionHelper->ask(
+            $input,
             $output,
-            'Username: ',
-            [$this, 'validateNoneEmpty']
+            (new Question('Username: '))->setValidator([$this, 'validateNoneEmpty'])
         );
 
-        $config['authentication']['password-or-token'] = $this->dialog->askHiddenResponseAndValidate(
+        $config['authentication']['password-or-token'] = $this->questionHelper->ask(
+            $input,
             $output,
-            $authenticationLabels[$authenticationType].': ',
-            [$this, 'validateNoneEmpty']
+            (new Question($authenticationLabels[$authenticationType].': '))
+                ->setValidator([$this, 'validateNoneEmpty'])
+                ->setHidden(true)
         );
 
-        $config['base_url'] = $this->dialog->askAndValidate(
+        $config['base_url'] = $this->questionHelper->ask(
+            $input,
             $output,
-            sprintf('Enter your '.$this->label.' api url [%s]: ', $this->apiUrl),
-            [$this, 'validateUrl'],
-            false,
-            $this->apiUrl
+            (new Question(
+                sprintf('Enter your %s api url [%s]: ', $this->label, $this->apiUrl),
+                $this->apiUrl
+            ))->setValidator([$this, 'validateUrl'])
         );
 
-        $config['repo_domain_url'] = $this->dialog->askAndValidate(
+        $config['repo_domain_url'] = $this->questionHelper->ask(
+            $input,
             $output,
-            sprintf('Enter your '.$this->label.' repo url [%s]: ', $this->repoUrl),
-            [$this, 'validateUrl'],
-            false,
-            $this->repoUrl
+            (new Question(
+                sprintf('Enter your %s repo url [%s]: ', $this->label, $this->repoUrl),
+                $this->repoUrl
+            ))->setValidator([$this, 'validateUrl'])
         );
 
         return $config;

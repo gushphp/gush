@@ -20,10 +20,10 @@ class IssueCreateCommandTest extends BaseTestCase
 
     public function testCommand()
     {
-        $dialog = $this->expectDialog();
+        $questionHelper = $this->expectDialog();
         $editor = $this->expectEditor();
         $tester = $this->getCommandTester($command = new IssueCreateCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $command->getHelperSet()->set($editor, 'editor');
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
@@ -50,16 +50,16 @@ class IssueCreateCommandTest extends BaseTestCase
 
     private function expectDialog()
     {
-        $dialog = $this->getMock(
-            'Symfony\Component\Console\Helper\DialogHelper',
-            ['askAndValidate']
+        $questionHelper = $this->getMock(
+            'Symfony\Component\Console\Helper\QuestionHelper',
+            ['ask']
         );
-        $dialog->expects($this->at(0))
-            ->method('askAndValidate')
+        $questionHelper->expects($this->at(0))
+            ->method('ask')
             ->will($this->returnValue(self::ISSUE_TITLE))
         ;
 
-        return $dialog;
+        return $questionHelper;
     }
 
     private function expectEditor()

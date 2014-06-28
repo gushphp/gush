@@ -17,6 +17,7 @@ use Gush\Feature\TemplateFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Launches a pull request
@@ -116,7 +117,11 @@ EOF
         $body = '';
         if (null === $issueNumber) {
             if (!$title = $input->getOption('title')) {
-                $title = $this->getHelper('dialog')->ask($output, 'Title: ');
+                $title = $this->getHelper('question')->ask(
+                    $input,
+                    $output,
+                    new Question('Title: ')
+                );
             }
 
             $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
@@ -152,7 +157,8 @@ EOF
                 $title,
                 $body,
                 $parameters
-            );
+            )
+        ;
 
         $output->writeln($pullRequest['html_url']);
 

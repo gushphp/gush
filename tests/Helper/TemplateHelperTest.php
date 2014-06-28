@@ -18,13 +18,13 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     /** @var \Gush\Helper\TemplateHelper */
     protected $helper;
     protected $template;
-    protected $dialog;
+    protected $questionHelper;
     protected $output;
     protected $input;
 
     public function setUp()
     {
-        $this->dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper');
+        $this->questionHelper = $this->getMock('Symfony\Component\Console\Helper\QuestionHelper');
         $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
         $this->input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $this->template = $this->getMock('Gush\Template\TemplateInterface');
@@ -35,7 +35,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
 
-        $this->helper = new TemplateHelper($this->dialog, $application);
+        $this->helper = new TemplateHelper($this->questionHelper, $application);
         $this->helper->setInput($this->input);
     }
 
@@ -96,7 +96,8 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
             $template = $this->getMock('Gush\Template\TemplateInterface');
             $template->expects($this->once())
                 ->method('getName')
-                ->will($this->returnValue($templateRegistration));
+                ->will($this->returnValue($templateRegistration))
+            ;
             $this->helper->registerTemplate($template);
         }
 
@@ -159,7 +160,8 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
                 if ($option == 'test-option') {
                     return true;
                 }
-            }));
+            }))
+        ;
 
         $this->input->expects($this->any())
             ->method('getOption')
@@ -174,7 +176,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($requirements));
 
         // less one because we test with one given option
-        $this->dialog->expects($this->exactly(count($requirements) - 1))
+        $this->questionHelper->expects($this->exactly(count($requirements) - 1))
             ->method('ask')
             ->will($this->returnValue('foo'));
 
@@ -198,7 +200,8 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     {
         $this->template->expects($this->once())
             ->method('getName')
-            ->will($this->returnValue('test/foobar'));
+            ->will($this->returnValue('test/foobar'))
+        ;
 
         $this->input->expects($this->any())
             ->method('hasOption')
@@ -206,7 +209,8 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
                 if ($option == 'test-option') {
                     return true;
                 }
-            }));
+            }))
+        ;
 
         $this->input->expects($this->any())
             ->method('getOption')
@@ -214,14 +218,17 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
                 if ($option == 'test-option') {
                     return 'test-option';
                 }
-            }));
+            }))
+        ;
 
         $this->template->expects($this->once())
-            ->method('bind');
+            ->method('bind')
+        ;
 
         $this->template->expects($this->once())
             ->method('render')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         $this->helper->registerTemplate($this->template);
 

@@ -6,5 +6,6 @@ table-pr:
     bc_breaks: ['BC Breaks?', no]
     deprecations: ['Deprecations?', no]
     tests_pass: ['Tests Pass?', no]
-    fixed_tickets: [Fixed Tickets, '']
+    fixed_tickets: ['Fixed Tickets', '']
     license: [License, MIT]
+issue_tracker: github

@@ -19,7 +19,7 @@ use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class GitHubSubscriber implements EventSubscriberInterface
+class GitRepoSubscriber implements EventSubscriberInterface
 {
     /** @var \Gush\Helper\GitHelper */
     private $gitHelper;
@@ -50,14 +50,14 @@ class GitHubSubscriber implements EventSubscriberInterface
                 'org',
                 'o',
                 InputOption::VALUE_REQUIRED,
-                'Name of the GitHub organization',
+                'Name of the Git Package organization',
                 $this->gitHelper->getVendorName()
             )
             ->addOption(
                 'repo',
                 'r',
                 InputOption::VALUE_REQUIRED,
-                'Name of the GitHub repository',
+                'Name of the Git Package repository',
                 $this->gitHelper->getRepoName()
             )
         ;

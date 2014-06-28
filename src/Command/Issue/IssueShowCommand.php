@@ -13,8 +13,8 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -30,13 +30,17 @@ class IssueShowCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('issue:show')
             ->setDescription('Shows given issue')
-            ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number')
+            ->addOption('issue_number', 'i', InputOption::VALUE_REQUIRED, 'Issue number')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command shows issue details for either the current or the given organization
 and repo:
 
-    <info>$ gush %command.name% 60</info>
+    <info>$ gush %command.name% --issue_number=60</info>
+
+You can also call the command without options to pick up the current issue from the branch name:
+
+    <info>$ gush %command.name%</info>
 
 EOF
             )
@@ -48,7 +52,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $issueNumber = $input->getArgument('issue_number');
+        if (null === $issueNumber = $input->getOption('issue_number')) {
+            $issueNumber = $this->getHelper('git')->getIssueNumber();
+        }
 
         $adapter = $this->getIssueTracker();
         $issue = $adapter->getIssue($issueNumber);

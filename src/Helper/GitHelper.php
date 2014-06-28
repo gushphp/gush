@@ -133,4 +133,16 @@ class GitHelper extends Helper
 
         return explode(PHP_EOL, $process->getOutput());
     }
+
+    public function getIssueNumber()
+    {
+        try {
+            $segments = explode('-', $this->getBranchName());
+            $issueNumber = $segments[0];
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Invalid branch name, couldn\'t detect issue number.');
+        }
+
+        return $issueNumber;
+    }
 }

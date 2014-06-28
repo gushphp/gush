@@ -20,7 +20,7 @@ use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Meta as Meta;
-use Gush\Subscriber\GitHubSubscriber;
+use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
 use Guzzle\Http\Client as GuzzleClient;
@@ -89,7 +89,7 @@ LOGO;
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
         $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
-        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('dialog'), $this));
+        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('question'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new Helpers\AutocompleteHelper());
         $helperSet->set(new UpdateHelper());
@@ -100,7 +100,7 @@ LOGO;
 
         // add our subscribers to the event dispatcher
         $this->dispatcher->addSubscriber(new TableSubscriber());
-        $this->dispatcher->addSubscriber(new GitHubSubscriber($helperSet->get('git')));
+        $this->dispatcher->addSubscriber(new GitRepoSubscriber($helperSet->get('git')));
         $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
 
         // share our dispatcher with the parent class

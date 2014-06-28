@@ -12,7 +12,9 @@
 namespace Gush\Tests\Command;
 
 use Gush\Command\Core\InitCommand;
+use Gush\Tester\QuestionToken;
 use Prophecy\Argument;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
 class InitCommandTest extends BaseTestCase
@@ -71,9 +73,9 @@ class InitCommandTest extends BaseTestCase
             'issue_tracker' => 'jira',
         ];
 
-        $dialog = $this->expectDialogParameters();
+        $questionHelper = $this->expectDialogParameters();
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $tester->execute(
             [
                 'command' => 'init',
@@ -137,11 +139,11 @@ class InitCommandTest extends BaseTestCase
             'meta-header' => self::META_HEADER,
         ];
 
-        $dialog = $this->expectDialogParameters(true);
+        $questionHelper = $this->expectDialogParameters(true);
         $template = $this->expectTemplate();
 
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $command->getHelperSet()->set($template, 'template');
         $tester->execute(
             [
@@ -160,36 +162,47 @@ class InitCommandTest extends BaseTestCase
 
     private function expectDialogParameters($withMeta = false)
     {
-        $dialog = $this->prophet->prophesize('Symfony\Component\Console\Helper\DialogHelper');
+        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
 
-        $dialog->getName()->willReturn('dialog');
-        $dialog->setHelperSet(Argument::any())->shouldBeCalled();
-        $dialog->setInput(Argument::any())->shouldBeCalled();
+        $questionHelper->getName()->willReturn('question');
+        $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
 
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose adapter:'),
-            ['github', 'github_enterprise'],
-            0
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose adapter:',
+                    ['github', 'github_enterprise']
+                )
+            )
+        )->willReturn('github_enterprise');
 
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose issue tracker:'),
-            ['github', 'jira'],
-            0
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose issue tracker:',
+                    ['github', 'jira']
+                )
+            )
+        )->willReturn('jira');
 
         if ($withMeta) {
-            $dialog->select(
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                Argument::containingString('Choose License: '),
-                ['mit', 'gpl3', 'no-license'],
-                null
-            )->willReturn(0);
+                new QuestionToken(
+                    new ChoiceQuestion(
+                        'Choose License:',
+                        ['mit', 'gpl3', 'no-license']
+                    )
+                )
+            )->willReturn('mit');
         }
 
-        return $dialog->reveal();
+        return $questionHelper->reveal();
     }
 
     private function expectTemplate()

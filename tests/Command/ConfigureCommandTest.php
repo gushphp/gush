@@ -13,7 +13,11 @@ namespace Gush\Tests\Command;
 
 use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;
+use Gush\Tester\QuestionToken;
 use Prophecy\Argument;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
 class ConfigureCommandTest extends BaseTestCase
@@ -73,9 +77,9 @@ class ConfigureCommandTest extends BaseTestCase
             unlink($gushFilename);
         }
 
-        $dialog = $this->expectDialogParameters($homeDir);
+        $questionHelper = $this->expectDialogParameters($homeDir);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
         $tester->execute(
             [
                 'command' => 'core:configure',
@@ -92,123 +96,155 @@ class ConfigureCommandTest extends BaseTestCase
 
     private function expectDialogParameters($homeDir)
     {
-        $dialog = $this->prophet->prophesize('Symfony\Component\Console\Helper\DialogHelper');
+        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
 
-        $dialog->getName()->willReturn('dialog');
-        $dialog->setHelperSet(Argument::any())->shouldBeCalled();
+        $questionHelper->getName()->willReturn('question');
+        $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
 
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose adapter:'),
-            ['github', 'github_enterprise'],
-            0
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose adapter: ',
+                    ['github', 'github_enterprise']
+                )
+            )
+        )->willReturn('github_enterprise');
 
         // AdapterConfigurator Start
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose GitHub Enterprise authentication type:'),
-            ['Password', 'Token'],
-            0
-        )->willReturn(0);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose GitHub Enterprise authentication type:',
+                    ['Password', 'Token'],
+                    'Password'
+                )
+            )
+        )->willReturn('Password');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Username:'),
-            Argument::any()
+            new QuestionToken(
+                new Question('Username:')
+            )
         )->willReturn(self::USERNAME);
 
-        $dialog->askHiddenResponseAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Password:'),
-            Argument::any()
+            new QuestionToken(
+                new Question('Password:')
+            )
         )->willReturn(self::PASSWORD);
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your GitHub Enterprise api url []:'),
-            Argument::any(),
-            false,
-            ''
+            new QuestionToken(
+                new Question('Enter your GitHub Enterprise api url []: ', "")
+            )
         )->willReturn('https://company.com/api/v3/');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your GitHub Enterprise repo url []:'),
-            Argument::any(),
-            false,
-            ''
+            new QuestionToken(
+                new Question('Enter your GitHub Enterprise repo url []: ', "")
+            )
         )->willReturn('https://company.com');
         // AdapterConfigurator End
 
-        $dialog->askConfirmation(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would you like to make "github_enterprise" the default adapter?',
-            true
+            new QuestionToken(
+                new ConfirmationQuestion(
+                    'Would you like to make "github_enterprise" the default adapter?'
+                )
+            )
         )->willReturn(true);
 
-
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose issue tracker:'),
-            ['github', 'jira'],
-            null
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose issue tracker:',
+                    ['github', 'jira']
+                )
+            )
+        )->willReturn('jira');
 
         // IssueTrackerConfigurator Start
-        $dialog->select(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Choose Jira authentication type:'),
-            ['Password', 'Token'],
-            0
-        )->willReturn(1);
+            new QuestionToken(
+                new ChoiceQuestion(
+                    'Choose Jira authentication type:',
+                    ['Password', 'Token'],
+                    'Password'
+                )
+            )
+        )->willReturn('Token');
 
-        $dialog->askHiddenResponseAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Token:'),
-            Argument::any()
+            new QuestionToken(
+                new Question('Token:')
+            )
         )->willReturn(self::TOKEN);
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your Jira api url []:'),
-            Argument::any(),
-            false,
-            ''
+            new QuestionToken(
+                new Question('Enter your Jira api url []:', "")
+            )
         )->willReturn('https://jira.company.com/api/v2/');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Enter your Jira repo url []:'),
-            Argument::any(),
-            false,
-            ''
+            new QuestionToken(
+                new Question('Enter your Jira repo url []:', "")
+            )
         )->willReturn('https://jira.company.com/');
         // IssueTrackerConfigurator End
 
-        $dialog->askConfirmation(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            'Would you like to make "jira" the default issue tracker?',
-            true
+            new QuestionToken(
+                new ConfirmationQuestion(
+                    'Would you like to make "jira" the default issue tracker?'
+                )
+            )
         )->willReturn(true);
 
-
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('Cache folder'),
-            Argument::any(),
-            false,
-            $homeDir.'/cache'
+            new QuestionToken(
+                new Question('Cache folder', $homeDir.'/cache')
+            )
         )->willReturn($homeDir.'/cache');
 
-        $dialog->askAndValidate(
+        $questionHelper->ask(
+            Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            Argument::containingString('VersionEye token:'),
-            Argument::any(),
-            false,
-            'NO_TOKEN'
+            new QuestionToken(
+                new Question('VersionEye token:', 'NO_TOKEN')
+            )
         )->willReturn(self::VERSIONEYE_TOKEN);
 
-        return $dialog->reveal();
+        return $questionHelper->reveal();
     }
+
+
 }

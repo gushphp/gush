@@ -12,10 +12,11 @@
 namespace Gush\Command\Core;
 
 use Gush\Command\BaseCommand;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -75,21 +76,15 @@ EOF
 
         $filename = $config->get('local_config');
 
-        /** @var DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
+        /** @var QuestionHelper $questionHelper */
+        $questionHelper = $this->getHelper('question');
 
         if (null === $adapterName) {
-            $adaptersIdxs = array_keys($adapters);
-            $currentValue = (int) array_search($config->get('adapter'), $adaptersIdxs);
-
-            $selection = $dialog->select(
+            $adapterName = $questionHelper->ask(
+                $input,
                 $output,
-                'Choose adapter: ',
-                $adaptersIdxs,
-                $currentValue
+                new ChoiceQuestion('Choose adapter: ', array_keys($adapters), $config->get('adapter'))
             );
-
-            $adapterName = $adaptersIdxs[$selection];
         } elseif (!array_key_exists($adapterName, $adapters)) {
             throw new \Exception(
                 sprintf(
@@ -110,17 +105,11 @@ EOF
         }
 
         if (null === $issueTrackerName) {
-            $issueTrackerIdxs = array_keys($issueTrackers);
-            $currentValue = (int) array_search($config->get('issue_tracker'), $issueTrackerIdxs);
-
-            $selection = $dialog->select(
+            $issueTrackerName = $questionHelper->ask(
+                $input,
                 $output,
-                'Choose issue tracker: ',
-                $issueTrackerIdxs,
-                $currentValue
+                new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $config->get('issue_tracker'))
             );
-
-            $issueTrackerName = $issueTrackerIdxs[$selection];
         } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
@@ -146,7 +135,7 @@ EOF
         ];
 
         if ($input->getOption('meta')) {
-            $params['meta-header'] = $this->getMetaHeader($output);
+            $params['meta-header'] = $this->getMetaHeader($input, $output);
         }
 
         if (file_exists($filename)) {
@@ -162,20 +151,20 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function getMetaHeader($output)
+    private function getMetaHeader($input, $output)
     {
         $template = $this->getHelper('template');
         $available = $template->getNamesForDomain('meta-header');
-        $dialog = $this->getHelper('dialog');
+        $questionHelper = $this->getHelper('question');
 
-        $selection = $dialog->select(
+        $licenseSelection = $questionHelper->ask(
+            $input,
             $output,
-            'Choose License: ',
-            $available
+            new ChoiceQuestion('Choose License: ', $available)
         );
 
         return $this->getHelper('template')
-            ->askAndRender($output, 'meta-header', $available[$selection])
+            ->askAndRender($output, 'meta-header', $licenseSelection)
         ;
     }
 }
