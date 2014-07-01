@@ -200,7 +200,7 @@ a#someId {
 
 EOT;
 
-const AUTOCOMPLETE_SCRIPT = <<<EOT
+    const AUTOCOMPLETE_SCRIPT = <<<EOT
 #!/bin/sh
 _gush()
 {
@@ -230,5 +230,4 @@ complete -o default -F _gush gush
 COMP_WORDBREAKS=\${COMP_WORDBREAKS//:}
 
 EOT;
-
 }

@@ -76,9 +76,12 @@ EOL;
             $commonOptions = array_intersect($commonOptions, $options);
         }
 
-        $dump = array_map(function ($options) use ($commonOptions) {
+        $dump = array_map(
+            function ($options) use ($commonOptions) {
                 return array_diff($options, $commonOptions);
-            }, $dump);
+            },
+            $dump
+        );
 
         $switchCase = <<<SWITCHCASE
     %%COMMAND%%)
