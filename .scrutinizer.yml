@@ -10,13 +10,16 @@
 before_commands:
     - "composer install"
 
-# filters:
+filter:
+    excluded_paths:
+        - 'vendor/*'
+        - 'bin/*'
+        - 'web/*'
+        - 'tests/*'
 
 tools:
     php_code_coverage:
         enabled: true
-        #filter:
-            #paths: ["src"]
     php_code_sniffer:
         enabled: true
         config:
@@ -25,7 +28,7 @@ tools:
             paths: ["src/*", "tests/*"]
     php_cpd:
         enabled: true
-        excluded_dirs: ["build/*", "tests", "vendor"]
+        excluded_dirs: ["build", "tests", "vendor"]
     php_cs_fixer:
         enabled: true
         config:
@@ -42,8 +45,8 @@ tools:
     php_pdepend:
         enabled: true
         excluded_dirs: ["build", "tests", "vendor"]
-    php_analyzer: true
     php_analyzer:
+        enabled: true
         filter:
             paths: ["src/*", "tests/*"]
     sensiolabs_security_checker: true
