@@ -145,7 +145,7 @@ class ConfigureCommandTest extends BaseTestCase
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             new QuestionToken(
-                new Question('Enter your GitHub Enterprise api url []: ', "")
+                new Question('Enter your GitHub Enterprise api url []: ', '')
             )
         )->willReturn('https://company.com/api/v3/');
 
@@ -153,7 +153,7 @@ class ConfigureCommandTest extends BaseTestCase
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             new QuestionToken(
-                new Question('Enter your GitHub Enterprise repo url []: ', "")
+                new Question('Enter your GitHub Enterprise repo url []: ', '')
             )
         )->willReturn('https://company.com');
         // AdapterConfigurator End
@@ -204,7 +204,7 @@ class ConfigureCommandTest extends BaseTestCase
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             new QuestionToken(
-                new Question('Enter your Jira api url []:', "")
+                new Question('Enter your Jira api url []:', '')
             )
         )->willReturn('https://jira.company.com/api/v2/');
 
@@ -212,7 +212,7 @@ class ConfigureCommandTest extends BaseTestCase
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             new QuestionToken(
-                new Question('Enter your Jira repo url []:', "")
+                new Question('Enter your Jira repo url []:', '')
             )
         )->willReturn('https://jira.company.com/');
         // IssueTrackerConfigurator End
@@ -245,6 +245,4 @@ class ConfigureCommandTest extends BaseTestCase
 
         return $questionHelper->reveal();
     }
-
-
 }
