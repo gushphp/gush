@@ -34,8 +34,9 @@ use Symfony\Component\Console\Question\Question;
 class TemplateHelper extends Helper implements InputAwareInterface
 {
     protected $templates;
-    /** @var \Symfony\Component\Console\Helper\QuestionHelper  */
-    protected $question;
+    /** @var QuestionHelper  */
+    protected $questionHelper;
+    /** @var  InputInterface */
     protected $input;
 
     public function __construct(QuestionHelper $questionHelper, Application $application)
