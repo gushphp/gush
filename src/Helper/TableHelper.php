@@ -107,7 +107,6 @@ class TableHelper extends Helper implements InputAwareInterface
 
             default:
                 throw new \InvalidArgumentException(sprintf('Invalid table layout "%s".', $layout));
-                break;
         };
 
         return $this;
