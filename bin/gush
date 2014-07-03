@@ -68,6 +68,8 @@ $issueTrackers = [
     'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
     'bitbucket' => 'Gush\Adapter\BitbucketFactory',
     'gitlab' => 'Gush\Adapter\GitLabFactory',
+    'jira' => 'Gush\Adapter\JiraFactory',
+    'jira_enterprise' => 'Gush\Adapter\JiraEnterpriseFactory',
 ];
 
 foreach ($issueTrackers as $trackerName => $factoryClass) {
