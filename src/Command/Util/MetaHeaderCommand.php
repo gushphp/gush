@@ -124,7 +124,6 @@ EOT
 
                 $newLines = [];
                 $headerAdded = false;
-
                 $replace = true;
 
                 while ($line = fgets($handler)) {
@@ -142,6 +141,7 @@ EOT
                                         $newLines[] = $header;
                                         $headerAdded = true;
                                     }
+
                                     continue 2;
                                 }
                             }
@@ -151,6 +151,7 @@ EOT
                             $newLines[] = $header;
                             $newLines[] = $line;
                             $headerAdded = true;
+
                             continue;
                         }
                     }
