@@ -16,9 +16,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Runs cs-fixer
- */
 class PullRequestFixerCommand extends BaseCommand
 {
     const DEFAULT_FIXER_LINE = 'php-cs-fixer fix .';

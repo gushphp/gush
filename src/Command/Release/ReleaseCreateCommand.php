@@ -20,9 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-/**
- * Creates a release
- */
 class ReleaseCreateCommand extends BaseCommand implements GitRepoFeature
 {
     protected $workDir;
@@ -64,7 +61,7 @@ class ReleaseCreateCommand extends BaseCommand implements GitRepoFeature
             ->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command :
+The <info>%command.name%</info> command creates a release:
 
     <info>$ gush %command.name%</info>
 

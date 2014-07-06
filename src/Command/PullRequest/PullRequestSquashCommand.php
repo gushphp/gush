@@ -17,9 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Squashes all commits of a PR
- */
 class PullRequestSquashCommand extends BaseCommand implements GitRepoFeature
 {
     /**

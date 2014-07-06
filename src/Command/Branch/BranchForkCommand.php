@@ -17,9 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Forks upstream repository and creates local remote
- */
 class BranchForkCommand extends BaseCommand implements GitRepoFeature
 {
     /**
@@ -37,7 +34,7 @@ class BranchForkCommand extends BaseCommand implements GitRepoFeature
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command forks the current upstream repository:
+The <info>%command.name%</info> command forks the upstream repository and creates local remote:
 
     <info>$ gush %command.name%</info>
 

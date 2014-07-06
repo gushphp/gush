@@ -18,9 +18,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * Create file for Bash Autocomplete
- */
 class AutocompleteCommand extends BaseCommand
 {
     const AUTOCOMPLETE_SCRIPT = '.gush-autocomplete.bash';

@@ -16,12 +16,6 @@ use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Reports what got fixed or closed since last release on current branch
- *
- * adapted from lornajane and sebastianbergmann
- * reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
- */
 class BranchChangelogCommand extends BaseCommand implements GitRepoFeature
 {
     /**
@@ -34,6 +28,9 @@ class BranchChangelogCommand extends BaseCommand implements GitRepoFeature
             ->setDescription('Reports what got fixed or closed since last release on current branch')
             ->setHelp(
                 <<<EOF
+Reports what got fixed or closed since last release on current branch.
+reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
+
 The <info>%command.name%</info> command :
 
     <info>$ gush %command.name%</info>

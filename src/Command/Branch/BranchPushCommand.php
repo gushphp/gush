@@ -17,9 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Pushes a local branch and applies tracking to user's fork
- */
 class BranchPushCommand extends BaseCommand implements GitRepoFeature
 {
     /**

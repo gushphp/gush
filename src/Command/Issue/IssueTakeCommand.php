@@ -17,9 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Takes an issue from the GitHub repository issue list
- */
 class IssueTakeCommand extends BaseCommand implements GitRepoFeature
 {
     /**
@@ -34,7 +31,7 @@ class IssueTakeCommand extends BaseCommand implements GitRepoFeature
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command takes an issue from GitHub repository list:
+The <info>%command.name%</info> command takes an issue from issue tracker repository list:
 
     <info>$ gush %command.name% 3</info>
 

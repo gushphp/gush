@@ -16,9 +16,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Outputs help and alias snippet for wrapping gush on git
- */
 class CoreAliasCommand extends BaseCommand
 {
     /**
@@ -31,7 +28,7 @@ class CoreAliasCommand extends BaseCommand
             ->addOption('s', '-s', InputOption::VALUE_NONE, "Outputs only snippet")
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> outputs an alias snippet to wrap Gush will use:
+The <info>%command.name%</info> outputs an alias snippet to wrap Gush on git:
 
     <info>$ gush %command.name% -s</info>
 
