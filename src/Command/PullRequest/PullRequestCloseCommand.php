@@ -18,9 +18,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Closes a PullRequest.
- */
 class PullRequestCloseCommand extends BaseCommand implements GitRepoFeature
 {
     /**

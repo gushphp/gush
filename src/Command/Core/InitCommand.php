@@ -19,9 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Initializes a local config
- */
 class InitCommand extends BaseCommand
 {
     /**
@@ -52,7 +49,7 @@ class InitCommand extends BaseCommand
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> configure parameters Gush will use:
+The <info>%command.name%</info> creates .gush.yml file that Gush will use for project in current directory:
 
     <info>$ gush %command.name%</info>
 

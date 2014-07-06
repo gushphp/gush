@@ -36,7 +36,7 @@ class MetaHeaderCommand extends BaseCommand implements TemplateFeature
             )
             ->setHelp(
                 <<<EOT
-The <info>%command.name%</info> command asserts that headers are present
+The <info>%command.name%</info> command ensures that headers are present
 in files matching the given filter in the current git repository.
 
 Supported Files:

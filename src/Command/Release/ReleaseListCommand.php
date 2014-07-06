@@ -17,9 +17,6 @@ use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * List releases
- */
 class ReleaseListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {
     /**

@@ -24,9 +24,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Configure the settings needed to run the Commands
- */
 class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
 {
     /**
@@ -56,7 +53,7 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> configure parameters Gush will use:
+The <info>%command.name%</info> configure settings Gush will use (including adapters and issue trackers):
 
     <info>$ gush %command.name%</info>
 

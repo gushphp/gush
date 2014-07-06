@@ -31,7 +31,8 @@ class VersionEyeCommand extends BaseCommand implements GitRepoFeature
             ->setDescription('Update composer.json dependency versions from versioneye service')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command :
+The <info>%command.name%</info> command check status of dependencies at version-eye.com and applies
+changes for an upgrade:
 
     <info>$ gush %command.name%</info>
 

@@ -17,9 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Deletes remote branch for the given pull request
- */
 class BranchDeleteCommand extends BaseCommand implements GitRepoFeature
 {
     /**

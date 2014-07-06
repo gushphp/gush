@@ -19,9 +19,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-/**
- * Applies patches from fabbot-io robot
- */
 class FabbotIoCommand extends BaseCommand implements GitRepoFeature
 {
     /**

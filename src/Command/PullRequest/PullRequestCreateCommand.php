@@ -19,9 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
 
-/**
- * Launches a pull request
- */
 class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, TemplateFeature
 {
     /**
@@ -49,7 +46,7 @@ class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, Te
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command is used to make a github pull request
+The <info>%command.name%</info> command is used to make a pull request
 against the configured organization and repository.
 
     <info>$ gush %command.name%</info>

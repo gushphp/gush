@@ -17,9 +17,6 @@ use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Lists the available milestones for a pull request.
- */
 class PullRequestMilestoneListCommand extends BaseCommand implements TableFeature, GitRepoFeature
 {
     /**

@@ -17,9 +17,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Shows an issue
- */
 class IssueShowCommand extends BaseCommand implements GitRepoFeature
 {
     /**
