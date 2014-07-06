@@ -148,7 +148,7 @@ class GitHelper extends Helper
         $process = $builder->getProcess();
         $process->run();
 
-        return explode(PHP_EOL, $process->getOutput());
+        return $this->splitLines($process->getOutput());
     }
 
     public function getIssueNumber()
