@@ -86,6 +86,12 @@ class GitRepoSubscriber implements EventSubscriberInterface
                 ->setRepository($input->getOption('repo'))
                 ->setUsername($input->getOption('org'))
             ;
+
+            if (GitHelper::UNDEFINED_REPO === $input->getOption('repo')
+                || GitHelper::UNDEFINED_ORG === $input->getOption('org')
+            ) {
+                throw new \RuntimeException('Provide org and repo options if outside of a git directory.');
+            }
         }
     }
 }
