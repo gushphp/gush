@@ -45,20 +45,22 @@ class GitRepoSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $gitFolder = $this->gitHelper->isGitFolder();
+
         $command
             ->addOption(
                 'org',
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'Name of the Git Package organization',
-                $this->gitHelper->getVendorName()
+                $gitFolder ? $this->gitHelper->getVendorName() : GitHelper::UNDEFINED_ORG
             )
             ->addOption(
                 'repo',
                 'r',
                 InputOption::VALUE_REQUIRED,
                 'Name of the Git Package repository',
-                $this->gitHelper->getRepoName()
+                $gitFolder ? $this->gitHelper->getRepoName() : GitHelper::UNDEFINED_REPO
             )
         ;
     }
@@ -84,6 +86,12 @@ class GitRepoSubscriber implements EventSubscriberInterface
                 ->setRepository($input->getOption('repo'))
                 ->setUsername($input->getOption('org'))
             ;
+
+            if (GitHelper::UNDEFINED_REPO === $input->getOption('repo')
+                || GitHelper::UNDEFINED_ORG === $input->getOption('org')
+            ) {
+                throw new \RuntimeException('Provide org and repo options if outside of a git directory.');
+            }
         }
     }
 }

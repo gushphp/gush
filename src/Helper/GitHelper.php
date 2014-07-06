@@ -15,6 +15,9 @@ use Symfony\Component\Console\Helper\Helper;
 
 class GitHelper extends Helper
 {
+    const UNDEFINED_ORG = 1;
+    const UNDEFINED_REPO = 2;
+
     /** @var \Gush\Helper\ProcessHelper */
     protected $processHelper;
 
@@ -44,6 +47,20 @@ class GitHelper extends Helper
     public function getBranchName()
     {
         return $this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD');
+    }
+
+    /**
+     * @return bool Whether we are inside a git folder or not
+     */
+    public function isGitFolder()
+    {
+        try {
+            $this->processHelper->runCommand('git rev-parse');
+        } catch (\RuntimeException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

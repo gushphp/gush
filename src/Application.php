@@ -260,6 +260,9 @@ LOGO;
         parent::doRunCommand($command, $input, $output);
     }
 
+    /**
+     * @return Adapter
+     */
     private function determineAdapter()
     {
         $builder = new ProcessBuilder(['git', 'config', '--get', 'remote.origin.url']);
