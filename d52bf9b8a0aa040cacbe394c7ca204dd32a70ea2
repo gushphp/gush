@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by pierredup at 2014-06-24 14:28
+
+I agree we should add more descriptive messages, but in this case I still think we should be able to use certain commands outside of a repository. See #219. For commands that require to be in a repository, we can add a more descriptive message
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-06-24 14:33
+
+i am thinking in an interface GitDirectoryAware, then have a helper from the available ones detect whether it is inside a directory or not, and whether gush has been .gush.yml initialized or any adapters have been configured or which haven\'t. :blush: many ideas but good ones for the hackathon, in presence and online in Amsterdam on Wednesday and starting today for us :+1: oke
+
+also be careful with the try catch, we want to still pass the exception to the end user as it is because there could be many exceptions. But friendlier additional messages can help.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-06 01:11
+
+closing in favor of having 1 ticket for this #219
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-07-06 04:28
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/4fcda02c-7fb8-427f-8af6-11f4e8125e88) was created.
