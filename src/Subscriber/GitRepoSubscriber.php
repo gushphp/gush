@@ -45,20 +45,22 @@ class GitRepoSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $gitFolder = $this->gitHelper->isGitFolder();
+
         $command
             ->addOption(
                 'org',
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'Name of the Git Package organization',
-                $this->gitHelper->getVendorName()
+                $gitFolder ? $this->gitHelper->getVendorName() : GitHelper::UNDEFINED_ORG
             )
             ->addOption(
                 'repo',
                 'r',
                 InputOption::VALUE_REQUIRED,
                 'Name of the Git Package repository',
-                $this->gitHelper->getRepoName()
+                $gitFolder ? $this->gitHelper->getRepoName() : GitHelper::UNDEFINED_REPO
             )
         ;
     }
