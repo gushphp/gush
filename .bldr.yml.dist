@@ -27,7 +27,7 @@ bldr:
                     files: [build/coverage, build/logs]
                 -
                     type: filesystem:touch
-                    failOnError: true
+                    failOnError: false
                     files: [build/coverage/index.html]
                 -
                     type: exec
