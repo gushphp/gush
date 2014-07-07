@@ -25,7 +25,8 @@ class PullRequestCloseCommand extends BaseCommand implements GitRepoFeature
      */
     protected function configure()
     {
-        $this->setName('pull-request:close')
+        $this
+            ->setName('pull-request:close')
             ->setDescription('Closes a pull request')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number to be closed')
             ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Closing comment')

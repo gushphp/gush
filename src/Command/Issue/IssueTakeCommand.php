@@ -48,8 +48,8 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
 
-        $adapter = $this->getIssueTracker();
-        $issue = $adapter->getIssue($issueNumber);
+        $tracker = $this->getIssueTracker();
+        $issue = $tracker->getIssue($issueNumber);
 
         $slugTitle = $this->getHelper('text')->slugify(
             sprintf(
@@ -76,7 +76,7 @@ EOF
 
         $this->getHelper('process')->runCommands($commands);
 
-        $url = $adapter->getIssueUrl($issueNumber);
+        $url = $tracker->getIssueUrl($issueNumber);
         $output->writeln("Issue {$url} taken!");
 
         return self::COMMAND_SUCCESS;

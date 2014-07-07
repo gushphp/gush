@@ -49,15 +49,15 @@ EOF
         $issueNumber    = $input->getArgument('issue_number');
         $closingComment = $input->getOption('message');
 
-        $adapter = $this->getIssueTracker();
+        $tracker = $this->getIssueTracker();
 
-        $adapter->closeIssue($issueNumber);
+        $tracker->closeIssue($issueNumber);
 
         if ($input->getOption('message')) {
-            $adapter->createComment($issueNumber, $closingComment);
+            $tracker->createComment($issueNumber, $closingComment);
         }
 
-        $url = $adapter->getIssueUrl($issueNumber);
+        $url = $tracker->getIssueUrl($issueNumber);
         $output->writeln("Closed {$url}");
 
         return self::COMMAND_SUCCESS;
