@@ -74,11 +74,13 @@ class TableSubscriber implements EventSubscriberInterface
 
             if ($layout) {
                 if (!in_array($layout, $this->validLayouts)) {
-                    throw new \InvalidArgumentException(sprintf(
-                        'The table-layout option must be passed one of "%s" but was given "%s"',
-                        implode(', ', $this->validLayouts),
-                        $layout
-                    ));
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'The table-layout option must be passed one of "%s" but was given "%s"',
+                            implode(', ', $this->validLayouts),
+                            $layout
+                        )
+                    );
                 }
             }
         }
