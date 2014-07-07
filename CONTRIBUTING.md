@@ -13,6 +13,7 @@ bugfixes and we then tag stable versions on master only. You should only
 open pull requests against the master branch. Otherwise we cannot accept the PR.
 
 There is no exception to the rule. Also your PR must have been sent with Gush.
+There are exceptions only when it seems reasonable or when your local Gush is broken.
 
 ## Coding Standard
 
@@ -23,15 +24,16 @@ We use PSR-1 and PSR-2:
 
 with some exceptions/differences:
 
-* Follow the Symfony CS
+* Follow the Symfony CS somewhat
 * No spaces around dots
 * Consider current CS patterns
+* No = or => or any other such symbol alignment
 
 ## Unit-Tests
 
 Please try to add a test for your pull-request.
 
-You can run the unit-tests by calling ``phpunit`` from the root of the project.
+You can run the unit-tests by calling ``./dev`` from the root of the project.
 
 ## Travis
 
