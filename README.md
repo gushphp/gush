@@ -121,8 +121,8 @@ Pull Request successfully merged
 
 ### Contributions
 
-Please send your PR using Gush and it will have 100% chances to be merged.
-See the [issues list](https://github.com/gushphp/gush/issues?state=open).
+Please read our [contributor guide](https://github.com/gushphp/gush/blob/master/CONTRIBUTING.md).
+See also the [issues list](https://github.com/gushphp/gush/issues?state=open).
 
 Running the test suite:
 
