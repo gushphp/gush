@@ -15,7 +15,48 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$app = new Gush\Application();
+$adapterFactory = new Gush\Factory\AdapterFactory();
+
+$adapters = [
+    'github' => 'Gush\Adapter\GitHubFactory',
+    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
+    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
+    'gitlab' => 'Gush\Adapter\GitLabFactory',
+];
+
+foreach ($adapters as $adapterName => $factoryClass) {
+    if (!class_exists($factoryClass)) {
+        continue;
+    }
+
+    $adapterFactory->registerAdapter(
+        $adapterName,
+        [$factoryClass, 'createAdapter'],
+        [$factoryClass, 'createAdapterConfigurator']
+    );
+}
+
+$issueTrackers = [
+    'github' => 'Gush\Adapter\GitHubFactory',
+    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
+    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
+    'gitlab' => 'Gush\Adapter\GitLabFactory',
+    'jira' => 'Gush\Adapter\JiraFactory',
+    'jira_enterprise' => 'Gush\Adapter\JiraEnterpriseFactory',
+];
+
+foreach ($issueTrackers as $trackerName => $factoryClass) {
+    if (!class_exists($factoryClass)) {
+        continue;
+    }
+
+    $adapterFactory->registerIssueTracker(
+        $trackerName,
+        [$factoryClass, 'createIssueTracker'],
+        [$factoryClass, 'createIssueTrackerConfigurator']
+    );
+}
+$app = new Gush\Application($adapterFactory);
 $app->setAutoExit(false);
 
 foreach ($app->getCommands() as $command) {

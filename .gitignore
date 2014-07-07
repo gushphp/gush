@@ -1,10 +1,9 @@
 /bin/*
 !/bin/gush
 /vendor
-/gush*.phar
-/box.json
-/.first-time-run
-/phpunit.xml
 /build
 /web
-/*.phar
+/box.json
+*.phar
+phpunit.xml
+.first-time-run
