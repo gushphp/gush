@@ -86,9 +86,9 @@ EOF
             touch($filename);
         }
 
-        $adapter = $this->getIssueTracker();
-        $issues = $adapter->getIssues($params);
-        $labelNames = $adapter->getLabels();
+        $tracker = $this->getIssueTracker();
+        $issues = $tracker->getIssues($params);
+        $labelNames = $tracker->getLabels();
 
         if (!$issues) {
             $new = $input->getOption('new') ? 'new ' : '';
@@ -142,7 +142,7 @@ EOF
             }
 
             // updates the issue
-            $adapter->updateIssue($issue['number'], ['labels' => explode(',', $label)]);
+            $tracker->updateIssue($issue['number'], ['labels' => explode(',', $label)]);
         }
 
         return self::COMMAND_SUCCESS;

@@ -52,8 +52,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getIssueTracker();
-        $labels = $adapter->getLabels();
+        $tracker = $this->getIssueTracker();
+        $labels = $tracker->getLabels();
 
         $table = $this->getHelper('table');
         $table->formatRows($labels, function ($label) {

@@ -72,7 +72,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getIssueTracker();
+        $tracker = $this->getIssueTracker();
         $params = GitRepoHelper::validateEnums($input, 'issue', ['state', 'sort', 'direction']);
 
         foreach (['creator', 'assignee', 'mentioned', 'milestone'] as $option) {
@@ -93,7 +93,7 @@ EOF
             $params['since'] = date('c', $timeStamp);
         }
 
-        $issues = $adapter->getIssues($params);
+        $issues = $tracker->getIssues($params);
 
         // post filter
         foreach ($issues as $i => &$issue) {

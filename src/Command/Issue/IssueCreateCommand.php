@@ -49,7 +49,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getIssueTracker();
+        $tracker = $this->getIssueTracker();
         $emptyValidator = function ($string) {
             if (trim($string) == '') {
                 throw new \Exception('This value can not be empty');
@@ -75,9 +75,9 @@ EOF
             $body = $editor->fromString('');
         }
 
-        $issue = $adapter->openIssue($title, $body);
+        $issue = $tracker->openIssue($title, $body);
 
-        $url = $adapter->getIssueUrl($issue);
+        $url = $tracker->getIssueUrl($issue);
         $output->writeln("Created issue {$url}");
 
         return self::COMMAND_SUCCESS;

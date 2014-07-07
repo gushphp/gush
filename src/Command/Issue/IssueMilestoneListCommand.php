@@ -52,8 +52,8 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getIssueTracker();
-        $milestones = $adapter->getMilestones();
+        $tracker = $this->getIssueTracker();
+        $milestones = $tracker->getMilestones();
 
         $table = $this->getHelper('table');
         $table->formatRows($milestones, $this->getRowBuilderCallback());

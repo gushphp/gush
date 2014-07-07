@@ -53,8 +53,8 @@ EOF
             $issueNumber = $this->getHelper('git')->getIssueNumber();
         }
 
-        $adapter = $this->getIssueTracker();
-        $issue = $adapter->getIssue($issueNumber);
+        $tracker = $this->getIssueTracker();
+        $issue = $tracker->getIssue($issueNumber);
 
         $output->writeln(
             sprintf(
