@@ -18,6 +18,6 @@ class PullRequestMilestoneListCommandTest extends BaseTestCase
         $tester = $this->getCommandTester(new \Gush\Command\PullRequest\PullRequestMilestoneListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals("version 1.0", trim($tester->getDisplay(true)));
+        $this->assertEquals('version 1.0', trim($tester->getDisplay(true)));
     }
 }
