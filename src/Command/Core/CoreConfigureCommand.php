@@ -46,8 +46,8 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
                 'What adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
-                'issue tracker',
-                'it',
+                'issue_tracker',
+                'i',
                 InputOption::VALUE_OPTIONAL,
                 'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
             )
@@ -106,18 +106,18 @@ EOF
         $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
 
         $adapterName = $input->getOption('adapter');
-        $issueTrackerName = $input->getOption('issue tracker');
+        $issueTrackerName = $input->getOption('issue_tracker');
 
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
-        if (null === $adapterName) {
+        if (null === $adapterName && null === $issueTrackerName) {
             $adapterName = $questionHelper->ask(
                 $input,
                 $output,
                 new ChoiceQuestion('Choose adapter: ', array_keys($adapters))
             );
-        } elseif (!array_key_exists($adapterName, $adapters)) {
+        } elseif (null !== $adapterName && !array_key_exists($adapterName, $adapters)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'The adapter "%s" is invalid. Available adapters are "%s"',
@@ -127,23 +127,25 @@ EOF
             );
         }
 
-        $this->configureAdapter($input, $output, $adapterName);
+        if (null !== $adapterName) {
+            $this->configureAdapter($input, $output, $adapterName);
 
-        $currentDefault = $this->config->get('adapter');
-        if ($adapterName !== $currentDefault &&
-            $questionHelper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(
-                    sprintf('Would you like to make "%s" the default adapter?', $adapterName),
-                    null === $currentDefault
+            $currentDefault = $this->config->get('adapter');
+            if ($adapterName !== $currentDefault &&
+                $questionHelper->ask(
+                    $input,
+                    $output,
+                    new ConfirmationQuestion(
+                        sprintf('Would you like to make "%s" the default adapter?', $adapterName),
+                        null === $currentDefault
+                    )
                 )
-            )
-        ) {
-            $this->config->merge(['adapter' => $adapterName]);
+            ) {
+                $this->config->merge(['adapter' => $adapterName]);
+            }
         }
 
-        if (null === $issueTrackerName) {
+        if (null === $issueTrackerName && null !== $issueTrackerName) {
             $selection = array_key_exists($adapterName, $issueTrackers) ? $adapterName : null;
             $issueTrackerName = $questionHelper->ask(
                 $input,
