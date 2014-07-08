@@ -79,7 +79,6 @@ LOGO;
 
     public function __construct(AdapterFactory $adapterFactory, $name = 'Gush', $version = '@package_version@')
     {
-        new Pimple();
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
         }
