@@ -145,14 +145,14 @@ EOF
             }
         }
 
-        if (null === $issueTrackerName && null !== $issueTrackerName) {
+        if (null === $issueTrackerName && null === $input->getOption('adapter')) {
             $selection = array_key_exists($adapterName, $issueTrackers) ? $adapterName : null;
             $issueTrackerName = $questionHelper->ask(
                 $input,
                 $output,
                 new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
             );
-        } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
+        } elseif (null !== $issueTrackerName && !array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
                     'The issue tracker "%s" is invalid. Available adapters are "%s"',
@@ -162,20 +162,22 @@ EOF
             );
         }
 
-        $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
+        if (null !== $issueTrackerName) {
+            $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
 
-        $currentDefault = $this->config->get('issue_tracker');
-        if ($issueTrackerName !== $currentDefault &&
-            $questionHelper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(
-                    sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
-                    null === $currentDefault
+            $currentDefault = $this->config->get('issue_tracker');
+            if ($issueTrackerName !== $currentDefault &&
+                $questionHelper->ask(
+                    $input,
+                    $output,
+                    new ConfirmationQuestion(
+                        sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
+                        null === $currentDefault
+                    )
                 )
-            )
-        ) {
-            $this->config->merge(['issue_tracker' => $issueTrackerName]);
+            ) {
+                $this->config->merge(['issue_tracker' => $issueTrackerName]);
+            }
         }
 
         $cacheDir = $questionHelper->ask(
