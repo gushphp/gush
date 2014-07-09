@@ -19,6 +19,7 @@ env:
     - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
 
 before_script:
+    - composer require --dev --no-update phpunit/phpunit:"~4.1"
     - curl -sS http://bldr.io/installer | php
 
 script:
