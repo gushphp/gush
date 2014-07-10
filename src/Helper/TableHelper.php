@@ -323,7 +323,7 @@ class TableHelper extends Helper implements InputAwareInterface
     /**
      * Sets cell padding type.
      *
-     * @param int     $padType STR_PAD_*
+     * @param int $padType STR_PAD_*
      *
      * @return TableHelper
      */
