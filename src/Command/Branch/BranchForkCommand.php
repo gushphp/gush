@@ -11,6 +11,7 @@
 
 namespace Gush\Command\Branch;
 
+use Github\Exception\ValidationFailedException;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
@@ -54,7 +55,12 @@ EOF
         } else {
             $org = $this->getParameter('authentication')['username'];
         }
-        $fork = $adapter->createFork($org);
+        $fork = [];
+        try {
+            $fork = $adapter->createFork($org);
+        } catch (ValidationFailedException $e) {
+            $fork['git_url'] = $this->buildForkUrl();
+        }
         $repo = $input->getOption('repo');
         $vendorName = $input->getOption('org');
 
@@ -82,5 +88,10 @@ EOF
         );
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function buildForkUrl()
+    {
+        
     }
 }
