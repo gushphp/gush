@@ -50,17 +50,11 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
-        if (null !== $input->getArgument('other_organization')) {
-            $org = $input->getArgument('other_organization');
-        } else {
-            $org = $this->getParameter('authentication')['username'];
-        }
-        $fork = [];
-        try {
-            $fork = $adapter->createFork($org);
-        } catch (ValidationFailedException $e) {
-            $fork['git_url'] = $this->buildForkUrl();
-        }
+        $org = $input->getArgument('other_organization');
+        $username = $this->getParameter('authentication')['username'];
+
+        $fork = $adapter->createFork($org);
+
         $repo = $input->getOption('repo');
         $vendorName = $input->getOption('org');
 
@@ -69,7 +63,7 @@ EOF
                 [
                     'line' => sprintf(
                         'git remote add %s %s',
-                        $org,
+                        $org ?: $username,
                         $fork['git_url']
                     ),
                     'allow_failures' => true,
@@ -88,10 +82,5 @@ EOF
         );
 
         return self::COMMAND_SUCCESS;
-    }
-
-    private function buildForkUrl()
-    {
-        
     }
 }
