@@ -55,7 +55,7 @@ class GitHelper extends Helper
     public function isGitFolder()
     {
         try {
-            $this->processHelper->runCommand('git rev-parse');
+            $this->processHelper->runCommand('git rev-parse', false, null, true);
         } catch (\RuntimeException $e) {
             return false;
         }
@@ -68,7 +68,7 @@ class GitHelper extends Helper
      */
     public function getRepoName()
     {
-        $output = $this->processHelper->runCommand('git remote show -n origin');
+        $output = $this->processHelper->runCommand('git remote show -n origin', false, null, true);
 
         $outputLines = $this->splitLines(trim($output));
 
@@ -91,7 +91,7 @@ class GitHelper extends Helper
      */
     public function getVendorName()
     {
-        $output = $this->processHelper->runCommand('git remote show -n origin');
+        $output = $this->processHelper->runCommand('git remote show -n origin', false, null, true);
 
         $outputLines = $this->splitLines(trim($output));
 

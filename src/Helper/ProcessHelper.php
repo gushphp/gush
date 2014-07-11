@@ -27,6 +27,11 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     protected $output;
 
     /**
+     * @var array
+     */
+    protected $cache = [];
+
+    /**
      * @param OutputInterface $output
      */
     public function setOutput(OutputInterface $output)
@@ -45,19 +50,25 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     /**
      * Run a command through the ProcessBuilder
      *
-     * @param string|array    $command
-     * @param bool     $allowFailures
-     * @param \Closure $callback      Callback for Process (e.g. for logging output in realtime)
+     * @param string|array $command
+     * @param bool         $allowFailures
+     * @param \Closure     $callback           Callback for Process (e.g. for logging output in realtime)
+     * @param bool         $cacheMultipleCalls Call multiple calls with this command (to speed-up execution)
      *
      * @return string
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function runCommand($command, $allowFailures = false, $callback = null)
+    public function runCommand($command, $allowFailures = false, $callback = null, $cacheMultipleCalls = false)
     {
         if (is_string($command)) {
             $command = $this->parseProcessArguments($command);
+        }
+
+        $cacheKey = getcwd().implode(' ', $command);
+        if ($cacheMultipleCalls && isset($this->cache[$cacheKey])) {
+            return $this->cache[$cacheKey];
         }
 
         $builder = new ProcessBuilder($command);
@@ -83,7 +94,12 @@ class ProcessHelper extends Helper implements OutputAwareInterface
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        return trim($process->getOutput());
+        $result = trim($process->getOutput());
+        if ($cacheMultipleCalls) {
+            $this->cache[$cacheKey] = $result;
+        }
+
+        return $result;
     }
 
     /**
@@ -110,8 +126,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      * Run a series of shell command through a Process
      *
      * @param array $commands
+     * @param bool  $cacheMultipleCalls
      */
-    public function runCommands(array $commands)
+    public function runCommands(array $commands, $cacheMultipleCalls = false)
     {
         $output = $this->output;
 
@@ -124,7 +141,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         };
 
         foreach ($commands as $command) {
-            $this->runCommand($command['line'], $command['allow_failures'], $callback);
+            $this->runCommand($command['line'], $command['allow_failures'], $callback, $cacheMultipleCalls);
         }
     }
 
@@ -144,6 +161,14 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         if (!$process->isSuccessful()) {
             throw new \RuntimeException('Please install php-cs-fixer');
         }
+    }
+
+    /**
+     * Clears the process-results cache.
+     */
+    public function clearCache()
+    {
+        $this->cache = [];
     }
 
     /**
