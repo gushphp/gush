@@ -75,16 +75,15 @@ EOF
             $body = $editor->fromString('');
         }
 
+        if (!$this->getParameter('remove-promote')) {
+            $body .= $this->appendPlug($body);
+        }
+
         $issue = $tracker->openIssue($title, $body);
 
         $url = $tracker->getIssueUrl($issue);
         $output->writeln("Created issue {$url}");
 
         return self::COMMAND_SUCCESS;
-    }
-
-    private function appendPlug($outputString)
-    {
-        return $outputString.PHP_EOL.' Created using [Gush](https://github.com/gushphp/gush)';
     }
 }

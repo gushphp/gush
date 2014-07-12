@@ -95,4 +95,9 @@ class BaseCommand extends Command
             new ConsoleEvent($this, $input, $output)
         );
     }
+
+    protected function appendPlug($outputString)
+    {
+        return $outputString.PHP_EOL.' Sent using [Gush](https://github.com/gushphp/gush)';
+    }
 }
