@@ -75,6 +75,10 @@ EOF
             $body = $editor->fromString('');
         }
 
+        if (!$this->getParameter('remove-promote')) {
+            $body .= $this->appendPlug($body);
+        }
+
         $issue = $tracker->openIssue($title, $body);
 
         $url = $tracker->getIssueUrl($issue);

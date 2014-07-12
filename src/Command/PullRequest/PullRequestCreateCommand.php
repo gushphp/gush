@@ -161,9 +161,4 @@ EOF
 
         return self::COMMAND_SUCCESS;
     }
-
-    private function appendPlug($outputString)
-    {
-        return $outputString.PHP_EOL.' Sent using [Gush](https://github.com/gushphp/gush)';
-    }
 }
