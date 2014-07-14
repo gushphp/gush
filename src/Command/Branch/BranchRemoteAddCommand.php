@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BranchForkCommand extends BaseCommand implements GitRepoFeature
+class BranchRemoteAddCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -25,18 +25,18 @@ class BranchForkCommand extends BaseCommand implements GitRepoFeature
     protected function configure()
     {
         $this
-            ->setName('branch:fork')
-            ->setDescription('Forks current upstream repository')
+            ->setName('branch:remote:add')
+            ->setDescription('Adds a remote with url used from adapter')
             ->addArgument(
                 'other_organization',
-                InputArgument::OPTIONAL,
-                'Organization (default to username) to where we will fork the upstream repository'
+                InputArgument::REQUIRED,
+                'Organization or username the remote will point to'
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command forks the upstream repository and creates local remote:
+The <info>%command.name%</info> command adds a remote with url used from adapter:
 
-    <info>$ gush %command.name%</info>
+    <info>$ gush %command.name% sstok</info>
 
 EOF
             )
@@ -70,15 +70,7 @@ EOF
             ]
         );
 
-        $output->writeln(
-            sprintf(
-                'Forked repository %s/%s into %s/%s',
-                $vendorName,
-                $repo,
-                $org,
-                $repo
-            )
-        );
+        $output->writeln(sprintf('Added remote for %s', $org));
 
         return self::COMMAND_SUCCESS;
     }
