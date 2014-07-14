@@ -53,7 +53,7 @@ EOF
 
         $slugTitle = $this->getHelper('text')->slugify(
             sprintf(
-                '%d %s',
+                '%s %s',
                 $issueNumber,
                 $issue['title']
             )
