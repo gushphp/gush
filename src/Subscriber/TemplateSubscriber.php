@@ -50,7 +50,7 @@ class TemplateSubscriber implements EventSubscriberInterface
                     't',
                     InputOption::VALUE_REQUIRED,
                     'Template to use. <info>One of: '.implode('</info>, <info>', $names).'</info>',
-                    $command->getTemplateDefault()
+                    $this->templateHelper->getCustomTemplate() ?: $command->getTemplateDefault()
                 )
             ;
         }

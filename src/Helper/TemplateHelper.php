@@ -38,6 +38,8 @@ class TemplateHelper extends Helper implements InputAwareInterface
     protected $questionHelper;
     /** @var  InputInterface */
     protected $input;
+    /** @var Application */
+    private $application;
 
     public function __construct(QuestionHelper $questionHelper, Application $application)
     {
@@ -53,6 +55,19 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $this->registerTemplate(new GPL3Template());
         $this->registerTemplate(new NoLicenseTemplate());
         $this->questionHelper = $questionHelper;
+        $this->application = $application;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCustomTemplate()
+    {
+        if ($this->application->getConfig()->has('table-pr')) {
+            return 'custom';
+        }
+
+        return null;
     }
 
     /**

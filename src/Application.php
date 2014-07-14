@@ -16,6 +16,7 @@ use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
+use Gush\Exception\FileNotFoundException;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
@@ -81,6 +82,13 @@ LOGO;
     {
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
+        }
+
+        // try setting the config as early as possible, so all the subscribers and helpers can use it
+        // If Gush is not yet configured, then just catch the exception and move along
+        try {
+            $this->config = Factory::createConfig();
+        } catch (FileNotFoundException $exception) {
         }
 
         $helperSet = $this->getDefaultHelperSet();
@@ -218,7 +226,10 @@ LOGO;
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
         if ('core:configure' !== $this->getCommandName($input)) {
-            $this->config = Factory::createConfig();
+
+            if (null === $this->config) {
+                $this->config = Factory::createConfig();
+            }
 
             if (null === $this->adapter) {
                 if (null === $adapter = $this->config->get('adapter')) {
