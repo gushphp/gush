@@ -23,7 +23,7 @@ before_script:
     - curl -sS http://bldr.io/installer | php
 
 script:
-    - ./bldr.phar build -p travis
+    - ./bldr.phar build travis
 
 notifications:
     irc: "irc.freenode.org#gushphp"
