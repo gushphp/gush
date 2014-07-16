@@ -3,11 +3,11 @@
 bldr=$(which bldr)
 
 if [ -x "$bldr" ] ; then
-    $bldr build -p local
+    $bldr build local
 else
     if [ ! -f ./bldr.phar ]; then
         curl -sS http://bldr.io/installer | php
     fi
 
-    ./bldr.phar build -p local
+    ./bldr.phar build local
 fi
