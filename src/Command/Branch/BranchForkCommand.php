@@ -75,7 +75,7 @@ EOF
                 'Forked repository %s/%s into %s/%s',
                 $vendorName,
                 $repo,
-                $org,
+                $org ?: $username,
                 $repo
             )
         );
