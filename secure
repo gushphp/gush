@@ -6,7 +6,7 @@ if [ -x "$securitychecker" ] ; then
     $securitychecker security:check
 else
     if [ ! -f ./security-checker.phar ]; then
-        wget https://github.com/cordoval/security-checker/releases/download/v1.3.1/security-checker.phar
+        wget http://get.sensiolabs.org/security-checker.phar
     fi
 
     chmod +x ./security-checker.phar
