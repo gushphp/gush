@@ -10,5 +10,5 @@ else
     fi
 
     chmod +x ./security-checker.phar
-    ./security-checker.phar security:check
+    ./security-checker.phar security:check composer.lock
 fi
