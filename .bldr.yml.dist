@@ -94,9 +94,6 @@ bldr:
             calls:
                 -
                     type: exec
-                    executable: clear
-                -
-                    type: exec
                     executable: php
                     arguments:
                         - bin/phpunit

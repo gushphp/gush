@@ -41,19 +41,21 @@ class TemplateSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
 
-        if ($command instanceof TemplateFeature) {
-            $names = $this->templateHelper->getNamesForDomain($command->getTemplateDomain());
-
-            $command
-                ->addOption(
-                    'template',
-                    't',
-                    InputOption::VALUE_REQUIRED,
-                    'Template to use. <info>One of: '.implode('</info>, <info>', $names).'</info>',
-                    $this->templateHelper->getCustomTemplate() ?: $command->getTemplateDefault()
-                )
-            ;
+        if (!$command instanceof TemplateFeature) {
+            return;
         }
+
+        $names = $this->templateHelper->getNamesForDomain($command->getTemplateDomain());
+
+        $command
+            ->addOption(
+                'template',
+                't',
+                InputOption::VALUE_REQUIRED,
+                'Template to use. <info>One of: '.implode('</info>, <info>', $names).'</info>',
+                $this->templateHelper->getCustomTemplate() ?: $command->getTemplateDefault()
+            )
+        ;
     }
 
     public function initialize(ConsoleEvent $event)
