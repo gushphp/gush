@@ -12,8 +12,6 @@ To get the diff between two versions, go to https://github.com/gushphp/gush/comp
  * upgraded to symfony components 2.5.*
  * renamed GitHubHelperSubscriber?
  * added TODO.md document
- *
-
 
 * 1.3.10 (2014-03-12)
 

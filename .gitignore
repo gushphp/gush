@@ -3,7 +3,6 @@
 /vendor
 /build
 /web
-/box.json
 *.phar
 phpunit.xml
 .first-time-run
