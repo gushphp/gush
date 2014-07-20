@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-19 19:05
+
+this is known, could you check an early tag? I am aware of this since it is showing on the tests.
+
+---------------------------------------------------------------------------
+
+by lmammino at 2014-07-19 19:11
+
+- dev-master: the one i downloaded (i suppose)
+- 1.8.5: same error
+- 1.8.4: works
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-19 19:14
+
+yeah thanks for clarifying cc/ @sstok
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-20 04:33
+
+also try to install via cloning and not via composer global or phar
+the best method so far is to clone, run composer install and ten symlink to your path
+then just gush core:configure
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-07-20 05:25
+
+The [inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/e0cf9ca3-e3d3-4503-9816-050b737bd5e7) completed: **3 new issues, 5 updated code elements**
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-20 05:45
+
+@lmammino could you please test on master or the last tag again in a few mins? I will merge this and tag. It has some failing test but it is not related.
