@@ -88,7 +88,7 @@ LOGO;
         // If Gush is not yet configured, then just catch the exception and move along
         try {
             $this->config = Factory::createConfig();
-        } catch (FileNotFoundException $exception) {
+        } catch (\RuntimeException $exception) {
         }
 
         $helperSet = $this->getDefaultHelperSet();
