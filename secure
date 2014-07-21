@@ -3,12 +3,12 @@
 securitychecker=$(which security-checker)
 
 if [ -x "$securitychecker" ] ; then
-    $securitychecker security:check
+    $securitychecker security:check ./composer.lock
 else
     if [ ! -f ./security-checker.phar ]; then
-        wget https://github.com/cordoval/security-checker/releases/download/v1.3.1/security-checker.phar
+        wget http://get.sensiolabs.org/security-checker.phar
     fi
 
     chmod +x ./security-checker.phar
-    ./security-checker.phar security:check
+    ./security-checker.phar security:check ./composer.lock
 fi
