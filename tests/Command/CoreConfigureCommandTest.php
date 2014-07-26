@@ -20,7 +20,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigureCommandTest extends BaseTestCase
+class CoreConfigureCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';
     const TOKEN = 'foo';
