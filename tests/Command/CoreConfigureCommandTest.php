@@ -101,7 +101,7 @@ class CoreConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    public function testCommandWithJustAdapter()
+    public function testCommandWithAdapterOnly()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
@@ -146,6 +146,7 @@ class CoreConfigureCommandTest extends BaseTestCase
         $tester->execute(
             [
                 'command' => 'core:configure',
+                '--adapter' => 'github_enterprise',
             ],
             [
                 'interactive' => true,
@@ -202,6 +203,7 @@ class CoreConfigureCommandTest extends BaseTestCase
         $tester->execute(
             [
                 'command' => 'core:configure',
+                '--issue_tracker' => 'jira',
             ],
             [
                 'interactive' => true,
