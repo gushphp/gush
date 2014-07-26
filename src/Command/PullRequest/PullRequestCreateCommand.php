@@ -113,7 +113,7 @@ EOF
         $title = '';
         $body = '';
         if (null === $issueNumber) {
-            $defaultTitle = 'testing'; // get first commit of branch
+            $defaultTitle = $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
             if (!$title = $input->getOption('title')) {
                 $title = $this->getHelper('question')->ask(
                     $input,

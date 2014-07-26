@@ -34,7 +34,7 @@ class GitHelper extends Helper
     /**
      * @param string $command
      *
-     * @return string
+     * @return string Result of running the git command
      */
     public function runGitCommand($command)
     {
@@ -120,13 +120,6 @@ class GitHelper extends Helper
         return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
     }
 
-    private function splitLines($output)
-    {
-        $output = trim($output);
-
-        return ((string) $output === '') ? [] : preg_split('{\r?\n}', $output);
-    }
-
     /**
      * @param array $options
      *
@@ -161,5 +154,23 @@ class GitHelper extends Helper
         }
 
         return $issueNumber;
+    }
+
+    /**
+     * @param string $base         The base branch name
+     * @param string $sourceBranch The source branch name
+     *
+     * @return string The title of the first commit on sourceBranch off of base
+     */
+    public function getFirstCommitTitle($base, $sourceBranch)
+    {
+        return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
+    }
+
+    private function splitLines($output)
+    {
+        $output = trim($output);
+
+        return ((string) $output === '') ? [] : preg_split('{\r?\n}', $output);
     }
 }
