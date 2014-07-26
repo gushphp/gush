@@ -20,6 +20,9 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group now
+ */
 class CoreConfigureCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';
@@ -27,7 +30,12 @@ class CoreConfigureCommandTest extends BaseTestCase
     const USERNAME = 'bar';
     const VERSIONEYE_TOKEN = 'token';
 
-    public function testCommand()
+    const ADAPTER_ONLY = 1;
+    const ADAPTER_AND_TRACKER = 2;
+    const TRACKER_ONLY = 3;
+    const NEITHER_ADAPTER_NOR_TRACKER = 4;
+
+    public function testCommandWithoutOptions()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
@@ -58,8 +66,7 @@ class CoreConfigureCommandTest extends BaseTestCase
                         ],
                         'base_url' => 'https://jira.company.com/api/v2/',
                         'repo_domain_url' => 'https://jira.company.com/',
-                    ]
-
+                    ],
                 ],
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
@@ -77,7 +84,7 @@ class CoreConfigureCommandTest extends BaseTestCase
             unlink($gushFilename);
         }
 
-        $questionHelper = $this->expectDialogParameters($homeDir);
+        $questionHelper = $this->expectDialogParameters($homeDir, self::NEITHER_ADAPTER_NOR_TRACKER);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
         $command->getHelperSet()->set($questionHelper, 'question');
         $tester->execute(
@@ -94,69 +101,129 @@ class CoreConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    private function expectDialogParameters($homeDir)
+    public function testCommandWithJustAdapter()
+    {
+        if (!$homeDir = getenv('GUSH_HOME')) {
+            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
+        }
+
+        $gushFilename = $homeDir.'/.gush.yml';
+        $localDir = getcwd();
+        $expected = [
+            'parameters' => [
+                'cache-dir' => $homeDir.'/cache',
+                'adapters' => [
+                    'github_enterprise' => [
+                        'authentication' => [
+                            'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
+                            'username' => self::USERNAME,
+                            'password-or-token' => self::PASSWORD,
+                        ],
+                        'base_url' => 'https://company.com/api/v3/',
+                        'repo_domain_url' => 'https://company.com',
+                    ],
+                ],
+                'issue_trackers' => [],
+                'home' => $homeDir,
+                'home_config' => $homeDir.'/.gush.yml',
+                'local' => $localDir,
+                'local_config' => $localDir.'/.gush.yml',
+                'adapter' => 'github_enterprise',
+                'issue_tracker' => 'jira',
+                'versioneye-token' => self::VERSIONEYE_TOKEN,
+            ]
+        ];
+
+        @mkdir($homeDir, 0777, true);
+
+        if (file_exists($gushFilename)) {
+            unlink($gushFilename);
+        }
+
+        $questionHelper = $this->expectDialogParameters($homeDir, self::ADAPTER_ONLY);
+        $tester = $this->getCommandTester($command = new CoreConfigureCommand());
+        $command->getHelperSet()->set($questionHelper, 'question');
+        $tester->execute(
+            [
+                'command' => 'core:configure',
+            ],
+            [
+                'interactive' => true,
+            ]
+        );
+
+        $this->assertFileExists($gushFilename);
+
+        $this->assertEquals($expected, Yaml::parse($gushFilename));
+    }
+
+    private function expectDialogParameters($homeDir, $option)
     {
         $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
 
         $questionHelper->getName()->willReturn('question');
         $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose adapter: ',
-                    ['github', 'github_enterprise']
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new ChoiceQuestion(
+                        'Choose adapter: ',
+                        ['github', 'github_enterprise']
+                    )
                 )
-            )
-        )->willReturn('github_enterprise');
+            )->willReturn('github_enterprise');
+        }
 
-        // AdapterConfigurator Start
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose GitHub Enterprise authentication type:',
-                    ['Password', 'Token'],
-                    'Password'
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
+            // AdapterConfigurator Start
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new ChoiceQuestion(
+                        'Choose GitHub Enterprise authentication type:',
+                        ['Password', 'Token'],
+                        'Password'
+                    )
                 )
-            )
-        )->willReturn('Password');
+            )->willReturn('Password');
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Username:')
-            )
-        )->willReturn(self::USERNAME);
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Username:')
+                )
+            )->willReturn(self::USERNAME);
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Password:')
-            )
-        )->willReturn(self::PASSWORD);
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Password:')
+                )
+            )->willReturn(self::PASSWORD);
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Enter your GitHub Enterprise api url []: ', '')
-            )
-        )->willReturn('https://company.com/api/v3/');
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Enter your GitHub Enterprise api url []: ', '')
+                )
+            )->willReturn('https://company.com/api/v3/');
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Enter your GitHub Enterprise repo url []: ', '')
-            )
-        )->willReturn('https://company.com');
-        // AdapterConfigurator End
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Enter your GitHub Enterprise repo url []: ', '')
+                )
+            )->willReturn('https://company.com');
+            // AdapterConfigurator End
+        }
 
         $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
