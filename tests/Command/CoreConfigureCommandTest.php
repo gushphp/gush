@@ -157,6 +157,62 @@ class CoreConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
+    public function testCommandWithTrackerOnly()
+    {
+        if (!$homeDir = getenv('GUSH_HOME')) {
+            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
+        }
+
+        $gushFilename = $homeDir.'/.gush.yml';
+        $localDir = getcwd();
+        $expected = [
+            'parameters' => [
+                'cache-dir' => $homeDir.'/cache',
+                'adapters' => [],
+                'issue_trackers' => [
+                    'jira' => [
+                        'authentication' => [
+                            'http-auth-type' => Client::AUTH_HTTP_TOKEN,
+                            'username' => self::USERNAME,
+                            'password-or-token' => self::TOKEN,
+                        ],
+                        'base_url' => 'https://jira.company.com/api/v2/',
+                        'repo_domain_url' => 'https://jira.company.com/',
+                    ],
+                ],
+                'home' => $homeDir,
+                'home_config' => $homeDir.'/.gush.yml',
+                'local' => $localDir,
+                'local_config' => $localDir.'/.gush.yml',
+                'adapter' => 'github_enterprise',
+                'issue_tracker' => 'jira',
+                'versioneye-token' => self::VERSIONEYE_TOKEN,
+            ]
+        ];
+
+        @mkdir($homeDir, 0777, true);
+
+        if (file_exists($gushFilename)) {
+            unlink($gushFilename);
+        }
+
+        $questionHelper = $this->expectDialogParameters($homeDir, self::TRACKER_ONLY);
+        $tester = $this->getCommandTester($command = new CoreConfigureCommand());
+        $command->getHelperSet()->set($questionHelper, 'question');
+        $tester->execute(
+            [
+                'command' => 'core:configure',
+            ],
+            [
+                'interactive' => true,
+            ]
+        );
+
+        $this->assertFileExists($gushFilename);
+
+        $this->assertEquals($expected, Yaml::parse($gushFilename));
+    }
+
     private function expectDialogParameters($homeDir, $option)
     {
         $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
@@ -177,7 +233,7 @@ class CoreConfigureCommandTest extends BaseTestCase
             )->willReturn('github_enterprise');
         }
 
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::ADAPTER_ONLY) {
             // AdapterConfigurator Start
             $questionHelper->ask(
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
@@ -223,76 +279,80 @@ class CoreConfigureCommandTest extends BaseTestCase
                 )
             )->willReturn('https://company.com');
             // AdapterConfigurator End
+
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new ConfirmationQuestion(
+                        'Would you like to make "github_enterprise" the default adapter?'
+                    )
+                )
+            )->willReturn(true);
         }
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ConfirmationQuestion(
-                    'Would you like to make "github_enterprise" the default adapter?'
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new ChoiceQuestion(
+                        'Choose issue tracker:',
+                        ['github', 'jira']
+                    )
                 )
-            )
-        )->willReturn(true);
+            )->willReturn('jira');
+        }
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose issue tracker:',
-                    ['github', 'jira']
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::TRACKER_ONLY) {
+            // IssueTrackerConfigurator Start
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new ChoiceQuestion(
+                        'Choose Jira authentication type:',
+                        ['Password', 'Token'],
+                        'Password'
+                    )
                 )
-            )
-        )->willReturn('jira');
+            )->willReturn('Token');
 
-        // IssueTrackerConfigurator Start
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose Jira authentication type:',
-                    ['Password', 'Token'],
-                    'Password'
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Token:')
                 )
-            )
-        )->willReturn('Token');
+            )->willReturn(self::TOKEN);
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Token:')
-            )
-        )->willReturn(self::TOKEN);
-
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Enter your Jira api url []:', '')
-            )
-        )->willReturn('https://jira.company.com/api/v2/');
-
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new Question('Enter your Jira repo url []:', '')
-            )
-        )->willReturn('https://jira.company.com/');
-        // IssueTrackerConfigurator End
-
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ConfirmationQuestion(
-                    'Would you like to make "jira" the default issue tracker?'
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Enter your Jira api url []:', '')
                 )
-            )
-        )->willReturn(true);
+            )->willReturn('https://jira.company.com/api/v2/');
+
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Enter your Jira repo url []:', '')
+                )
+            )->willReturn('https://jira.company.com/');
+            // IssueTrackerConfigurator End
+
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new ConfirmationQuestion(
+                        'Would you like to make "jira" the default issue tracker?'
+                    )
+                )
+            )->willReturn(true);
+        }
 
         $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
