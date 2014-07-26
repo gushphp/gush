@@ -9,18 +9,12 @@
     with this source code in the file LICENSE.
 -->
 
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+         backupGlobals="false"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false"
-         bootstrap="./vendor/autoload.php"
-    >
-
+         bootstrap="vendor/autoload.php"
+>
     <php>
         <env name="GIT_VENDOR_NAME" value="gushphp"/>
         <ini name="date.timezone" value="America/Los_Angeles"/>
