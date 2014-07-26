@@ -8,7 +8,6 @@ bldr:
                 - prepare
                 - secure
                 - lint
-                - phpcs
                 - test
         local:
             description: Local Development Profile
@@ -19,6 +18,7 @@ bldr:
         prepare:
             calls:
                 -
+                    failOnError: false
                     type: filesystem:remove
                     files: [build/coverage, build/logs]
                 -
@@ -55,29 +55,6 @@ bldr:
                     output: /dev/null
                     executable: php
                     arguments: [-l]
-
-        phpcs:
-            description: Runs the PHP Code Sniffer
-            calls:
-                -
-                    type: exec
-                    executable: php
-                    arguments:
-                        - bin/phpcs
-                        - --standard=PSR2
-                        - --report=full
-                        - src/
-                -
-                    type: exec
-                    output: /dev/null
-                    append: false
-                    executable: php
-                    arguments:
-                        - bin/phpcs
-                        - --standard=PSR2
-                        - --report=checkstyle
-                        - --report-file=build/logs/checkstyle.xml
-                        - src/
         test:
             description: Runs the PHPUnit Tests
             calls:
@@ -97,7 +74,7 @@ bldr:
                     executable: php
                     arguments:
                         - bin/phpunit
-                        #- --group=now
+                        - --group=now
         watch:
             description: Watch Task for Local Development
             calls:

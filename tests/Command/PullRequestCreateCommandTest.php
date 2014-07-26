@@ -19,13 +19,15 @@ class PullRequestCreateCommandTest extends BaseTestCase
     public function provideCommand()
     {
         return [
-            [[
-                '--org'           => 'gushphp',
-                '--repo'          => 'gush',
-                '--source-branch' => 'issue-145',
-                '--template'      => 'default',
-                '--title'         => 'Test'
-            ]],
+            [
+                [
+                    '--org' => 'gushphp',
+                    '--repo' => 'gush',
+                    '--source-branch' => 'issue-145',
+                    '--template' => 'default',
+                    '--title' => 'Test',
+                ]
+            ],
         ];
     }
 
@@ -34,7 +36,6 @@ class PullRequestCreateCommandTest extends BaseTestCase
      */
     public function testCommand($args)
     {
-
         $command = new PullRequestCreateCommand();
         $tester = $this->getCommandTester($command);
         $tester->execute($args, ['interactive' => false]);
@@ -65,10 +66,8 @@ class PullRequestCreateCommandTest extends BaseTestCase
     {
         $args['--verbose'] = true;
 
-        $process = $this->getMock('Gush\Helper\ProcessHelper');
-        $this->expectsConfig();
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($process, 'process');
+        $this->expectsConfig();
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
