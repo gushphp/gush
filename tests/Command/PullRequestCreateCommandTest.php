@@ -66,10 +66,9 @@ class PullRequestCreateCommandTest extends BaseTestCase
     public function testSourceOrgAutodetect($args)
     {
         $args['--verbose'] = true;
-        $args['--source-org'] = 'gushphp';
 
-        $this->expectsConfig();
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $this->expectsConfig();
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
