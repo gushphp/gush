@@ -312,12 +312,20 @@ class CoreConfigureCommandTest extends BaseTestCase
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
                 new QuestionToken(
                     new ChoiceQuestion(
-                        'Choose Jira authentication type:',
+                        'Choose Jira issue tracker authentication type:',
                         ['Password', 'Token'],
                         'Password'
                     )
                 )
             )->willReturn('Token');
+
+            $questionHelper->ask(
+                Argument::type('Symfony\Component\Console\Input\InputInterface'),
+                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+                new QuestionToken(
+                    new Question('Username:')
+                )
+            )->willReturn(self::USERNAME);
 
             $questionHelper->ask(
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
@@ -331,7 +339,7 @@ class CoreConfigureCommandTest extends BaseTestCase
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
                 new QuestionToken(
-                    new Question('Enter your Jira api url []:', '')
+                    new Question('Enter your Jira issue tracker api url []:', '')
                 )
             )->willReturn('https://jira.company.com/api/v2/');
 
@@ -339,7 +347,7 @@ class CoreConfigureCommandTest extends BaseTestCase
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
                 new QuestionToken(
-                    new Question('Enter your Jira repo url []:', '')
+                    new Question('Enter your Jira issue tracker repo url []:', '')
                 )
             )->willReturn('https://jira.company.com/');
             // IssueTrackerConfigurator End
