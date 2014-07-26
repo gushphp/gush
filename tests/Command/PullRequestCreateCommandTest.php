@@ -60,7 +60,6 @@ class PullRequestCreateCommandTest extends BaseTestCase
     }
 
     /**
-     * @group now
      * @dataProvider provideCommand
      */
     public function testSourceOrgAutodetect($args)
