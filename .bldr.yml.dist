@@ -19,6 +19,7 @@ bldr:
         prepare:
             calls:
                 -
+                    failOnError: false
                     type: filesystem:remove
                     files: [build/coverage, build/logs]
                 -
