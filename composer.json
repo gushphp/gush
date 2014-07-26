@@ -34,6 +34,10 @@
         {
             "name" : "Daniel Gomes",
             "email": "me@danielcsgomes.com"
+        },
+        {
+            "name" : "Daniel Londero",
+            "email": "daniel.londer@gmail.com"
         }
     ],
     "require": {
