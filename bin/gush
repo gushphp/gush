@@ -10,27 +10,9 @@
  * with this source code in the file LICENSE.
  */
 
+require __DIR__.'/../src/bootstrap.php';
+
 use Gush\Adapter;
-
-$paths[] = __DIR__.'/../vendor';
-$paths[] = __DIR__.'/../../..';
-
-$filename = null;
-
-foreach ($paths as $path) {
-    $filePath = $path.'/autoload.php';
-    if (file_exists($filePath)) {
-        $filename = $filePath;
-        break;
-    }
-}
-
-if (null === $filename) {
-        echo "Cannot find an autoload.php file, have you executed composer install command?\n";
-        exit(1);
-}
-
-require_once $filename;
 
 error_reporting(-1);
 ini_set('display_errors', 1);
