@@ -233,7 +233,7 @@ class CoreConfigureCommandTest extends BaseTestCase
             )->willReturn('github_enterprise');
         }
 
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::ADAPTER_ONLY) {
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::ADAPTER_ONLY === $option) {
             // AdapterConfigurator Start
             $questionHelper->ask(
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
@@ -304,7 +304,7 @@ class CoreConfigureCommandTest extends BaseTestCase
             )->willReturn('jira');
         }
 
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::TRACKER_ONLY) {
+        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::TRACKER_ONLY === $option) {
             // IssueTrackerConfigurator Start
             $questionHelper->ask(
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
