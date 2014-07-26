@@ -129,7 +129,6 @@ class CoreConfigureCommandTest extends BaseTestCase
                 'local' => $localDir,
                 'local_config' => $localDir.'/.gush.yml',
                 'adapter' => 'github_enterprise',
-                'issue_tracker' => 'jira',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
