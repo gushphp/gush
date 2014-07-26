@@ -97,7 +97,7 @@ bldr:
                     executable: php
                     arguments:
                         - bin/phpunit
-                        #- --group=now
+                        - --group=now
         watch:
             description: Watch Task for Local Development
             calls:
