@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-26 06:31
+
+this is already done for symfony, i wonder why are we still using phpunit the old version @sstok ?
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-07-26 06:44
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/7e03227f-4093-4f5e-8b4f-075a4a9b430a) was created.
