@@ -36,8 +36,9 @@ class PullRequestCreateCommandTest extends BaseTestCase
      */
     public function testCommand($args)
     {
-        $command = new PullRequestCreateCommand();
-        $tester = $this->getCommandTester($command);
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper(), 'git');
+        $this->expectsConfig();
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
@@ -51,8 +52,8 @@ class PullRequestCreateCommandTest extends BaseTestCase
     {
         $args['--issue'] = '145';
 
-        $command = new PullRequestCreateCommand();
-        $tester = $this->getCommandTester($command);
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $this->expectsConfig();
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
@@ -67,6 +68,7 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $args['--verbose'] = true;
 
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper(), 'git');
         $this->expectsConfig();
         $tester->execute($args, ['interactive' => false]);
 
@@ -82,8 +84,8 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $args['--verbose']    = true;
         $args['--source-org'] = 'gushphp';
 
-        $command = new PullRequestCreateCommand();
-        $tester = $this->getCommandTester($command);
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper(), 'git');
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
@@ -104,5 +106,21 @@ class PullRequestCreateCommandTest extends BaseTestCase
             ->with('[adapters][github_enterprise][authentication]')
             ->will($this->returnValue(['username' => 'cordoval']))
         ;
+    }
+
+    private function expectGitHelper()
+    {
+        $git = $this->getMockBuilder('Gush\Helper\GitHelper')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $git->expects($this->once())
+            ->method('getFirstCommitTitle')
+            ->with('master', 'issue-145')
+            ->will($this->returnValue('some good title'))
+        ;
+
+        return $git;
     }
 }
