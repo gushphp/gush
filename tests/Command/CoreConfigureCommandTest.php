@@ -184,7 +184,6 @@ class CoreConfigureCommandTest extends BaseTestCase
                 'home_config' => $homeDir.'/.gush.yml',
                 'local' => $localDir,
                 'local_config' => $localDir.'/.gush.yml',
-                'adapter' => 'github_enterprise',
                 'issue_tracker' => 'jira',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
@@ -312,7 +311,7 @@ class CoreConfigureCommandTest extends BaseTestCase
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
                 new QuestionToken(
                     new ChoiceQuestion(
-                        'Choose Jira issue tracker authentication type:',
+                        'Choose Jira authentication type:',
                         ['Password', 'Token'],
                         'Password'
                     )
@@ -339,7 +338,7 @@ class CoreConfigureCommandTest extends BaseTestCase
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
                 new QuestionToken(
-                    new Question('Enter your Jira issue tracker api url []:', '')
+                    new Question('Enter your Jira api url []: ', '')
                 )
             )->willReturn('https://jira.company.com/api/v2/');
 
@@ -347,7 +346,7 @@ class CoreConfigureCommandTest extends BaseTestCase
                 Argument::type('Symfony\Component\Console\Input\InputInterface'),
                 Argument::type('Symfony\Component\Console\Output\OutputInterface'),
                 new QuestionToken(
-                    new Question('Enter your Jira issue tracker repo url []:', '')
+                    new Question('Enter your Jira repo url []: ', '')
                 )
             )->willReturn('https://jira.company.com/');
             // IssueTrackerConfigurator End
