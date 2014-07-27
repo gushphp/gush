@@ -16,7 +16,6 @@ use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
-use Gush\Exception\FileNotFoundException;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;

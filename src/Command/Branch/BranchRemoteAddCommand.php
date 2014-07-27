@@ -54,9 +54,6 @@ EOF
 
         $fork = $adapter->createFork($org);
 
-        $repo = $input->getOption('repo');
-        $vendorName = $input->getOption('org');
-
         $this->getHelper('process')->runCommands(
             [
                 [
