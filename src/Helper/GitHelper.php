@@ -164,21 +164,21 @@ class GitHelper extends Helper
      */
     public function getFirstCommitTitle($base, $sourceBranch)
     {
-        /**
-         * e.g:
-         *
-         *
-         * * 2532802 - (HEAD, cordoval/264-default-value-for-pull-request-title-pull-request-create-command, 264-default-value-for-
-         *     pull-request-title-pull-request-create-command) open method to get first title of source branch off of base branch (3 minutes ago) <Luis Cordova>
-         * bd80ced - bootstrap changes (13 minutes ago) <Luis Cordova>
-         *   80d07a4 - (origin/master, master) Merge pull request #279 from dlondero/better-autoload-inclusion (87 minutes ago) <Luis Cordova>
-         *
-         *
-         * Here we have commits on top of master as a base reference
-         * the first commit is called bootstrap changes, this is the result we want.
-         * For this we want to invoke git commands to get this string alone.
-         */
-        return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
+        $forkPoint = $this->processHelper->runCommand(
+            sprintf(
+                'git merge-base --fork-point %s',
+                $base,
+                $sourceBranch
+            )
+        );
+
+        return $this->processHelper->runCommand(
+            sprintf(
+                'git rev-list %s..%s --reverse --pretty --oneline -n 1 |',
+                $forkPoint,
+                $sourceBranch
+            )
+        );
     }
 
     private function splitLines($output)
