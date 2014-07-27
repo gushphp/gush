@@ -23,11 +23,11 @@
         },
         {
             "name": "*.pem",
-            "in": "vendor/guzzle/guzzle/src/Guzzle/Http/Resources"
+            "in": "vendor/guzzlehttp/guzzle/src"
         },
         {
             "name": "*.pem.*",
-            "in": "vendor/guzzle/guzzle/src/Guzzle/Http/Resources"
+            "in": "vendor/guzzlehttp/guzzle/src"
         },
         {
             "name": "schema.json",
