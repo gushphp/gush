@@ -14,8 +14,10 @@ function includeIfExists($file)
     return file_exists($file) ? include $file : false;
 }
 
-if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
-    echo "Cannot find an autoload.php file, have you executed composer install command?" . PHP_EOL;
+if (!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php') &&
+    !$loader = includeIfExists(__DIR__.'/../../../autoload.php')
+) {
+    echo 'Cannot find an autoload.php file, have you executed composer install command?'.PHP_EOL;
     exit(1);
 }
 
