@@ -1,0 +1,77 @@
+---------------------------------------------------------------------------
+
+by sstok at 2014-07-12 07:25
+
+Great idea :+1:
+
+---------------------------------------------------------------------------
+
+by aik099 at 2014-07-12 09:11
+
+Because of this I\'m currently creating branches based on tasks with Gush, but send actual pull request via `hub pull-request` command where I can enter both PR title and description in one editor.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-14 04:30
+
+to clarify @aik099 the first commit is the last commit or the first commit with which the branch differs from the branch it was branched off of?
+
+---------------------------------------------------------------------------
+
+by aik099 at 2014-07-14 07:00
+
+It\'s the first commit on a branch. However I\'ve noticed that even `hub` struggles, when there are 2+ commits in branch, because it doesn\'t know which one to use as PR title.
+
+---------------------------------------------------------------------------
+
+by aik099 at 2014-07-14 07:03
+
+For example if branch has only 1 commit (there was 1 commit or all branch commits were squashed) it will save time typing exactly same (or similar) PR title.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-20 05:59
+
+hmm I am not clear when you say hub struggles. What should be the rule on when there is n commits? for the default title of the PR?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-20 05:59
+
+@aik099 ^^ :+1:
+
+---------------------------------------------------------------------------
+
+by aik099 at 2014-07-20 06:14
+
+Currently `hub` uses empty default title where there are N commits. I suggest we use first commit title.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-20 06:17
+
+always the first commit as title on that branch from where the PR sprang up?
+
+---------------------------------------------------------------------------
+
+by aik099 at 2014-07-20 06:20
+
+Yes, title of first commit made on a branch, that is used as PR source.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-20 06:23
+
+i see, it makes sense. I will put it to bed since i think it should be fairly easy to implement. But need to attend church service tomorrow and then have time with the family I lead. After I will tackle this piece of puppy. :flushed:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-27 08:39
+
+done @aik099 please check it out and provide feedback and open a new ticket if we need to fix any issues.
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-07-27 09:02
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/2b4af3b7-4b41-4c27-9749-315d48c19bf0) was created.
