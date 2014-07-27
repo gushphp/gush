@@ -46,8 +46,8 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
                 'What adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
-                'issue tracker',
-                'it',
+                'issue_tracker',
+                'i',
                 InputOption::VALUE_OPTIONAL,
                 'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
             )
@@ -106,18 +106,18 @@ EOF
         $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
 
         $adapterName = $input->getOption('adapter');
-        $issueTrackerName = $input->getOption('issue tracker');
+        $issueTrackerName = $input->getOption('issue_tracker');
 
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
-        if (null === $adapterName) {
+        if (null === $adapterName && null === $issueTrackerName) {
             $adapterName = $questionHelper->ask(
                 $input,
                 $output,
                 new ChoiceQuestion('Choose adapter: ', array_keys($adapters))
             );
-        } elseif (!array_key_exists($adapterName, $adapters)) {
+        } elseif (null !== $adapterName && !array_key_exists($adapterName, $adapters)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'The adapter "%s" is invalid. Available adapters are "%s"',
@@ -127,30 +127,32 @@ EOF
             );
         }
 
-        $this->configureAdapter($input, $output, $adapterName);
+        if (null !== $adapterName) {
+            $this->configureAdapter($input, $output, $adapterName);
 
-        $currentDefault = $this->config->get('adapter');
-        if ($adapterName !== $currentDefault &&
-            $questionHelper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(
-                    sprintf('Would you like to make "%s" the default adapter?', $adapterName),
-                    null === $currentDefault
+            $currentDefault = $this->config->get('adapter');
+            if ($adapterName !== $currentDefault &&
+                $questionHelper->ask(
+                    $input,
+                    $output,
+                    new ConfirmationQuestion(
+                        sprintf('Would you like to make "%s" the default adapter?', $adapterName),
+                        null === $currentDefault
+                    )
                 )
-            )
-        ) {
-            $this->config->merge(['adapter' => $adapterName]);
+            ) {
+                $this->config->merge(['adapter' => $adapterName]);
+            }
         }
 
-        if (null === $issueTrackerName) {
+        if (null === $issueTrackerName && null === $input->getOption('adapter')) {
             $selection = array_key_exists($adapterName, $issueTrackers) ? $adapterName : null;
             $issueTrackerName = $questionHelper->ask(
                 $input,
                 $output,
                 new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
             );
-        } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
+        } elseif (null !== $issueTrackerName && !array_key_exists($issueTrackerName, $issueTrackers)) {
             throw new \Exception(
                 sprintf(
                     'The issue tracker "%s" is invalid. Available adapters are "%s"',
@@ -160,20 +162,22 @@ EOF
             );
         }
 
-        $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
+        if (null !== $issueTrackerName) {
+            $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
 
-        $currentDefault = $this->config->get('issue_tracker');
-        if ($issueTrackerName !== $currentDefault &&
-            $questionHelper->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion(
-                    sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
-                    null === $currentDefault
+            $currentDefault = $this->config->get('issue_tracker');
+            if ($issueTrackerName !== $currentDefault &&
+                $questionHelper->ask(
+                    $input,
+                    $output,
+                    new ConfirmationQuestion(
+                        sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
+                        null === $currentDefault
+                    )
                 )
-            )
-        ) {
-            $this->config->merge(['issue_tracker' => $issueTrackerName]);
+            ) {
+                $this->config->merge(['issue_tracker' => $issueTrackerName]);
+            }
         }
 
         $cacheDir = $questionHelper->ask(
@@ -246,13 +250,13 @@ EOF
 
         while (!$isAuthenticated) {
             // Prevent endless loop with a broken test
-            if ($authenticationAttempts > 500) {
+            if ($authenticationAttempts > 50) {
                 $output->writeln("<error>To many attempts, aborting.</error>");
 
                 break;
             }
 
-            if ($authenticationAttempts > 1) {
+            if ($authenticationAttempts > 0) {
                 $output->writeln("<error>Authentication failed please try again.</error>");
             }
 
