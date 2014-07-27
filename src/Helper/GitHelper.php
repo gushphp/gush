@@ -172,13 +172,15 @@ class GitHelper extends Helper
             )
         );
 
-        return $this->processHelper->runCommand(
+        $oneline = $this->processHelper->runCommand(
             sprintf(
-                'git rev-list %s..%s --reverse --pretty --oneline -n 1 |',
+                'git rev-list %s..%s --reverse --pretty --oneline -n 1',
                 $forkPoint,
                 $sourceBranch
             )
         );
+
+        return substr($oneline, 9);
     }
 
     private function splitLines($output)
