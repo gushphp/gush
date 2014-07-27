@@ -250,7 +250,7 @@ EOF
 
         while (!$isAuthenticated) {
             // Prevent endless loop with a broken test
-            if ($authenticationAttempts > 500) {
+            if ($authenticationAttempts > 50) {
                 $output->writeln("<error>To many attempts, aborting.</error>");
 
                 break;
