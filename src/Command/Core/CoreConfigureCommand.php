@@ -256,7 +256,7 @@ EOF
                 break;
             }
 
-            if ($authenticationAttempts > 1) {
+            if ($authenticationAttempts > 0) {
                 $output->writeln("<error>Authentication failed please try again.</error>");
             }
 
