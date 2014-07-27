@@ -113,11 +113,12 @@ EOF
         $title = '';
         $body = '';
         if (null === $issueNumber) {
+            $defaultTitle = $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
             if (!$title = $input->getOption('title')) {
                 $title = $this->getHelper('question')->ask(
                     $input,
                     $output,
-                    new Question('Title: ')
+                    new Question(sprintf('Title: [%s]', $defaultTitle), $defaultTitle)
                 );
             }
 
