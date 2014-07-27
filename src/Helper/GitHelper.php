@@ -166,21 +166,21 @@ class GitHelper extends Helper
     {
         $forkPoint = $this->processHelper->runCommand(
             sprintf(
-                'git merge-base --fork-point %s',
+                'git merge-base --fork-point %s %s',
                 $base,
                 $sourceBranch
             )
         );
 
-        $oneline = $this->processHelper->runCommand(
+        $lines = $this->processHelper->runCommand(
             sprintf(
-                'git rev-list %s..%s --reverse --pretty --oneline -n 1',
+                'git rev-list %s..%s --reverse --oneline',
                 $forkPoint,
                 $sourceBranch
             )
         );
 
-        return substr($oneline, 9);
+        return substr(strtok($lines, "\n"), 8);
     }
 
     private function splitLines($output)
