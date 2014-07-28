@@ -444,6 +444,7 @@ LOGO;
             new Cmd\Branch\BranchDeleteCommand(),
             new Cmd\Branch\BranchForkCommand(),
             new Cmd\Branch\BranchChangelogCommand(),
+            new Cmd\Branch\BranchRemoteAddCommand(),
             new Cmd\Core\CoreConfigureCommand(),
             new Cmd\Core\CoreAliasCommand(),
             new Cmd\Core\InitCommand(),
