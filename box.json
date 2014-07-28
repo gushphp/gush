@@ -23,7 +23,15 @@
         },
         {
             "name": "*.pem",
+            "in": "vendor/guzzlehttp/guzzle/src"
+        },
+        {
+            "name": "*.pem",
             "in": "vendor/guzzle/guzzle/src/Guzzle/Http/Resources"
+        },
+        {
+            "name": "*.pem.*",
+            "in": "vendor/guzzlehttp/guzzle/src"
         },
         {
             "name": "*.pem.*",
