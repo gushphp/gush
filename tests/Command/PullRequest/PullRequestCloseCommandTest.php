@@ -9,9 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 class PullRequestCloseCommandTest extends BaseTestCase

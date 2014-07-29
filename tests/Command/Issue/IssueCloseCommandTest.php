@@ -9,10 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCloseCommand;
 use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 class IssueCloseCommandTest extends BaseTestCase

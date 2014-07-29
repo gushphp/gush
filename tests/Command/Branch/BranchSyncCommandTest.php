@@ -9,12 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Branch;
 
-use Gush\Command\Branch\BranchDeleteCommand;
+use Gush\Command\Branch\BranchSyncCommand;
+use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class BranchDeleteCommandTest extends BaseTestCase
+class BranchSyncCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 
@@ -22,15 +23,13 @@ class BranchDeleteCommandTest extends BaseTestCase
     {
         $processHelper = $this->expectProcessHelper();
         $gitHelper = $this->expectGitHelper();
-
-        $this->expectsConfig();
-        $tester = $this->getCommandTester($command = new BranchDeleteCommand());
+        $tester = $this->getCommandTester($command = new BranchSyncCommand());
         $command->getHelperSet()->set($processHelper, 'process');
         $command->getHelperSet()->set($gitHelper, 'git');
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay(true)));
+        $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()
@@ -43,9 +42,25 @@ class BranchDeleteCommandTest extends BaseTestCase
             ->method('runCommands')
             ->with([
                 [
-                    'line' => 'git push -u cordoval :'.self::TEST_BRANCH_NAME,
+                    'line' => 'git remote update',
                     'allow_failures' => true
                 ],
+                [
+                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git reset --hard HEAD~1',
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git pull -u origin '.self::TEST_BRANCH_NAME,
+                    'allow_failures' => true
+                ],
+                [
+                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
+                    'allow_failures' => true
+                ]
             ])
         ;
 
@@ -66,21 +81,5 @@ class BranchDeleteCommandTest extends BaseTestCase
         ;
 
         return $gitHelper;
-    }
-
-    private function expectsConfig()
-    {
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('adapter')
-            ->will($this->returnValue('github_enterprise'))
-        ;
-        $this->config
-            ->expects($this->at(1))
-            ->method('get')
-            ->with('[adapters][github_enterprise][authentication]')
-            ->will($this->returnValue(['username' => 'cordoval']))
-        ;
     }
 }

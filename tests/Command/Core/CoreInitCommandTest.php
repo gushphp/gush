@@ -9,15 +9,16 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
 use Gush\Tester\QuestionToken;
+use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
-class InitCommandTest extends BaseTestCase
+class CoreInitCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';
     const TOKEN = 'foo';
