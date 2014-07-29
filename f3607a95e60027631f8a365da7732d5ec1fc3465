@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-26 06:59
+
+This is in the command b:p, i believe it is a call to PR and then extract from the array the last sha or comparison which i think it already contains ... @sstok  right?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-26 07:05
+
+also I wonder if we can make the git push -f forced on gush b:p since it is meant to be that way
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-07-29 06:47
+
+i am closing this to concentrate on the other tickets
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-07-29 07:16
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/4768af59-ddc4-41d5-b761-45a254eed4ec) was created.
