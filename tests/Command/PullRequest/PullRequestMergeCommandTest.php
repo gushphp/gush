@@ -9,9 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestMergeCommand;
+use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestMergeCommandTest extends BaseTestCase
 {

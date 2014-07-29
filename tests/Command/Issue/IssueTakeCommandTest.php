@@ -9,10 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueTakeCommand;
 use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tests\Command\BaseTestCase;
 
 class IssueTakeCommandTest extends BaseTestCase
 {

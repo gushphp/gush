@@ -73,7 +73,7 @@ EOF
                 [
                     'line' => 'git checkout '.$stashedBranchName,
                     'allow_failures' => true,
-                ]
+                ],
             ]
         );
 

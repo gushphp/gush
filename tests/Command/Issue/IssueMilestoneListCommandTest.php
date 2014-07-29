@@ -9,18 +9,18 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Issue;
 
-use Gush\Command\Release\ReleaseListCommand;
-use Gush\Tests\Fixtures\OutputFixtures;
+use Gush\Command\Issue\IssueMilestoneListCommand;
+use Gush\Tests\Command\BaseTestCase;
 
-class ReleaseListCommandTest extends BaseTestCase
+class IssueMilestoneListCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $tester = $this->getCommandTester(new ReleaseListCommand());
+        $tester = $this->getCommandTester(new IssueMilestoneListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(trim(OutputFixtures::RELEASE_LIST), trim($tester->getDisplay(true)));
+        $this->assertEquals("version 1.0", trim($tester->getDisplay(true)));
     }
 }

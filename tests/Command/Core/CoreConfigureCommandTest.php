@@ -9,11 +9,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Core;
 
 use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;
 use Gush\Tester\QuestionToken;
+use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;

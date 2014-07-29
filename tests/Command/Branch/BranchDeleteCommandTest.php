@@ -9,25 +9,29 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Branch;
 
-use Gush\Command\Branch\BranchForkCommand;
+use Gush\Command\Branch\BranchDeleteCommand;
+use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class BranchForkCommandTest extends BaseTestCase
+class BranchDeleteCommandTest extends BaseTestCase
 {
-    const TEST_USERNAME = 'cordoval';
+    const TEST_BRANCH_NAME = 'test_branch';
 
     public function testCommand()
     {
         $processHelper = $this->expectProcessHelper();
+        $gitHelper = $this->expectGitHelper();
+
         $this->expectsConfig();
-        $tester = $this->getCommandTester($command = new BranchForkCommand());
+        $tester = $this->getCommandTester($command = new BranchDeleteCommand());
         $command->getHelperSet()->set($processHelper, 'process');
+        $command->getHelperSet()->set($gitHelper, 'git');
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_FORK, trim($tester->getDisplay(true)));
+        $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()
@@ -40,13 +44,29 @@ class BranchForkCommandTest extends BaseTestCase
             ->method('runCommands')
             ->with([
                 [
-                    'line' => 'git remote add cordoval git@github.com:cordoval/gush.git',
+                    'line' => 'git push -u cordoval :'.self::TEST_BRANCH_NAME,
                     'allow_failures' => true
                 ],
             ])
         ;
 
         return $processHelper;
+    }
+
+    private function expectGitHelper()
+    {
+        $gitHelper = $this
+            ->getMockBuilder('Gush\Helper\GitHelper')
+            ->disableOriginalConstructor()
+            ->setMethods(['getBranchName'])
+            ->getMock()
+        ;
+        $gitHelper->expects($this->once())
+            ->method('getBranchName')
+            ->will($this->returnValue(self::TEST_BRANCH_NAME))
+        ;
+
+        return $gitHelper;
     }
 
     private function expectsConfig()

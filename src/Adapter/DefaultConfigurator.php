@@ -67,7 +67,7 @@ class DefaultConfigurator implements Configurator
         if ([] === $authenticationOptions) {
             $authenticationOptions = [
                 0 => ['Password', self::AUTH_HTTP_PASSWORD],
-                1 => ['Token', self::AUTH_HTTP_TOKEN]
+                1 => ['Token', self::AUTH_HTTP_TOKEN],
             ];
         }
 

@@ -9,26 +9,23 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\PullRequest;
 
-use Gush\Command\Branch\BranchSyncCommand;
+use Gush\Command\PullRequest\PullRequestSquashCommand;
+use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class BranchSyncCommandTest extends BaseTestCase
+class PullRequestSquashCommandTest extends BaseTestCase
 {
-    const TEST_BRANCH_NAME = 'test_branch';
-
     public function testCommand()
     {
+        $this->expectsConfig();
         $processHelper = $this->expectProcessHelper();
-        $gitHelper = $this->expectGitHelper();
-        $tester = $this->getCommandTester($command = new BranchSyncCommand());
+        $tester = $this->getCommandTester($command = new PullRequestSquashCommand());
         $command->getHelperSet()->set($processHelper, 'process');
-        $command->getHelperSet()->set($gitHelper, 'git');
+        $tester->execute(['--org' => 'cordoval', 'pr_number' => 40], ['interactive' => false]);
 
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
-
-        $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay(true)));
+        $this->assertEquals(OutputFixtures::PULL_REQUEST_SQUASH, trim($tester->getDisplay(true)));
     }
 
     private function expectProcessHelper()
@@ -45,40 +42,40 @@ class BranchSyncCommandTest extends BaseTestCase
                     'allow_failures' => true
                 ],
                 [
-                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
+                    'line' => 'git checkout head_ref',
                     'allow_failures' => true
                 ],
                 [
-                    'line' => 'git reset --hard HEAD~1',
+                    'line' => 'git reset --soft base_ref',
                     'allow_failures' => true
                 ],
                 [
-                    'line' => 'git pull -u origin '.self::TEST_BRANCH_NAME,
+                    'line' => 'git commit -am head_ref',
                     'allow_failures' => true
                 ],
                 [
-                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
+                    'line' => sprintf('git push -u cordoval head_ref -f'),
                     'allow_failures' => true
-                ]
+                ],
             ])
         ;
 
         return $processHelper;
     }
 
-    private function expectGitHelper()
+    private function expectsConfig()
     {
-        $gitHelper = $this
-            ->getMockBuilder('Gush\Helper\GitHelper')
-            ->disableOriginalConstructor()
-            ->setMethods(['getBranchName'])
-            ->getMock()
+        $this->config
+            ->expects($this->at(0))
+            ->method('get')
+            ->with('adapter')
+            ->will($this->returnValue('github_enterprise'))
         ;
-        $gitHelper->expects($this->once())
-            ->method('getBranchName')
-            ->will($this->returnValue(self::TEST_BRANCH_NAME))
+        $this->config
+            ->expects($this->at(1))
+            ->method('get')
+            ->with('[adapters][github_enterprise][authentication]')
+            ->will($this->returnValue(['username' => 'cordoval']))
         ;
-
-        return $gitHelper;
     }
 }

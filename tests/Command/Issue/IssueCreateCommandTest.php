@@ -9,9 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCreateCommand;
+use Gush\Tests\Command\BaseTestCase;
 
 class IssueCreateCommandTest extends BaseTestCase
 {

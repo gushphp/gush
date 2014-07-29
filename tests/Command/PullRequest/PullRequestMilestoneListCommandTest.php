@@ -9,17 +9,17 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\PullRequest;
 
-use Gush\Command\Issue\IssueLabelListCommand;
+use Gush\Tests\Command\BaseTestCase;
 
-class IssueLabelListCommandTest extends BaseTestCase
+class PullRequestMilestoneListCommandTest extends BaseTestCase
 {
     public function testCommand()
     {
-        $tester = $this->getCommandTester(new IssueLabelListCommand());
+        $tester = $this->getCommandTester(new \Gush\Command\PullRequest\PullRequestMilestoneListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals('bug', trim($tester->getDisplay(true)));
+        $this->assertEquals('version 1.0', trim($tester->getDisplay(true)));
     }
 }

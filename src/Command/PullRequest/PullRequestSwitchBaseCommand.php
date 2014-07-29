@@ -93,7 +93,7 @@ EOF
             [
                 'line' => sprintf('git push -u origin %s-switched', $branchName),
                 'allow_failures' => true,
-            ]
+            ],
         ];
 
         $this->getHelper('process')->runCommands($commands);

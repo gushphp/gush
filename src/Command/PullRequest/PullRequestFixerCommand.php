@@ -72,7 +72,7 @@ EOF
                 [
                     'line' => 'git commit -am cs-fixer',
                     'allow_failures' => true
-                ]
+                ],
             ]
         );
 

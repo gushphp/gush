@@ -9,7 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\Tests\Command\PullRequest;
+
+use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestLabelListCommandTest extends BaseTestCase
 {
