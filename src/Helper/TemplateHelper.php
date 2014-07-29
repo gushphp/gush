@@ -12,17 +12,9 @@
 namespace Gush\Helper;
 
 use Gush\Application;
-use Gush\Template\Meta\Header\GPL3Template;
-use Gush\Template\Meta\Header\MITTemplate;
-use Gush\Template\Meta\Header\NoLicenseTemplate;
+use Gush\Template\Meta\Header as TemplateHeader;
 use Gush\Template\Pats\PatTemplate;
-use Gush\Template\PullRequest\Create\DefaultTemplate;
-use Gush\Template\PullRequest\Create\EnterpriseTemplate;
-use Gush\Template\PullRequest\Create\PullRequestCustomTemplate;
-use Gush\Template\PullRequest\Create\SymfonyDocTemplate;
-use Gush\Template\PullRequest\Create\SymfonyTemplate;
-use Gush\Template\PullRequest\Create\ZendFrameworkDocTemplate;
-use Gush\Template\PullRequest\Create\ZendFrameworkTemplate;
+use Gush\Template\PullRequest\Create as PRCreate;
 use Gush\Template\TemplateInterface;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
@@ -43,17 +35,17 @@ class TemplateHelper extends Helper implements InputAwareInterface
 
     public function __construct(QuestionHelper $questionHelper, Application $application)
     {
-        $this->registerTemplate(new SymfonyTemplate());
-        $this->registerTemplate(new SymfonyDocTemplate());
-        $this->registerTemplate(new EnterpriseTemplate());
-        $this->registerTemplate(new PullRequestCustomTemplate($application));
+        $this->registerTemplate(new PRCreate\SymfonyTemplate());
+        $this->registerTemplate(new PRCreate\SymfonyDocTemplate());
+        $this->registerTemplate(new PRCreate\EnterpriseTemplate());
+        $this->registerTemplate(new PRCreate\PullRequestCustomTemplate($application));
         $this->registerTemplate(new PatTemplate());
-        $this->registerTemplate(new DefaultTemplate());
-        $this->registerTemplate(new ZendFrameworkDocTemplate());
-        $this->registerTemplate(new ZendFrameworkTemplate());
-        $this->registerTemplate(new MITTemplate());
-        $this->registerTemplate(new GPL3Template());
-        $this->registerTemplate(new NoLicenseTemplate());
+        $this->registerTemplate(new PRCreate\DefaultTemplate());
+        $this->registerTemplate(new PRCreate\ZendFrameworkDocTemplate());
+        $this->registerTemplate(new PRCreate\ZendFrameworkTemplate());
+        $this->registerTemplate(new TemplateHeader\MITTemplate());
+        $this->registerTemplate(new TemplateHeader\GPL3Template());
+        $this->registerTemplate(new TemplateHeader\NoLicenseTemplate());
         $this->questionHelper = $questionHelper;
         $this->application = $application;
     }

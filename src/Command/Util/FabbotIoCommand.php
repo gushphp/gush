@@ -86,7 +86,7 @@ EOF
             [
                 [
                     'line' => sprintf('git push -u %s %s -f', $username, $pr['head']['ref']),
-                    'allow_failures' => true
+                    'allow_failures' => true,
                 ]
             ]
         );

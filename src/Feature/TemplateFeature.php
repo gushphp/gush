@@ -12,7 +12,7 @@
 namespace Gush\Feature;
 
 /**
- * The TableSubscriber will act on classes implementing
+ * The TemplateSubscriber will act on classes implementing
  * this interface
  */
 interface TemplateFeature
