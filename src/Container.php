@@ -2,7 +2,9 @@
 
 namespace Gush;
 
-class Container extends Pimple\Container
+use Pimple\Container as BaseContainer;
+
+class Container extends BaseContainer
 {
 
 }
