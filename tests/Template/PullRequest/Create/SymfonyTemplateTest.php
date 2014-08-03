@@ -77,9 +77,10 @@ EOF
     }
 
     /**
+     * @test
      * @dataProvider provideTemplate
      */
-    public function testTemplate($params, $expected)
+    public function runs_template_command_with_symfony_template($params, $expected)
     {
         $requirements = $this->template->getRequirements();
 

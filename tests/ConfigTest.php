@@ -16,7 +16,10 @@ use Gush\Config;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConfig()
+    /**
+     * @test
+     */
+    public function configures()
     {
         $defaultConfig = Config::$defaultConfig;
         $config = new Config();
@@ -36,9 +39,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @runInSeparateProcess
      */
-    public function testConfigWithValidConfiguration()
+    public function configure_with_valid_configuration()
     {
         // clean Environment variables to avoid creating the folders
         putenv('GUSH_HOME');

@@ -43,7 +43,10 @@ class GitRepoSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->subscriber = new GitRepoSubscriber($this->gitHelper);
     }
 
-    public function testDecorateDefinition()
+    /**
+     * @test
+     */
+    public function decorates_a_definition()
     {
         $this->gitHelper->expects($this->once())
             ->method('isGitFolder')

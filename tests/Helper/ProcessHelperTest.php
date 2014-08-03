@@ -24,7 +24,10 @@ class ProcessHelperTest extends \PHPUnit_Framework_TestCase
         $this->helper->setOutput(new BufferedOutput());
     }
 
-    public function testRunCommands()
+    /**
+     * @test
+     */
+    public function runs_commands()
     {
         $this->helper->runCommands(
             [

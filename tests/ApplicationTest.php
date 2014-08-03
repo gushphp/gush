@@ -86,7 +86,10 @@ EOT
         $this->application->setAutoExit(false);
     }
 
-    public function testApplicationFirstRun()
+    /**
+     * @test
+     */
+    public function first_run_of_the_application()
     {
         $applicationTester = new ApplicationTester($this->application);
         $applicationTester->run(['command' => 'core:configure'], ['interactive' => false]);

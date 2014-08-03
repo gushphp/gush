@@ -45,7 +45,10 @@ class TableSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->subscriber = new TableSubscriber();
     }
 
-    public function testDecorateDefinition()
+    /**
+     * @test
+     */
+    public function decorates_a_definition()
     {
         $this->commandEvent->expects($this->once())
             ->method('getCommand')
@@ -79,9 +82,10 @@ class TableSubscriberTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideInitialize
      */
-    public function testInitialize($layoutName, $valid)
+    public function initializes($layoutName, $valid)
     {
         $this->consoleEvent->expects($this->once())
             ->method('getCommand')

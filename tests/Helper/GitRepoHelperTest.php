@@ -26,9 +26,10 @@ class GitRepoHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideValidateEnum
      */
-    public function testValidateEnum($domain, $type = null, $value = null, $exceptionMessage = null)
+    public function validates_enum_with_specs($domain, $type = null, $value = null, $exceptionMessage = null)
     {
         if (null !== $exceptionMessage) {
             $this->setExpectedException('InvalidArgumentException', $exceptionMessage);
@@ -37,7 +38,10 @@ class GitRepoHelperTest extends \PHPUnit_Framework_TestCase
         GitRepoHelper::validateEnum($domain, $type, $value);
     }
 
-    public function testValidateEnums()
+    /**
+     * @test
+     */
+    public function validates_enums()
     {
         $enums = [
             'filter' => 'assigned',
@@ -58,7 +62,10 @@ class GitRepoHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($enums, $res);
     }
 
-    public function testFormatEnums()
+    /**
+     * @test
+     */
+    public function formats_enums()
     {
         foreach (GitRepoHelper::$enum as $domain => $type) {
             foreach (array_keys($type) as $name) {
