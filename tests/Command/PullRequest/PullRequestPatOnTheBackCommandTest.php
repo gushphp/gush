@@ -20,7 +20,10 @@ class PullRequestPatOnTheBackCommandTest extends BaseTestCase
 {
     const TEMPLATE_STRING = "Good catch @weaverryan, thanks for the patch.";
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function pats_on_the_back_contributor_of_a_pull_request()
     {
         $template = $this->expectTemplateHelper();
         $tester = $this->getCommandTester($command = new PullRequestPatOnTheBackCommand());

@@ -16,7 +16,10 @@ use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestMergeCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function merges_a_given_pull_request()
     {
         $tester = $this->getCommandTester(new PullRequestMergeCommand());
         $tester->execute(['--org' => 'gushphp', 'pr_number' => 40, '--no-comments' => true], ['interactive' => false]);

@@ -19,7 +19,10 @@ class BranchSyncCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function syncs_current_branch_with_origins_version()
     {
         $processHelper = $this->expectProcessHelper();
         $gitHelper = $this->expectGitHelper();

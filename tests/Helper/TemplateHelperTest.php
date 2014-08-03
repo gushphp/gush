@@ -50,9 +50,10 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideRegisterTemplate
      */
-    public function testRegisterTemplate($name, $parts, $exception = false)
+    public function registers_template($name, $parts, $exception = false)
     {
         if (true === $exception) {
             $this->setExpectedException('InvalidArgumentException');
@@ -83,10 +84,11 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideGetNamesForDomain
      * @depends testRegisterTemplate
      */
-    public function testGetNamesForDomain($templateRegistrations, $domain, $expectedNames, $exception = false)
+    public function gets_names_for_domain($templateRegistrations, $domain, $expectedNames, $exception = false)
     {
         if (true === $exception) {
             $this->setExpectedException('InvalidArgumentException', 'Unknown template domain');
@@ -116,9 +118,10 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideGetHelper
      */
-    public function testGetHelper($domain, $name)
+    public function gets_helper($domain, $name)
     {
         $res = $this->helper->getTemplate($domain, $name);
         $this->assertNotNull($res);
@@ -126,10 +129,11 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage has not been registered
      */
-    public function testGetHelperInvalid()
+    public function backfires_when_getting_wrong_helper()
     {
         $this->helper->getTemplate('foobar', 'barfoo');
     }
@@ -144,9 +148,10 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideParameterize
      */
-    public function testParameterize($requirements)
+    public function parameterizes($requirements)
     {
         $requirements['test-option'] = ['This is bar', 'default-foo'];
 
@@ -196,7 +201,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldBindAndRender()
+    public function binds_and_renders()
     {
         $this->template->expects($this->once())
             ->method('getName')

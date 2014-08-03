@@ -17,9 +17,10 @@ use Symfony\Component\Process\Process;
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @test
      * @runInSeparateProcess
      */
-    public function testCreateConfigUnixEnv()
+    public function creates_config_in_unix()
     {
         $home = getenv('GUSH_HOME');
         $cacheDir = getenv('GUSH_CACHE_DIR');
@@ -49,9 +50,10 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @runInSeparateProcess
      */
-    public function testCreateConfigWindowsEnv()
+    public function create_config_in_windows()
     {
         $home = getenv('GUSH_HOME');
         $cacheDir = getenv('GUSH_CACHE_DIR');

@@ -20,7 +20,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected $adapterFactory;
 
-    public function testRegisterAdapter()
+    /**
+     * @test
+     */
+    public function registers_adapters()
     {
         $this->adapterFactory->registerAdapter(
             'test',
@@ -43,7 +46,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->adapterFactory->hasAdapter('test3'));
     }
 
-    public function testGetAdapters()
+    /**
+     * @test
+     */
+    public function gets_adapters()
     {
         $this->assertEquals([], $this->adapterFactory->getAdapters());
 
@@ -63,7 +69,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['test' => [$adapter, $configurator]], $this->adapterFactory->getAdapters());
     }
 
-    public function testRegisterAdapterWithExistentName()
+    /**
+     * @test
+     */
+    public function registers_adapter_with_same_name()
     {
         $this->adapterFactory->registerAdapter(
             'test',
@@ -88,7 +97,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCreateAdapter()
+    /**
+     * @test
+     */
+    public function creates_adapter()
     {
         $configurator = function () {
             // no op
@@ -133,7 +145,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($adapterMock, $adapter);
     }
 
-    public function testCreateConfigurator()
+    /**
+     * @test
+     */
+    public function creates_configurator()
     {
         $adapter = function () {
             // no op
@@ -161,7 +176,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($configuratorMock, $configurator);
     }
 
-    public function testCreateAdapterWithInvalidReturn()
+    /**
+     * @test
+     */
+    public function creates_adapter_with_invalid_return()
     {
         $configurator = function () {
             // no op
@@ -186,7 +204,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->createAdapter('test', [], $config);
     }
 
-    public function testCreateConfiguratorWithInvalidReturn()
+    /**
+     * @test
+     */
+    public function creates_configurator_with_invalid_return()
     {
         $adapter = function () {
             // no op
@@ -214,7 +235,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->createAdapterConfiguration('test', $helperSetMock);
     }
 
-    public function testCreateAdapterWithNoneExistentName()
+    /**
+     * @test
+     */
+    public function creates_adapter_with_non_existent_name()
     {
         $configurator = function () {
             // no op
@@ -235,7 +259,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->createAdapter('test2', [], $config);
     }
 
-    public function testCreateConfiguratorWithNoneExistentName()
+    /**
+     * @test
+     */
+    public function creates_configurator_with_non_existing_name()
     {
         $adapter = function () {
             // no op

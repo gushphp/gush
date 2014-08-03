@@ -29,9 +29,10 @@ class MetaHeaderCommandTest extends BaseTestCase
     }
 
     /**
+     * @test
      * @dataProvider metaFileProvider
      */
-    public function testCommand($file, $content)
+    public function runs_meta_header_command($file, $content)
     {
         $this->assertEquals($content, file_get_contents($file));
     }

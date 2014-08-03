@@ -17,7 +17,10 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class ReleaseListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function lists_releases()
     {
         $tester = $this->getCommandTester(new ReleaseListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);

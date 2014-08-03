@@ -17,7 +17,10 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class PullRequestListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function lists_pull_requests()
     {
         $tester = $this->getCommandTester(new PullRequestListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);

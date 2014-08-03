@@ -26,7 +26,10 @@ class AutocompleteHelperTest extends \PHPUnit_Framework_TestCase
         $this->autocompleteHelper = new AutocompleteHelper;
     }
 
-    public function testGetAutoCompleteScript()
+    /**
+     * @test
+     */
+    public function gets_autocomplete_script()
     {
         $commands = [
             [

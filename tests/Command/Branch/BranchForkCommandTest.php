@@ -19,7 +19,10 @@ class BranchForkCommandTest extends BaseTestCase
 {
     const TEST_USERNAME = 'cordoval';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function forks_repository_to_users_vendor_name()
     {
         $processHelper = $this->expectProcessHelper();
         $this->expectsConfig();

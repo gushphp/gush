@@ -75,9 +75,10 @@ class TextHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideTruncate
      */
-    public function testTruncate($text, $length, $alignment, $truncateString, $expected, $expectedException = null)
+    public function truncates($text, $length, $alignment, $truncateString, $expected, $expectedException = null)
     {
         if ($expectedException) {
             $this->setExpectedException('InvalidArgumentException', $expectedException);
@@ -96,9 +97,10 @@ class TextHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideSlugify
      */
-    public function testSlugify($string, $expected)
+    public function slugifies($string, $expected)
     {
         $string = $this->textHelper->slugify($string);
         $this->assertEquals($expected, $string);

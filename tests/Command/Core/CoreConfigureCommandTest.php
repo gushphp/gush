@@ -36,7 +36,10 @@ class CoreConfigureCommandTest extends BaseTestCase
     const TRACKER_ONLY = 3;
     const NEITHER_ADAPTER_NOR_TRACKER = 4;
 
-    public function testCommandWithoutOptions()
+    /**
+     * @test
+     */
+    public function core_configure_without_options_passed()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
@@ -102,7 +105,10 @@ class CoreConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    public function testCommandWithAdapterOnly()
+    /**
+     * @test
+     */
+    public function core_configure_with_only_adapter_passed()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
@@ -158,7 +164,10 @@ class CoreConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    public function testCommandWithTrackerOnly()
+    /**
+     * @test
+     */
+    public function core_configure_with_only_issue_tracker_passed()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');

@@ -34,9 +34,10 @@ class TestHttpClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @dataProvider provideRequestMethod
      */
-    public function testRequestMethod($method, $args = [])
+    public function uses_requests_method($method, $args = [])
     {
         $args = array_merge([
             'path' => '/foo/bar',

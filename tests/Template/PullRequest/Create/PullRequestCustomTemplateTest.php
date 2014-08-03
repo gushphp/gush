@@ -11,6 +11,7 @@
 
 namespace Gush\Tests\Template\PullRequest\Create;
 
+use Gush\Config;
 use Gush\Template\PullRequest\Create\PullRequestCustomTemplate;
 
 class PullRequestCustomTemplateTest extends \PHPUnit_Framework_TestCase
@@ -85,9 +86,10 @@ EOF
     }
 
     /**
+     * @test
      * @dataProvider provideTemplate
      */
-    public function testTemplate($params, $expected)
+    public function runs_template_command($params, $expected)
     {
         $table = [
             'bug_fix' => ['Bug Fix?', 'n'],
@@ -100,7 +102,7 @@ EOF
             'description' => ['Description', ''],
         ];
 
-        $config = new \Gush\Config();
+        $config = new Config();
         $config->merge([
             'table-pr' => $table
         ]);
@@ -128,9 +130,12 @@ EOF
         $this->assertEquals(self::normalizeWhiteSpace($expected), self::normalizeWhiteSpace($res));
     }
 
-    public function testErrorWithEmptyTable()
+    /**
+     * @test
+     */
+    public function errors_when_table_is_empty()
     {
-        $config = new \Gush\Config();
+        $config = new Config();
         $config->merge([
             'table-pr' => []
         ]);
@@ -149,9 +154,12 @@ EOF
         $this->template->getRequirements();
     }
 
-    public function testErrorWithNameNotAString()
+    /**
+     * @test
+     */
+    public function errors_with_name_not_a_string()
     {
-        $config = new \Gush\Config();
+        $config = new Config();
         $config->merge([
             'table-pr' => [
                 0 => ['Bug Fix?', 'n'],
@@ -172,7 +180,10 @@ EOF
         $this->template->getRequirements();
     }
 
-    public function testErrorWithInvalidRow()
+    /**
+     * @test
+     */
+    public function errors_with_invalid_row()
     {
         $config = new \Gush\Config();
         $config->merge([

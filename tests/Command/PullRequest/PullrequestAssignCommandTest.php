@@ -17,7 +17,10 @@ use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestAssignCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function assigns_pull_request_to_user()
     {
         $tester = $this->getCommandTester($command = new PullRequestAssignCommand());
         $tester->execute(

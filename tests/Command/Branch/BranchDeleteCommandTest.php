@@ -19,7 +19,10 @@ class BranchDeleteCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function deletes_current_remote_branch()
     {
         $processHelper = $this->expectProcessHelper();
         $gitHelper = $this->expectGitHelper();

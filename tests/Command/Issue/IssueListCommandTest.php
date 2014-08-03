@@ -17,6 +17,22 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class IssueListCommandTest extends BaseTestCase
 {
+    /**
+     * @test
+     * @dataProvider provideCommand
+     */
+    public function lists_issues_with_arguments($args)
+    {
+        $tester = $this->getCommandTester(new IssueListCommand());
+        $tester->execute($args, ['interactive' => false]);
+
+        if (isset($args['--type']) && 'issue' === $args['--type']) {
+            $this->assertEquals(OutputFixtures::ISSUE_LIST_NO_PR, trim($tester->getDisplay(true)));
+        } else {
+            $this->assertEquals(OutputFixtures::ISSUE_LIST_ALL, trim($tester->getDisplay(true)));
+        }
+    }
+
     public function provideCommand()
     {
         return [
@@ -32,20 +48,5 @@ class IssueListCommandTest extends BaseTestCase
             [['--org' => 'gushphp', '--repo' => 'gush', '--direction' => 'asc']],
             [['--org' => 'gushphp', '--repo' => 'gush', '--since' => '11 day ago']],
         ];
-    }
-
-    /**
-     * @dataProvider provideCommand
-     */
-    public function testCommand($args)
-    {
-        $tester = $this->getCommandTester(new IssueListCommand());
-        $tester->execute($args, ['interactive' => false]);
-
-        if (isset($args['--type']) && 'issue' === $args['--type']) {
-            $this->assertEquals(OutputFixtures::ISSUE_LIST_NO_PR, trim($tester->getDisplay(true)));
-        } else {
-            $this->assertEquals(OutputFixtures::ISSUE_LIST_ALL, trim($tester->getDisplay(true)));
-        }
     }
 }
