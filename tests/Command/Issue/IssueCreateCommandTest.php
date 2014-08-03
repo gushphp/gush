@@ -19,7 +19,10 @@ class IssueCreateCommandTest extends BaseTestCase
     const ISSUE_TITLE = 'bug title';
     const ISSUE_DESCRIPTION = 'not working!';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function creates_an_issue()
     {
         $questionHelper = $this->expectDialog();
         $editor = $this->expectEditor();
@@ -31,6 +34,9 @@ class IssueCreateCommandTest extends BaseTestCase
         $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
     }
 
+    /**
+     * @test
+     */
     public function testCommandWithTitleAndBodyOptions()
     {
         $tester = $this->getCommandTester($command = new IssueCreateCommand());

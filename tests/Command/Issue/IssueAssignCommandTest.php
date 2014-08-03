@@ -17,7 +17,10 @@ use Gush\Tests\Command\BaseTestCase;
 
 class IssueAssignCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function assigns_issue()
     {
         $tester = $this->getCommandTester($command = new IssueAssignCommand());
         $tester->execute(

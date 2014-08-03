@@ -26,7 +26,10 @@ class CoreInitCommandTest extends BaseTestCase
     const VERSIONEYE_TOKEN = 'token';
     const META_HEADER = "This file is part of Gush package.\n\n(c) 2013-2014 Luis Cordova <cordoval@gmail.com>\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE.";
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function core_init_writes_local_gush_file()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
@@ -91,7 +94,10 @@ class CoreInitCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushLocalFilename));
     }
 
-    public function testCommandWithMeta()
+    /**
+     * @test
+     */
+    public function core_init_meta_option_set_to_true_puts_it_in_gush_yml_file()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');

@@ -19,7 +19,10 @@ class BranchChangelogCommandTest extends BaseTestCase
 {
     const TEST_TAG_NAME = '1.2.3';
 
-    public function testCommandForRepositoriesWithoutTags()
+    /**
+     * @test
+     */
+    public function expects_an_exception_when_no_tags_on_branch()
     {
         $gitHelperWithoutTags = $this->expectGitHelperWithoutTags();
 
@@ -31,7 +34,10 @@ class BranchChangelogCommandTest extends BaseTestCase
         $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_EMPTY, trim($tester->getDisplay(true)));
     }
 
-    public function testCommandForRepositoriesWithTags()
+    /**
+     * @test
+     */
+    public function finds_tag_on_branch_to_build_changelog()
     {
         $gitHelperWithTags = $this->expectGitHelperWithTags();
 

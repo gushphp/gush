@@ -18,7 +18,10 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class IssueCloseCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function closes_an_issue()
     {
         $tester = $this->getCommandTester(new IssueCloseCommand());
         $tester->execute(['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER], ['interactive' => false]);

@@ -19,7 +19,10 @@ class BranchPushCommandTest extends BaseTestCase
 {
     const TEST_USERNAME = 'cordoval';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function pushes_branch_to_fork()
     {
         $processHelper = $this->expectProcessHelper();
         $gitHelper = $this->expectGitHelper();
