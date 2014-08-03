@@ -16,7 +16,10 @@ use Gush\Tests\Command\BaseTestCase;
 
 class IssueLabelListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function labels_an_issue_as_bug()
     {
         $tester = $this->getCommandTester(new IssueLabelListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);

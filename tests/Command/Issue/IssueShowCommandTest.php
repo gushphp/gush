@@ -17,7 +17,10 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class IssueShowCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function shows_issue_with_number_passed()
     {
         $tester = $this->getCommandTester(new IssueShowCommand());
         $tester->execute(['--issue_number' => 60, '--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);

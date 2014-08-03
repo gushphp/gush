@@ -17,7 +17,10 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class VersionEyeCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function runs_version_eye_command()
     {
         $processHelper = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new VersionEyeCommand());

@@ -11,15 +11,19 @@
 
 namespace Gush\Tests\Command\PullRequest;
 
+use Gush\Command\PullRequest\PullRequestCloseCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
 class PullRequestCloseCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function closes_a_pull_request()
     {
-        $tester = $this->getCommandTester(new \Gush\Command\PullRequest\PullRequestCloseCommand());
+        $tester = $this->getCommandTester(new PullRequestCloseCommand());
         $tester->execute(
             ['--org' => 'gushphp', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER],
             ['interactive' => false]

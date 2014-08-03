@@ -17,25 +17,11 @@ use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestCreateCommandTest extends BaseTestCase
 {
-    public function provideCommand()
-    {
-        return [
-            [
-                [
-                    '--org' => 'gushphp',
-                    '--repo' => 'gush',
-                    '--source-branch' => 'issue-145',
-                    '--template' => 'default',
-                    '--title' => 'Test',
-                ]
-            ],
-        ];
-    }
-
     /**
+     * @test
      * @dataProvider provideCommand
      */
-    public function testCommand($args)
+    public function opens_pull_request_with_arguments($args)
     {
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
         $command->getHelperSet()->set($this->expectGitHelper(), 'git');
@@ -47,9 +33,10 @@ class PullRequestCreateCommandTest extends BaseTestCase
     }
 
     /**
+     * @test
      * @dataProvider provideCommand
      */
-    public function testCommandWithIssue($args)
+    public function opens_pull_request_from_an_issue($args)
     {
         $args['--issue'] = '145';
 
@@ -62,9 +49,10 @@ class PullRequestCreateCommandTest extends BaseTestCase
     }
 
     /**
+     * @test
      * @dataProvider provideCommand
      */
-    public function testSourceOrgAutodetect($args)
+    public function opens_pull_request_autodetecting_current_branch_and_default_master($args)
     {
         $args['--verbose'] = true;
 
@@ -78,9 +66,10 @@ class PullRequestCreateCommandTest extends BaseTestCase
     }
 
     /**
+     * @test
      * @dataProvider provideCommand
      */
-    public function testSourceOrgOption($args)
+    public function opens_pull_request_to_a_specific_organization_or_username($args)
     {
         $args['--verbose']    = true;
         $args['--source-org'] = 'gushphp';
@@ -124,4 +113,20 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
         return $git;
     }
+
+    public function provideCommand()
+    {
+        return [
+            [
+                [
+                    '--org' => 'gushphp',
+                    '--repo' => 'gush',
+                    '--source-branch' => 'issue-145',
+                    '--template' => 'default',
+                    '--title' => 'Test',
+                ]
+            ],
+        ];
+    }
+
 }

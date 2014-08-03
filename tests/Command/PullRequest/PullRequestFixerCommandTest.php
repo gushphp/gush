@@ -19,7 +19,10 @@ class PullRequestFixerCommandTest extends BaseTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function fixes_coding_style_on_current_branch_pull_requested()
     {
         $processHelper = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new PullRequestFixerCommand());

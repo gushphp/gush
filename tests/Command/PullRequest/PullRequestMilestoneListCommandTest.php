@@ -11,13 +11,17 @@
 
 namespace Gush\Tests\Command\PullRequest;
 
+use Gush\Command\PullRequest\PullRequestMilestoneListCommand;
 use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestMilestoneListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function lists_pull_requests_associated_milestones()
     {
-        $tester = $this->getCommandTester(new \Gush\Command\PullRequest\PullRequestMilestoneListCommand());
+        $tester = $this->getCommandTester(new PullRequestMilestoneListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals('version 1.0', trim($tester->getDisplay(true)));

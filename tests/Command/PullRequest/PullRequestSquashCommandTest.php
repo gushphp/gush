@@ -17,7 +17,10 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class PullRequestSquashCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function squashes_commits_and_pushes_force_pull_request_branch()
     {
         $this->expectsConfig();
         $processHelper = $this->expectProcessHelper();

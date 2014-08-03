@@ -20,7 +20,10 @@ class IssueTakeCommandTest extends BaseTestCase
     const SLUGIFIED_STRING = 'write-a-behat-test-to-launch-strategy';
     const TEST_TITLE = 'Write a behat test to launch strategy';
 
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function takes_an_issue()
     {
         $text = $this->expectTextHelper();
         $process = $this->expectProcessHelper();

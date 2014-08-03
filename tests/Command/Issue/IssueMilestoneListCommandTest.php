@@ -16,7 +16,10 @@ use Gush\Tests\Command\BaseTestCase;
 
 class IssueMilestoneListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function lists_milestones()
     {
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);

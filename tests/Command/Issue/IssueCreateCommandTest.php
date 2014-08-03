@@ -22,7 +22,7 @@ class IssueCreateCommandTest extends BaseTestCase
     /**
      * @test
      */
-    public function creates_an_issue()
+    public function creates_an_issue_non_interactively()
     {
         $questionHelper = $this->expectDialog();
         $editor = $this->expectEditor();
@@ -37,7 +37,7 @@ class IssueCreateCommandTest extends BaseTestCase
     /**
      * @test
      */
-    public function testCommandWithTitleAndBodyOptions()
+    public function creates_an_issue_with_inline_options()
     {
         $tester = $this->getCommandTester($command = new IssueCreateCommand());
         $tester->execute(

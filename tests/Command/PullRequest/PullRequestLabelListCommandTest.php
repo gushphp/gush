@@ -11,13 +11,17 @@
 
 namespace Gush\Tests\Command\PullRequest;
 
+use Gush\Command\PullRequest\PullRequestLabelListCommand;
 use Gush\Tests\Command\BaseTestCase;
 
 class PullRequestLabelListCommandTest extends BaseTestCase
 {
-    public function testCommand()
+    /**
+     * @test
+     */
+    public function labels_current_branch_pull_request()
     {
-        $tester = $this->getCommandTester(new \Gush\Command\PullRequest\PullRequestLabelListCommand());
+        $tester = $this->getCommandTester(new PullRequestLabelListCommand());
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
         $this->assertEquals('bug', trim($tester->getDisplay(true)));
