@@ -11,25 +11,19 @@
 
 namespace Gush\Services;
 
+use Gush\Factory\AdapterFactory;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Gush\Meta\Base;
-use Gush\Meta\Twig;
 
-class MetaProvider implements ServiceProviderInterface
+class FactoryProvider implements ServiceProviderInterface
 {
     /**
      * {@inheritDoc}
      */
     public function register(Container $pimple)
     {
-        $pimple['meta.supported_meta_files'] = function ($c) {
-            return [
-                'php'  => new Base(),
-                'js'   => new Base(),
-                'css'  => new Base(),
-                'twig' => new Twig(),
-            ];
+        $pimple['factory.adapter'] = function ($c) {
+            return new AdapterFactory();
         };
     }
 }
