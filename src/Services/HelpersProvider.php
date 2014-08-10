@@ -12,11 +12,6 @@ use Gush\Helper\TableHelper;
 use Gush\Helper\TemplateHelper;
 use Gush\Helper\TextHelper;
 use Pimple\Container;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\FormatterHelper;
-use Symfony\Component\Console\Helper\ProgressHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Helper\TableHelper as SymfonyTableHelper;
 
 class HelpersProvider implements \Pimple\ServiceProviderInterface
 {
@@ -25,26 +20,6 @@ class HelpersProvider implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['symfony.helpers.formatter'] = function ($c) {
-            return new FormatterHelper();
-        };
-
-        $pimple['symfony.helpers.dialog'] = function ($c) {
-            return new DialogHelper();
-        };
-
-        $pimple['symfony.helpers.progress'] = function ($c) {
-            return new ProgressHelper();
-        };
-
-        $pimple['symfony.helpers.table'] = function ($c) {
-            return new SymfonyTableHelper();
-        };
-
-        $pimple['symfony.helpers.question'] = function ($c) {
-            return new QuestionHelper();
-        };
-
         $pimple['helpers.autocomplete'] = function ($c) {
             return new AutocompleteHelper();
         };
