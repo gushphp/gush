@@ -12,13 +12,10 @@
 namespace Gush\Services;
 
 use Pimple\Container;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\FormatterHelper;
-use Symfony\Component\Console\Helper\ProgressHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Helper\TableHelper as SymfonyTableHelper;
+use Pimple\ServiceProviderInterface;
+use Symfony\Component\Console\Helper as SymfonyHelper;
 
-class SymfonyHelpersProvider implements \Pimple\ServiceProviderInterface
+class SymfonyHelpersProvider implements ServiceProviderInterface
 {
 
     /**
@@ -27,23 +24,23 @@ class SymfonyHelpersProvider implements \Pimple\ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['symfony.helpers.formatter'] = function ($c) {
-            return new FormatterHelper();
+            return new SymfonyHelper\FormatterHelper();
         };
 
         $pimple['symfony.helpers.dialog'] = function ($c) {
-            return new DialogHelper();
+            return new SymfonyHelper\DialogHelper();
         };
 
         $pimple['symfony.helpers.progress'] = function ($c) {
-            return new ProgressHelper();
+            return new SymfonyHelper\ProgressHelper();
         };
 
         $pimple['symfony.helpers.table'] = function ($c) {
-            return new SymfonyTableHelper();
+            return new SymfonyHelper\TableHelper();
         };
 
         $pimple['symfony.helpers.question'] = function ($c) {
-            return new QuestionHelper();
+            return new SymfonyHelper\QuestionHelper();
         };
     }
 }
