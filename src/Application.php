@@ -77,7 +77,7 @@ LOGO;
      */
     protected $adapterFactory;
 
-    public function __construct(AdapterFactory $adapterFactory, $name = 'Gush', $version = '@package_version@')
+    public function __construct(AdapterFactory $adapterFactory, EventDispatcher $eventDispatcher, $name = 'Gush', $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
@@ -103,7 +103,7 @@ LOGO;
 
         // the parent dispatcher is private and has
         // no accessor, so we set it here so we can access it.
-        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher = $eventDispatcher;
 
         // add our subscribers to the event dispatcher
         $this->dispatcher->addSubscriber(new TableSubscriber());

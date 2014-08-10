@@ -12,6 +12,7 @@
 namespace Gush;
 
 use Gush\Services\AdaptersProvider;
+use Gush\Services\AliasProvider;
 use Gush\Services\ApplicationProvider;
 use Gush\Services\CommandsProvider;
 use Gush\Services\FactoryProvider;
@@ -37,6 +38,7 @@ class Container extends BaseContainer
         $this->register(new FactoryProvider());
         $this->register(new CommandsProvider());
         $this->register(new SymfonyEventDispatcherProvider());
+        $this->register(new AliasProvider());
         $this->register(new ApplicationProvider());
     }
 }

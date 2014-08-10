@@ -11,24 +11,18 @@
 
 namespace Gush\Services;
 
-use Gush\Application;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-class ApplicationProvider implements  ServiceProviderInterface
+class AliasProvider implements ServiceProviderInterface
 {
     /**
      * {@inheritDoc}
      */
     public function register(Container $pimple)
     {
-        $pimple['application.manifesto_url'] = 'http://gushphp.org/manifest.json';
-
-        $pimple['application'] = function ($c) {
-            $app = new Application($c['factory.adapter'], $c['event_dispatcher']);
-            $app->addCommands($c['commands']);
-
-            return $app;
+        $pimple['event_dispatcher'] = function ($c) {
+            return $c['symfony.event_dispatcher'];
         };
     }
 }
