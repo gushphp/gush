@@ -18,6 +18,7 @@ use Gush\Services\FactoryProvider;
 use Gush\Services\HelpersProvider;
 use Gush\Services\IssueTrackersProvider;
 use Gush\Services\MetaProvider;
+use Gush\Services\SymfonyEventDispatcherProvider;
 use Gush\Services\SymfonyHelpersProvider;
 use Pimple\Container as BaseContainer;
 
@@ -35,6 +36,7 @@ class Container extends BaseContainer
         $this->register(new IssueTrackersProvider());
         $this->register(new FactoryProvider());
         $this->register(new CommandsProvider());
+        $this->register(new SymfonyEventDispatcherProvider());
         $this->register(new ApplicationProvider());
     }
 }
