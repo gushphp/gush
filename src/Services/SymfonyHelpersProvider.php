@@ -17,7 +17,6 @@ use Symfony\Component\Console\Helper as SymfonyHelper;
 
 class SymfonyHelpersProvider implements ServiceProviderInterface
 {
-
     /**
      * {@inheritDoc}
      */
