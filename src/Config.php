@@ -110,7 +110,8 @@ class Config
      */
     public function isValid()
     {
-        if (count($this->config['adapters']) > 0
+        if (
+            count($this->config['adapters']) > 0
             && isset($this->config['versioneye-token'])
             && is_dir($this->get('cache-dir'))
             && is_writable($this->get('cache-dir'))
