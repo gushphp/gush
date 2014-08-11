@@ -119,7 +119,8 @@ class Factory
 
             if (!$config->isValid()) {
                 throw new \RuntimeException(
-                    'The .gush.yml is not properly configured.'
+                    "The .gush.yml is not properly configured.\n".
+                    implode("\n", $config->getErrorList())
                 );
             }
         } catch (\Exception $exception) {
