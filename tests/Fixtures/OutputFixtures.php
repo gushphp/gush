@@ -226,7 +226,7 @@ _gush()
     return 0;
 }
 
-complete -o default -F _gush gush
+complete -o default -F _gush gush gush.phar
 COMP_WORDBREAKS=\${COMP_WORDBREAKS//:}
 
 EOT;
