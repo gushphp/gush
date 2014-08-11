@@ -24,6 +24,11 @@ if (!$process->isSuccessful()) {
     throw new \RuntimeException('Git is required.');
 }
 
+$version = trim(explode(' ', $process->getOutput())[2]);
+if (version_compare($version, '1.9.1', 'lt')) {
+    throw new \RuntimeException('It is advisable to upgrade your version to 1.9.1 or latest.');
+}
+
 $adapterFactory = new Gush\Factory\AdapterFactory();
 
 $adapters = [
