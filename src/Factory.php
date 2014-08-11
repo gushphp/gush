@@ -20,16 +20,12 @@ use Symfony\Component\Yaml\Yaml;
 class Factory
 {
     /**
-     * @param bool $loadParameters If false, will return an empty config object
-     *
-     * @throws \RuntimeException
-     * @return Config
+     * @return string
      */
-    public static function createConfig($loadParameters = true)
+    public static function getHomedir()
     {
-        // determine home and cache dirs
         $home = getenv('GUSH_HOME');
-        $cacheDir = getenv('GUSH_CACHE_DIR');
+
         if (!$home) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if (!getenv('APPDATA')) {
@@ -37,6 +33,7 @@ class Factory
                         'The APPDATA or GUSH_HOME environment variable must be set for Gush to run correctly'
                     );
                 }
+
                 $home = strtr(getenv('APPDATA'), '\\', '/').'/Gush';
             } else {
                 if (!getenv('HOME')) {
@@ -44,9 +41,29 @@ class Factory
                         'The HOME or GUSH_HOME environment variable must be set for Gush to run correctly'
                     );
                 }
+
                 $home = rtrim(getenv('HOME'), '/').'/.gush';
             }
         }
+
+        return $home;
+    }
+
+    /**
+     * @param bool $loadParameters If false, will return an empty config object
+     * @param bool $loadLocal      If false this will skip the local config-file.
+     *                             This option is only used when $loadParameters is true
+     *
+     * @return Config
+     *
+     * @throws \RuntimeException
+     */
+    public static function createConfig($loadParameters = true, $loadLocal = true)
+    {
+        // determine home and cache dirs
+        $home = static::getHomedir();
+        $cacheDir = getenv('GUSH_CACHE_DIR');
+
         if (!$cacheDir) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if ($cacheDir = getenv('LOCALAPPDATA')) {
@@ -80,10 +97,17 @@ class Factory
                 'home'         => $home,
                 'home_config'  => $home.'/.gush.yml',
                 'cache-dir'    => $cacheDir,
-                'local'        => getcwd(),
-                'local_config' => getcwd().'/.gush.yml',
             ]
         );
+
+        if ($loadLocal) {
+            $config->merge(
+                [
+                    'local' => getcwd(),
+                    'local_config' => getcwd().'/.gush.yml',
+                ]
+            );
+        }
 
         if (true === $loadParameters) {
             self::readParameters($config);
@@ -109,18 +133,28 @@ class Factory
             );
         }
 
+        static::loadAndMerge($config, $homeFilename);
+
+        // merge the local config
+        if (null !== $localFilename && file_exists($localFilename)) {
+            static::loadAndMerge($config, $localFilename, null);
+        }
+    }
+
+    protected static function loadAndMerge(Config $config, $filename, $rootKey = 'parameters')
+    {
         try {
-            $parsed = Yaml::parse($homeFilename);
+            $parsed = Yaml::parse($filename);
 
-            // Don't overwrite local config
-            unset($parsed['parameters']['local'], $parsed['parameters']['local_config']);
-
-            $config->merge($parsed['parameters']);
+            if ($rootKey) {
+                $config->merge($parsed[$rootKey]);
+            } else {
+                $config->merge($parsed);
+            }
 
             if (!$config->isValid()) {
                 throw new \RuntimeException(
-                    "The .gush.yml is not properly configured.\n".
-                    implode("\n", $config->getErrorList())
+                    "Your '$filename' seem to be invalid. Errors: ".PHP_EOL.implode(PHP_EOL, $config->getErrorList())
                 );
             }
         } catch (\Exception $exception) {
@@ -129,20 +163,6 @@ class Factory
                 $exception->getCode(),
                 $exception
             );
-        }
-
-        // merge the local config
-        if (file_exists($localFilename)) {
-            try {
-                $parsed = Yaml::parse($localFilename);
-                $config->merge($parsed);
-            } catch (\Exception $exception) {
-                throw new \RuntimeException(
-                    $exception->getMessage().PHP_EOL.'Please run the core:configure command.',
-                    $exception->getCode(),
-                    $exception
-                );
-            }
         }
     }
 }
