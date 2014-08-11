@@ -1,0 +1,61 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-06 18:39
+
+```bash
+gush core:init
+```
+did you try? you must have a default or a .gush.yml locally
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-06 19:02
+
+upon conversing with @aequasi we found 2 things:
+
+1. cert error on phar needs fixing
+2. avoid cert error or other to wipe global ~/.gush/.gush.yml file
+
+could you please confirm/hint on this @aequasi @sstok
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-08-06 19:03
+
+Would also be cool to have a `cache-clear` method for gush, and are `local` and `local_file` necessary in the global config?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-06 19:04
+
+both should be removed imo
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-11 01:43
+
+@aequasi the error does not go away even with locking guzzle to 3.9.0
+puzzled on why it gives this weird error, maybe box changed? but the phar is created by a box install that had not changed at all either.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-11 03:26
+
+related https://github.com/gushphp/gush/issues/286
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-11 03:28
+
+@kherge something changed in box or something because this used to work.
+Also i am thinking we may need to use a custom stub? because the nuance with guzzle/guzzle3 now moving its own cert  into the temporary folder in their stub makes it so (or at least that is what i think is happening) that we have to do the same in our custom stub?
+
+I am trying to read how to create a custom stub, but cannot find it, could you please point me to an example?
+
+@sstok are we onto something here?
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-08-11 04:05
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/b160dfa7-0e93-46cf-a5a9-52805aec0711) was created.
