@@ -13,6 +13,7 @@ namespace Gush\Tests;
 
 use Gush\Factory;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Yaml\Yaml;
 
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -79,6 +80,55 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($home.'/Gush', $config->get('cache-dir'));
         $this->assertEquals($home.'/Gush', $config->get('home'));
         $this->assertFileExists($home.'/.htaccess');
+
+        $process = new Process("rm -rf {$home}");
+        $process->run();
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function load_config_with_no_local()
+    {
+        $home = getenv('GUSH_HOME');
+        $localDir = getenv('GUSH_LOCAL');
+        $cacheDir = getenv('GUSH_CACHE_DIR');
+
+        if (!$home || !$cacheDir || !$localDir) {
+            $this->markTestSkipped(
+                'Please configure the "GUSH_HOME", "GUSH_LOCAL" and "GUSH_CACHE_DIR" in your "phpunit.xml".'
+            );
+        }
+
+        @mkdir($home, 0777, true);
+        @mkdir($localDir, 0777, true);
+
+        $config = [
+            'parameters' => [
+                'cache-dir' => '{$home}/cache',
+                'adapters' => ['github' => []],
+                'issue_trackers' => ['github' => []],
+                'versioneye-token' => 'NO-TOKEN',
+            ]
+        ];
+
+        $localConfig = [
+            'meta-header' => 'This file is part of Gush package.'
+        ];
+
+        file_put_contents($home.'/.gush.yml', Yaml::dump($config));
+        file_put_contents($localDir.'/.gush.yml', Yaml::dump($localConfig));
+
+        chdir($localDir);
+
+        $config = Factory::createConfig(true);
+        $this->assertEquals(['github' => []], $config->get('adapters'));
+        $this->assertTrue($config->has('meta-header'));
+
+        $config = Factory::createConfig(true, false);
+        $this->assertEquals(['github' => []], $config->get('adapters'));
+        $this->assertFalse($config->has('meta-header'));
 
         $process = new Process("rm -rf {$home}");
         $process->run();

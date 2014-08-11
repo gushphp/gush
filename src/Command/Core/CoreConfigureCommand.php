@@ -68,7 +68,7 @@ EOF
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->config = Factory::createConfig();
+            $this->config = Factory::createConfig(true, false);
         } catch (FileNotFoundException $exception) {
             $this->config = Factory::createConfig(false);
         }

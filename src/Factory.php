@@ -21,11 +21,14 @@ class Factory
 {
     /**
      * @param bool $loadParameters If false, will return an empty config object
+     * @param bool $loadLocal      If false this will skip the local config-file.
+     *                             This option is only used when $loadParameters is true
+     *
+     * @return Config
      *
      * @throws \RuntimeException
-     * @return Config
      */
-    public static function createConfig($loadParameters = true)
+    public static function createConfig($loadParameters = true, $loadLocal = true)
     {
         // determine home and cache dirs
         $home = getenv('GUSH_HOME');
@@ -80,10 +83,17 @@ class Factory
                 'home'         => $home,
                 'home_config'  => $home.'/.gush.yml',
                 'cache-dir'    => $cacheDir,
-                'local'        => getcwd(),
-                'local_config' => getcwd().'/.gush.yml',
             ]
         );
+
+        if ($loadLocal) {
+            $config->merge(
+                [
+                    'local' => getcwd(),
+                    'local_config' => getcwd().'/.gush.yml',
+                ]
+            );
+        }
 
         if (true === $loadParameters) {
             self::readParameters($config);
@@ -132,7 +142,7 @@ class Factory
         }
 
         // merge the local config
-        if (file_exists($localFilename)) {
+        if (null !== $localFilename && file_exists($localFilename)) {
             try {
                 $parsed = Yaml::parse($localFilename);
                 $config->merge($parsed);
