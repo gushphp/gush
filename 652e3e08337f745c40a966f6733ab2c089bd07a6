@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-03 11:36
+
+we should use and promote the upgrade to latest git imo, but yeah let\'s warn with version. We already have a check for presence in the gush script i believe so let\'s add it there. I even believe there could already be a package for this?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-11 06:03
+
+p:create is used a lot, and this automation is wanted a lot, so no escape, we have to fire a warning saying git needs upgrading.
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-08-11 06:43
+
+The [inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/1b577443-f500-43e9-bde4-35fd2a0ad9a6) completed: **No new issues**
