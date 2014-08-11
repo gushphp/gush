@@ -8,4 +8,4 @@ table-pr:
     deprecations: ['Deprecations?', no]
     tests_pass: ['Tests Pass?', no]
     fixed_tickets: ['Fixed Tickets', '']
-    license: [License, MIT]
+    license: ['License', MIT]
