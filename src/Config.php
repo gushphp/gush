@@ -30,10 +30,13 @@ class Config
      */
     private $config;
 
+    private $errorList;
+
     public function __construct()
     {
         // load defaults
         $this->config = static::$defaultConfig;
+        $this->errorList = [];
     }
 
     /**
@@ -110,14 +113,28 @@ class Config
      */
     public function isValid()
     {
-        if (count($this->config['adapters']) > 0
-            && isset($this->config['versioneye-token'])
-            && is_dir($this->get('cache-dir'))
-            && is_writable($this->get('cache-dir'))
-        ) {
-            return true;
+        if (!$hasAdapter = count($this->config['adapters']) > 0) {
+            $this->errorList[] = 'lacks adapters';
         }
 
-        return false;
+        if (!$versioneyeTokenSet = isset($this->config['versioneye-token'])) {
+            $this->errorList[] = 'versioneyeToken is not set';
+        }
+
+        if (!$cacheDirOk = is_dir($this->get('cache-dir')) && is_writable($this->get('cache-dir'))) {
+            $this->errorList[] = 'cache dir is not writable or does not exist';
+        }
+
+        return $hasAdapter && $cacheDirOk && $versioneyeTokenSet ;
+    }
+
+    /**
+     * Return validation violations
+     *
+     * @return string[]
+     */
+    public function getErrorList()
+    {
+        return $this->errorList;
     }
 }

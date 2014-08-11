@@ -6,7 +6,6 @@ bldr:
             description: Travis Profile
             tasks:
                 - prepare
-                - secure
                 - lint
                 - test
         local:

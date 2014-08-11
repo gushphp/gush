@@ -37,7 +37,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         putenv("HOME={$home}");
 
-        $config = Factory::createConfig();
+        $config = Factory::createConfig(false);
 
         $this->assertEquals($home.'/cache', $config->get('cache-dir'));
         $this->assertEquals($home, $config->get('home'));

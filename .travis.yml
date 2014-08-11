@@ -23,7 +23,8 @@ before_script:
     - curl -sS http://bldr.io/installer | php
 
 script:
-    - ./bldr.phar build travis
+    - php ./bldr.phar build travis
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then php ./bldr.phar build -t secure travis; fi;'
 
 notifications:
     irc: "irc.freenode.org#gushphp"
