@@ -26,7 +26,7 @@ if (!$process->isSuccessful()) {
 
 $version = trim(explode(' ', $process->getOutput())[2]);
 if (version_compare($version, '1.9.1', 'lt')) {
-    throw new \RuntimeException('It is advisable to upgrade your version to 1.9.1 or latest.');
+    throw new \RuntimeException('It is advisable to upgrade your version of GIT to 1.9.1 or latest.');
 }
 
 $adapterFactory = new Gush\Factory\AdapterFactory();
