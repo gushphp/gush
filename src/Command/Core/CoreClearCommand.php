@@ -15,6 +15,7 @@ use Gush\Command\BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class CoreClearCommand extends BaseCommand
 {
@@ -24,7 +25,7 @@ class CoreClearCommand extends BaseCommand
     protected function configure()
     {
         $this->setName('core:clear')
-            ->setDescription('Clears cache from ~/.gush folder')
+            ->setDescription('Clears cache from cache folder')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> clears files from cache folder:
@@ -41,6 +42,10 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $application = $this->getApplication();
+        /** @var \Gush\Application $application */
+        $config = $application->getConfig();
+        (new Filesystem())->remove($config->get('cache-dir'));
 
         $output->writeln('Cache has been cleared.');
     }
