@@ -25,7 +25,7 @@ class ApplicationProvider implements  ServiceProviderInterface
         $pimple['application.manifesto_url'] = 'http://gushphp.org/manifest.json';
 
         $pimple['application'] = function ($c) {
-            $app = new Application($c['factory.adapter'], $c['event_dispatcher']);
+            $app = new Application($c['factory.adapter'], $c['event_dispatcher'], $c['helpers.set']);
             $app->addCommands($c['commands']);
 
             return $app;

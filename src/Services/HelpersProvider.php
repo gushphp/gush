@@ -12,8 +12,10 @@
 namespace Gush\Services;
 
 use Gush\Helper as GushHelper;
+use KevinGH\Amend\Helper as UpdateHelper;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Symfony\Component\Console\Helper\HelperSet;
 
 class HelpersProvider implements ServiceProviderInterface
 {
@@ -56,6 +58,29 @@ class HelpersProvider implements ServiceProviderInterface
 
         $pimple['helpers.text'] = function ($c) {
             return new GushHelper\TextHelper();
+        };
+
+        $pimple['helpers.update'] = function ($c) {
+            return new UpdateHelper();
+        };
+
+        $pimple['helpers.set'] = function ($c) {
+            return new HelperSet([
+                $c['symfony.helpers.formatter'],
+                $c['symfony.helpers.dialog'],
+                $c['symfony.helpers.progress'],
+                $c['symfony.helpers.table'],
+                $c['symfony.helpers.question'],
+                $c['helpers.text'],
+                $c['helpers.table'],
+                $c['helpers.process'],
+                $c['helpers.editor'],
+                $c['helpers.git'],
+                $c['helpers.template'],
+                $c['helpers.meta'],
+                $c['helpers.autocomplete'],
+                $c['helpers.update'],
+            ]);
         };
     }
 }
