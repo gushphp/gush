@@ -22,7 +22,7 @@ class TextHelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->textHelper = new TextHelper;
+        $this->textHelper = new TextHelper();
     }
 
     public function provideTruncate()
