@@ -128,5 +128,4 @@ class PullRequestCreateCommandTest extends BaseTestCase
             ],
         ];
     }
-
 }

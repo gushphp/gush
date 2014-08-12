@@ -83,11 +83,11 @@ LOGO;
             $version = ltrim($version, 'v');
         }
 
-        // try setting the config as early as possible, so all the subscribers and helpers can use it
-        // If Gush is not yet configured, then just catch the exception and move along
         try {
+            // try setting the config as early as possible, so all the subscribers and helpers can use it
             $this->config = Factory::createConfig();
         } catch (\RuntimeException $exception) {
+            // if Gush is not yet configured, then just catch the exception and move along
         }
 
         $helperSet = $this->getDefaultHelperSet();
