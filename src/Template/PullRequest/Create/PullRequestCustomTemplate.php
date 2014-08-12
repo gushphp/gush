@@ -51,7 +51,7 @@ class PullRequestCustomTemplate extends AbstractSymfonyTemplate
                 );
             }
 
-            if (!is_array($rowData) || count($rowData) <> 2) {
+            if (!is_array($rowData) || count($rowData) != 2) {
                 throw new \RuntimeException(
                     sprintf(
                         'table-pr table row-data "%s" must be an array with exactly two values like: '.

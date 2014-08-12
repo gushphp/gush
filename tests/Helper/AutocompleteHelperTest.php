@@ -23,7 +23,7 @@ class AutocompleteHelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->autocompleteHelper = new AutocompleteHelper;
+        $this->autocompleteHelper = new AutocompleteHelper();
     }
 
     /**
