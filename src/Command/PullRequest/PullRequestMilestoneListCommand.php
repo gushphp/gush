@@ -55,6 +55,7 @@ EOF
         $adapter = $this->getAdapter();
         $milestones = $adapter->getMilestones();
 
+        /** @var \Gush\Helper\TableHelper $table */
         $table = $this->getHelper('table');
         $table->formatRows($milestones, $this->getRowBuilderCallback());
         $table->render($output, $table);
