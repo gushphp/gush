@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-12 02:23
+
+is it enough to rm -rf ~/.gush/cache/* here? cc/ @aequasi @sstok ?
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-08-12 02:26
+
+The [inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/97953394-1318-4bbd-877c-6b1bc4574f26) completed: **3 updated code elements**
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-08-12 03:35
+
+I think so...
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-12 03:39
+
+so simple? thought we had to take care of some things before doing that, like in symfony
+
+---------------------------------------------------------------------------
+
+by aequasi at 2014-08-12 03:40
+
+i thought symfony only did stuff after (warmup)
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-08-12 07:13
+
+Indeed, Symfony also warms-up the cache (container, translations, routing etc).
+
+Btw the cache-directory of Gush is configurable ;) so we should not rely on `~/.gush/cache/`
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-12 07:18
+
+@sstok not sure then if you mean rm -rf parameterizable_path_to_cache is fine or if we need something else
