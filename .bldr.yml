@@ -13,6 +13,14 @@ bldr:
             tasks:
                 - testLocal
                 - watch
+        rebase:
+            description: Gush rebase flow
+            tasks:
+                - gushRebase
+        merge:
+            description: Gush merge flow
+            tasks:
+                - gushMerge
     tasks:
         prepare:
             calls:
@@ -82,3 +90,16 @@ bldr:
                     src:
                         - { path: [src, tests], files: *.php, recursive: true }
                     task: testLocal
+        gushRebase:
+            description: Gush rebase flow
+            calls:
+                -
+                    type: gush:branch:rebase
+                    base_branch: master
+        gushMerge:
+            description: Gush merge flow
+            calls:
+                -
+                    type: gush:pull-request:merge
+                    base_branch: master
+                    symlinked: true

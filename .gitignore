@@ -6,3 +6,5 @@
 *.phar
 phpunit.xml
 .first-time-run
+/.bldr/vendor
+*.lock
