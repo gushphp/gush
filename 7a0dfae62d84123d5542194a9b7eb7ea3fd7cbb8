@@ -1,0 +1,80 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-12 21:01
+
+oh this is true, because those options get decorated only on application initialization/bootstrap via event listener. so definitely when they are fetched without they will not have those options on...
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-13 00:56
+
+you must be maintaining release branches to do this @lunika , right?
+
+---------------------------------------------------------------------------
+
+by lunika at 2014-08-13 07:19
+
+doing what ? Switching the branch of a pull-request ?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-13 07:20
+
+yeah
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-13 07:21
+
+totally unrelated : make sure you don\'t miss now what bldr gush block is capable of https://github.com/cordoval/matthew-7-12/blob/master/.bldr/tasks.yml#L98-L110
+
+---------------------------------------------------------------------------
+
+by lunika at 2014-08-13 08:33
+
+Yes I want to use gush for managing releases branch but I think the command can\'t do this because most of time the PR is not mine, so I can\'t squash it.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-13 08:34
+
+yes, @sstok has already a ticket for this on issues, have you checked?
+
+---------------------------------------------------------------------------
+
+by lunika at 2014-08-13 08:43
+
+nop
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-14 10:25
+
+i was meaning this https://github.com/gushphp/gush/issues/213
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-08-14 11:31
+
+We can get the org and repo from the \'main\' command and then pass them with the subcommand.
+
+```php
+        $command = $this->getApplication()->find(\'pull-request:squash\');
+        $input = new ArrayInput(
+            [
+                \'command\' => \'pull-request:squash\',
+                \'pr_number\' => $prNumber,
+                \'org\' => $input->getOption(\'org\'),
+                \'repo\' => $input->getOption(\'repo\')
+            ]
+        );
+        $command->run($input, $output);
+```
+
+And the same goes for the other subcommands.
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-08-15 20:38
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/47298313-d0be-4b02-9898-d01267165655) was created.
