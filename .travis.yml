@@ -21,6 +21,7 @@ env:
 
 before_script:
     - curl -sS http://bldr.io/installer | php
+    - php ./bldr.phar install
 
 script:
     - php ./bldr.phar build travis
