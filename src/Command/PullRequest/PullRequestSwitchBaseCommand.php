@@ -60,8 +60,8 @@ EOF
             [
                 'command' => 'pull-request:squash',
                 'pr_number' => $prNumber,
-                'org' => $input->getOption('org'),
-                'repo' => $input->getOption('repo'),
+                '--org' => $input->getOption('org'),
+                '--repo' => $input->getOption('repo'),
             ]
         );
         $command->run($input, $output);
@@ -105,8 +105,8 @@ EOF
             [
                 'command' => 'pull-request:create',
                 'base_branch' => $baseBranch,
-                'org' => $input->getOption('org'),
-                'repo' => $input->getOption('repo'),
+                '--org' => $input->getOption('org'),
+                '--repo' => $input->getOption('repo'),
             ]
         );
         $command->run($input, $output);
