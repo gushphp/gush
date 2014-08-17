@@ -23,7 +23,33 @@ class FactoryProvider implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['factory.adapter'] = function ($c) {
-            return new AdapterFactory();
+            $adapterFactory = new AdapterFactory();
+
+            foreach ($c['adapters'] as $adapterName => $factoryClass) {
+                if (!class_exists($factoryClass)) {
+                    continue;
+                }
+
+                $adapterFactory->registerAdapter(
+                    $adapterName,
+                    [$factoryClass, 'createAdapter'],
+                    [$factoryClass, 'createAdapterConfigurator']
+                );
+            }
+
+            foreach ($c['issueTrackers'] as $trackerName => $factoryClass) {
+                if (!class_exists($factoryClass)) {
+                    continue;
+                }
+
+                $adapterFactory->registerIssueTracker(
+                    $trackerName,
+                    [$factoryClass, 'createIssueTracker'],
+                    [$factoryClass, 'createIssueTrackerConfigurator']
+                );
+            }
+
+            return $adapterFactory;
         };
     }
 }
