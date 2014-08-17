@@ -29,7 +29,7 @@ class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, Te
         $this
             ->setName('pull-request:create')
             ->setDescription('Launches a pull request')
-            ->addOption('base', null, InputOption::VALUE_REQUIRED, 'Base Branch - remote branch name', 'master')
+            ->addOption('base', null, InputOption::VALUE_REQUIRED, 'Base Branch - remote branch name')
             ->addOption(
                 'source-org',
                 null,
@@ -96,11 +96,15 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $org = $input->getOption('org');
-        $base = $input->getOption('base');
         $issueNumber = $input->getOption('issue');
         $sourceOrg = $input->getOption('source-org');
         $sourceBranch = $input->getOption('source-branch');
         $template = $input->getOption('template');
+
+        $base = $input->getOption('base');
+        if (null === $base) {
+            $base = $this->getParameter('base') ?: 'master';
+        }
 
         if (null === $sourceOrg) {
             $sourceOrg = $this->getParameter('authentication')['username'];
