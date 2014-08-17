@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by sstok at 2014-08-07 11:21
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-11 13:04
+
+@lunika the developer of thelia is requesting this feature for org and repo
+
+@lunika, right now there are defaults that are Gush\'s sensitives, but i guess you want them in .gush.yml?
+
+---------------------------------------------------------------------------
+
+by lunika at 2014-08-11 14:05
+
+Right, i want this parameters in .gush.yml file.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-08-12 10:07
+
+@lunika do you have a PR for this too? stub it and we can take it from there
+
+---------------------------------------------------------------------------
+
+by lunika at 2014-08-12 12:12
+
+nop, I have to take a look
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-08-17 12:38
+
+The [inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/568b8942-2925-4950-810e-de8dcc7fa1b3) completed: **1 updated code elements**
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-08-17 12:40
+
+:+1:  seems good to me.
