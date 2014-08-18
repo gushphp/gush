@@ -36,4 +36,12 @@ class Base implements Meta
     {
         return '*/';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStartTokenRegex()
+    {
+        return '{^(<\?(php)?\s+)|<%|(<\?xml[^>]+)}i';
+    }
 }

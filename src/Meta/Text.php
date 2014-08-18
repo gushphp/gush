@@ -11,14 +11,14 @@
 
 namespace Gush\Meta;
 
-class Twig implements Meta
+class Text implements Meta
 {
     /**
      * {@inheritdoc}
      */
     public function getStartDelimiter()
     {
-        return '{##';
+        return '/**';
     }
 
     /**
@@ -26,7 +26,7 @@ class Twig implements Meta
      */
     public function getDelimiter()
     {
-        return '#';
+        return '*';
     }
 
     /**
@@ -34,7 +34,7 @@ class Twig implements Meta
      */
     public function getEndDelimiter()
     {
-        return '#}';
+        return '*/';
     }
 
     /**
