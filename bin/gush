@@ -15,7 +15,8 @@ require __DIR__.'/../src/bootstrap.php';
 use Aura\Cli\CliFactory;
 use Aura\Cli\Context\OptionFactory;
 use Gush\Adapter;
-use Gush\GushCommand;
+use Gush\GushPullRequestCommand;
+use Gush\Kernel;
 
 error_reporting(-1);
 ini_set('display_errors', 1);
@@ -36,6 +37,6 @@ $cli = new CliFactory;
 $context = $cli->newContext($GLOBALS);
 $stdio = $cli->newStdio();
 
-$gush = new GushCommand(new OptionFactory());
-$stdio->outln($gush->getHelp('gush'));
+$kernel = new Kernel();
+$stdio->outln($kernel->run());
 

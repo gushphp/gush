@@ -2,10 +2,10 @@
 
 namespace Gush;
 
-use Aura\Cli\Help;
-
-class GushCommand extends Help
+class GushPullRequestCommand extends BaseCommand
 {
+    public static $name = 'pr';
+
     protected function init()
     {
         $this->setSummary('A single-line summary.');
