@@ -12,7 +12,10 @@
 
 require __DIR__.'/../src/bootstrap.php';
 
+use Aura\Cli\CliFactory;
+use Aura\Cli\Context\OptionFactory;
 use Gush\Adapter;
+use Gush\GushCommand;
 
 error_reporting(-1);
 ini_set('display_errors', 1);
@@ -29,60 +32,10 @@ if (version_compare($version, '1.9.1', 'lt')) {
     throw new \RuntimeException('It is advisable to upgrade your version of GIT to 1.9.1 or latest.');
 }
 
-$adapterFactory = new Gush\Factory\AdapterFactory();
+$cli = new CliFactory;
+$context = $cli->newContext($GLOBALS);
+$stdio = $cli->newStdio();
 
-$adapters = [
-    'github' => 'Gush\Adapter\GitHubFactory',
-    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
-    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
-    'gitlab' => 'Gush\Adapter\GitLabFactory',
-];
+$gush = new GushCommand(new OptionFactory());
+$stdio->outln($gush->getHelp('gush'));
 
-foreach ($adapters as $adapterName => $factoryClass) {
-    if (!class_exists($factoryClass)) {
-        continue;
-    }
-
-    $adapterFactory->registerAdapter(
-        $adapterName,
-        [$factoryClass, 'createAdapter'],
-        [$factoryClass, 'createAdapterConfigurator']
-    );
-}
-
-$issueTrackers = [
-    'github' => 'Gush\Adapter\GitHubFactory',
-    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
-    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
-    'gitlab' => 'Gush\Adapter\GitLabFactory',
-    'jira' => 'Gush\Adapter\JiraFactory',
-    'jira_enterprise' => 'Gush\Adapter\JiraEnterpriseFactory',
-];
-
-foreach ($issueTrackers as $trackerName => $factoryClass) {
-    if (!class_exists($factoryClass)) {
-        continue;
-    }
-
-    $adapterFactory->registerIssueTracker(
-        $trackerName,
-        [$factoryClass, 'createIssueTracker'],
-        [$factoryClass, 'createIssueTrackerConfigurator']
-    );
-}
-
-$app = new Gush\Application($adapterFactory);
-
-// The first time the application runs it will configure the github credentials
-// and create the cache folder
-if (!file_exists(__DIR__.'/../.first-time-run')) {
-    @file_put_contents(__DIR__.'/../.first-time-run', '');
-
-    try {
-        $config = Gush\Factory::createConfig();
-    } catch (Gush\Exception\FileNotFoundException $exception) {
-        $app->run(new Symfony\Component\Console\Input\ArrayInput(['command' => 'core:configure']));
-    }
-}
-
-$app->run();
