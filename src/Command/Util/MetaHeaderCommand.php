@@ -13,6 +13,7 @@ namespace Gush\Command\Util;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\TemplateFeature;
+use Gush\Helper\MetaHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -81,6 +82,7 @@ EOT
         }
 
         $allFiles = $this->getHelper('git')->listFiles();
+        /** @var MetaHelper $meta */
         $meta = $this->getHelper('meta');
 
         $supportedTypes = array_keys($meta->getSupportedFiles());
@@ -120,56 +122,25 @@ EOT
             $metaClass = $meta->getMetaClass($type);
 
             foreach ($files as $file) {
-                $handler = fopen($file, 'r');
+                $fileContent = file_get_contents($file);
 
-                $newLines = [];
-                $headerAdded = false;
-                $replace = true;
-
-                while ($line = fgets($handler)) {
-
-                    $trimmedLine = trim($line);
-
-                    if (false === $headerAdded) {
-                        if (preg_match('&^'.preg_quote($metaClass->getStartDelimiter()).'?&', $trimmedLine)) {
-                            $headerAdded = true;
-
-                            while ($headerLine = fgets($handler)) {
-                                if (!preg_match('&^ ?'.preg_quote($metaClass->getDelimiter()).'&', $headerLine)) {
-
-                                    if (true === $replace) {
-                                        $newLines[] = $header;
-                                        $headerAdded = true;
-                                    }
-
-                                    continue 2;
-                                }
-                            }
-                        }
-
-                        if (!in_array($trimmedLine, ['<?php', '<?']) && $trimmedLine != '') {
-                            $newLines[] = $header;
-                            $newLines[] = $line;
-                            $headerAdded = true;
-
-                            continue;
-                        }
+                if ($meta->isUpdatable($metaClass, $fileContent)) {
+                    if (false === $dryRun) {
+                        file_put_contents($file, $meta->updateContent($metaClass, $header, $fileContent));
                     }
 
-                    $newLines[] = $line;
+                    $output->writeln(
+                        sprintf(
+                            '%s<info>Updated header in file "%s"</info>',
+                            $dryRun === false ? '' : ' <comment>[DRY-RUN] </comment>',
+                            $file
+                        )
+                    );
+                } else {
+                    $output->writeln(
+                        sprintf('<info>Skipping file "%s"</info>', $file)
+                    );
                 }
-
-                if (false === $dryRun) {
-                    file_put_contents($file, implode('', $newLines));
-                }
-
-                $output->writeln(
-                    sprintf(
-                        '%s<info>Updating header in file "%s"</info>',
-                        $dryRun === false ? '' : ' <comment>[DRY-RUN] </comment>',
-                        $file
-                    )
-                );
             }
         }
 

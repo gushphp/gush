@@ -53,10 +53,10 @@ class TemplateHelper extends Helper implements InputAwareInterface
     /**
      * @return null|string
      */
-    public function getCustomTemplate()
+    public function getCustomTemplate($domain)
     {
         $config = $this->application->getConfig();
-        if (null !== $config && $config->has('table-pr')) {
+        if ('pull-request-create' === $domain &&  null !== $config && $config->has('table-pr')) {
             return 'custom';
         }
 

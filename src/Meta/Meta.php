@@ -27,4 +27,9 @@ interface Meta
      * @return string
      */
     public function getEndDelimiter();
+
+    /**
+     * @return string|null
+     */
+    public function getStartTokenRegex();
 }

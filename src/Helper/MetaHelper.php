@@ -90,6 +90,80 @@ class MetaHelper extends Helper
         return $this->supportedFiles[$type];
     }
 
+    public function isUpdatable(Meta $meta, $fileContent)
+    {
+        if (null !== $meta->getStartTokenRegex()) {
+            // When no start token is found just ignore the content to prevent corrupting
+            if (!preg_match($meta->getStartTokenRegex(), $fileContent, $startMatch)) {
+                return false;
+            }
+
+            $fileContent = substr($fileContent, strlen($startMatch[0]));
+        }
+
+        // Check for preservation header
+        if (preg_match('&^'.preg_quote($meta->getStartDelimiter()).'?!&', $fileContent)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Update the content with the header.
+     *
+     * Note. We only support comments in the beginning of the file.
+     * If there is already a comment its replaced, if its missing its added.
+     *
+     * @param Meta   $meta
+     * @param string $header
+     * @param string $fileContent
+     *
+     * @return string
+     */
+    public function updateContent(Meta $meta, $header, $fileContent)
+    {
+        if (!$this->isUpdatable($meta, $fileContent)) {
+            return $fileContent;
+        }
+
+        $startContent = '';
+        $fileContent = ltrim($fileContent);
+
+        if (null !== $meta->getStartTokenRegex()) {
+            // When no start token is found just ignore the content to prevent corrupting
+            if (!preg_match($meta->getStartTokenRegex(), $fileContent, $startMatch)) {
+                return $fileContent;
+            }
+
+            $startToken = $startMatch[0];
+            $startContent = trim($startToken)."\n\n";
+            $fileContent = substr($fileContent, strlen($startMatch[0]));
+        }
+
+        if (preg_match('&^'.preg_quote($meta->getStartDelimiter()).'?&', $fileContent)) {
+            $lines = preg_split("/\r\n|\n|\r/", $fileContent);
+
+            $lineNum = 0;
+            $linesCount = count($lines);
+            $line = $lines[$lineNum];
+
+            // Skip the comment lines till the end delimiter
+            while ($lineNum < $linesCount && (!preg_match('&^\h*'.preg_quote($meta->getEndDelimiter()).'&', $line))) {
+                $line = $lines[$lineNum];
+                unset($lines[$lineNum]);
+
+                $lineNum++;
+            }
+
+            $fileContent = implode("\n", $lines);
+        }
+
+        $newContent = $startContent.$header.ltrim($fileContent);
+
+        return $newContent;
+    }
+
     /**
      * {@inheritdoc}
      */

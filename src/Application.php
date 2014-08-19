@@ -457,8 +457,8 @@ LOGO;
     {
         return [
             'php'  => new Meta\Base,
-            'js'   => new Meta\Base,
-            'css'  => new Meta\Base,
+            'js'   => new Meta\Text,
+            'css'  => new Meta\Text,
             'twig' => new Meta\Twig,
         ];
     }

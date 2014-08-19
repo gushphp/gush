@@ -47,10 +47,11 @@ class MetaHeaderCommandTest extends BaseTestCase
     {
         $metasSupported = [
             'php'  => new Meta\Base,
-            'js'   => new Meta\Base,
-            'css'  => new Meta\Base,
+            'js'   => new Meta\Text,
+            'css'  => new Meta\Text,
             'twig' => new Meta\Twig,
         ];
+
         $gitHelper = $this->expectGitHelper();
         $tester = $this->getCommandTester($command = new MetaHeaderCommand());
         $command->getHelperSet()->set($gitHelper, 'git');
