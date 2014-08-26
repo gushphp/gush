@@ -46,19 +46,28 @@ Supported Files:
     - css
     - twig
 
-To prevent some files from being updated. You can configure which paths must
-be excluded by setting the "meta-exclude" in your local .gush.yml file.
+If you don't want certain files or directories to be updated,
+you can configure which paths must be excluded.
+
+Add the following to your local <comment>.gush.yml</comment> file.
 <comment>
 meta-exclude:
     - lib/      # excludes all the files in the lib/ directory
     - meta/*.js # excludes all the js-files in the meta-folder
 </comment>
 
-<info>Note:</info> Files excluded from the Git version control are automatically excluded from updating.
+Each value in the "meta-exclude" is either a Glob or complete regexp pattern
+which excludes the path from being updated by the %command.name% command.
 
-The patterns set in "meta-exclude" use the Symfony Finder, and support both the glob pattern and regex.
+Please keep the following in mind with using patterns:
 
-<info>Tip:</info> To make sure you're configuration is correct run the %command.name% command with
+- paths are relative to your repository root-folder
+- patterns are case-sensitive (unless you use regexp with the 'i' (insensitive) flag like "/lib\//i")
+- patterns are applied to both directories and file-names (end related patterns with '/' to restrict to directories)
+
+For more information on using the paths see: http://symfony.com/doc/current/components/finder.html#path
+
+<info>Tip:</info> If you are not sure your patterns are correct, run the %command.name% command with
 <comment>--dry-run</comment> to get a list of files that 'would' have been updated.
 
 EOT
