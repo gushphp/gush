@@ -52,8 +52,8 @@ against the configured organization and repository.
     <info>$ gush %command.name%</info>
 
 The remote branch to make the PR against can be specified with the
-<info>base</info> option, and the local organization / branch with the <info>source-org</info> /
-<info>source-branch</info> options, when these options are omitted they are determined from the current
+<comment>--base</comment> option, and the local organization / branch with the <comment>--source-org</comment> /
+<comment>--source-branch</comment> options, when these options are omitted they are determined from the current
 context.
 
     <info>$ gush %command.name% --source-branch=my_branch --source-org=my_org --base=dev</info>
@@ -66,12 +66,38 @@ This will use the symfony specific pull request template, the full list of
 available templates is displayed in the description of the <info>template</info>
 option.
 
-The command also can accept an issue number along with the other options:
+Note: The "custom" template is only supported when you have configured this in
+your local <comment>.gush.yml</comment> file like:
+<comment>
+table-pr:
+    bug_fix: ['Bug Fix?', no]
+    new_feature: ['New Feature?', no]
+    bc_breaks: ['BC Breaks?', no]
+    deprecations: ['Deprecations?', no]
+    tests_pass: ['Tests Pass?', no]
+    fixed_tickets: ['Fixed Tickets', '']
+    license: ['License', MIT]
+</comment>
+
+Each key in "table-pr" list is the name used internally by the command engine, you can choose any name
+you like but note that "description" is preserved for internal usage and is not changeable
+and you can only use underscores for separating words.
+
+The value of each key is an array with "exactly two values" like ['the label', 'the default value'].
+
+If you don't want to configure any fields at all use the following.
+<comment>
+table-pr: []
+</comment>
+<info>This will still ask the title and description, but no additional fields.</info>
+
+
+The command %command.name% can also accept an issue number along with the other options:
 
     <info>$ gush %command.name% --issue=10430</info>
 
-Passing an issue number would turn the issue into a pull request provided permissions
-allow it.
+Passing an issue number will turn the issue into a pull request, provided permissions
+allow it. Turning an issue in a pull request will keep the original title and existing comments.
 
 When using a template you will be prompted to fill out the required parameters.
 
