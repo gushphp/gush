@@ -46,6 +46,21 @@ Supported Files:
     - css
     - twig
 
+To prevent some files from being updated. You can configure which paths must
+be excluded by setting the "meta-exclude" in your local .gush.yml file.
+<comment>
+meta-exclude:
+    - lib/      # excludes all the files in the lib/ directory
+    - meta/*.js # excludes all the js-files in the meta-folder
+</comment>
+
+<info>Note:</info> Files excluded from the Git version control are automatically excluded from updating.
+
+The patterns set in "meta-exclude" use the Symfony Finder, and support both the glob pattern and regex.
+
+<info>Tip:</info> To make sure you're configuration is correct run the %command.name% command with
+<comment>--dry-run</comment> to get a list of files that 'would' have been updated.
+
 EOT
             )
         ;
@@ -76,6 +91,7 @@ EOT
         $template = $input->getOption('template');
 
         $config = $this->getApplication()->getConfig();
+        /** @var \Gush\Config $config */
 
         if (null === ($metaHeader = $config->get('meta-header')) || $input->getOption('no-local')) {
             $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
@@ -84,6 +100,10 @@ EOT
         $allFiles = $this->getHelper('git')->listFiles();
         /** @var MetaHelper $meta */
         $meta = $this->getHelper('meta');
+
+        if (null !== ($metaExcludePaths = $config->get('meta-exclude'))) {
+            $allFiles = $meta->filterFilesList($allFiles, (array) $metaExcludePaths);
+        }
 
         $supportedTypes = array_keys($meta->getSupportedFiles());
 

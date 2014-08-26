@@ -50,6 +50,29 @@ class MetaHelperTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testFilterFilesList()
+    {
+        $fileList = [
+            'src/Tester/QuestionToken.php',
+            'src/Util/ArrayUtil.php',
+            'src/bootstrap.php',
+            'tests/ApplicationTest.php',
+            'tests/Command/BaseTestCase.php',
+            'tests/Command/Branch/BranchChangelogCommandTest.php',
+            'tests/Command/Branch/BranchDeleteCommandTest.php',
+        ];
+
+        $expectedFileList = [
+            'src/Tester/QuestionToken.php',
+            'src/Util/ArrayUtil.php',
+        ];
+
+        $this->assertEquals(
+            $expectedFileList,
+            $this->helper->filterFilesList($fileList, ['tests/', 'src/bootstrap.php'])
+        );
+    }
+
     public function testUpdateContentPhpFileWithNoHeader()
     {
         $meta = $this->getMetaForPhp();
