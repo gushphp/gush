@@ -12,6 +12,7 @@
 namespace Gush\Helper;
 
 use Gush\Exception\UnsupportedTypeException;
+use Gush\Meta\Iterator\PathFilterIterator;
 use Gush\Meta\Meta;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -90,6 +91,12 @@ class MetaHelper extends Helper
         return $this->supportedFiles[$type];
     }
 
+    /**
+     * @param Meta   $meta
+     * @param string $fileContent
+     *
+     * @return bool
+     */
     public function isUpdatable(Meta $meta, $fileContent)
     {
         if (null !== $meta->getStartTokenRegex()) {
@@ -107,6 +114,19 @@ class MetaHelper extends Helper
         }
 
         return true;
+    }
+
+    /**
+     * Filter the list of files to update.
+     *
+     * @param array $filesList
+     * @param array $excludesList
+     *
+     * @return array
+     */
+    public function filterFilesList(array $filesList, array $excludesList)
+    {
+        return iterator_to_array(new PathFilterIterator(new \ArrayIterator($filesList), [], $excludesList));
     }
 
     /**

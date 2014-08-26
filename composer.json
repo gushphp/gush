@@ -46,6 +46,7 @@
         "symfony/console": "~2.5.0",
         "symfony/process": "~2.5.0",
         "symfony/filesystem": "~2.5.0",
+        "symfony/finder": "~2.5.0",
         "symfony/yaml": "~2.5.0",
         "symfony/event-dispatcher": "~2.5.0",
         "symfony/property-access": "~2.5.0",
