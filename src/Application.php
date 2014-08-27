@@ -28,6 +28,7 @@ use KevinGH\Amend\Command as UpdateCommand;
 use KevinGH\Amend\Helper as UpdateHelper;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -77,7 +78,7 @@ LOGO;
      */
     protected $adapterFactory;
 
-    public function __construct(AdapterFactory $adapterFactory, $name = 'Gush', $version = '@package_version@')
+    public function __construct(AdapterFactory $adapterFactory, EventDispatcher $eventDispatcher, HelperSet $helpersSet, $name = 'Gush', $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
@@ -90,20 +91,9 @@ LOGO;
             // if Gush is not yet configured, then just catch the exception and move along
         }
 
-        $helperSet = $this->getDefaultHelperSet();
-        $helperSet->set(new Helpers\TextHelper());
-        $helperSet->set(new Helpers\TableHelper());
-        $helperSet->set(new Helpers\ProcessHelper());
-        $helperSet->set(new Helpers\EditorHelper());
-        $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
-        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('question'), $this));
-        $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
-        $helperSet->set(new Helpers\AutocompleteHelper());
-        $helperSet->set(new UpdateHelper());
-
         // the parent dispatcher is private and has
         // no accessor, so we set it here so we can access it.
-        $this->dispatcher = new EventDispatcher();
+        $this->dispatcher = $eventDispatcher;
 
         // add our subscribers to the event dispatcher
         $this->dispatcher->addSubscriber(new TableSubscriber());
