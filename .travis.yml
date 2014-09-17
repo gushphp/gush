@@ -19,7 +19,7 @@ matrix:
 env:
     - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
 
-before_script:
+before_install:
     - curl -sS http://bldr.io/installer | php
     - php ./bldr.phar install
 

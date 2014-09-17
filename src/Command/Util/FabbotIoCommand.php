@@ -59,7 +59,7 @@ EOF
         $username = $github['username'];
 
         $adapter = $this->getAdapter();
-        $pr      = $adapter->getPullRequest($prNumber);
+        $pr = $adapter->getPullRequest($prNumber);
 
         $this->getHelper('process')->runCommands(
             [
