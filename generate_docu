@@ -74,11 +74,11 @@ full_title: "Gush: Rapid workflow for project maintainers and contributors"
 EOT;
 
     $footer = <<<EOT
-{% endblock content %}
+{% endblock %}
 EOT;
 
     file_put_contents(
-        'web/'.$command->getName().'.md',
+        'web/'.str_replace(':', '_', $command->getName()).'.md',
         sprintf("%s\n%s\n%s", $header, $output->fetch(), $footer)
     );
 }
