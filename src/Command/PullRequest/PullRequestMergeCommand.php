@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
 {
@@ -64,6 +65,19 @@ EOF
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
+
+        if ('open' !== $pr['state']) {
+            $output->writeln(
+                sprintf(
+                    "<error>\n[ERROR] Pull request #%s is already merged/closed, current status: %s</error>",
+                    $prNumber,
+                    $pr['state']
+                )
+            );
+
+            return;
+        }
+
         $commits = $adapter->getPullRequestCommits($prNumber);
 
         if (null === $prType) {
@@ -137,6 +151,16 @@ EOF
             );
         }
 
+        $fs = new Filesystem();
+        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'gush';
+
+        if (!file_exists($dir)) {
+            $fs->mkdir($dir);
+        }
+
+        $tmpName = tempnam($dir, '');
+        file_put_contents($tmpName, $commentText);
+
         $commands = [
             [
                 'line' => 'git remote update',
@@ -148,7 +172,8 @@ EOF
                     'notes',
                     '--ref=github-comments',
                     'add',
-                    sprintf('-m%s', addslashes($commentText)),
+                    '-F',
+                    $tmpName,
                     $sha,
                 ],
                 'allow_failures' => true,
@@ -160,6 +185,7 @@ EOF
         ];
 
         $this->getHelper('process')->runCommands($commands);
+        $fs->remove($tmpName);
     }
 
     private function getCommitsString($commits)
