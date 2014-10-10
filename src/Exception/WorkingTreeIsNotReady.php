@@ -9,14 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Test;
+namespace Gush\Exception;
 
-class MetaTest
+
+final class WorkingTreeIsNotReady extends \Exception
 {
-    private $test;
-
-    public function __construct($test)
+    public function __construct()
     {
-        $this->test = $test;
+        parent::__construct('The Git working tree has uncommitted changes, stash your changes before continuing.');
     }
 }
