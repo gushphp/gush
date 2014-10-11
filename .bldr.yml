@@ -8,6 +8,7 @@ bldr:
                 - prepare
                 - lint
                 - test
+                - secure
         local:
             description: Local Development Profile
             tasks:
@@ -21,6 +22,10 @@ bldr:
             description: Gush merge flow
             tasks:
                 - gushMerge
+        secure:
+            description: run security script
+            tasks:
+                - secure
     tasks:
         prepare:
             calls:
@@ -48,9 +53,31 @@ bldr:
             calls:
                 -
                     type: exec
+                    failOnError: false
+                    executable: rm
+                    arguments:
+                        - ./security-checker.phar
+                -
+                    type: exec
+                    failOnError: false
+                    executable: wget
+                    arguments:
+                        - http://get.sensiolabs.org/security-checker.phar
+                -
+                    type: exec
+                    failOnError: false
+                    executable: chmod
+                    arguments:
+                        - +x
+                        - ./security-checker.phar
+                -
+                    type: exec
                     failOnError: true
-                    executable: ./secure
-                    arguments: []
+                    executable: php
+                    arguments:
+                        - ./security-checker.phar
+                        - security:check
+                        - ./composer.lock
         lint:
             description: Lints the files of the project
             calls:
