@@ -4,3 +4,4 @@ meta-header: "This file is part of Gush package.\n\n(c) 2013-2014 Luis Cordova <
 table-pr:
     fixed_tickets: ['Fixed Tickets', '']
     license: ['License', MIT]
+base: master
