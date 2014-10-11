@@ -16,7 +16,7 @@ class Messages
     const MERGE = <<<EOT
 {{ type }} #{{ prNumber }} {{ prTitle }} ({{ author }})
 
-This PR was merged into {{ baseBranch }} branch.
+This PR was merged into the {{ baseBranch }} branch.
 
 Discussion
 ----------

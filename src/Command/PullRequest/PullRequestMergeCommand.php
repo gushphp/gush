@@ -89,7 +89,7 @@ EOF
             [
                 'type' => $prType,
                 'author' => $pr['user'],
-                'baseBranch' => $pr['base']['label'],
+                'baseBranch' => $pr['base']['ref'],
                 'prNumber' => $prNumber,
                 'prTitle' => trim($pr['title']),
                 'prBody' => trim($pr['body']),
