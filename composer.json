@@ -64,12 +64,6 @@
         "raulfraile/ladybug": "~1.0.8",
         "phpspec/prophecy": "~1.2.1"
     },
-    "bin": [
-        "bin/gush"
-    ],
-    "config": {
-        "bin-dir": "bin"
-    },
     "autoload": {
         "psr-4": {"Gush\\": "src"}
     },
