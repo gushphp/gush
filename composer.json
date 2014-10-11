@@ -1,45 +1,11 @@
 {
     "name": "gushphp/gush",
     "type": "library",
-    "description": "Rapid workflow for project maintainers and contributors",
-    "keywords": [
-        "workflow", "git", "github", "gitlab", "bitbucket", "enterprise",
-        "jira", "console", "issue", "tracker", "adapter", "pull request",
-        "maintainer", "repository", "automation",
-        "contributor", "community", "foss", "package", "design"
-    ],
+    "description": "Project Maintenance & Contributing Automation Tool",
+    "keywords": ["workflow", "issue", "tracker", "adapter", "pull request"],
     "homepage": "http://gushphp.org",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Luis Cordova",
-            "email": "cordoval@gmail.com"
-        },
-        {
-            "name": "Sebastiaan Stok",
-            "email": "s.stok@rollercapes.net"
-        },
-        {
-            "name": "Pierre du Plessis",
-            "email": "pdples@gmail.com"
-        },
-        {
-            "name": "Aaron Scherer",
-            "email": "aequasi@gmail.com"
-        },
-        {
-            "name": "Daniel T. Leech",
-            "email": "dan.t.leech@gmail.com"
-        },
-        {
-            "name" : "Daniel Gomes",
-            "email": "me@danielcsgomes.com"
-        },
-        {
-            "name" : "Daniel Londero",
-            "email": "daniel.londero@gmail.com"
-        }
-    ],
+    "authors": [{ "homepage": "https://github.com/gushphp/gush/graphs/contributors" }],
     "require": {
         "php": ">=5.4",
         "ext-curl": "*",
