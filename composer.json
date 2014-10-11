@@ -5,8 +5,8 @@
     "keywords": [
         "workflow", "git", "github", "gitlab", "bitbucket", "enterprise",
         "jira", "console", "issue", "tracker", "adapter", "pull request",
-        "best practices", "maintainer", "repository", "automation", "robot",
-        "contributor", "community", "foss", "gush", "package", "design"
+        "maintainer", "repository", "automation",
+        "contributor", "community", "foss", "package", "design"
     ],
     "homepage": "http://gushphp.org",
     "license": "MIT",
