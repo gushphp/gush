@@ -24,9 +24,15 @@ class GitHelper extends Helper
     /** @var \Gush\Helper\ProcessHelper */
     protected $processHelper;
 
-    public function __construct(ProcessHelper $processHelper)
+    /**
+     * @var FilesystemHelper
+     */
+    protected $filesystemHelper;
+
+    public function __construct(ProcessHelper $processHelper, FilesystemHelper $filesystemHelper)
     {
         $this->processHelper = $processHelper;
+        $this->filesystemHelper = $filesystemHelper;
     }
 
     public function getName()
@@ -212,14 +218,7 @@ class GitHelper extends Helper
             throw new WorkingTreeIsNotReady();
         }
 
-        $fs = new Filesystem();
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'gush';
-
-        if (!file_exists($dir)) {
-            $fs->mkdir($dir);
-        }
-
-        $tmpName = tempnam($dir, '');
+        $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
 
         $this->processHelper->runCommands(
@@ -246,8 +245,6 @@ class GitHelper extends Helper
                 ]
             ]
         );
-
-        $fs->remove($tmpName);
 
         $hash = trim($this->processHelper->runCommand('git rev-parse HEAD'));
 
