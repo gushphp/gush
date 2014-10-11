@@ -95,9 +95,8 @@ bldr:
                 -
                     type: exec
                     failOnError: true
-                    executable: php
+                    executable: phpunit
                     arguments:
-                        - bin/phpunit
                         - --coverage-html=build/coverage
                         - --coverage-text=php://stdout
         testLocal:
@@ -106,9 +105,8 @@ bldr:
                 -
                     type: exec
                     failOnError: false
-                    executable: php
+                    executable: phpunit
                     arguments:
-                        - bin/phpunit
                         #- --group=now
         watch:
             description: Watch Task for Local Development
