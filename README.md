@@ -10,7 +10,6 @@ Check Gush in action [here](https://vimeo.com/88283752) and [here](https://vimeo
 [![Code Coverage](https://scrutinizer-ci.com/g/gushphp/gush/badges/coverage.png?s=674a025b490123ccc3678eb1088d7d0a696004a1)](https://scrutinizer-ci.com/g/gushphp/gush/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451/mini.png)](https://insight.sensiolabs.com/projects/160ad92b-b065-482e-9ebd-4cff2b931451)
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush) [![Total Downloads](https://poser.pugx.org/gushphp/gush/downloads.png)](https://packagist.org/packages/gushphp/gush) [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush) [![License](https://poser.pugx.org/gushphp/gush/license.png)](https://packagist.org/packages/gushphp/gush)
-[![Stories in Ready](https://badge.waffle.io/gushphp/gush.png?label=ready)](https://waffle.io/gushphp/gush)
 [![Dependency Status](https://www.versioneye.com/php/gushphp:gush/badge.svg)](https://www.versioneye.com/php/gushphp:gush/)
 
 <a href="http://gushphp.org"><img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="200px"/></a>

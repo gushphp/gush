@@ -17,7 +17,7 @@
 >
     <php>
         <env name="GIT_VENDOR_NAME" value="gushphp"/>
-        <ini name="date.timezone" value="America/Los_Angeles"/>
+        <ini name="date.timezone" value="America/Lima"/>
 
         <!-- WARNING These locations are only used for testing, don't use your actual Gush installation! -->
         <!--
