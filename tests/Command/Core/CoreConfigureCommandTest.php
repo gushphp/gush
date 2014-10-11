@@ -21,9 +21,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @group now
- */
 class CoreConfigureCommandTest extends BaseTestCase
 {
     const PASSWORD = 'foo';

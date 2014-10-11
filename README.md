@@ -120,8 +120,7 @@ Pull Request successfully merged
 
 ### Contributions
 
-Please read our [contributor guide](https://github.com/gushphp/gush/blob/master/CONTRIBUTING.md).
-See also the [issues list](https://github.com/gushphp/gush/issues?state=open).
+See [issues list](https://github.com/gushphp/gush/issues?state=open) and use Gush to contribute.
 
 Running the test suite:
 
