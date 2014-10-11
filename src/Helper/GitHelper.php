@@ -14,7 +14,6 @@ namespace Gush\Helper;
 use Gush\Exception\UnknownRemoteException;
 use Gush\Exception\WorkingTreeIsNotReady;
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Filesystem\Filesystem;
 
 class GitHelper extends Helper
 {
@@ -242,7 +241,7 @@ class GitHelper extends Helper
                 [
                     'line' => ['git', 'commit', '-F', $tmpName],
                     'allow_failures' => false,
-                ]
+                ],
             ]
         );
 
