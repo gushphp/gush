@@ -424,6 +424,7 @@ LOGO;
             new Cmd\PullRequest\PullRequestLabelListCommand(),
             new Cmd\PullRequest\PullRequestMilestoneListCommand(),
             new Cmd\PullRequest\PullRequestFixerCommand(),
+            new Cmd\Util\DocumentationCommand(),
             new Cmd\Util\VersionEyeCommand(),
             new Cmd\Util\FabbotIoCommand(),
             new Cmd\Util\MetaHeaderCommand(),

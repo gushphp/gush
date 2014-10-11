@@ -8,7 +8,6 @@ bldr:
                 - prepare
                 - lint
                 - test
-                - secure
         local:
             description: Local Development Profile
             tasks:

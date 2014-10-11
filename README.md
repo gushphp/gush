@@ -14,9 +14,7 @@ Check Gush in action [here](https://vimeo.com/88283752) and [here](https://vimeo
 
 <a href="http://gushphp.org"><img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="200px"/></a>
 
-Logo courtesy from [@maxakawizard](https://twitter.com/MAXakaWIZARD) and [@kotosharic](https://twitter.com/kotosharic)
-
-*Logo explanation is best depicted from this passage from Psalms 78*:
+*Explanation is best presented from this passage in Psalms 78*:
 
 > True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
 > Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
@@ -39,39 +37,13 @@ Gush is a php console utility whose intention is to automate common maintainer a
 
 ### Install
 
-Install Gush in two ways:
-
-#### 1) Installing system-wide using composer (recommended)
-
-```bash
-$ composer global require gushphp/gush=dev-master
 ```
-
-If it is the first time you globally install a dependency then make sure
-you include `~/.composer/vendor/bin` in $PATH as shown [here](http://getcomposer.org/doc/03-cli.md#global).
-
-### Always keep your Gush installation up to date:
-
-```bash
-$ composer global update gushphp/gush
-```
-
-#### 2) Installing as a phar file:
-
-```
-$ curl -sS http://gushphp.org/installer | php
-$ mv gush.phar /usr/local/bin/gush // optionally
-```
-
-or
-
-```
-$ curl -sS http://gushphp.org/installer | php -- --install-dir=bin
+$ curl -sS http://gushphp.org/installer | php -- --install-dir=/usr/local/bin
 ```
 
 ### Usage
 
-You may want to start by configuring it:
+You want to start by configuring it:
 
 ```bash
 $ gush core:configure
@@ -125,10 +97,12 @@ See [issues list](https://github.com/gushphp/gush/issues?state=open) and use Gus
 Running the test suite:
 
 ```bash
-$ ./dev
+$ php ./bldr.phar build local
 ```
 
 ### Mailing list and IRC channel
 
 Join the [Mailing List](https://groups.google.com/forum/#!forum/gushphp)
 and also on IRC channel #gushphp for discussions and questions.
+
+Logo courtesy from [@maxakawizard](https://twitter.com/MAXakaWIZARD) and [@kotosharic](https://twitter.com/kotosharic)
