@@ -5,7 +5,7 @@
     "keywords": ["workflow", "issue", "tracker", "adapter", "pull request"],
     "homepage": "http://gushphp.org",
     "license": "MIT",
-    "authors": [{ "homepage": "https://github.com/gushphp/gush/graphs/contributors" }],
+    "authors": [{ "name": "makers", "homepage": "https://github.com/gushphp/gush/graphs/contributors" }],
     "require": {
         "php": ">=5.4",
         "ext-curl": "*",
