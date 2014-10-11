@@ -61,7 +61,6 @@
         "gushphp/gush-jira-adapter": "~1.1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.3.1",
         "raulfraile/ladybug": "~1.0.8",
         "phpspec/prophecy": "~1.2.1"
     },
