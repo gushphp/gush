@@ -46,12 +46,15 @@ EOF
     {
         /** @var Application $app */
         $app = $this->getApplication();
-        /** @var BaseCommand $command */
-        foreach ($app->getCommands() as $command) {
-            $output = new BufferedOutput();
-            $input = new StringInput(sprintf('%s --help --format md', $command->getName()));
+        $commands = $app->getCommands();
 
-            $app->run($input, $output);
+        /** @var BaseCommand $command */
+        foreach ($commands as $command) {
+            $innerOutput = new BufferedOutput();
+            $innerInput = new StringInput(sprintf('%s --help --format md', $command->getName()));
+            $command = $app->find($command->getName());
+            ladybug_dump($command->getName());
+            $command->run($innerInput, $innerOutput);
 
             $header = <<<EOT
 ---
@@ -67,7 +70,7 @@ EOT;
 
             file_put_contents(
                 'web/'.str_replace(':', '_', $command->getName()).'.md',
-                sprintf("%s\n%s\n%s", $header, $output->fetch(), $footer)
+                sprintf("%s\n%s\n%s", $header, $innerOutput->fetch(), $footer)
             );
         }
 
