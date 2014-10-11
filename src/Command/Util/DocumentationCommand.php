@@ -51,10 +51,10 @@ EOF
         /** @var BaseCommand $command */
         foreach ($commands as $command) {
             $innerOutput = new BufferedOutput();
-            $innerInput = new StringInput(sprintf('%s --help --format md', $command->getName()));
-            $command = $app->find($command->getName());
-            ladybug_dump($command->getName());
-            $command->run($innerInput, $innerOutput);
+            $innerInput = new StringInput(sprintf('help --format md'));
+            $helpCommand = $app->find('help');
+            $helpCommand->setCommand($command);
+            $helpCommand->run($innerInput, $innerOutput);
 
             $header = <<<EOT
 ---
