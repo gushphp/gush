@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-10-11 16:04
+
+@sstok i wonder why now the command is not generating the documentation once it was moved to here ... :cry:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-10-11 17:00
+
+https://github.com/symfony/symfony/issues/12213
+cc @sstok
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-10-11 17:21
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/6381bb38-2075-4864-8504-98f2841c5e46) was created.
