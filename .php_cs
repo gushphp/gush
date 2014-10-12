@@ -10,18 +10,14 @@
  */
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->notName('LICENSE')
-    ->notName('README.md')
-    ->notName('.php_cs')
-    ->notName('composer.*')
-    ->notName('phpunit.xml*')
-    ->notName('box.json')
-    ->notName('*.phar')
-    ->notName('installer')
     ->notName('OutputFixtures.php')
     ->notName('phar-stub.php')
-    ->exclude('web')
-    ->in(__DIR__)
+    ->in(
+        [
+            __DIR__.'/src',
+            __DIR__.'/tests',
+        ]
+    )
 ;
 
 // Load a local config-file when existing
