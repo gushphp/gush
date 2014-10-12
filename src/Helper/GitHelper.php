@@ -11,6 +11,8 @@
 
 namespace Gush\Helper;
 
+use Gush\Exception\UnknownRemoteException;
+use Gush\Exception\WorkingTreeIsNotReady;
 use Symfony\Component\Console\Helper\Helper;
 
 class GitHelper extends Helper
@@ -21,9 +23,15 @@ class GitHelper extends Helper
     /** @var \Gush\Helper\ProcessHelper */
     protected $processHelper;
 
-    public function __construct(ProcessHelper $processHelper)
+    /**
+     * @var FilesystemHelper
+     */
+    protected $filesystemHelper;
+
+    public function __construct(ProcessHelper $processHelper, FilesystemHelper $filesystemHelper)
     {
         $this->processHelper = $processHelper;
+        $this->filesystemHelper = $filesystemHelper;
     }
 
     public function getName()
@@ -181,6 +189,114 @@ class GitHelper extends Helper
         );
 
         return substr(strtok($lines, "\n"), 8);
+    }
+
+    /**
+     * @param string $sourceRemote  Remote name for pulling as registered in the .git/config
+     * @param string $baseRemote    Remote name for pushing as registered in the .git/config
+     * @param string $base          The base branch name
+     * @param string $sourceBranch  The source branch name
+     * @param string $commitMessage Commit message to use for the merge-commit
+     * @param int    $options       Options (reserved for feature usage)
+     *
+     * @throws WorkingTreeIsNotReady
+     *
+     * @return string Thew merge-commit hash
+     */
+    public function mergeRemoteBranch($sourceRemote, $baseRemote, $base, $sourceBranch, $commitMessage, $options = null)
+    {
+        if (!$this->hasGitConfig(sprintf('remote.%s.url', $sourceRemote))) {
+            if (!$this->hasGitConfig('remote.origin.url')) {
+                throw new UnknownRemoteException($sourceRemote);
+            }
+
+            $sourceRemote = 'origin';
+        }
+
+        if (!$this->isWorkingTreeReady()) {
+            throw new WorkingTreeIsNotReady();
+        }
+
+        $tmpName = $this->filesystemHelper->newTempFilename();
+        file_put_contents($tmpName, $commitMessage);
+
+        $this->processHelper->runCommands(
+            [
+                [
+                    'line' => 'git remote update',
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => 'git checkout '.$base,
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => 'git pull --ff-only',
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => ['git', 'merge', '--no-ff', '--no-commit', $sourceRemote.'/'.$sourceBranch],
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => ['git', 'commit', '-F', $tmpName],
+                    'allow_failures' => false,
+                ],
+            ]
+        );
+
+        $hash = trim($this->processHelper->runCommand('git rev-parse HEAD'));
+
+        $this->processHelper->runCommand(['git', 'push', $baseRemote]);
+
+        return $hash;
+    }
+
+    public function isWorkingTreeReady()
+    {
+        return '' === trim($this->processHelper->runCommand('git status --porcelain --untracked-files=no'));
+    }
+
+    public function hasGitConfig($config, $section = 'local', $expectedValue = null)
+    {
+        $value = trim(
+                $this->processHelper->runCommand(
+                sprintf(
+                    'git config --%s --get %s',
+                    $section,
+                    $config
+                ),
+                true
+            )
+        );
+
+        if ('' === $value || (null !== $expectedValue && $value !== $expectedValue)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function setGitConfig($config, $value, $overwrite = false, $section = 'local')
+    {
+        if ($this->hasGitConfig($config, $value) && $overwrite) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Unable to set git config "%s" at %s, because the value is already set.',
+                    $config,
+                    $section
+                )
+            );
+        }
+
+        $this->processHelper->runCommand(
+            sprintf(
+                'git config "%s" "%s" --%s',
+                $config,
+                $value,
+                $section
+            )
+        );
     }
 
     private function splitLines($output)

@@ -20,6 +20,7 @@ use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Meta as Meta;
+use Gush\Subscriber\CommandEndSubscriber;
 use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
@@ -91,11 +92,12 @@ LOGO;
         }
 
         $helperSet = $this->getDefaultHelperSet();
+        $helperSet->set(new Helpers\FilesystemHelper());
         $helperSet->set(new Helpers\TextHelper());
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
-        $helperSet->set(new Helpers\GitHelper($helperSet->get('process')));
+        $helperSet->set(new Helpers\GitHelper($helperSet->get('process'), $helperSet->get('filesystem')));
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('question'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new Helpers\AutocompleteHelper());
@@ -109,6 +111,7 @@ LOGO;
         $this->dispatcher->addSubscriber(new TableSubscriber());
         $this->dispatcher->addSubscriber(new GitRepoSubscriber($helperSet->get('git')));
         $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
+        $this->dispatcher->addSubscriber(new CommandEndSubscriber($helperSet->get('filesystem')));
 
         // share our dispatcher with the parent class
         $this->setDispatcher($this->dispatcher);

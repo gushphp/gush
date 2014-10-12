@@ -11,8 +11,11 @@
 
 namespace Gush\Tests\Helper;
 
+use Gush\Helper\FilesystemHelper;
 use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
+use Prophecy\Prophecy\ObjectProphecy;
+use Prophecy\Prophet;
 
 class GitHelperTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,15 +30,43 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     protected $unitGit;
 
     /**
-     * @var ProcessHelper
+     * @var ProcessHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processHelper;
 
+    /**
+     * @var FilesystemHelper|ObjectProphecy
+     */
+    private $filesystemHelper;
+
+    /**
+     * @var Prophet
+     */
+    private $prophet;
+
+    /**
+     * @var FilesystemHelper
+     */
+    private $realFsHelper;
+
     public function setUp()
     {
+        $this->prophet = new Prophet();
+
         $this->processHelper = $this->getMock('Gush\Helper\ProcessHelper');
-        $this->git = new GitHelper(new ProcessHelper());
-        $this->unitGit = new GitHelper($this->processHelper);
+
+        $this->filesystemHelper = $this->prophet->prophesize('Gush\Helper\FilesystemHelper');
+        $this->filesystemHelper->getName()->willReturn('filesystem');
+
+        $this->realFsHelper = new FilesystemHelper();
+
+        $this->git = new GitHelper(new ProcessHelper(), $this->realFsHelper);
+        $this->unitGit = new GitHelper($this->processHelper, $this->filesystemHelper->reveal());
+    }
+
+    public function tearDown()
+    {
+        $this->prophet->checkPredictions();
     }
 
     /**
@@ -143,6 +174,66 @@ EOT;
         // Smoke test for a real listFiles
         $res = $this->git->listFiles();
         $this->assertGreaterThan(50, $res);
+    }
+
+    /**
+     * @test
+     */
+    public function merges_remote_branch_in_clean_wc()
+    {
+        $base = 'master';
+        $baseRemote = $sourceRemote = 'origin';
+        $sourceBranch = 'amazing-feature';
+        $tmpName = $this->realFsHelper->newTempFilename();
+        $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
+        $message = "Black-box testing 123\n\n\nAah!";
+
+        $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper($processHelper->reveal(), $this->filesystemHelper->reveal());
+
+        $this->filesystemHelper->newTempFilename()->willReturn($tmpName);
+
+        $processHelper->runCommand('git config --local --get remote.origin.url', true)->willReturn(true);
+        $processHelper->runCommand('git status --porcelain --untracked-files=no')->willReturn("\n");
+        $processHelper->runCommands(
+            [
+                [
+                    'line' => 'git remote update',
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => 'git checkout '.$base,
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => 'git pull --ff-only',
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => ['git', 'merge', '--no-ff', '--no-commit', $sourceRemote.'/'.$sourceBranch],
+                    'allow_failures' => false,
+                ],
+                [
+                    'line' => ['git', 'commit', '-F', $tmpName],
+                    'allow_failures' => false,
+                ],
+            ]
+        )->shouldBeCalled();
+
+        $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
+        $processHelper->runCommand(['git', 'push', $baseRemote])->shouldBeCalled();
+
+        $this->assertEquals(
+            $hash,
+            $this->unitGit->mergeRemoteBranch(
+                $sourceRemote,
+                $baseRemote,
+                $base,
+                $sourceBranch,
+                $this->realFsHelper,
+                $message
+            )
+        );
     }
 
     public function repoUrlProvider()

@@ -14,10 +14,12 @@ namespace Gush\Command\PullRequest;
 use Gush\Exception\AdapterException;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
 {
@@ -63,6 +65,19 @@ EOF
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
+
+        if ('open' !== $pr['state']) {
+            $output->writeln(
+                sprintf(
+                    "<error>\n[ERROR] Pull request #%s is already merged/closed, current status: %s</error>",
+                    $prNumber,
+                    $pr['state']
+                )
+            );
+
+            return;
+        }
+
         $commits = $adapter->getPullRequestCommits($prNumber);
 
         if (null === $prType) {
@@ -74,7 +89,7 @@ EOF
             [
                 'type' => $prType,
                 'author' => $pr['user'],
-                'baseBranch' => $pr['base']['label'],
+                'baseBranch' => $pr['base']['ref'],
                 'prNumber' => $prNumber,
                 'prTitle' => trim($pr['title']),
                 'prBody' => trim($pr['body']),
@@ -82,12 +97,32 @@ EOF
             ]
         );
 
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+
         try {
-            $merge = $adapter->mergePullRequest($prNumber, $message);
+            $sourceRemote = $pr['head']['user'];
+            $baseRemote = $input->getOption('remote');
+
+            $base = $pr['base']['ref'];
+            $sourceBranch = $pr['head']['ref'];
+
+            $mergeCommit = $gitHelper->mergeRemoteBranch(
+                $sourceRemote,
+                $baseRemote,
+                $base,
+                $sourceBranch,
+                $message
+            );
+
             if (!$input->getOption('no-comments')) {
-                $comments = $adapter->getComments($prNumber);
-                $this->addCommentsToMergeCommit($comments, $merge, $input->getOption('remote'));
+                $this->addCommentsToMergeCommit(
+                    $adapter->getComments($prNumber),
+                    $mergeCommit,
+                    $input->getOption('remote')
+                );
             }
+
             $output->writeln('Pull Request successfully merged.');
 
             return self::COMMAND_SUCCESS;
@@ -116,13 +151,19 @@ EOF
             );
         }
 
+        $fs = new Filesystem();
+        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'gush';
+
+        if (!file_exists($dir)) {
+            $fs->mkdir($dir);
+        }
+
+        $tmpName = tempnam($dir, '');
+        file_put_contents($tmpName, $commentText);
+
         $commands = [
             [
                 'line' => 'git remote update',
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git checkout %s', $sha),
                 'allow_failures' => true,
             ],
             [
@@ -131,7 +172,8 @@ EOF
                     'notes',
                     '--ref=github-comments',
                     'add',
-                    sprintf('-m%s', addslashes($commentText)),
+                    '-F',
+                    $tmpName,
                     $sha,
                 ],
                 'allow_failures' => true,
@@ -140,13 +182,10 @@ EOF
                 'line' => sprintf('git push %s refs/notes/github-comments', $remote),
                 'allow_failures' => true,
             ],
-            [
-                'line' => 'git checkout @{-1}',
-                'allow_failures' => true,
-            ],
         ];
 
         $this->getHelper('process')->runCommands($commands);
+        $fs->remove($tmpName);
     }
 
     private function getCommitsString($commits)
