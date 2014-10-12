@@ -136,7 +136,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
         foreach ($template->getRequirements() as $key => $requirement) {
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
                 list($prompt, $default) = $requirement;
-                $prompt  = $default ? $prompt . ' (' . $default . ')' : $prompt;
+                $prompt  = $default ? $prompt.' ('.$default.')' : $prompt;
 
                 if ('description' === $key) {
                     $prompt .= ' (enter "e" to open editor)';

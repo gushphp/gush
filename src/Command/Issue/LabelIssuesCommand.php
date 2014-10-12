@@ -115,7 +115,7 @@ EOF
             }
 
             $output->writeln(sprintf($issueTitleFormat, $issue['number'], $issue['title']));
-            $output->writeln('<info>current labels:</info> ' . $this->getIssueLabels($issue));
+            $output->writeln('<info>current labels:</info> '.$this->getIssueLabels($issue));
             $this->showLabels($output, $labelNames);
 
             $validation = function ($label) use ($labelNames) {
