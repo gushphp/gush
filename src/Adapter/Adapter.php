@@ -73,7 +73,7 @@ interface Adapter
      * @param null $organization
      * @param bool $hasIssues
      * @param bool $hasWiki
-     * @param bool $hadDownloads
+     * @param bool $hasDownloads
      * @param int $teamId
      * @param bool $autoInit
      * @return mixed
@@ -86,7 +86,7 @@ interface Adapter
         $organization = null,
         $hasIssues = true,
         $hasWiki = false,
-        $hadDownloads = false,
+        $hasDownloads = false,
         $teamId = 0,
         $autoInit = true
     );
