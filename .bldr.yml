@@ -84,7 +84,7 @@ bldr:
                     type: apply
                     failOnError: true
                     src:
-                        - { path: [src, tests], files: *.php, recursive: true }
+                        - { path: [src, tests], files: "*.php", recursive: true }
                     output: /dev/null
                     executable: php
                     arguments: [-l]
