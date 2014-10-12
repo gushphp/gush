@@ -56,6 +56,13 @@ return Symfony\CS\Config\Config::create()
             'new_with_braces',
             'ordered_use',
             'default_values',
+            'line_after_namespace',
+            'multiple_use',
+            'concat_without_spaces',
+            'operators_spaces',
+            'single_array_no_trailing_comma',
+            'whitespacy_lines',
+            // 'strict',
         ]
     )
     ->finder($finder)
