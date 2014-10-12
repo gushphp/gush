@@ -24,7 +24,8 @@
         "gushphp/gush-github-adapter": "~1.1.3",
         "gushphp/gush-bitbucket-adapter": "~1.1.0",
         "gushphp/gush-gitlab-adapter": "~1.1.0",
-        "gushphp/gush-jira-adapter": "~1.1.0"
+        "gushphp/gush-jira-adapter": "~1.1.0",
+        "aura/cli": "~2.0@dev"
     },
     "require-dev": {
         "raulfraile/ladybug": "~1.0.8",
