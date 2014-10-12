@@ -19,6 +19,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->notName('*.phar')
     ->notName('installer')
     ->notName('OutputFixtures.php')
+    ->notName('phar-stub.php')
     ->exclude('web')
     ->in(__DIR__)
 ;
