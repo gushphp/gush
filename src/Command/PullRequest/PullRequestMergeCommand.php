@@ -151,14 +151,7 @@ EOF
             );
         }
 
-        $fs = new Filesystem();
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'gush';
-
-        if (!file_exists($dir)) {
-            $fs->mkdir($dir);
-        }
-
-        $tmpName = tempnam($dir, '');
+        $tmpName = $this->getHelper('filesystem')->newTempFilename();
         file_put_contents($tmpName, $commentText);
 
         $commands = [
@@ -185,7 +178,6 @@ EOF
         ];
 
         $this->getHelper('process')->runCommands($commands);
-        $fs->remove($tmpName);
     }
 
     private function getCommitsString($commits)
