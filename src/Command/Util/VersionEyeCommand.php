@@ -96,7 +96,6 @@ EOF
 
         foreach ($response->dependencies as $dependency) {
             if ($dependency->outdated) {
-
                 if ($stable && !$dependency->stable) {
                     continue;
                 }

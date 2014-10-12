@@ -46,10 +46,10 @@ class MetaHeaderCommandTest extends BaseTestCase
     private function getTestCommand()
     {
         $metasSupported = [
-            'php'  => new Meta\Base,
-            'js'   => new Meta\Text,
-            'css'  => new Meta\Text,
-            'twig' => new Meta\Twig,
+            'php'  => new Meta\Base(),
+            'js'   => new Meta\Text(),
+            'css'  => new Meta\Text(),
+            'twig' => new Meta\Twig(),
         ];
 
         $gitHelper = $this->expectGitHelper();

@@ -11,8 +11,8 @@
 
 namespace Gush\Template\PullRequest\Create;
 
-use Gush\Template\AbstractTemplate;
 use Gush\Helper\TableHelper;
+use Gush\Template\AbstractTemplate;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 abstract class AbstractSymfonyTemplate extends AbstractTemplate

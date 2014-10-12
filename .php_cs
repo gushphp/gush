@@ -10,17 +10,14 @@
  */
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->notName('LICENSE')
-    ->notName('README.md')
-    ->notName('.php_cs')
-    ->notName('composer.*')
-    ->notName('phpunit.xml*')
-    ->notName('box.json')
-    ->notName('*.phar')
-    ->notName('installer')
     ->notName('OutputFixtures.php')
-    ->exclude('web')
-    ->in(__DIR__)
+    ->notName('phar-stub.php')
+    ->in(
+        [
+            __DIR__.'/src',
+            __DIR__.'/tests',
+        ]
+    )
 ;
 
 // Load a local config-file when existing
@@ -59,6 +56,13 @@ return Symfony\CS\Config\Config::create()
             'new_with_braces',
             'ordered_use',
             'default_values',
+            'line_after_namespace',
+            'multiple_use',
+            'concat_without_spaces',
+            'operators_spaces',
+            'single_array_no_trailing_comma',
+            'whitespacy_lines',
+            // 'strict',
         ]
     )
     ->finder($finder)

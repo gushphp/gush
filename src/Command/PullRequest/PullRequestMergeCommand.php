@@ -11,8 +11,8 @@
 
 namespace Gush\Command\PullRequest;
 
-use Gush\Exception\AdapterException;
 use Gush\Command\BaseCommand;
+use Gush\Exception\AdapterException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;

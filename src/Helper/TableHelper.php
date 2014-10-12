@@ -13,10 +13,10 @@ namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class TableHelper extends Helper implements InputAwareInterface
 {

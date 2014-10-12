@@ -16,11 +16,11 @@ use Gush\Template\Meta\Header as TemplateHeader;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create as PRCreate;
 use Gush\Template\TemplateInterface;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Question\Question;
 
 class TemplateHelper extends Helper implements InputAwareInterface
@@ -136,7 +136,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
         foreach ($template->getRequirements() as $key => $requirement) {
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
                 list($prompt, $default) = $requirement;
-                $prompt  = $default ? $prompt . ' (' . $default . ')' : $prompt;
+                $prompt  = $default ? $prompt.' ('.$default.')' : $prompt;
 
                 if ('description' === $key) {
                     $prompt .= ' (enter "e" to open editor)';

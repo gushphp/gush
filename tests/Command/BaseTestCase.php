@@ -22,8 +22,8 @@ use Gush\Tests\TestableApplication;
 use Guzzle\Http\Client;
 use Prophecy\Prophet;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {

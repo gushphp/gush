@@ -228,7 +228,6 @@ LOGO;
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
         if ('core:configure' !== $this->getCommandName($input)) {
-
             if (null === $this->config) {
                 $this->config = Factory::createConfig();
             }
@@ -460,10 +459,10 @@ LOGO;
     public function getSupportedMetaFiles()
     {
         return [
-            'php'  => new Meta\Base,
-            'js'   => new Meta\Text,
-            'css'  => new Meta\Text,
-            'twig' => new Meta\Twig,
+            'php'  => new Meta\Base(),
+            'js'   => new Meta\Text(),
+            'css'  => new Meta\Text(),
+            'twig' => new Meta\Twig(),
         ];
     }
 }

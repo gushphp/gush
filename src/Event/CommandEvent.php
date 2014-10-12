@@ -11,8 +11,8 @@
 
 namespace Gush\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\EventDispatcher\Event;
 
 class CommandEvent extends Event
 {

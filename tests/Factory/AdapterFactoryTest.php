@@ -293,6 +293,5 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function createAdapterCallback()
     {
-
     }
 }
