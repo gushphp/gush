@@ -15,8 +15,6 @@ final class UnknownRemoteException extends \RuntimeException
 {
     public function __construct($remote)
     {
-        $message = sprintf('The Git remote "%s" is not configured.', $remote);
-
-        parent::__construct($message);
+        parent::__construct(sprintf('The Git remote "%s" is not configured.', $remote));
     }
 }

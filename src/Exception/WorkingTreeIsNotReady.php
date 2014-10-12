@@ -11,7 +11,6 @@
 
 namespace Gush\Exception;
 
-
 final class WorkingTreeIsNotReady extends \Exception
 {
     public function __construct()
