@@ -1,4 +1,0 @@
-* text=auto
-
-# Always use LF
-core.autocrlf=lf
