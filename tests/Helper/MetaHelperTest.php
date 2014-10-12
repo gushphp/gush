@@ -15,7 +15,7 @@ use Gush\Helper\MetaHelper;
 
 class MetaHelperTest extends \PHPUnit_Framework_TestCase
 {
-    static private $header;
+    private static $header;
 
     /**
      * @var MetaHelper
@@ -94,7 +94,7 @@ class MetaTest
 
 EOT;
 
-    $expected = <<<'EOT'
+        $expected = <<<'EOT'
 <?php
 
 /**
@@ -147,7 +147,7 @@ use Gush\Tester\HttpClient\TestHttpClient;
 
 EOT;
 
-    $expected = <<<'EOT'
+        $expected = <<<'EOT'
 <?php
 
 /**
@@ -193,7 +193,7 @@ class MetaTest
 
 EOT;
 
-    $expected = <<<'EOT'
+        $expected = <<<'EOT'
 <?php
 
 /*!

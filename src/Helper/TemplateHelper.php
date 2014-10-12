@@ -16,11 +16,11 @@ use Gush\Template\Meta\Header as TemplateHeader;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create as PRCreate;
 use Gush\Template\TemplateInterface;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Question\Question;
 
 class TemplateHelper extends Helper implements InputAwareInterface

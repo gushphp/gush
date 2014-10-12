@@ -68,9 +68,9 @@ EOF
         return function ($release) {
             return [
                 $release['id'],
-                $release['name'] ? : 'not set',
+                $release['name'] ?: 'not set',
                 $release['tag_name'],
-                $release['draft'] ? 'yes': 'no',
+                $release['draft'] ? 'yes' : 'no',
                 $release['prerelease'] ? 'yes' : 'no',
                 $release['created_at']->format('Y-m-d H:i'),
                 null !== $release['published_at'] ? $release['published_at']->format('Y-m-d H:i') : '',

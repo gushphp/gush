@@ -11,8 +11,8 @@
 
 namespace Gush\Helper;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Helper for launching external editor

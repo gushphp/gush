@@ -15,8 +15,8 @@ use Gush\Command\BaseCommand;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\MetaHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature

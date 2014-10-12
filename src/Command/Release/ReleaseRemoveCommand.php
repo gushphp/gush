@@ -13,9 +13,9 @@ namespace Gush\Command\Release;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 class ReleaseRemoveCommand extends BaseCommand implements GitRepoFeature
 {

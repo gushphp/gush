@@ -15,8 +15,8 @@ use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\TemplateHelper;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TemplateSubscriber implements EventSubscriberInterface

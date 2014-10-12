@@ -15,8 +15,8 @@ use Gush\Command\BaseCommand;
 use Gush\Exception\InvalidStateException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PullRequestListCommand extends BaseCommand implements TableFeature, GitRepoFeature

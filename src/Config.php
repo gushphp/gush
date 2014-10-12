@@ -66,7 +66,7 @@ class Config
                 // convert foo-bar to GUSH_FOO_BAR and check if it exists since it overrides the local config
                 $env = 'GUSH_'.strtoupper(strtr($key, '-', '_'));
 
-                return rtrim(getenv($env) ? : $this->config[$key], '/\\');
+                return rtrim(getenv($env) ?: $this->config[$key], '/\\');
 
             case 'home':
                 return rtrim($this->config[$key], '/\\');
