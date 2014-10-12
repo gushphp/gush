@@ -65,7 +65,7 @@ EOF
         );
 
         $output->writeln(
-            sprintf('Repository created %s <info>%s</info>', $result['git_url'], $result['http_url'])
+            sprintf('Repository created %s <info>%s</info>', $result['git_url'], $result['html_url'])
         );
 
         return self::COMMAND_SUCCESS;
