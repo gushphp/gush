@@ -453,6 +453,7 @@ LOGO;
             new Cmd\Core\CoreClearCommand(),
             new Cmd\Core\InitCommand(),
             new Cmd\Core\AutocompleteCommand(),
+            new Cmd\Repository\RepositoryCreateCommand(),
         ];
     }
 

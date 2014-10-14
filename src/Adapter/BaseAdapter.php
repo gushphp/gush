@@ -12,6 +12,7 @@
 namespace Gush\Adapter;
 
 use Gush\Config;
+use Gush\Exception\NotImplementedException;
 
 /**
  * Provides a base class for adapting Gush to use different providers.
@@ -105,5 +106,23 @@ abstract class BaseAdapter implements Adapter
     public function removeRelease($id)
     {
         // no-op
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createRepo(
+        $name,
+        $description,
+        $homepage,
+        $public = true,
+        $organization = null,
+        $hasIssues = true,
+        $hasWiki = false,
+        $hasDownloads = false,
+        $teamId = 0,
+        $autoInit = true
+    ) {
+        throw new NotImplementedException();
     }
 }

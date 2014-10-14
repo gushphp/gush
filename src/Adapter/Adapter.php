@@ -66,6 +66,32 @@ interface Adapter
     public function createFork($org);
 
     /**
+     * @param $name
+     * @param $description
+     * @param $homepage
+     * @param bool $public
+     * @param null $organization
+     * @param bool $hasIssues
+     * @param bool $hasWiki
+     * @param bool $hasDownloads
+     * @param int $teamId
+     * @param bool $autoInit
+     * @return mixed
+     */
+    public function createRepo(
+        $name,
+        $description,
+        $homepage,
+        $public = true,
+        $organization = null,
+        $hasIssues = true,
+        $hasWiki = false,
+        $hasDownloads = false,
+        $teamId = 0,
+        $autoInit = true
+    );
+
+    /**
      * Creates a new a comment on an issue/pull-request.
      *
      * @param int    $id
