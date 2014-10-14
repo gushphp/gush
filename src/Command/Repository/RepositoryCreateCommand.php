@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Command\Core;
+namespace Gush\Command\Repository;
 
 use Gush\Command\BaseCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,7 +24,7 @@ class RepositoryCreateCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('core:create')
+            ->setName('repo:create')
             ->setDescription('Quickly spins a repository')
             ->addArgument('name', InputArgument::REQUIRED, 'Name of the new repository')
             ->addArgument('description', InputArgument::OPTIONAL, 'Repository description')
