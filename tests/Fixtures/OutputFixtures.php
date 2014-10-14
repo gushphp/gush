@@ -117,7 +117,7 @@ PR has been squashed!
 EOT;
 
     const HEADER_LICENSE_TWIG = <<<EOT
-{##
+{#
  # This file is part of Your Package package.
  #
  # (c) 2009-2014 You <you@yourdomain.com>
@@ -139,7 +139,7 @@ EOT;
     const HEADER_LICENSE_PHP = <<<EOT
 <?php
 
-/**
+/*
  * This file is part of Your Package package.
  *
  * (c) 2009-2014 You <you@yourdomain.com>
@@ -163,7 +163,7 @@ class MetaTest
 EOT;
 
     const HEADER_LICENSE_JS = <<<EOT
-/**
+/*
  * This file is part of Your Package package.
  *
  * (c) 2009-2014 You <you@yourdomain.com>
@@ -181,7 +181,7 @@ EOT;
 EOT;
 
     const HEADER_LICENSE_CSS = <<<EOT
-/**
+/*
  * This file is part of Your Package package.
  *
  * (c) 2009-2014 You <you@yourdomain.com>

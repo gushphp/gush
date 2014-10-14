@@ -18,7 +18,7 @@ class Base implements Meta
      */
     public function getStartDelimiter()
     {
-        return '/**';
+        return '/*';
     }
 
     /**

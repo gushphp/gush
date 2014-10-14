@@ -11,9 +11,6 @@
 
 namespace Gush\Util;
 
-/**
- * ArrayUtil class.
- */
 class ArrayUtil
 {
     public static function getValuesFromNestedArray(array $array, $key)
