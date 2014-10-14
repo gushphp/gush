@@ -48,6 +48,6 @@
     ],
     "git-version": "package_version",
     "main": "bin/gush",
-    "output": "gush-@git-version@.phar",
+    "output": "gush.phar",
     "stub": "phar-stub.php"
 }

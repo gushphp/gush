@@ -21,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class GitRepoSubscriber implements EventSubscriberInterface
 {
-    /** @var \Gush\Helper\GitHelper */
     private $gitHelper;
 
     public function __construct(GitHelper $gitHelper)

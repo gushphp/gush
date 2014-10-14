@@ -67,14 +67,10 @@ class Config
                 $env = 'GUSH_'.strtoupper(strtr($key, '-', '_'));
 
                 return rtrim(getenv($env) ?: $this->config[$key], '/\\');
-
             case 'home':
                 return rtrim($this->config[$key], '/\\');
-
             default:
-
                 $accessor = PropertyAccess::createPropertyAccessor();
-
                 try {
                     return $accessor->getValue($this->config, $key);
                 } catch (NoSuchPropertyException $e) {

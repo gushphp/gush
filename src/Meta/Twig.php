@@ -18,7 +18,7 @@ class Twig implements Meta
      */
     public function getStartDelimiter()
     {
-        return '{##';
+        return '{#';
     }
 
     /**

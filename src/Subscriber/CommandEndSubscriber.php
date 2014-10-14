@@ -17,13 +17,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CommandEndSubscriber implements EventSubscriberInterface
 {
-
-    /** @var FilesystemHelper */
-    private $gitHelper;
+    private $fsHelper;
 
     public function __construct(FilesystemHelper $filesystemHelper)
     {
-        $this->gitHelper = $filesystemHelper;
+        $this->fsHelper = $filesystemHelper;
     }
 
     public static function getSubscribedEvents()
@@ -35,6 +33,6 @@ class CommandEndSubscriber implements EventSubscriberInterface
 
     public function cleanUpTempFiles()
     {
-        $this->gitHelper->clearTempFiles();
+        $this->fsHelper->clearTempFiles();
     }
 }

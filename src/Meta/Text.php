@@ -18,7 +18,7 @@ class Text implements Meta
      */
     public function getStartDelimiter()
     {
-        return '/**';
+        return '/*';
     }
 
     /**
