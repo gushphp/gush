@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2014-10-12 16:57
+
+related https://github.com/gushphp/gush-github-adapter/pull/30 @sstok i think we will have to PR every other adapter? or at least throw exceptions? This is already working basically #325
+
+---------------------------------------------------------------------------
+
+by cordoval at 2014-10-13 14:02
+
+@sstok input/PRs to complete this would be appreciated
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-10-14 13:12
+
+A [new inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/93db6b1b-f5af-4154-89e7-7fb0d7aabab8) was created.
