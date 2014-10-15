@@ -4,30 +4,30 @@ bldr:
     profiles:
         travis:
             description: Travis Profile
-            tasks:
+            jobs:
                 - prepare
                 - lint
                 - test
         local:
             description: Local Development Profile
-            tasks:
+            jobs:
                 - testLocal
                 - watch
         rebase:
             description: Gush rebase flow
-            tasks:
+            jobs:
                 - gushRebase
         merge:
             description: Gush merge flow
-            tasks:
+            jobs:
                 - gushMerge
         secure:
             description: run security script
-            tasks:
+            jobs:
                 - secure
-    tasks:
+    jobs:
         prepare:
-            calls:
+            tasks:
                 -
                     failOnError: false
                     type: filesystem:remove
@@ -49,7 +49,7 @@ bldr:
                     type: notify
                     message: Prepare Task Finished
         secure:
-            calls:
+            tasks:
                 -
                     type: exec
                     failOnError: false
@@ -79,7 +79,7 @@ bldr:
                         - ./composer.lock
         lint:
             description: Lints the files of the project
-            calls:
+            tasks:
                 -
                     type: apply
                     failOnError: true
@@ -90,7 +90,7 @@ bldr:
                     arguments: [-l]
         test:
             description: Runs the PHPUnit Tests
-            calls:
+            tasks:
                 -
                     type: exec
                     failOnError: true
@@ -100,7 +100,7 @@ bldr:
                         - --coverage-text=php://stdout
         testLocal:
             description: Runs the PHPUnit Tests
-            calls:
+            tasks:
                 -
                     type: exec
                     failOnError: false
@@ -109,7 +109,7 @@ bldr:
                         #- --group=now
         watch:
             description: Watch Task for Local Development
-            calls:
+            tasks:
                 -
                     type: watch
                     src:
@@ -117,13 +117,13 @@ bldr:
                     task: testLocal
         gushRebase:
             description: Gush rebase flow
-            calls:
+            tasks:
                 -
                     type: gush:branch:rebase
                     base_branch: master
         gushMerge:
             description: Gush merge flow
-            calls:
+            tasks:
                 -
                     type: gush:pull-request:merge
                     base_branch: master
