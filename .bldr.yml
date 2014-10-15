@@ -29,20 +29,20 @@ bldr:
         prepare:
             tasks:
                 -
-                    failOnError: false
+                    continueOnError: true
                     type: filesystem:remove
                     files: [build/coverage, build/logs]
                 -
                     type: filesystem:mkdir
-                    failOnError: true
+                    continueOnError: false
                     files: [build/coverage, build/logs]
                 -
                     type: filesystem:touch
-                    failOnError: false
+                    continueOnError: true
                     files: [build/coverage/index.html]
                 -
                     type: exec
-                    failOnError: true
+                    continueOnError: false
                     executable: composer
                     arguments: [-q, install, --prefer-dist]
                 -
@@ -52,26 +52,26 @@ bldr:
             tasks:
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: rm
                     arguments:
                         - ./security-checker.phar
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: wget
                     arguments:
                         - http://get.sensiolabs.org/security-checker.phar
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: chmod
                     arguments:
                         - +x
                         - ./security-checker.phar
                 -
                     type: exec
-                    failOnError: true
+                    continueOnError: false
                     executable: php
                     arguments:
                         - ./security-checker.phar
@@ -82,7 +82,7 @@ bldr:
             tasks:
                 -
                     type: apply
-                    failOnError: true
+                    continueOnError: false
                     src:
                         - { path: [src, tests], files: "*.php", recursive: true }
                     output: /dev/null
@@ -93,7 +93,7 @@ bldr:
             tasks:
                 -
                     type: exec
-                    failOnError: true
+                    continueOnError: false
                     executable: phpunit
                     arguments:
                         - --coverage-html=build/coverage
@@ -103,7 +103,7 @@ bldr:
             tasks:
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: phpunit
                     arguments:
                         #- --group=now
