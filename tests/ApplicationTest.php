@@ -45,8 +45,6 @@ EOT
      */
     protected function setUp()
     {
-        @unlink(getcwd().'/.first-time-run');
-
         $config = new Config();
 
         $adapterFactory = new AdapterFactory();
