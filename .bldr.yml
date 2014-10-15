@@ -113,7 +113,7 @@ bldr:
                 -
                     type: watch
                     src:
-                        - { path: [src, tests], files: *.php, recursive: true }
+                        - { path: [src, tests], files: "*.php", recursive: true }
                     task: testLocal
         gushRebase:
             description: Gush rebase flow
