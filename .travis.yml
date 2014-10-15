@@ -24,8 +24,8 @@ before_install:
     - php ./bldr.phar install
 
 script:
-    - php ./bldr.phar build travis
-    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then php ./bldr.phar build -t secure travis; fi;'
+    - php ./bldr.phar run travis
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then php ./bldr.phar run -t secure travis; fi;'
 
 notifications:
     irc: "irc.freenode.org#gushphp"

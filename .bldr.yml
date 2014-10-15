@@ -4,74 +4,74 @@ bldr:
     profiles:
         travis:
             description: Travis Profile
-            tasks:
+            jobs:
                 - prepare
                 - lint
                 - test
         local:
             description: Local Development Profile
-            tasks:
+            jobs:
                 - testLocal
                 - watch
         rebase:
             description: Gush rebase flow
-            tasks:
+            jobs:
                 - gushRebase
         merge:
             description: Gush merge flow
-            tasks:
+            jobs:
                 - gushMerge
         secure:
             description: run security script
-            tasks:
+            jobs:
                 - secure
-    tasks:
+    jobs:
         prepare:
-            calls:
+            tasks:
                 -
-                    failOnError: false
+                    continueOnError: true
                     type: filesystem:remove
                     files: [build/coverage, build/logs]
                 -
                     type: filesystem:mkdir
-                    failOnError: true
+                    continueOnError: false
                     files: [build/coverage, build/logs]
                 -
                     type: filesystem:touch
-                    failOnError: false
+                    continueOnError: true
                     files: [build/coverage/index.html]
                 -
                     type: exec
-                    failOnError: true
+                    continueOnError: false
                     executable: composer
                     arguments: [-q, install, --prefer-dist]
                 -
                     type: notify
                     message: Prepare Task Finished
         secure:
-            calls:
+            tasks:
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: rm
                     arguments:
                         - ./security-checker.phar
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: wget
                     arguments:
                         - http://get.sensiolabs.org/security-checker.phar
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: chmod
                     arguments:
                         - +x
                         - ./security-checker.phar
                 -
                     type: exec
-                    failOnError: true
+                    continueOnError: false
                     executable: php
                     arguments:
                         - ./security-checker.phar
@@ -79,10 +79,10 @@ bldr:
                         - ./composer.lock
         lint:
             description: Lints the files of the project
-            calls:
+            tasks:
                 -
                     type: apply
-                    failOnError: true
+                    continueOnError: false
                     src:
                         - { path: [src, tests], files: "*.php", recursive: true }
                     output: /dev/null
@@ -90,40 +90,40 @@ bldr:
                     arguments: [-l]
         test:
             description: Runs the PHPUnit Tests
-            calls:
+            tasks:
                 -
                     type: exec
-                    failOnError: true
+                    continueOnError: false
                     executable: phpunit
                     arguments:
                         - --coverage-html=build/coverage
                         - --coverage-text=php://stdout
         testLocal:
             description: Runs the PHPUnit Tests
-            calls:
+            tasks:
                 -
                     type: exec
-                    failOnError: false
+                    continueOnError: true
                     executable: phpunit
                     arguments:
                         #- --group=now
         watch:
             description: Watch Task for Local Development
-            calls:
+            tasks:
                 -
                     type: watch
                     src:
-                        - { path: [src, tests], files: *.php, recursive: true }
+                        - { path: [src, tests], files: "*.php", recursive: true }
                     task: testLocal
         gushRebase:
             description: Gush rebase flow
-            calls:
+            tasks:
                 -
                     type: gush:branch:rebase
                     base_branch: master
         gushMerge:
             description: Gush merge flow
-            calls:
+            tasks:
                 -
                     type: gush:pull-request:merge
                     base_branch: master
