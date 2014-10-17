@@ -77,6 +77,26 @@ EOF
             return;
         }
 
+        $remote = $pr['head']['user'];
+        $repository = $pr['head']['repo'];
+
+        $remoteUrl = $adapter->getGitPullUrl($remote, $repository);
+
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+
+        if (!$gitHelper->remoteExists($remote, $remoteUrl)) {
+            $output->writeln(
+                sprintf(
+                    "<info>\n[INFO] Adding remote '%s' with '%s' to git local config</info>",
+                    $remote,
+                    $remoteUrl
+                )
+            );
+
+            $gitHelper->runGitCommand(sprintf('git remote add "%s" "%s"', $remote, $remoteUrl));
+        }
+
         $commits = $adapter->getPullRequestCommits($prNumber);
 
         if (null === $prType) {
@@ -95,9 +115,6 @@ EOF
                 'commits' => $this->getCommitsString($commits),
             ]
         );
-
-        $gitHelper = $this->getHelper('git');
-        /** @var GitHelper $gitHelper */
 
         try {
             $sourceRemote = $pr['head']['user'];

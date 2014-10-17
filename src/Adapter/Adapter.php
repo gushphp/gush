@@ -66,6 +66,16 @@ interface Adapter
     public function createFork($org);
 
     /**
+     * Returns the Git pull url of the org.
+     *
+     * @param string $org
+     * @param string $repository
+     *
+     * @return string
+     */
+    public function getGitPullUrl($org, $repository);
+
+    /**
      * @param $name
      * @param $description
      * @param $homepage

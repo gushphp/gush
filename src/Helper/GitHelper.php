@@ -191,6 +191,19 @@ class GitHelper extends Helper
         return substr(strtok($lines, "\n"), 8);
     }
 
+    public function remoteExists($remote, $expectedUrl = null)
+    {
+        if (!$this->hasGitConfig(sprintf('remote.%s.url', $remote))) {
+            return false;
+        }
+
+        if (null === $expectedUrl) {
+            return true;
+        }
+
+        return $expectedUrl === $this->getGitConfig(sprintf('remote.%s.url', $remote));
+    }
+
     /**
      * @param string $sourceRemote  Remote name for pulling as registered in the .git/config
      * @param string $baseRemote    Remote name for pushing as registered in the .git/config
@@ -205,12 +218,8 @@ class GitHelper extends Helper
      */
     public function mergeRemoteBranch($sourceRemote, $baseRemote, $base, $sourceBranch, $commitMessage, $options = null)
     {
-        if (!$this->hasGitConfig(sprintf('remote.%s.url', $sourceRemote))) {
-            if (!$this->hasGitConfig('remote.origin.url')) {
-                throw new UnknownRemoteException($sourceRemote);
-            }
-
-            $sourceRemote = 'origin';
+        if (!$this->remoteExists($sourceRemote)) {
+            throw new UnknownRemoteException($sourceRemote);
         }
 
         if (!$this->isWorkingTreeReady()) {
@@ -257,9 +266,9 @@ class GitHelper extends Helper
         return '' === trim($this->processHelper->runCommand('git status --porcelain --untracked-files=no'));
     }
 
-    public function hasGitConfig($config, $section = 'local', $expectedValue = null)
+    public function getGitConfig($config, $section = 'local')
     {
-        $value = trim(
+        return trim(
                 $this->processHelper->runCommand(
                 sprintf(
                     'git config --%s --get %s',
@@ -269,6 +278,11 @@ class GitHelper extends Helper
                 true
             )
         );
+    }
+
+    public function hasGitConfig($config, $section = 'local', $expectedValue = null)
+    {
+        $value = $this->getGitConfig($config, $section);
 
         if ('' === $value || (null !== $expectedValue && $value !== $expectedValue)) {
             return false;
