@@ -1,10 +1,4 @@
 ## Gush
-
-Gush is a rapid git workflow for project maintainers and contributors that works
-with backend support for GitHub, Enterprise Github, and more!
-
-Check Gush in action [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
-
 [![Gitter chat](https://badges.gitter.im/gushphp/gush.png)](https://gitter.im/gushphp/gush)
 [![Build Status](https://travis-ci.org/gushphp/gush.png?branch=master)](https://travis-ci.org/gushphp/gush)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/gushphp/gush/badges/quality-score.png?s=127d28d94969ef366d3bc78808cc89b8eeba51e2)](https://scrutinizer-ci.com/g/gushphp/gush/)
@@ -13,7 +7,10 @@ Check Gush in action [here](https://vimeo.com/88283752) and [here](https://vimeo
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush) [![Total Downloads](https://poser.pugx.org/gushphp/gush/downloads.png)](https://packagist.org/packages/gushphp/gush) [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush) [![License](https://poser.pugx.org/gushphp/gush/license.png)](https://packagist.org/packages/gushphp/gush)
 [![Dependency Status](https://www.versioneye.com/php/gushphp:gush/badge.svg)](https://www.versioneye.com/php/gushphp:gush/)
 
-<a href="http://gushphp.org"><img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="200px"/></a>
+Gush is a tool that automates common maintainer and contributor tasks and has
+backend support for GitHub, Enterprise Github, and more! See [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
+
+<a href="http://gushphp.org"><img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="100px"/></a>
 
 *Explanation is best presented from this passage in Psalms 78*:
 
@@ -25,85 +22,12 @@ There first thread of blood and the following are water gushing out of a rock, c
 prophecy fulfillment in the New Testament at the cross when Jesus was opened on his side and gushed out
 water and blood.
 
-### What is this?
-
-Gush is a php console utility whose intention is to automate common maintainer and contributor tasks.
-
-- creates a Pull Request with a formatted table description of the changes
-- creates github release notes
-- changes the base branch of a Pull Request
-- automates retrieval of issue's message, title and comments as a text
-- merges a PR with just the number and includes all github discussion on the commit message
-- and much more in the form of intuitive commands!
-
 ### Install
 
 ```
 $ curl -sS http://gushphp.org/installer | php -- --install-dir=/usr/local/bin
 ```
 
-### Usage
+Logo courtesy from [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
-You want to start by configuring it:
-
-```bash
-$ gush core:configure
-Insert your github credentials:
-username: cordoval
-// ...
-Configuration saved successfully.
-```
-
-Let's go into a repo, list issues, take one, send a pull request and merge it:
-
-List it:
-```bash
-$ cd project_directory
-$ gush issue:list
- #   State  PR?  Title                                     User       Assignee   Milestone        Labels       Created
- 14  open        Tests and Documentation for Commands      cordoval                                            2014-01-10
-```
-
-Take it:
-```bash
-$ gush issue:take 14
-$ git branch
-* 14-tests-and-documentation-for-commands
-```
-
-Do your changes and commit them:
-```bash
-$ git commit -am "added instructions to use gush"
-```
-
-Send PR:
-```
-$ gush pull-request:create
-Bug fix? [y]
-// ...
-PR Title: Added a bit of documentation under usage
-https://github.com/gushphp/gush/pull/94
-```
-
-Merge it:
-```bash
-$ gush pull-request:merge 94
-Pull Request successfully merged
-```
-
-### Contributions
-
-See [issues list](https://github.com/gushphp/gush/issues?state=open) and use Gush to contribute.
-
-Running the test suite:
-
-```bash
-$ php ./bldr.phar build local
-```
-
-### Mailing list and IRC channel
-
-Join the [Mailing List](https://groups.google.com/forum/#!forum/gushphp)
-and also on IRC channel #gushphp for discussions and questions.
-
-Logo courtesy from [@maxakawizard](https://twitter.com/MAXakaWIZARD) and [@kotosharic](https://twitter.com/kotosharic)
+Documentation at http://gushphp.org
