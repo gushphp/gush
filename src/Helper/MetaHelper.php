@@ -161,8 +161,9 @@ class MetaHelper extends Helper
             $fileContent = substr($fileContent, strlen($startMatch[0]));
         }
 
-        if (preg_match('&^'.preg_quote($meta->getStartDelimiter()).'?&', $fileContent)) {
+        if (preg_match('&^'.preg_quote($meta->getStartDelimiter()).'+&', $fileContent)) {
             $lines = preg_split("/\r\n|\n|\r/", $fileContent);
+
             $lineNum = 0;
             $linesCount = count($lines);
             $line = $lines[$lineNum];
