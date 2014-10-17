@@ -1,4 +1,5 @@
 <img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="90px"/>
+
 [![Gitter chat](https://badges.gitter.im/gushphp/gush.png)](https://gitter.im/gushphp/gush)
 [![Build Status](https://travis-ci.org/gushphp/gush.png?branch=master)](https://travis-ci.org/gushphp/gush)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/gushphp/gush/badges/quality-score.png?s=127d28d94969ef366d3bc78808cc89b8eeba51e2)](https://scrutinizer-ci.com/g/gushphp/gush/)
@@ -8,7 +9,7 @@
 It automates common maintainer and contributor tasks and has
 backend support for GitHub, Enterprise Github, and more! See [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
 
-```
+```bash
 $ curl -sS http://gushphp.org/installer | php -- --install-dir=/usr/local/bin
 ```
 
@@ -22,6 +23,6 @@ There first thread of blood and the following are water gushing out of a rock, c
 prophecy fulfillment in the New Testament at the cross when Jesus was opened on his side and gushed out
 water and blood.
 
-Logo courtesy from [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
+Logo by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
 Documentation at http://gushphp.org
