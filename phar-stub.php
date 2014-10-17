@@ -1,15 +1,12 @@
 <?php
 
-/**
- * This file is part of Gush.
+/*
+ * This file is part of Gush package.
  *
- * (c) Luis Cordova <cordoval@gmail.com>
+ * (c) 2013-2014 Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
- *
- * Gush installer, heavily inspired by composer installer script
- * credits to http://getcomposer.org
  */
 
 if (class_exists('Phar')) {
