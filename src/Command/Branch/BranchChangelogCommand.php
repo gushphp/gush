@@ -46,16 +46,14 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $latestTag = $this->getHelper('git')->runGitCommand('git describe --abbrev=0 --tags');
+            $latestTag = $this->getHelper('git')->getLastTag();
         } catch (\RuntimeException $e) {
             $output->writeln('<info>There were no tags found</info>');
 
             return self::COMMAND_SUCCESS;
         }
 
-        $commits = $this->getHelper('git')->runGitCommand(
-            sprintf('git log %s...HEAD --oneline', $latestTag)
-        );
+        $commits = $this->getHelper('git')->getLogBetweenCommits($latestTag, 'HEAD');
 
         // Filter commits that reference an issue
         $issues = [];

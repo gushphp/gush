@@ -43,6 +43,8 @@ class GitHelper extends Helper
      * @param string $command
      *
      * @return string Result of running the git command
+     *
+     * @deprecated Git commands should not be spread
      */
     public function runGitCommand($command)
     {
@@ -93,6 +95,17 @@ class GitHelper extends Helper
 
         return $foundRepoName;
     }
+
+    public function getLastTag()
+    {
+        return $this->processHelper->runCommand('git describe --abbrev=0 --tags');
+    }
+
+    public function getLogBetweenCommits($start, $end)
+    {
+        return $this->processHelper->runCommand(sprintf('git log %s...%s --oneline --no-color', $start, $end));
+    }
+
 
     /**
      * @return string The vendor name
