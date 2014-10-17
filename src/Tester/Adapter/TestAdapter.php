@@ -68,6 +68,25 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
+    public function getRepositoryInfo($org, $repository)
+    {
+        return [
+            'owner' => 'cordoval',
+            'html_url' => 'https://github.com/cordoval/gush',
+            'fetch_url' => 'https://github.com/cordoval/gush.git',
+            'push_url' => 'git@github.com:cordoval/gush.git',
+            'is_fork' => true,
+            'is_private' => false,
+            'fork_origin' => [
+                'org' => 'gushphp',
+                'repository' => 'gush',
+            ]
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function openIssue($subject, $body, array $options = [])
     {
         return 77;

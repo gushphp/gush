@@ -87,6 +87,14 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
+    public function getRepositoryInfo($org, $repository)
+    {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createReleaseAssets($id, $name, $contentType, $content)
     {
         // no-op
