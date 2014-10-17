@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gush package.
  *
  * (c) 2013-2014 Luis Cordova <cordoval@gmail.com>
@@ -24,7 +24,7 @@ class MetaHelperTest extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$header = "/**\n * This file is part of Your Package package.\n *\n *".
+        self::$header = "/*\n * This file is part of Your Package package.\n *\n *".
             " (c) 2009-2014 You <you@yourdomain.com>\n *\n".
             " * This source file is subject to the MIT license that is bundled\n".
             " * with this source code in the file LICENSE.\n */\n\n"
@@ -97,7 +97,7 @@ EOT;
         $expected = <<<'EOT'
 <?php
 
-/**
+/*
  * This file is part of Your Package package.
  *
  * (c) 2009-2014 You <you@yourdomain.com>
@@ -130,7 +130,7 @@ EOT;
         $input = <<<'EOT'
 <?php
 
-/**
+/*
  * This file is part of Gush package.
  *
  * (c) 2013-2014 Luis Cordova <cordoval@gmail.com>
@@ -150,7 +150,7 @@ EOT;
         $expected = <<<'EOT'
 <?php
 
-/**
+/*
  * This file is part of Your Package package.
  *
  * (c) 2009-2014 You <you@yourdomain.com>
@@ -255,7 +255,7 @@ EOT;
         $meta
             ->expects($this->any())
             ->method('getStartDelimiter')
-            ->will($this->returnValue('/**'))
+            ->will($this->returnValue('/*'))
         ;
 
         $meta
