@@ -30,6 +30,7 @@ class MetaHeaderCommandTest extends BaseTestCase
 
     /**
      * @test
+     * @group now
      * @dataProvider metaFileProvider
      */
     public function runs_meta_header_command($file, $content)
@@ -63,9 +64,9 @@ class MetaHeaderCommandTest extends BaseTestCase
     private function expectGitHelper()
     {
         $files = [
-            'tests/Fixtures/meta/metatest.php',
-            'tests/Fixtures/meta/metatest.css',
-            'tests/Fixtures/meta/metatest.js',
+//            'tests/Fixtures/meta/metatest.php',
+//            'tests/Fixtures/meta/metatest.css',
+//            'tests/Fixtures/meta/metatest.js',
             'tests/Fixtures/meta/metatest.twig',
         ];
 
@@ -86,9 +87,9 @@ class MetaHeaderCommandTest extends BaseTestCase
     {
         return [
             ['tests/Fixtures/meta/metatest.twig', OutputFixtures::HEADER_LICENSE_TWIG],
-            ['tests/Fixtures/meta/metatest.php',  OutputFixtures::HEADER_LICENSE_PHP],
-            ['tests/Fixtures/meta/metatest.js',   OutputFixtures::HEADER_LICENSE_JS],
-            ['tests/Fixtures/meta/metatest.css',  OutputFixtures::HEADER_LICENSE_CSS],
+//            ['tests/Fixtures/meta/metatest.php',  OutputFixtures::HEADER_LICENSE_PHP],
+//            ['tests/Fixtures/meta/metatest.js',   OutputFixtures::HEADER_LICENSE_JS],
+//            ['tests/Fixtures/meta/metatest.css',  OutputFixtures::HEADER_LICENSE_CSS],
         ];
     }
 }
