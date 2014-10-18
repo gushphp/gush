@@ -25,6 +25,18 @@ bldr:
             description: run security script
             jobs:
                 - secure
+        minor:
+            description: minor run
+            jobs:
+                - minor
+        major:
+            description: major run
+            jobs:
+                - major
+        patch:
+            description: patch run
+            jobs:
+                - patch
     jobs:
         prepare:
             tasks:
