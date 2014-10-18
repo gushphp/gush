@@ -128,3 +128,24 @@ bldr:
                     type: gush:pull-request:merge
                     base_branch: master
                     symlinked: true
+        minor:
+            description: Gush block tag minor release
+            tasks:
+                -
+                    type: gush:branch:tag
+                    base_branch: master
+                    release: minor
+        major:
+            description: Gush block tag major release
+            tasks:
+                -
+                    type: gush:branch:tag
+                    base_branch: master
+                    release: major
+        patch:
+            description: Gush block tag patch release
+            tasks:
+                -
+                    type: gush:branch:tag
+                    base_branch: master
+                    release: patch
