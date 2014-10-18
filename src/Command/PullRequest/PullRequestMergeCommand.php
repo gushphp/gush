@@ -77,24 +77,24 @@ EOF
             return;
         }
 
-        $remote = $pr['head']['user'];
+        $sourceRemote = 'gush_'.$pr['head']['user'];
         $repository = $pr['head']['repo'];
 
-        $remoteUrl = $adapter->getGitPullUrl($remote, $repository);
+        $remoteUrl = $adapter->getGitPullUrl($sourceRemote, $repository);
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        if (!$gitHelper->remoteExists($remote, $remoteUrl)) {
+        if (!$gitHelper->remoteExists($sourceRemote, $remoteUrl)) {
             $output->writeln(
                 sprintf(
                     "<info>\n[INFO] Adding remote '%s' with '%s' to git local config</info>",
-                    $remote,
+                    $sourceRemote,
                     $remoteUrl
                 )
             );
 
-            $gitHelper->runGitCommand(sprintf('git remote add "%s" "%s"', $remote, $remoteUrl));
+            $gitHelper->runGitCommand(sprintf('git remote add "%s" "%s"', $sourceRemote, $remoteUrl));
         }
 
         $commits = $adapter->getPullRequestCommits($prNumber);
@@ -117,7 +117,6 @@ EOF
         );
 
         try {
-            $sourceRemote = $pr['head']['user'];
             $baseRemote = $input->getOption('remote');
 
             $base = $pr['base']['ref'];
