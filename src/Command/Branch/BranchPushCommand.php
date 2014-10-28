@@ -56,14 +56,7 @@ EOF
             $org = $this->getParameter('authentication')['username'];
         }
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf('git push -u %s %s', $org, $branchName),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $this->getHelper('git')->pushRemote($org, $branchName, true);
 
         $output->writeln(
             sprintf('Branch pushed to %s/%s', $org, $branchName)

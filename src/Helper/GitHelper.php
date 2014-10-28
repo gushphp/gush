@@ -353,6 +353,11 @@ class GitHelper extends Helper
         );
     }
 
+    public function addRemote($name, $url)
+    {
+        $this->processHelper->runCommand(['git', 'remote', 'add', $name, $url]);
+    }
+
     private function splitLines($output)
     {
         $output = trim($output);
