@@ -51,21 +51,11 @@ EOF
         $adapter = $this->getAdapter();
         $org = $input->getArgument('other_organization');
         $username = $this->getParameter('authentication')['username'];
+        $remoteName = $org ?: $username;
 
         $fork = $adapter->createFork($org);
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf(
-                        'git remote add %s %s',
-                        $org ?: $username,
-                        $fork['git_url']
-                    ),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $this->getHelper('git')->addRemote($remoteName, $fork['git_url']);
 
         $output->writeln(sprintf('Added remote for %s', $org));
 
