@@ -58,18 +58,7 @@ EOF
             $org = $input->getArgument('other_organization');
         }
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf(
-                        'git push -u %s :%s',
-                        $org,
-                        $currentBranchName
-                    ),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $this->getHelper('git')->pushRemote($org, ':'.$currentBranchName, true);
 
         $output->writeln(sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName));
 

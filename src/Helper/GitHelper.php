@@ -282,9 +282,17 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($commands, true);
     }
 
-    public function pushRemote($remote, $ref)
+    public function pushRemote($remote, $ref, $setUpstream = false)
     {
-        $this->processHelper->runCommand(['git', 'push', $remote, $ref]);
+        $command = ['git', 'push', $remote];
+
+        if ($setUpstream) {
+            $command[] = '-u';
+        }
+
+        $command[] = $ref;
+
+        $this->processHelper->runCommand($command);
     }
 
     public function remoteUpdate($remote = null)
