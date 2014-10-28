@@ -106,7 +106,6 @@ class GitHelper extends Helper
         return $this->processHelper->runCommand(sprintf('git log %s...%s --oneline --no-color', $start, $end));
     }
 
-
     /**
      * @return string The vendor name
      */
@@ -263,6 +262,40 @@ class GitHelper extends Helper
         $this->processHelper->runCommand(['git', 'push', $baseRemote]);
 
         return $hash;
+    }
+
+    public function addNotes($notes, $commitHash, $ref)
+    {
+        $tmpName = $this->filesystemHelper->newTempFilename();
+        file_put_contents($tmpName, $notes);
+
+        $commands = [
+            'git',
+            'notes',
+            '--ref='.$ref,
+            'add',
+            '-F',
+            $tmpName,
+            $commitHash,
+        ];
+
+        $this->processHelper->runCommand($commands, true);
+    }
+
+    public function pushRemote($remote, $ref)
+    {
+        $this->processHelper->runCommand(['git', 'push', $remote, $ref]);
+    }
+
+    public function remoteUpdate($remote = null)
+    {
+        $command = ['git', 'remote', 'update'];
+
+        if ($remote) {
+            $command[] = $remote;
+        }
+
+        $this->processHelper->runCommand($command);
     }
 
     public function isWorkingTreeReady()

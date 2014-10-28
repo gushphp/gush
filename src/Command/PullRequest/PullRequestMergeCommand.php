@@ -139,6 +139,7 @@ EOF
         }
 
         $commentText = '';
+
         foreach ($comments as $comment) {
             $commentText .= $this->render(
                 'comment',
@@ -150,38 +151,18 @@ EOF
             );
         }
 
-        $tmpName = $this->getHelper('filesystem')->newTempFilename();
-        file_put_contents($tmpName, $commentText);
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
 
-        $commands = [
-            [
-                'line' => 'git remote update',
-                'allow_failures' => true,
-            ],
-            [
-                'line' => [
-                    'git',
-                    'notes',
-                    '--ref=github-comments',
-                    'add',
-                    '-F',
-                    $tmpName,
-                    $sha,
-                ],
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git push %s refs/notes/github-comments', $remote),
-                'allow_failures' => true,
-            ],
-        ];
-
-        $this->getHelper('process')->runCommands($commands);
+        $gitHelper->remoteUpdate($remote);
+        $gitHelper->addNotes($commentText, $sha, 'github-comments');
+        $gitHelper->pushRemote($remote, 'refs/notes/github-comments');
     }
 
     private function getCommitsString($commits)
     {
         $commitsString = '';
+
         foreach ($commits as $commit) {
             // Only use the first line
             if (strpos($commit['message'], PHP_EOL)) {
