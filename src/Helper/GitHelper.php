@@ -376,14 +376,15 @@ class GitHelper extends Helper
         $this->processHelper->runCommand(['git', 'remote', 'add', $name, $url]);
     }
 
-    public function checkout($branchName, $alternativeName = null)
+    public function checkout($branchName, $createBranch = false)
     {
-        $command = ['git', 'checkout', $branchName];
+        $command = ['git', 'checkout'];
 
-        if ($alternativeName) {
+        if ($createBranch) {
             $command[] = '-b';
-            $command[] = $alternativeName;
         }
+
+        $command[] = $branchName;
 
         $this->processHelper->runCommand($command);
     }
