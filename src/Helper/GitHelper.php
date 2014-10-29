@@ -295,6 +295,24 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($command);
     }
 
+    public function pullRemote($remote, $ref = null, $setUpstream = false)
+    {
+        $command = ['git', 'pull'];
+
+        if ($setUpstream) {
+            $command[] = '-u';
+        }
+
+        $command[] = $remote;
+
+        if ($ref) {
+            $command[] = $ref;
+        }
+
+        $this->processHelper->runCommand($command);
+
+    }
+
     public function remoteUpdate($remote = null)
     {
         $command = ['git', 'remote', 'update'];
@@ -356,6 +374,23 @@ class GitHelper extends Helper
     public function addRemote($name, $url)
     {
         $this->processHelper->runCommand(['git', 'remote', 'add', $name, $url]);
+    }
+
+    public function checkout($branchName, $alternativeName = null)
+    {
+        $command = ['git', 'checkout', $branchName];
+
+        if ($alternativeName) {
+            $command[] = '-b';
+            $command[] = $alternativeName;
+        }
+
+        $this->processHelper->runCommand($command);
+    }
+
+    public function reset($commit, $type = 'soft')
+    {
+        $this->processHelper->runCommand(['git', 'reset', '--'.$type, $commit]);
     }
 
     private function splitLines($output)

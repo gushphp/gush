@@ -13,6 +13,7 @@ namespace Gush\Command\Branch;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,32 +53,16 @@ EOF
             $branchName = $stashedBranchName;
         }
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => 'git remote update',
-                    'allow_failures' => true,
-                ],
-                [
-                    'line' => 'git checkout '.$branchName,
-                    'allow_failures' => true,
-                ],
-                [
-                    'line' => 'git reset --hard HEAD~1',
-                    'allow_failures' => true,
-                ],
-                [
-                    'line' => 'git pull -u origin '.$branchName,
-                    'allow_failures' => true,
-                ],
-                [
-                    'line' => 'git checkout '.$stashedBranchName,
-                    'allow_failures' => true,
-                ],
-            ]
-        );
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
 
-        $output->writeln(sprintf('Branch %s has been synced upstream!', $branchName));
+        $gitHelper->remoteUpdate();
+        $gitHelper->checkout($branchName);
+        $gitHelper->reset('HEAD~1', 'hard');
+        $gitHelper->pullRemote('origin', $branchName, true);
+        $gitHelper->checkout($stashedBranchName);
+
+        $output->writeln(sprintf('Branch "%s" has been synced with upstream "%s".', $branchName, $stashedBranchName));
 
         return self::COMMAND_SUCCESS;
     }
