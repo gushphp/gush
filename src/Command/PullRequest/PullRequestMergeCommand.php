@@ -80,7 +80,7 @@ EOF
         $sourceRemote = 'gush_'.$pr['head']['user'];
         $repository = $pr['head']['repo'];
 
-        $remoteUrl = $adapter->getGitPullUrl($sourceRemote, $repository);
+        $remoteUrl = $adapter->getGitPullUrl($pr['head']['user'], $repository);
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
