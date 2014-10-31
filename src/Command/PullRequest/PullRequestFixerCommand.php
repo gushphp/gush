@@ -12,6 +12,8 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Helper\GitHelper;
+use Gush\Helper\ProcessHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,36 +49,30 @@ EOF
     {
         $fixerLine = $input->getArgument('fixer_line');
 
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+        $processHelper = $this->getHelper('process');
+        /** @var ProcessHelper $processHelper */
+
         if ($fixerLine === self::DEFAULT_FIXER_LINE) {
-            $this->getHelper('process')->probePhpCsFixer();
+            $fixerLine = $processHelper->probePhpCsFixer().substr(self::DEFAULT_FIXER_LINE, 12);
         }
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => 'git add .',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git commit -am wip',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => $fixerLine,
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git add .',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git commit -am cs-fixer',
-                    'allow_failures' => true
-                ],
-            ]
-        );
+        $gitHelper->add('.');
 
-        $output->writeln('CS fix committed and pushed!');
+        if (!$gitHelper->isWorkingTreeReady()) {
+            $gitHelper->commit('wip', 'a');
+        }
+
+        $processHelper->runCommand($fixerLine, true);
+
+        $gitHelper->add('.');
+
+        if (!$gitHelper->isWorkingTreeReady()) {
+            $gitHelper->commit('cs-fixer', 'a');
+        }
+
+        $output->writeln('CS fixes committed!');
 
         return self::COMMAND_SUCCESS;
     }

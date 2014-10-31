@@ -394,6 +394,27 @@ class GitHelper extends Helper
         $this->processHelper->runCommand(['git', 'reset', '--'.$type, $commit]);
     }
 
+    public function add($path)
+    {
+        $this->processHelper->runCommand(['git', 'add', $path]);
+    }
+
+    public function commit($message, array $options = [])
+    {
+        $params = '';
+
+        foreach ($options as $option => $value) {
+            if (is_int($option)) {
+                $params[] = '-'.$value;
+            } else {
+                $params[] = '-'.$option;
+                $params[] = $value;
+            }
+        }
+
+        $this->processHelper->runCommand(array_merge(['git', 'commit', '-m', $message], $params));
+    }
+
     private function splitLines($output)
     {
         $output = trim($output);
