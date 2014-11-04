@@ -72,6 +72,11 @@ EOT;
 Closed https://github.com/gushphp/gush/issues/7
 EOT;
 
+    const ISSUE_COPY = <<<EOT
+dantleech/gushphp: Opening issue "[SomePrefix] Write a behat test to launch strategy"
+  gushphp/gush: Closing issue "7"
+EOT;
+
     const PULL_REQUEST_CLOSE = <<<EOT
 Closed https://github.com/gushphp/gush/pull/40
 EOT;
