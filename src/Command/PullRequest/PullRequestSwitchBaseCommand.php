@@ -17,6 +17,7 @@ use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
@@ -30,6 +31,12 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
             ->setName('pull-request:switch-base')
             ->setDescription('Switch the base of the PR to another one')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
+            ->addOption(
+                'force-new-pr',
+                null,
+                InputOption::VALUE_NONE,
+                'Create a new PR, even when the used adapter supports switching the base'
+            )
             ->addArgument(
                 'base_branch',
                 InputArgument::OPTIONAL,
@@ -38,10 +45,16 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command switches the base of the given pull request:
+The <info>%command.name%</info> command switches the base of the given pull request
+to the given base. This will preserve all commits made after the current base.
 
     <info>$ gush %command.name% 12 2.3</info>
 
+When switching the base is not supported by the used adapter, a new pull request is
+created instead. You can overwrite this behaviour with <comment>--force-new-pr</comment> to create
+a new pull request (even if the adapter supports switching).
+
+    <info>$ gush %command.name% --force-new-pr 12 2.3</info>
 EOF
             )
         ;
@@ -54,6 +67,7 @@ EOF
     {
         $prNumber = $input->getArgument('pr_number');
         $baseBranch = $input->getArgument('base_branch');
+        $sourceOrg = $this->getParameter('authentication')['username'];
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
@@ -61,7 +75,11 @@ EOF
         $currentBase = $pr['base']['ref'];
         $branchName = $pr['head']['ref'];
 
-        $adapter->closePullRequest($prNumber);
+        if ($currentBase === $baseBranch) {
+            $output->writeln(sprintf('<info>PR base-branch is already based on %s!<info>', $baseBranch));
+
+            return self::COMMAND_SUCCESS;
+        }
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
@@ -70,17 +88,24 @@ EOF
         $gitHelper->pushRemote('origin', ':'.$branchName);
         $gitHelper->pushRemote('origin', $branchName.'-switched', true);
 
-        $command = $this->getApplication()->find('pull-request:create');
-        $input = new ArrayInput(
-            [
-                'command' => 'pull-request:create',
-                '--base' => $baseBranch,
-                '--source-branch' => $branchName.'-switched',
-                '--org' => $input->getOption('org'),
-                '--repo' => $input->getOption('repo'),
-            ]
+        $switchPr = $adapter->switchPullRequestBase(
+            $prNumber,
+            $baseBranch,
+            $sourceOrg.':'.$branchName.'-switched',
+            $input->getOption('force-new-pr')
         );
-        $command->run($input, $output);
+
+        if ($prNumber == $switchPr['number']) {
+            $adapter->createComment($prNumber, sprintf('(PR base switched to %s)', $baseBranch));
+
+            $output->writeln('<info>PR base-branch been switched!<info>');
+        } else {
+            $adapter->createComment($prNumber, sprintf('(PR replaced by %s)', $switchPr['html_url']));
+            $adapter->closePullRequest($prNumber);
+
+            $output->writeln('<comment>PR base-branch could not be switched, a new PR was opened<comment>');
+            $output->writeln($switchPr['html_url']);
+        }
 
         return self::COMMAND_SUCCESS;
     }

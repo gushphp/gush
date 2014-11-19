@@ -414,7 +414,7 @@ class GitHelper extends Helper
 
         // Detached head, checkout our target branch
         if ('HEAD' === $activeBranch) {
-            $this->checkout($branchName);
+            $activeBranch = $branchName;
         }
 
         $this->checkout($branchName);
@@ -426,7 +426,15 @@ class GitHelper extends Helper
             $newBranchName = $branchName;
         }
 
-        $this->processHelper->runCommand(['git', 'rebase', '--onto', $newBase, $currentBase, $newBranchName], true);
+        try {
+            $this->processHelper->runCommand(['git', 'rebase', '--onto', $newBase, $currentBase, $newBranchName]);
+        } catch (\Exception $e) {
+            // Error, abort the rebase process
+            $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
+            $this->checkout($activeBranch);
+
+            throw $e;
+        }
 
         $this->checkout($activeBranch);
     }
