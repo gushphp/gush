@@ -282,12 +282,16 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($commands, true);
     }
 
-    public function pushRemote($remote, $ref, $setUpstream = false)
+    public function pushRemote($remote, $ref, $setUpstream = false, $force = false)
     {
         $command = ['git', 'push', $remote];
 
         if ($setUpstream) {
             $command[] = '-u';
+        }
+
+        if ($force) {
+            $command[] = '-f';
         }
 
         $command[] = $ref;
@@ -439,6 +443,44 @@ class GitHelper extends Helper
         $this->checkout($activeBranch);
     }
 
+    public function squashBranch($base, $branch)
+    {
+        if (!$this->isWorkingTreeReady()) {
+            throw new WorkingTreeIsNotReady();
+        }
+
+        $activeBranch = trim($this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD'));
+
+        // Detached head, checkout our target branch
+        if ('HEAD' === $activeBranch) {
+            $activeBranch = $branch;
+        }
+
+        $this->checkout($branch);
+
+        $forkPoint = $this->processHelper->runCommand(
+            sprintf(
+                'git merge-base --fork-point %s %s',
+                $base,
+                $branch
+            )
+        );
+
+        $message = $this->splitLines(
+            $this->processHelper->runCommand(
+                sprintf(
+                    'git rev-list %s..%s --reverse --format=%%s --max-count=1',
+                    $forkPoint,
+                    $branch
+                )
+            )
+        )[1];
+
+        $this->reset($base);
+        $this->commit($message, ['a']);
+        $this->checkout($activeBranch);
+    }
+
     public function commit($message, array $options = [])
     {
         $params = '';
@@ -452,7 +494,10 @@ class GitHelper extends Helper
             }
         }
 
-        $this->processHelper->runCommand(array_merge(['git', 'commit', '-m', $message], $params));
+        $tmpName = $this->filesystemHelper->newTempFilename();
+        file_put_contents($tmpName, $message);
+
+        $this->processHelper->runCommand(array_merge(['git', 'commit', '-F', $tmpName], $params));
     }
 
     private function splitLines($output)
