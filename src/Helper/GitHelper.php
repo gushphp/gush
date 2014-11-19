@@ -399,6 +399,38 @@ class GitHelper extends Helper
         $this->processHelper->runCommand(['git', 'add', $path]);
     }
 
+    public function cherryPick($commit)
+    {
+        $this->processHelper->runCommand(['git', 'cherry-pick', $commit]);
+    }
+
+    public function switchBranchBase($branchName, $currentBase, $newBase, $newBranchName = null)
+    {
+        if (!$this->isWorkingTreeReady()) {
+            throw new WorkingTreeIsNotReady();
+        }
+
+        $activeBranch = trim($this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD'));
+
+        // Detached head, checkout our target branch
+        if ('HEAD' === $activeBranch) {
+            $this->checkout($branchName);
+        }
+
+        $this->checkout($branchName);
+
+        if ($newBranchName) {
+            // Switch to new branch so we can apply the rebase on the new branch
+            $this->checkout($newBranchName, true);
+        } else {
+            $newBranchName = $branchName;
+        }
+
+        $this->processHelper->runCommand(['git', 'rebase', '--onto', $newBase, $currentBase, $newBranchName], true);
+
+        $this->checkout($activeBranch);
+    }
+
     public function commit($message, array $options = [])
     {
         $params = '';

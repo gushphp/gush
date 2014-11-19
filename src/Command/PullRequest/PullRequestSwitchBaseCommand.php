@@ -13,6 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,57 +55,27 @@ EOF
         $prNumber = $input->getArgument('pr_number');
         $baseBranch = $input->getArgument('base_branch');
 
-        // squashes to only cherry-pick once
-        $command = $this->getApplication()->find('pull-request:squash');
-        $input = new ArrayInput(
-            [
-                'command' => 'pull-request:squash',
-                'pr_number' => $prNumber,
-                '--org' => $input->getOption('org'),
-                '--repo' => $input->getOption('repo'),
-            ]
-        );
-        $command->run($input, $output);
-
-        // gets old base and sha1 from old PR
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
-        $commitSha1 = $pr['head']['sha'];
+
+        $currentBase = $pr['base']['ref'];
         $branchName = $pr['head']['ref'];
 
-        // closes PR
         $adapter->closePullRequest($prNumber);
 
-        $commands = [
-            [
-                'line' => sprintf('git remote update'),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git checkout -b %s-switched origin/%s', $branchName, $baseBranch),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git cherry-pick %s', $commitSha1),
-                'allow_failures' => false,
-            ],
-            [
-                'line' => sprintf('git push -u origin :%s', $branchName),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git push -u origin %s-switched', $branchName),
-                'allow_failures' => true,
-            ],
-        ];
-
-        $this->getHelper('process')->runCommands($commands);
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+        $gitHelper->remoteUpdate();
+        $gitHelper->switchBranchBase($branchName, $currentBase, $baseBranch, $branchName.'-switched');
+        $gitHelper->pushRemote('origin', ':'.$branchName);
+        $gitHelper->pushRemote('origin', $branchName.'-switched', true);
 
         $command = $this->getApplication()->find('pull-request:create');
         $input = new ArrayInput(
             [
                 'command' => 'pull-request:create',
-                'base_branch' => $baseBranch,
+                '--base' => $baseBranch,
+                '--source-branch' => $branchName.'-switched',
                 '--org' => $input->getOption('org'),
                 '--repo' => $input->getOption('repo'),
             ]
