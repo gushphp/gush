@@ -29,9 +29,14 @@ class BranchSyncCommand extends BaseCommand implements GitRepoFeature
             ->setName('branch:sync')
             ->setDescription('Syncs local branch with its upstream version')
             ->addArgument('branch_name', InputArgument::OPTIONAL, 'Branch name to sync')
+            ->addArgument(
+                'remote',
+                InputArgument::OPTIONAL,
+                'Git remote to pull from (defaults to origin)', 'origin'
+            )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command syncs local branch with its upstream version:
+The <info>%command.name%</info> command syncs local branch with it's origin version:
 
     <info>$ gush %command.name% develop</info>
 
@@ -45,24 +50,19 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $stashedBranchName = $this->getHelper('git')->getBranchName();
+        $remote = $input->getArgument('remote');
+        $branchName = $input->getArgument('branch_name');
 
-        if (null !== $input->getArgument('branch_name')) {
-            $branchName = $input->getArgument('branch_name');
-        } else {
-            $branchName = $stashedBranchName;
+        if (null === $branchName) {
+            $branchName = $this->getHelper('git')->getBranchName();
         }
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        $gitHelper->remoteUpdate();
-        $gitHelper->checkout($branchName);
-        $gitHelper->reset('HEAD~1', 'hard');
-        $gitHelper->pullRemote('origin', $branchName, true);
-        $gitHelper->checkout($stashedBranchName);
+        $gitHelper->syncWithRemote($remote, $branchName);
 
-        $output->writeln(sprintf('Branch "%s" has been synced with upstream "%s".', $branchName, $stashedBranchName));
+        $output->writeln(sprintf('Branch "%s" has been synced with remote "%s".', $branchName, $remote));
 
         return self::COMMAND_SUCCESS;
     }

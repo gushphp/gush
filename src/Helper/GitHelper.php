@@ -481,6 +481,32 @@ class GitHelper extends Helper
         $this->checkout($activeBranch);
     }
 
+    public function syncWithRemote($remote, $branchName = null)
+    {
+        if (!$this->isWorkingTreeReady()) {
+            throw new WorkingTreeIsNotReady();
+        }
+
+        $activeBranchName = $this->getBranchName();
+
+        if (null === $branchName) {
+            $branchName = $activeBranchName;
+        }
+
+        $this->remoteUpdate($remote);
+
+        if ($activeBranchName !== $branchName) {
+            $this->checkout($activeBranchName);
+        }
+
+        $this->reset('HEAD~1', 'hard');
+        $this->pullRemote($remote, $branchName, true);
+
+        if ($activeBranchName !== $branchName) {
+            $this->checkout($activeBranchName);
+        }
+    }
+
     public function commit($message, array $options = [])
     {
         $params = '';
