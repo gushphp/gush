@@ -147,13 +147,13 @@ class GitHelper extends Helper
     }
 
     /**
-     * @throws \RuntimeException
+     * @param string $ref commit/branch or HEAD (default is HEAD)
      *
      * @return string The tag name
      */
-    public function getLastTagOnCurrentBranch()
+    public function getLastTagOnBranch($ref = 'HEAD')
     {
-        return $this->processHelper->runCommand('git describe --tags --abbrev=0 HEAD');
+        return $this->processHelper->runCommand(['git', 'describe', '--tags', '--abbrev=0', $ref]);
     }
 
     /**

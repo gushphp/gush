@@ -92,7 +92,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     public function gets_the_last_tag_on_current_branch()
     {
         exec('git describe --tags --abbrev=0 HEAD', $output);
-        $this->assertEquals($output[0], $this->git->getLastTagOnCurrentBranch());
+        $this->assertEquals($output[0], $this->git->getLastTagOnBranch());
     }
 
     /**
