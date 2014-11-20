@@ -172,4 +172,10 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
         return $client;
     }
+
+    protected function expectsConfig($username = 'cordoval')
+    {
+        $this->config->get('adapter')->willReturn('github_enterprise');
+        $this->config->get('[adapters][github_enterprise][authentication]')->willReturn(['username' => $username]);
+    }
 }

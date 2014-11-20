@@ -14,58 +14,51 @@ namespace Gush\Tests\Command\Branch;
 use Gush\Command\Branch\BranchForkCommand;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Prophecy\Argument;
 
 class BranchForkCommandTest extends BaseTestCase
 {
-    const TEST_USERNAME = 'cordoval';
-
     /**
      * @test
      */
     public function forks_repository_to_users_vendor_name()
     {
-        $processHelper = $this->expectProcessHelper();
         $this->expectsConfig();
+
         $tester = $this->getCommandTester($command = new BranchForkCommand());
-        $command->getHelperSet()->set($processHelper, 'process');
+        $command->getHelperSet()->set($this->expectGitHelper('cordoval', 'git@github.com:cordoval/gush.git'));
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_FORK, trim($tester->getDisplay(true)));
+        $this->assertEquals(sprintf(OutputFixtures::BRANCH_FORK, 'cordoval'), trim($tester->getDisplay(true)));
     }
 
-    private function expectProcessHelper()
+    /**
+     * @test
+     */
+    public function forks_repository_to_specific_vendor_name()
     {
-        $processHelper = $this->getMock(
-            'Gush\Helper\ProcessHelper',
-            ['runCommands']
+        $this->expectsConfig();
+
+        $tester = $this->getCommandTester($command = new BranchForkCommand());
+        $command->getHelperSet()->set($this->expectGitHelper('someone', 'git@github.com:cordoval/gush.git'));
+
+        $tester->execute(
+            ['--org' => 'gushphp', '--repo' => 'gush', 'other_organization' => 'someone'],
+            ['interactive' => false]
         );
-        $processHelper->expects($this->once())
-            ->method('runCommands')
-            ->with([
-                [
-                    'line' => 'git remote add cordoval git@github.com:cordoval/gush.git',
-                    'allow_failures' => true
-                ],
-            ])
-        ;
 
-        return $processHelper;
+        $this->assertEquals(sprintf(OutputFixtures::BRANCH_FORK, 'someone'), trim($tester->getDisplay(true)));
     }
 
-    private function expectsConfig()
+    private function expectGitHelper($remoteName, $gitUrl)
     {
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('adapter')
-            ->will($this->returnValue('github_enterprise'))
-        ;
-        $this->config
-            ->expects($this->at(1))
-            ->method('get')
-            ->with('[adapters][github_enterprise][authentication]')
-            ->will($this->returnValue(['username' => 'cordoval']))
-        ;
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
+
+        $gitHelper->addRemote($remoteName, $gitUrl)->shouldBeCalled();
+
+        return $gitHelper->reveal();
     }
 }

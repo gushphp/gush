@@ -85,7 +85,7 @@ Branch %s/%s has been deleted!
 EOT;
 
     const BRANCH_FORK = <<<EOT
-Forked repository gushphp/gush into cordoval/gush
+Forked repository gushphp/gush into %s/gush
 EOT;
 
     const BRANCH_CHANGELOG_EMPTY = <<<EOT
