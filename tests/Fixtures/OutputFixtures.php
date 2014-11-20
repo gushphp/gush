@@ -97,7 +97,7 @@ EOT;
 EOT;
 
     const BRANCH_PUSH = <<<EOT
-Branch pushed to cordoval/some-branch
+Branch pushed to %s/%s
 EOT;
 
     const PULL_REQUEST_FIXER = <<<EOT

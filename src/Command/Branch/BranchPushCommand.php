@@ -48,11 +48,10 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $branchName = $this->getHelper('git')->getBranchName();
+        $branchName = $this->getHelper('git')->getActiveBranchName();
 
-        if (null !== $input->getArgument('other_organization')) {
-            $org = $input->getArgument('other_organization');
-        } else {
+        $org = $input->getArgument('other_organization');
+        if (null === $org) {
             $org = $this->getParameter('authentication')['username'];
         }
 
