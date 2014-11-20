@@ -81,7 +81,7 @@ Branch test_branch has been synced upstream!
 EOT;
 
     const BRANCH_DELETE = <<<EOT
-Branch cordoval/test_branch has been deleted!
+Branch %s/%s has been deleted!
 EOT;
 
     const BRANCH_FORK = <<<EOT
@@ -218,7 +218,7 @@ _gush()
     fi
 
     case "\${prev}" in
-        
+
         esac
 
     COMPREPLY=($(compgen -W "\${opts}" -- \${cur}))

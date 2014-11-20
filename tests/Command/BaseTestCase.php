@@ -20,6 +20,7 @@ use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tester\Adapter\TestIssueTracker;
 use Gush\Tests\TestableApplication;
 use Guzzle\Http\Client;
+use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophet;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputAwareInterface;
@@ -33,7 +34,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected $adapter;
 
     /**
-     * @var Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var Config|ObjectProphecy
      */
     protected $config;
 
@@ -44,9 +45,9 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = $this->getMock('Gush\Config');
-        $this->adapter = $this->buildAdapter();
         $this->prophet = new Prophet();
+        $this->config = $this->prophet->prophesize('Gush\Config');
+        $this->adapter = $this->buildAdapter();
     }
 
     public function tearDown()
@@ -124,7 +125,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
         $application = new TestableApplication($adapterFactory);
         $application->setAutoExit(false);
-        $application->setConfig($this->config);
+        $application->setConfig($this->config->reveal());
         $application->setAdapter($this->adapter);
         $application->setIssueTracker($this->adapter);
         $application->setVersionEyeClient($this->buildVersionEyeClient());
