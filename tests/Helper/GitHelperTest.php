@@ -83,7 +83,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     public function gets_current_git_branch_name()
     {
         exec('git rev-parse --abbrev-ref HEAD', $output);
-        $this->assertEquals($output[0], $this->git->getBranchName());
+        $this->assertEquals($output[0], $this->git->getActiveBranchName());
     }
 
     /**

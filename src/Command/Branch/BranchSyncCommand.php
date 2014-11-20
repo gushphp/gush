@@ -50,15 +50,15 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+
         $remote = $input->getArgument('remote');
         $branchName = $input->getArgument('branch_name');
 
         if (null === $branchName) {
-            $branchName = $this->getHelper('git')->getBranchName();
+            $branchName = $gitHelper->getActiveBranchName();
         }
-
-        $gitHelper = $this->getHelper('git');
-        /** @var GitHelper $gitHelper */
 
         $gitHelper->syncWithRemote($remote, $branchName);
 

@@ -52,11 +52,27 @@ class GitHelper extends Helper
     }
 
     /**
+     * @param string|null $defaultBranch
+     *
      * @return string The branch name
      */
-    public function getBranchName()
+    public function getActiveBranchName($defaultBranch = null)
     {
-        return $this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD');
+        $activeBranch = $this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD');
+
+        // Detached head, use default branch
+        if ('HEAD' === $activeBranch) {
+            $activeBranch = $defaultBranch;
+        }
+
+        if (null === $activeBranch) {
+            throw new \RuntimeException(
+                'You are currently in a detached HEAD state, unable to get active branch-name.'.
+                'Please run `git checkout` first.'
+            );
+        }
+
+        return $activeBranch;
     }
 
     /**
@@ -167,7 +183,7 @@ class GitHelper extends Helper
     public function getIssueNumber()
     {
         try {
-            $segments = explode('-', $this->getBranchName());
+            $segments = explode('-', $this->getActiveBranchName());
             $issueNumber = $segments[0];
         } catch (\Exception $e) {
             throw new \RuntimeException('Invalid branch name, couldn\'t detect issue number.');
@@ -225,9 +241,7 @@ class GitHelper extends Helper
             $sourceRemote = 'origin';
         }
 
-        if (!$this->isWorkingTreeReady()) {
-            throw new WorkingTreeIsNotReady();
-        }
+        $this->guardWorkingTreeReady();
 
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
@@ -403,24 +417,11 @@ class GitHelper extends Helper
         $this->processHelper->runCommand(['git', 'add', $path]);
     }
 
-    public function cherryPick($commit)
-    {
-        $this->processHelper->runCommand(['git', 'cherry-pick', $commit]);
-    }
-
     public function switchBranchBase($branchName, $currentBase, $newBase, $newBranchName = null)
     {
-        if (!$this->isWorkingTreeReady()) {
-            throw new WorkingTreeIsNotReady();
-        }
+        $this->guardWorkingTreeReady();
 
-        $activeBranch = trim($this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD'));
-
-        // Detached head, checkout our target branch
-        if ('HEAD' === $activeBranch) {
-            $activeBranch = $branchName;
-        }
-
+        $activeBranch = $this->getActiveBranchName($branchName);
         $this->checkout($branchName);
 
         if ($newBranchName) {
@@ -443,26 +444,19 @@ class GitHelper extends Helper
         $this->checkout($activeBranch);
     }
 
-    public function squashBranch($base, $branch)
+    public function squashBranch($base, $branchName)
     {
-        if (!$this->isWorkingTreeReady()) {
-            throw new WorkingTreeIsNotReady();
-        }
+        $this->guardWorkingTreeReady();
 
-        $activeBranch = trim($this->processHelper->runCommand('git rev-parse --abbrev-ref HEAD'));
+        $activeBranch = $this->getActiveBranchName($branchName);
 
-        // Detached head, checkout our target branch
-        if ('HEAD' === $activeBranch) {
-            $activeBranch = $branch;
-        }
-
-        $this->checkout($branch);
+        $this->checkout($branchName);
 
         $forkPoint = $this->processHelper->runCommand(
             sprintf(
                 'git merge-base --fork-point %s %s',
                 $base,
-                $branch
+                $branchName
             )
         );
 
@@ -471,7 +465,7 @@ class GitHelper extends Helper
                 sprintf(
                     'git rev-list %s..%s --reverse --format=%%s --max-count=1',
                     $forkPoint,
-                    $branch
+                    $branchName
                 )
             )
         )[1];
@@ -483,11 +477,9 @@ class GitHelper extends Helper
 
     public function syncWithRemote($remote, $branchName = null)
     {
-        if (!$this->isWorkingTreeReady()) {
-            throw new WorkingTreeIsNotReady();
-        }
+        $this->guardWorkingTreeReady();
 
-        $activeBranchName = $this->getBranchName();
+        $activeBranchName = $this->getActiveBranchName($branchName);
 
         if (null === $branchName) {
             $branchName = $activeBranchName;
@@ -496,7 +488,7 @@ class GitHelper extends Helper
         $this->remoteUpdate($remote);
 
         if ($activeBranchName !== $branchName) {
-            $this->checkout($activeBranchName);
+            $this->checkout($branchName);
         }
 
         $this->reset('HEAD~1', 'hard');
@@ -524,6 +516,13 @@ class GitHelper extends Helper
         file_put_contents($tmpName, $message);
 
         $this->processHelper->runCommand(array_merge(['git', 'commit', '-F', $tmpName], $params));
+    }
+
+    private function guardWorkingTreeReady()
+    {
+        if (!$this->isWorkingTreeReady()) {
+            throw new WorkingTreeIsNotReady();
+        }
     }
 
     private function splitLines($output)

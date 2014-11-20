@@ -61,11 +61,11 @@ class BranchDeleteCommandTest extends BaseTestCase
         $gitHelper = $this
             ->getMockBuilder('Gush\Helper\GitHelper')
             ->disableOriginalConstructor()
-            ->setMethods(['getBranchName'])
+            ->setMethods(['getActiveBranchName'])
             ->getMock()
         ;
         $gitHelper->expects($this->once())
-            ->method('getBranchName')
+            ->method('getActiveBranchName')
             ->will($this->returnValue(self::TEST_BRANCH_NAME))
         ;
 
