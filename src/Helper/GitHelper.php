@@ -112,14 +112,11 @@ class GitHelper extends Helper
         return $foundRepoName;
     }
 
-    public function getLastTag()
-    {
-        return $this->processHelper->runCommand('git describe --abbrev=0 --tags');
-    }
-
     public function getLogBetweenCommits($start, $end)
     {
-        return $this->processHelper->runCommand(sprintf('git log %s...%s --oneline --no-color', $start, $end));
+        return $this->splitLines(
+            $this->processHelper->runCommand(sprintf('git log %s...%s --oneline --no-color', $start, $end))
+        );
     }
 
     /**

@@ -46,7 +46,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $latestTag = $this->getHelper('git')->getLastTag();
+            $latestTag = $this->getHelper('git')->getLastTagOnBranch();
         } catch (\RuntimeException $e) {
             $output->writeln('<info>There were no tags found</info>');
 
@@ -60,7 +60,9 @@ EOF
 
         $adapter = $this->getIssueTracker();
 
-        foreach (explode(PHP_EOL, $commits) as $commit) {
+        foreach ($commits as $commit) {
+            $commit = substr($commit, strpos($commit, ' '));
+
             // Cut issue id from branch name (merge commits)
             if (preg_match('/\/([0-9]+)/i', $commit, $matchesGush) && isset($matchesGush[1])) {
                 $issues[] = $matchesGush[1];
