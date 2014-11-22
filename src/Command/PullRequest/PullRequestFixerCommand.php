@@ -61,15 +61,15 @@ EOF
         $gitHelper->add('.');
 
         if (!$gitHelper->isWorkingTreeReady()) {
-            $gitHelper->commit('wip', 'a');
+            $gitHelper->commit('wip', ['a']);
         }
 
         $processHelper->runCommand($fixerLine, true);
 
         $gitHelper->add('.');
 
-        if (!$gitHelper->isWorkingTreeReady()) {
-            $gitHelper->commit('cs-fixer', 'a');
+        if (!$gitHelper->isWorkingTreeReady(true)) {
+            $gitHelper->commit('cs-fixer', ['a']);
         }
 
         $output->writeln('CS fixes committed!');

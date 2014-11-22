@@ -101,7 +101,7 @@ Branch pushed to %s/%s
 EOT;
 
     const PULL_REQUEST_FIXER = <<<EOT
-CS fix committed and pushed!
+CS fixes committed!
 EOT;
 
     const PULL_REQUEST_PAT_ON_THE_BACK = <<<EOT

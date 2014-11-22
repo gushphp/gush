@@ -14,6 +14,7 @@ namespace Gush\Tests\Command\PullRequest;
 use Gush\Command\PullRequest\PullRequestFixerCommand;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Prophecy\Argument;
 
 class PullRequestFixerCommandTest extends BaseTestCase
 {
@@ -24,9 +25,9 @@ class PullRequestFixerCommandTest extends BaseTestCase
      */
     public function fixes_coding_style_on_current_branch_pull_requested()
     {
-        $processHelper = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new PullRequestFixerCommand());
-        $command->getHelperSet()->set($processHelper, 'process');
+        $command->getHelperSet()->set($this->expectProcessHelper());
+        $command->getHelperSet()->set($this->expectGitHelper());
 
         $tester->execute([]);
 
@@ -35,41 +36,38 @@ class PullRequestFixerCommandTest extends BaseTestCase
 
     private function expectProcessHelper()
     {
-        $processHelper = $this->getMock(
-            'Gush\Helper\ProcessHelper',
-            ['runCommands', 'probePhpCsFixer']
-        );
-        $processHelper->expects($this->once())
-            ->method('probePhpCsFixer')
-        ;
-        $processHelper->expects($this->once())
-            ->method('runCommands')
-            ->with(
-                [
-                    [
-                        'line' => 'git add .',
-                        'allow_failures' => true
-                    ],
-                    [
-                        'line' => 'git commit -am wip',
-                        'allow_failures' => true
-                    ],
-                    [
-                        'line' => 'php-cs-fixer fix .',
-                        'allow_failures' => true
-                    ],
-                    [
-                        'line' => 'git add .',
-                        'allow_failures' => true
-                    ],
-                    [
-                        'line' => 'git commit -am cs-fixer',
-                        'allow_failures' => true
-                    ]
-                ]
-            )
-        ;
+        $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $processHelper->getName()->willReturn('process');
 
-        return $processHelper;
+        $processHelper->probePhpCsFixer()->willReturn('php-cs-fixer');
+        $processHelper->runCommand('php-cs-fixer fix .', true)->shouldBeCalled();
+
+        return $processHelper->reveal();
+    }
+
+    private function expectGitHelper($wcReady = false, $hasChanges = true)
+    {
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
+
+        if ($wcReady) {
+            $gitHelper->isWorkingTreeReady()->willReturn(true);
+        } else {
+            $gitHelper->isWorkingTreeReady()->willReturn(false);
+            $gitHelper->commit('wip', ['a'])->shouldBeCalled();
+        }
+
+        $gitHelper->add('.')->shouldBeCalled();
+
+        if ($hasChanges) {
+            $gitHelper->isWorkingTreeReady(true)->willReturn(false);
+            $gitHelper->commit('cs-fixer', ['a'])->shouldBeCalled();
+        } else {
+            $gitHelper->isWorkingTreeReady(true)->willReturn(true);
+        }
+
+        return $gitHelper->reveal();
     }
 }
