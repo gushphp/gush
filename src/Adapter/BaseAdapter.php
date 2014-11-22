@@ -129,7 +129,7 @@ abstract class BaseAdapter implements Adapter
     /**
      * {@inheritdoc}
      */
-    public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false, $comment = null)
+    public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false)
     {
         $pr = $this->getPullRequest($prNumber);
 

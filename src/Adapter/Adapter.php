@@ -245,14 +245,14 @@ interface Adapter
      * Switches the pull-request base.
      *
      * Note. When the adapter does not support changing the base-branch, a new PR should be opened
-     * with same subject, body and labels. And the old old-one should be closed.
+     * with same subject, body and labels. And the old PR should be closed.
      *
      * @param int    $prNumber
      * @param string $newBase    New base for the PR
      * @param string $newHead    org:branch
      * @param bool   $forceNewPr Open new PR (even when switching is supported)
      *
-     * @return array An array the with following keys: html_url, number (either the current or the new PR)
+     * @return array An array with the following keys: html_url, number (either the current or the new PR)
      */
     public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false);
 
