@@ -63,7 +63,10 @@ OET;
             Argument::that($stringComparison)
         )->willReturn(self::$mergeHash);
 
-        $tester->execute(['--org' => 'gushphp', 'pr_number' => 40, '--no-comments' => true], ['interactive' => false]);
+        $tester->execute(
+            ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, '--no-comments' => true],
+            ['interactive' => false]
+        );
 
         $this->assertEquals('Pull Request successfully merged.', trim($tester->getDisplay(true)));
     }
@@ -89,7 +92,7 @@ OET;
         )->willReturn(self::$mergeHash);
 
         $tester->execute(
-            ['--org' => 'gushphp', 'pr_number' => 40, 'pr_type' => 'feat', '--no-comments' => true],
+            ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, 'pr_type' => 'feat', '--no-comments' => true],
             ['interactive' => false]
         );
 
