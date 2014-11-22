@@ -77,7 +77,7 @@ Closed https://github.com/gushphp/gush/pull/40
 EOT;
 
     const BRANCH_SYNC = <<<EOT
-Branch test_branch has been synced upstream!
+Branch "%s" has been synced with remote "%s".
 EOT;
 
     const BRANCH_DELETE = <<<EOT
