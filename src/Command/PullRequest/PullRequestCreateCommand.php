@@ -127,9 +127,12 @@ EOF
         $sourceBranch = $input->getOption('source-branch');
         $template = $input->getOption('template');
 
+        $config = $this->getApplication()->getConfig();
+        /** @var \Gush\Config $config */
+
         $base = $input->getOption('base');
         if (null === $base) {
-            $base = $this->getParameter('base') ?: 'master';
+            $base = $config->get('base') ?: 'master';
         }
 
         if (null === $sourceOrg) {
@@ -137,7 +140,7 @@ EOF
         }
 
         if (null === $sourceBranch) {
-            $sourceBranch = $this->getHelper('git')->getBranchName();
+            $sourceBranch = $this->getHelper('git')->getActiveBranchName();
         }
 
         $title = '';
@@ -155,7 +158,7 @@ EOF
             $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
         }
 
-        if (!$this->getParameter('remove-promote')) {
+        if (true === $config->get('remove-promote')) {
             $body = $this->appendPlug($body);
         }
 
