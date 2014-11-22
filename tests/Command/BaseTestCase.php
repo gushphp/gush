@@ -43,7 +43,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected $prophet;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->prophet = new Prophet();
         $this->config = $this->prophet->prophesize('Gush\Config');
