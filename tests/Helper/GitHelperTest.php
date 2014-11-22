@@ -159,21 +159,6 @@ EOT;
     /**
      * @test
      */
-    public function runs_a_git_command()
-    {
-        $return = '## master';
-        $this->processHelper
-            ->expects($this->any())
-            ->method('runCommand')
-            ->will($this->returnValue($return))
-        ;
-
-        $this->assertContains('## master', $this->unitGit->runGitCommand('git status --branch --short'));
-    }
-
-    /**
-     * @test
-     */
     public function lists_files()
     {
         // Smoke test for a real listFiles

@@ -40,18 +40,6 @@ class GitHelper extends Helper
     }
 
     /**
-     * @param string $command
-     *
-     * @return string Result of running the git command
-     *
-     * @deprecated Git commands should not be spread
-     */
-    public function runGitCommand($command)
-    {
-        return $this->processHelper->runCommand($command);
-    }
-
-    /**
      * @param string|null $defaultBranch
      *
      * @return string The branch name
