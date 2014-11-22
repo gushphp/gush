@@ -64,7 +64,7 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        $gitHelper->remoteUpdate();
+        $gitHelper->remoteUpdate($org);
         $gitHelper->checkout($org.'/'.$baseBranch);
         $gitHelper->checkout($slugTitle, true);
 
