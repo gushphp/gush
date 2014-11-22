@@ -441,7 +441,7 @@ class GitHelper extends Helper
         $this->checkout($activeBranch);
     }
 
-    public function squashBranch($base, $branchName)
+    public function squashCommits($base, $branchName)
     {
         $this->guardWorkingTreeReady();
 
