@@ -71,8 +71,10 @@ bldr:
                 -
                     type: exec
                     continueOnError: true
-                    executable: wget
+                    executable: curl
                     arguments:
+                        - -o
+                        - security-checker.phar
                         - http://get.sensiolabs.org/security-checker.phar
                 -
                     type: exec
