@@ -71,8 +71,6 @@ class CoreConfigureCommandTest extends BaseTestCase
                 ],
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
-                'local' => $localDir,
-                'local_config' => $localDir.'/.gush.yml',
                 'adapter' => 'github_enterprise',
                 'issue_tracker' => 'jira',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
@@ -130,8 +128,6 @@ class CoreConfigureCommandTest extends BaseTestCase
                 'issue_trackers' => [],
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
-                'local' => $localDir,
-                'local_config' => $localDir.'/.gush.yml',
                 'adapter' => 'github_enterprise',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
@@ -189,8 +185,6 @@ class CoreConfigureCommandTest extends BaseTestCase
                 ],
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
-                'local' => $localDir,
-                'local_config' => $localDir.'/.gush.yml',
                 'issue_tracker' => 'jira',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
