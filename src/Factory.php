@@ -144,7 +144,7 @@ class Factory
     protected static function loadAndMerge(Config $config, $filename, $rootKey = 'parameters')
     {
         try {
-            $parsed = Yaml::parse($filename);
+            $parsed = Yaml::parse(file_get_contents($filename));
 
             if ($rootKey) {
                 $config->merge($parsed[$rootKey]);

@@ -46,7 +46,6 @@ EOT
     protected function setUp()
     {
         $config = new Config();
-
         $adapterFactory = new AdapterFactory();
 
         $adapterFactory->registerAdapter(
