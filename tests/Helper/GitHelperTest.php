@@ -185,6 +185,8 @@ EOT;
 
         $processHelper->runCommand('git config --local --get remote.origin.url', true)->willReturn(true);
         $processHelper->runCommand('git status --porcelain --untracked-files=no')->willReturn("\n");
+        $processHelper->runCommand('git rev-parse --abbrev-ref HEAD')->willReturn("master");
+        $processHelper->runCommand(['git', 'checkout', 'master'])->shouldBeCalled();
         $processHelper->runCommands(
             [
                 [
