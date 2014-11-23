@@ -13,6 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Herrera\Version\Dumper;
 use Herrera\Version\Parser;
 use Symfony\Component\Console\Input\InputArgument;
@@ -51,37 +52,19 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $prNumber = $input->getArgument('pr_number');
-
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => 'git remote update',
-                    'allow_failures' => true,
-                ],
-            ]
-        );
-
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
-        $branchToCheckout = $pr['head']['ref'];
+        $branchName = $pr['head']['ref'];
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf('git checkout -b %s origin/%s', $branchToCheckout, $branchToCheckout),
-                    'allow_failures' => true,
-                ],
-                [
-                    'line' => sprintf('git checkout %s', $branchToCheckout),
-                    'allow_failures' => true,
-                ],
-            ]
-        );
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
 
-        $lastTag = $this->getHelper('git')->getLastTagOnCurrentBranch();
+        $gitHelper->remoteUpdate();
+
+        $lastTag = $gitHelper->getLastTagOnBranch('origin/'.$branchName);
 
         if (empty($lastTag)) {
-            $lastTag  = "0.0.0";
+            $lastTag = '0.0.0';
         }
 
         // adjust case for format v2.3
@@ -95,12 +78,15 @@ EOF
             case $input->getOption('major'):
                 $builder->incrementMajor();
                 break;
+
             case $input->getOption('minor'):
                 $builder->incrementMinor();
                 break;
+
             case $input->getOption('patch'):
                 $builder->incrementPatch();
                 break;
+
             default:
                 $builder->incrementPatch();
                 break;

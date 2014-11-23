@@ -26,60 +26,48 @@ class CoreInitCommandTest extends BaseTestCase
     const VERSIONEYE_TOKEN = 'token';
     const META_HEADER = "This file is part of Gush package.\n\n(c) 2013-2014 Luis Cordova <cordoval@gmail.com>\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE.";
 
-    /**
-     * @test
-     */
-    public function core_init_writes_local_gush_file()
+    private $gushLocalFilename;
+
+    protected function setUp()
     {
+        parent::setUp();
+
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
         }
 
         $localDir = $homeDir.'/local_test';
-        $gushLocalFilename = $localDir.'/.gush.yml';
+        $this->gushLocalFilename = $localDir.'/.gush.yml';
 
         @mkdir($localDir, 0777, true);
 
-        if (file_exists($gushLocalFilename)) {
-            unlink($gushLocalFilename);
+        if (file_exists($this->gushLocalFilename)) {
+            unlink($this->gushLocalFilename);
         }
 
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('local_config')
-            ->will($this->returnValue($gushLocalFilename))
-        ;
+        $this->config->get('local_config')->willReturn($this->gushLocalFilename);
+        $this->config->has('[adapters][github]')->willReturn(true);
+        $this->config->has('[adapters][github_enterprise]')->willReturn(true);
+        $this->config->has('[issue_trackers][jira]')->willReturn(true);
+    }
 
-        $this->config
-            ->expects($this->at(2))
-            ->method('has')
-            ->with('[adapters][github_enterprise]')
-            ->will($this->returnValue(true))
-        ;
-
-        $this->config
-            ->expects($this->at(2))
-            ->method('has')
-            ->with('[adapters][github_enterprise]')
-            ->will($this->returnValue(true))
-        ;
-
-        $this->config
-            ->expects($this->at(4))
-            ->method('has')
-            ->with('[issue_trackers][jira]')
-            ->will($this->returnValue(true))
-        ;
+    /**
+     * @test
+     */
+    public function core_init_writes_local_gush_file()
+    {
+        $this->config->get('adapter')->willReturn('github_enterprise');
+        $this->config->get('issue_tracker')->willReturn('github_enterprise');
 
         $expected = [
-            'adapter' => 'github_enterprise',
+            'adapter' => 'github',
             'issue_tracker' => 'jira',
         ];
 
         $questionHelper = $this->expectDialogParameters();
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($questionHelper, 'question');
+        $command->getHelperSet()->set($questionHelper);
+
         $tester->execute(
             [
                 'command' => 'init',
@@ -89,9 +77,7 @@ class CoreInitCommandTest extends BaseTestCase
             ]
         );
 
-        $this->assertFileExists($gushLocalFilename);
-
-        $this->assertEquals($expected, Yaml::parse($gushLocalFilename));
+        $this->assertGushLocalEquals($expected);
     }
 
     /**
@@ -99,49 +85,11 @@ class CoreInitCommandTest extends BaseTestCase
      */
     public function core_init_meta_option_set_to_true_puts_it_in_gush_yml_file()
     {
-        if (!$homeDir = getenv('GUSH_HOME')) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
-        }
-
-        $localDir = $homeDir.'/local_test';
-        $gushLocalFilename = $localDir.'/.gush.yml';
-
-        @mkdir($localDir, 0777, true);
-
-        if (file_exists($gushLocalFilename)) {
-            unlink($gushLocalFilename);
-        }
-
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('local_config')
-            ->will($this->returnValue($gushLocalFilename))
-        ;
-
-        $this->config
-            ->expects($this->at(2))
-            ->method('has')
-            ->with('[adapters][github_enterprise]')
-            ->will($this->returnValue(true))
-        ;
-
-        $this->config
-            ->expects($this->at(2))
-            ->method('has')
-            ->with('[adapters][github_enterprise]')
-            ->will($this->returnValue(true))
-        ;
-
-        $this->config
-            ->expects($this->at(4))
-            ->method('has')
-            ->with('[issue_trackers][jira]')
-            ->will($this->returnValue(true))
-        ;
+        $this->config->get('adapter')->willReturn('github_enterprise');
+        $this->config->get('issue_tracker')->willReturn('github_enterprise');
 
         $expected = [
-            'adapter' => 'github_enterprise',
+            'adapter' => 'github',
             'issue_tracker' => 'jira',
             'meta-header' => self::META_HEADER,
         ];
@@ -150,8 +98,9 @@ class CoreInitCommandTest extends BaseTestCase
         $template = $this->expectTemplate();
 
         $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($questionHelper, 'question');
-        $command->getHelperSet()->set($template, 'template');
+        $command->getHelperSet()->set($questionHelper);
+        $command->getHelperSet()->set($template);
+
         $tester->execute(
             [
                 'command' => 'init',
@@ -162,9 +111,13 @@ class CoreInitCommandTest extends BaseTestCase
             ]
         );
 
-        $this->assertFileExists($gushLocalFilename);
+        $this->assertGushLocalEquals($expected);
+    }
 
-        $this->assertEquals($expected, Yaml::parse($gushLocalFilename));
+    private function assertGushLocalEquals(array $expected)
+    {
+        $this->assertFileExists($this->gushLocalFilename);
+        $this->assertEquals($expected, Yaml::parse(file_get_contents($this->gushLocalFilename)));
     }
 
     private function expectDialogParameters($withMeta = false)
@@ -180,10 +133,11 @@ class CoreInitCommandTest extends BaseTestCase
             new QuestionToken(
                 new ChoiceQuestion(
                     'Choose adapter:',
-                    ['github', 'github_enterprise']
+                    ['github', 'github_enterprise'],
+                    'github_enterprise'
                 )
             )
-        )->willReturn('github_enterprise');
+        )->willReturn('github');
 
         $questionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
@@ -191,7 +145,8 @@ class CoreInitCommandTest extends BaseTestCase
             new QuestionToken(
                 new ChoiceQuestion(
                     'Choose issue tracker:',
-                    ['github', 'jira']
+                    ['github', 'jira'],
+                    'github_enterprise'
                 )
             )
         )->willReturn('jira');

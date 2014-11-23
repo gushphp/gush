@@ -14,77 +14,62 @@ namespace Gush\Tests\Command\Branch;
 use Gush\Command\Branch\BranchDeleteCommand;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Prophecy\Argument;
 
 class BranchDeleteCommandTest extends BaseTestCase
 {
-    const TEST_BRANCH_NAME = 'test_branch';
-
     /**
      * @test
      */
     public function deletes_current_remote_branch()
     {
-        $processHelper = $this->expectProcessHelper();
-        $gitHelper = $this->expectGitHelper();
+        $org = 'cordoval';
+        $branch = 'test_branch';
 
-        $this->expectsConfig();
+        $gitHelper = $this->expectGitHelper($branch);
+
+        $this->expectsConfig($org);
+
         $tester = $this->getCommandTester($command = new BranchDeleteCommand());
-        $command->getHelperSet()->set($processHelper, 'process');
-        $command->getHelperSet()->set($gitHelper, 'git');
+        $command->getHelperSet()->set($gitHelper);
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_DELETE, trim($tester->getDisplay(true)));
+        $this->assertEquals(sprintf(OutputFixtures::BRANCH_DELETE, $org, $branch), trim($tester->getDisplay(true)));
     }
 
-    private function expectProcessHelper()
+    /**
+     * @test
+     */
+    public function deletes_specific_remote_branch()
     {
-        $processHelper = $this->getMock(
-            'Gush\Helper\ProcessHelper',
-            ['runCommands']
+        $org = 'cordoval';
+        $branch = 'foo';
+
+        $gitHelper = $this->expectGitHelper($branch);
+
+        $this->expectsConfig($org);
+
+        $tester = $this->getCommandTester($command = new BranchDeleteCommand());
+        $command->getHelperSet()->set($gitHelper);
+
+        $tester->execute(
+            ['--org' => 'gushphp', '--repo' => 'gush', 'branch_name' => $branch],
+            ['interactive' => false]
         );
-        $processHelper->expects($this->once())
-            ->method('runCommands')
-            ->with([
-                [
-                    'line' => 'git push -u cordoval :'.self::TEST_BRANCH_NAME,
-                    'allow_failures' => true
-                ],
-            ])
-        ;
 
-        return $processHelper;
+        $this->assertEquals(sprintf(OutputFixtures::BRANCH_DELETE, $org, $branch), trim($tester->getDisplay(true)));
     }
 
-    private function expectGitHelper()
+    private function expectGitHelper($branchName)
     {
-        $gitHelper = $this
-            ->getMockBuilder('Gush\Helper\GitHelper')
-            ->disableOriginalConstructor()
-            ->setMethods(['getBranchName'])
-            ->getMock()
-        ;
-        $gitHelper->expects($this->once())
-            ->method('getBranchName')
-            ->will($this->returnValue(self::TEST_BRANCH_NAME))
-        ;
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
 
-        return $gitHelper;
-    }
+        $gitHelper->getActiveBranchName()->willReturn($branchName);
+        $gitHelper->pushToRemote('cordoval', ':'.$branchName, true)->shouldBeCalled();
 
-    private function expectsConfig()
-    {
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('adapter')
-            ->will($this->returnValue('github_enterprise'))
-        ;
-        $this->config
-            ->expects($this->at(1))
-            ->method('get')
-            ->with('[adapters][github_enterprise][authentication]')
-            ->will($this->returnValue(['username' => 'cordoval']))
-        ;
+        return $gitHelper->reveal();
     }
 }

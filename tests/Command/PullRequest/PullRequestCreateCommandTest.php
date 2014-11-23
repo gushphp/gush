@@ -14,18 +14,31 @@ namespace Gush\Tests\Command\PullRequest;
 use Gush\Command\PullRequest\PullRequestCreateCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Command\BaseTestCase;
+use Prophecy\Argument;
 
 class PullRequestCreateCommandTest extends BaseTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->config->get('base')->willReturn('master');
+        $this->config->get('remove-promote')->willReturn(false);
+    }
+
     /**
      * @test
+     *
      * @dataProvider provideCommand
      */
     public function opens_pull_request_with_arguments($args)
     {
-        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper(), 'git');
         $this->expectsConfig();
+        $this->config->has('table-pr')->willReturn(false);
+
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper());
+
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
@@ -34,14 +47,18 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideCommand
      */
     public function opens_pull_request_from_an_issue($args)
     {
         $args['--issue'] = '145';
 
-        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
         $this->expectsConfig();
+        $this->config->has('table-pr')->willReturn(false);
+
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
@@ -50,15 +67,19 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideCommand
      */
     public function opens_pull_request_autodetecting_current_branch_and_default_master($args)
     {
         $args['--verbose'] = true;
 
-        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper(), 'git');
         $this->expectsConfig();
+        $this->config->has('table-pr')->willReturn(false);
+
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper());
+
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
@@ -67,51 +88,35 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideCommand
      */
     public function opens_pull_request_to_a_specific_organization_or_username($args)
     {
-        $args['--verbose']    = true;
+        $args['--verbose'] = true;
         $args['--source-org'] = 'gushphp';
 
+        $this->expectsConfig();
+        $this->config->has('table-pr')->willReturn(false);
+
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper(), 'git');
+        $command->getHelperSet()->set($this->expectGitHelper());
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
         $this->assertContains('Making PR from '.$args['--source-org'].':issue-145 to gushphp:master', $res);
     }
 
-    private function expectsConfig()
-    {
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('adapter')
-            ->will($this->returnValue('github_enterprise'))
-        ;
-        $this->config
-            ->expects($this->at(1))
-            ->method('get')
-            ->with('[adapters][github_enterprise][authentication]')
-            ->will($this->returnValue(['username' => 'cordoval']))
-        ;
-    }
-
     private function expectGitHelper()
     {
-        $git = $this->getMockBuilder('Gush\Helper\GitHelper')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
 
-        $git->expects($this->once())
-            ->method('getFirstCommitTitle')
-            ->with('master', 'issue-145')
-            ->will($this->returnValue('some good title'))
-        ;
+        $gitHelper->getFirstCommitTitle('master', 'issue-145')->willReturn('some good title');
+        $gitHelper->getActiveBranchName()->willReturn('issue-145');
 
-        return $git;
+        return $gitHelper->reveal();
     }
 
     public function provideCommand()

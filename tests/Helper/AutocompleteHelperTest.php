@@ -43,7 +43,14 @@ class AutocompleteHelperTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $string = $this->autocompleteHelper->getAutoCompleteScript($commands);
+        $string = implode(
+            "\n",
+            array_map(
+                'rtrim',
+                preg_split('{\r?\n}', $this->autocompleteHelper->getAutoCompleteScript($commands))
+            )
+        );
+
         $this->assertEquals(OutputFixtures::AUTOCOMPLETE_SCRIPT, $string);
     }
 }

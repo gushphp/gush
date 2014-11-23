@@ -14,6 +14,7 @@ namespace Gush\Tests\Command\Branch;
 use Gush\Command\Branch\BranchChangelogCommand;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Prophecy\Argument;
 
 class BranchChangelogCommandTest extends BaseTestCase
 {
@@ -24,10 +25,8 @@ class BranchChangelogCommandTest extends BaseTestCase
      */
     public function expects_an_exception_when_no_tags_on_branch()
     {
-        $gitHelperWithoutTags = $this->expectGitHelperWithoutTags();
-
         $tester = $this->getCommandTester($command = new BranchChangelogCommand());
-        $command->getHelperSet()->set($gitHelperWithoutTags, 'git');
+        $command->getHelperSet()->set($this->expectGitHelperWithoutTags());
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
@@ -39,10 +38,8 @@ class BranchChangelogCommandTest extends BaseTestCase
      */
     public function finds_tag_on_branch_to_build_changelog()
     {
-        $gitHelperWithTags = $this->expectGitHelperWithTags();
-
         $tester = $this->getCommandTester($command = new BranchChangelogCommand());
-        $command->getHelperSet()->set($gitHelperWithTags, 'git');
+        $command->getHelperSet()->set($this->expectGitHelperWithTags());
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
 
@@ -51,41 +48,30 @@ class BranchChangelogCommandTest extends BaseTestCase
 
     private function expectGitHelperWithoutTags()
     {
-        $gitHelper = $this
-            ->getMockBuilder('Gush\Helper\GitHelper')
-            ->disableOriginalConstructor()
-            ->setMethods(['runGitCommand'])
-            ->getMock()
-        ;
-        $gitHelper->expects($this->any())
-            ->method('runGitCommand')
-            ->with('git describe --abbrev=0 --tags')
-            ->will($this->throwException(new \RuntimeException()))
-        ;
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->getName()->willReturn('git');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
 
-        return $gitHelper;
+        $gitHelper->getLastTagOnBranch()->willThrow(
+            new \RuntimeException('fatal: No names found, cannot describe anything.')
+        );
+
+        return $gitHelper->reveal();
     }
 
     private function expectGitHelperWithTags()
     {
-        $gitHelper = $this
-            ->getMockBuilder('Gush\Helper\GitHelper')
-            ->disableOriginalConstructor()
-            ->setMethods(['runGitCommand'])
-            ->getMock()
-        ;
-        $gitHelper->expects($this->any())
-            ->method('runGitCommand')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        ['git describe --abbrev=0 --tags', self::TEST_TAG_NAME],
-                        [sprintf('git log %s...HEAD --oneline', self::TEST_TAG_NAME), 'Another hack which fixes #123']
-                    ]
-                )
-            )
-        ;
+        $commits = [
+            '68bfa1d00 Another hack which fixes #123',
+        ];
 
-        return $gitHelper;
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->getName()->willReturn('git');
+
+        $gitHelper->getLastTagOnBranch()->willReturn(self::TEST_TAG_NAME);
+        $gitHelper->getLogBetweenCommits(self::TEST_TAG_NAME, 'HEAD')->willReturn($commits);
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+
+        return $gitHelper->reveal();
     }
 }

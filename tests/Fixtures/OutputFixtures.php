@@ -77,15 +77,15 @@ Closed https://github.com/gushphp/gush/pull/40
 EOT;
 
     const BRANCH_SYNC = <<<EOT
-Branch test_branch has been synced upstream!
+Branch "%s" has been synced with remote "%s".
 EOT;
 
     const BRANCH_DELETE = <<<EOT
-Branch cordoval/test_branch has been deleted!
+Branch %s/%s has been deleted!
 EOT;
 
     const BRANCH_FORK = <<<EOT
-Forked repository gushphp/gush into cordoval/gush
+Forked repository gushphp/gush into %s/gush
 EOT;
 
     const BRANCH_CHANGELOG_EMPTY = <<<EOT
@@ -97,11 +97,11 @@ EOT;
 EOT;
 
     const BRANCH_PUSH = <<<EOT
-Branch pushed to cordoval/some-branch
+Branch pushed to %s/%s
 EOT;
 
     const PULL_REQUEST_FIXER = <<<EOT
-CS fix committed and pushed!
+CS fixes committed!
 EOT;
 
     const PULL_REQUEST_PAT_ON_THE_BACK = <<<EOT
@@ -218,7 +218,7 @@ _gush()
     fi
 
     case "\${prev}" in
-        
+
         esac
 
     COMPREPLY=($(compgen -W "\${opts}" -- \${cur}))

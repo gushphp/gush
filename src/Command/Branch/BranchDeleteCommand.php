@@ -31,7 +31,7 @@ class BranchDeleteCommand extends BaseCommand implements GitRepoFeature
             ->addArgument(
                 'other_organization',
                 InputArgument::OPTIONAL,
-                'Organization (default to username) where the branch will be removed'
+                'Organization (defaults to username) where the branch will be removed'
             )
             ->setHelp(
                 <<<EOF
@@ -50,26 +50,15 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$currentBranchName = $input->getArgument('branch_name')) {
-            $currentBranchName = $this->getHelper('git')->getBranchName();
+            $currentBranchName = $this->getHelper('git')->getActiveBranchName();
         }
 
-        $org = $this->getParameter('authentication')['username'];
-        if (null !== $input->getArgument('other_organization')) {
-            $org = $input->getArgument('other_organization');
+        $org = $input->getArgument('other_organization');
+        if (null === $org) {
+            $org = $this->getParameter('authentication')['username'];
         }
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf(
-                        'git push -u %s :%s',
-                        $org,
-                        $currentBranchName
-                    ),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $this->getHelper('git')->pushToRemote($org, ':'.$currentBranchName, true);
 
         $output->writeln(sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName));
 

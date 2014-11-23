@@ -49,33 +49,23 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
-        $org = $input->getArgument('other_organization');
+        $orgFork = $input->getArgument('other_organization');
         $username = $this->getParameter('authentication')['username'];
 
-        $fork = $adapter->createFork($org);
+        $fork = $adapter->createFork($orgFork);
 
         $repo = $input->getOption('repo');
-        $vendorName = $input->getOption('org');
+        $sourceOrg = $input->getOption('org');
+        $targetOrg = $orgFork ?: $username;
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf(
-                        'git remote add %s %s',
-                        $org ?: $username,
-                        $fork['git_url']
-                    ),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $this->getHelper('git')->addRemote($targetOrg, $fork['git_url']);
 
         $output->writeln(
             sprintf(
                 'Forked repository %s/%s into %s/%s',
-                $vendorName,
+                $sourceOrg,
                 $repo,
-                $org ?: $username,
+                $targetOrg,
                 $repo
             )
         );

@@ -13,7 +13,9 @@ namespace Gush\Command\Util;
 
 use Gush\Adapter\GitHubAdapter;
 use Gush\Command\BaseCommand;
+use Gush\Exception\WorkingTreeIsNotReady;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,7 +49,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->getAdapter() instanceof GitHubAdapter) {
-            throw new \Exception("To use fabbot.io, you must be using the github adapter");
+            throw new \Exception('Usage of fabbot.io is currently limited to the GitHub adapter.');
         }
 
         $org = $input->getOption('org');
@@ -61,14 +63,14 @@ EOF
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => 'git checkout '.$pr['head']['ref'],
-                    'allow_failures' => true
-                ]
-            ]
-        );
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+
+        if (!$gitHelper->isWorkingTreeReady()) {
+            throw new WorkingTreeIsNotReady();
+        }
+
+        $gitHelper->checkout($pr['head']['ref']);
 
         $commandLine = sprintf(
             'curl http://fabbot.io/patch/%s/%s/%s/%s/cs.diff | patch -p0',
@@ -82,14 +84,7 @@ EOF
         $process = new Process($commandLine, getcwd());
         $process->run();
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf('git push -u %s %s -f', $username, $pr['head']['ref']),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $gitHelper->pushToRemote($username, $pr['head']['ref'], true, true);
 
         return self::COMMAND_SUCCESS;
     }

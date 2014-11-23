@@ -12,27 +12,49 @@
 namespace Gush\Subscriber;
 
 use Gush\Helper\FilesystemHelper;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * The CommandEndSubscriber is activated when the command is terminated.
+ *
+ * - Clean-up temp-files.
+ * - Restore the original working branch on exception.
+ */
 class CommandEndSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var FilesystemHelper
+     */
     private $fsHelper;
 
-    public function __construct(FilesystemHelper $filesystemHelper)
+    /**
+     * @var GitHelper
+     */
+    private $gitHelper;
+
+    public function __construct(FilesystemHelper $filesystemHelper, GitHelper $gitHelper)
     {
         $this->fsHelper = $filesystemHelper;
+        $this->gitHelper = $gitHelper;
     }
 
     public static function getSubscribedEvents()
     {
         return [
             ConsoleEvents::TERMINATE => 'cleanUpTempFiles',
+            ConsoleEvents::EXCEPTION => 'restoreStashedBranch',
         ];
     }
 
     public function cleanUpTempFiles()
     {
         $this->fsHelper->clearTempFiles();
+    }
+
+    public function restoreStashedBranch()
+    {
+        $this->gitHelper->restoreStashedBranch();
     }
 }

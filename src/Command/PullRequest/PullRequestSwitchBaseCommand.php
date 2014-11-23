@@ -13,9 +13,11 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
@@ -29,6 +31,12 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
             ->setName('pull-request:switch-base')
             ->setDescription('Switch the base of the PR to another one')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
+            ->addOption(
+                'force-new-pr',
+                null,
+                InputOption::VALUE_NONE,
+                'Create a new PR, even when the used adapter supports switching the base'
+            )
             ->addArgument(
                 'base_branch',
                 InputArgument::OPTIONAL,
@@ -37,10 +45,16 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command switches the base of the given pull request:
+The <info>%command.name%</info> command switches the base of the given pull request
+to the given base. This will preserve all commits made after the current base.
 
     <info>$ gush %command.name% 12 2.3</info>
 
+When switching the base is not supported by the used adapter, a new pull request is
+created instead. You can overwrite this behaviour with <comment>--force-new-pr</comment> to create
+a new pull request (even if the adapter supports switching).
+
+    <info>$ gush %command.name% --force-new-pr 12 2.3</info>
 EOF
             )
         ;
@@ -53,63 +67,45 @@ EOF
     {
         $prNumber = $input->getArgument('pr_number');
         $baseBranch = $input->getArgument('base_branch');
+        $sourceOrg = $this->getParameter('authentication')['username'];
 
-        // squashes to only cherry-pick once
-        $command = $this->getApplication()->find('pull-request:squash');
-        $input = new ArrayInput(
-            [
-                'command' => 'pull-request:squash',
-                'pr_number' => $prNumber,
-                '--org' => $input->getOption('org'),
-                '--repo' => $input->getOption('repo'),
-            ]
-        );
-        $command->run($input, $output);
-
-        // gets old base and sha1 from old PR
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
-        $commitSha1 = $pr['head']['sha'];
+
+        $currentBase = $pr['base']['ref'];
         $branchName = $pr['head']['ref'];
 
-        // closes PR
-        $adapter->closePullRequest($prNumber);
+        if ($currentBase === $baseBranch) {
+            $output->writeln(sprintf('<info>PR base-branch is already based on %s!<info>', $baseBranch));
 
-        $commands = [
-            [
-                'line' => sprintf('git remote update'),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git checkout -b %s-switched origin/%s', $branchName, $baseBranch),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git cherry-pick %s', $commitSha1),
-                'allow_failures' => false,
-            ],
-            [
-                'line' => sprintf('git push -u origin :%s', $branchName),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git push -u origin %s-switched', $branchName),
-                'allow_failures' => true,
-            ],
-        ];
+            return self::COMMAND_SUCCESS;
+        }
 
-        $this->getHelper('process')->runCommands($commands);
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+        $gitHelper->remoteUpdate();
+        $gitHelper->switchBranchBase($branchName, $currentBase, $baseBranch, $branchName.'-switched');
+        $gitHelper->pushToRemote('origin', ':'.$branchName);
+        $gitHelper->pushToRemote('origin', $branchName.'-switched', true);
 
-        $command = $this->getApplication()->find('pull-request:create');
-        $input = new ArrayInput(
-            [
-                'command' => 'pull-request:create',
-                'base_branch' => $baseBranch,
-                '--org' => $input->getOption('org'),
-                '--repo' => $input->getOption('repo'),
-            ]
+        $switchPr = $adapter->switchPullRequestBase(
+            $prNumber,
+            $baseBranch,
+            $sourceOrg.':'.$branchName.'-switched',
+            $input->getOption('force-new-pr')
         );
-        $command->run($input, $output);
+
+        if ($prNumber == $switchPr['number']) {
+            $adapter->createComment($prNumber, sprintf('(PR base switched to %s)', $baseBranch));
+
+            $output->writeln('<info>PR base-branch been switched!<info>');
+        } else {
+            $adapter->createComment($prNumber, sprintf('(PR replaced by %s)', $switchPr['html_url']));
+            $adapter->closePullRequest($prNumber);
+
+            $output->writeln('<comment>PR base-branch could not be switched, a new PR was opened<comment>');
+            $output->writeln($switchPr['html_url']);
+        }
 
         return self::COMMAND_SUCCESS;
     }

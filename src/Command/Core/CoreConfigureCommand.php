@@ -70,7 +70,11 @@ EOF
         try {
             $this->config = Factory::createConfig(true, false);
         } catch (FileNotFoundException $exception) {
-            $this->config = Factory::createConfig(false);
+            $this->config = Factory::createConfig(false, false);
+        } catch (\RuntimeException $exception) {
+            $output->writeln(sprintf('<error>%s</error>', $exception->getMessage()));
+
+            $this->config = Factory::createConfig(false, false);
         }
     }
 

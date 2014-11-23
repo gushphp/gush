@@ -48,22 +48,14 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $branchName = $this->getHelper('git')->getBranchName();
+        $branchName = $this->getHelper('git')->getActiveBranchName();
 
-        if (null !== $input->getArgument('other_organization')) {
-            $org = $input->getArgument('other_organization');
-        } else {
+        $org = $input->getArgument('other_organization');
+        if (null === $org) {
             $org = $this->getParameter('authentication')['username'];
         }
 
-        $this->getHelper('process')->runCommands(
-            [
-                [
-                    'line' => sprintf('git push -u %s %s', $org, $branchName),
-                    'allow_failures' => true,
-                ]
-            ]
-        );
+        $this->getHelper('git')->pushToRemote($org, $branchName, true);
 
         $output->writeln(
             sprintf('Branch pushed to %s/%s', $org, $branchName)

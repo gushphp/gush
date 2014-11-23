@@ -125,4 +125,23 @@ abstract class BaseAdapter implements Adapter
     ) {
         throw new NotImplementedException();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false)
+    {
+        $pr = $this->getPullRequest($prNumber);
+
+        $newPr = $this->openPullRequest(
+            $newBase,
+            $newHead,
+            $pr['title'],
+            $pr['body']
+        );
+
+        $this->closePullRequest($prNumber);
+
+        return $newPr;
+    }
 }

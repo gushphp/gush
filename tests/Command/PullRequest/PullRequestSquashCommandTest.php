@@ -14,6 +14,7 @@ namespace Gush\Tests\Command\PullRequest;
 use Gush\Command\PullRequest\PullRequestSquashCommand;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Prophecy\Argument;
 
 class PullRequestSquashCommandTest extends BaseTestCase
 {
@@ -23,62 +24,24 @@ class PullRequestSquashCommandTest extends BaseTestCase
     public function squashes_commits_and_pushes_force_pull_request_branch()
     {
         $this->expectsConfig();
-        $processHelper = $this->expectProcessHelper();
+
         $tester = $this->getCommandTester($command = new PullRequestSquashCommand());
-        $command->getHelperSet()->set($processHelper, 'process');
-        $tester->execute(['--org' => 'cordoval', 'pr_number' => 40], ['interactive' => false]);
+        $command->getHelperSet()->set($this->expectGitHelper('base_ref', 'head_ref'));
+
+        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush', 'pr_number' => 40], ['interactive' => false]);
 
         $this->assertEquals(OutputFixtures::PULL_REQUEST_SQUASH, trim($tester->getDisplay(true)));
     }
 
-    private function expectProcessHelper()
+    private function expectGitHelper()
     {
-        $processHelper = $this->getMock(
-            'Gush\Helper\ProcessHelper',
-            ['runCommands']
-        );
-        $processHelper->expects($this->once())
-            ->method('runCommands')
-            ->with([
-                [
-                    'line' => 'git remote update',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git checkout head_ref',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git reset --soft base_ref',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git commit -am head_ref',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => sprintf('git push -u cordoval head_ref -f'),
-                    'allow_failures' => true
-                ],
-            ])
-        ;
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
 
-        return $processHelper;
-    }
+        $gitHelper->squashCommits('base_ref', 'head_ref')->shouldBeCalled();
+        $gitHelper->pushToRemote('origin', 'head_ref', true, true)->shouldBeCalled();
 
-    private function expectsConfig()
-    {
-        $this->config
-            ->expects($this->at(0))
-            ->method('get')
-            ->with('adapter')
-            ->will($this->returnValue('github_enterprise'))
-        ;
-        $this->config
-            ->expects($this->at(1))
-            ->method('get')
-            ->with('[adapters][github_enterprise][authentication]')
-            ->will($this->returnValue(['username' => 'cordoval']))
-        ;
+        return $gitHelper->reveal();
     }
 }

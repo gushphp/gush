@@ -83,7 +83,12 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     public function gets_current_git_branch_name()
     {
         exec('git rev-parse --abbrev-ref HEAD', $output);
-        $this->assertEquals($output[0], $this->git->getBranchName());
+
+        if ('HEAD' === $output[0]) {
+            $this->markTestSkipped('Unable to run this test in a detached HEAD state.');
+        }
+
+        $this->assertEquals($output[0], $this->git->getActiveBranchName());
     }
 
     /**
@@ -92,7 +97,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     public function gets_the_last_tag_on_current_branch()
     {
         exec('git describe --tags --abbrev=0 HEAD', $output);
-        $this->assertEquals($output[0], $this->git->getLastTagOnCurrentBranch());
+        $this->assertEquals($output[0], $this->git->getLastTagOnBranch());
     }
 
     /**
@@ -154,21 +159,6 @@ EOT;
     /**
      * @test
      */
-    public function runs_a_git_command()
-    {
-        $return = '## master';
-        $this->processHelper
-            ->expects($this->any())
-            ->method('runCommand')
-            ->will($this->returnValue($return))
-        ;
-
-        $this->assertContains('## master', $this->unitGit->runGitCommand('git status --branch --short'));
-    }
-
-    /**
-     * @test
-     */
     public function lists_files()
     {
         // Smoke test for a real listFiles
@@ -195,6 +185,8 @@ EOT;
 
         $processHelper->runCommand('git config --local --get remote.origin.url', true)->willReturn(true);
         $processHelper->runCommand('git status --porcelain --untracked-files=no')->willReturn("\n");
+        $processHelper->runCommand('git rev-parse --abbrev-ref HEAD')->willReturn("master");
+        $processHelper->runCommand(['git', 'checkout', 'master'])->shouldBeCalled();
         $processHelper->runCommands(
             [
                 [

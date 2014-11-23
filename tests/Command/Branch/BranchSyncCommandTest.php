@@ -14,6 +14,7 @@ namespace Gush\Tests\Command\Branch;
 use Gush\Command\Branch\BranchSyncCommand;
 use Gush\Tests\Command\BaseTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
+use Prophecy\Argument;
 
 class BranchSyncCommandTest extends BaseTestCase
 {
@@ -22,67 +23,72 @@ class BranchSyncCommandTest extends BaseTestCase
     /**
      * @test
      */
-    public function syncs_current_branch_with_origins_version()
+    public function syncs_current_branch_with_origin()
     {
-        $processHelper = $this->expectProcessHelper();
-        $gitHelper = $this->expectGitHelper();
         $tester = $this->getCommandTester($command = new BranchSyncCommand());
-        $command->getHelperSet()->set($processHelper, 'process');
-        $command->getHelperSet()->set($gitHelper, 'git');
+        $command->getHelperSet()->set($this->expectGitHelper());
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals(OutputFixtures::BRANCH_SYNC, trim($tester->getDisplay(true)));
-    }
-
-    private function expectProcessHelper()
-    {
-        $processHelper = $this->getMock(
-            'Gush\Helper\ProcessHelper',
-            ['runCommands']
+        $this->assertEquals(
+            sprintf(OutputFixtures::BRANCH_SYNC, self::TEST_BRANCH_NAME, 'origin'),
+            trim($tester->getDisplay(true))
         );
-        $processHelper->expects($this->once())
-            ->method('runCommands')
-            ->with([
-                [
-                    'line' => 'git remote update',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git reset --hard HEAD~1',
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git pull -u origin '.self::TEST_BRANCH_NAME,
-                    'allow_failures' => true
-                ],
-                [
-                    'line' => 'git checkout '.self::TEST_BRANCH_NAME,
-                    'allow_failures' => true
-                ]
-            ])
-        ;
-
-        return $processHelper;
     }
 
-    private function expectGitHelper()
+    /**
+     * @test
+     */
+    public function syncs_specific_branch_with_origin()
     {
-        $gitHelper = $this
-            ->getMockBuilder('Gush\Helper\GitHelper')
-            ->disableOriginalConstructor()
-            ->setMethods(['getBranchName'])
-            ->getMock()
-        ;
-        $gitHelper->expects($this->once())
-            ->method('getBranchName')
-            ->will($this->returnValue(self::TEST_BRANCH_NAME))
-        ;
+        $branch = 'development';
+        $remote = 'origin';
 
-        return $gitHelper;
+        $tester = $this->getCommandTester($command = new BranchSyncCommand());
+        $command->getHelperSet()->set($this->expectGitHelper($remote, $branch));
+
+        $tester->execute(
+            ['--org' => 'gushphp', '--repo' => 'gush', 'branch_name' => $branch],
+            ['interactive' => false]
+        );
+
+        $this->assertEquals(
+            sprintf(OutputFixtures::BRANCH_SYNC, $branch, 'origin'),
+            trim($tester->getDisplay(true))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function syncs_specific_branch_with_specific_remote()
+    {
+        $branch = 'development';
+        $remote = 'upstream';
+
+        $tester = $this->getCommandTester($command = new BranchSyncCommand());
+        $command->getHelperSet()->set($this->expectGitHelper($remote, $branch));
+
+        $tester->execute(
+            ['--org' => 'gushphp', '--repo' => 'gush', 'branch_name' => $branch, 'remote' => $remote],
+            ['interactive' => false]
+        );
+
+        $this->assertEquals(
+            sprintf(OutputFixtures::BRANCH_SYNC, $branch, $remote),
+            trim($tester->getDisplay(true))
+        );
+    }
+
+    private function expectGitHelper($remote = 'origin', $branch = self::TEST_BRANCH_NAME)
+    {
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
+
+        $gitHelper->getActiveBranchName()->willReturn($branch);
+        $gitHelper->syncWithRemote($remote, $branch)->shouldBeCalled();
+
+        return $gitHelper->reveal();
     }
 }

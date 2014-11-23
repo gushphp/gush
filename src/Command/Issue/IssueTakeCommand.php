@@ -13,6 +13,7 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,6 +46,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $org = $input->getOption('org') ?: 'origin';
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
 
@@ -59,22 +61,12 @@ EOF
             )
         );
 
-        $commands = [
-            [
-                'line' => 'git remote update',
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git checkout %s/%s', 'origin', $baseBranch),
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git checkout -b %s', $slugTitle),
-                'allow_failures' => true,
-            ],
-        ];
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
 
-        $this->getHelper('process')->runCommands($commands);
+        $gitHelper->remoteUpdate($org);
+        $gitHelper->checkout($org.'/'.$baseBranch);
+        $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);
         $output->writeln("Issue {$url} taken!");

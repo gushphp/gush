@@ -13,6 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,6 +50,7 @@ EOF
         $pr = $adapter->getPullRequest($prNumber);
 
         $username = $this->getParameter('authentication')['username'];
+
         if ($pr['head']['user'] !== $username) {
             $output->writeln('You cannot squash PRs that are not your own.');
 
@@ -58,32 +60,15 @@ EOF
         $base = $pr['base']['ref'];
         $head = $pr['head']['ref'];
 
-        $commands = [
-            [
-                'line' => 'git remote update',
-                'allow_failures' => true,
-            ],
-            [
-                'line' => 'git checkout '.$head,
-                'allow_failures' => true,
-            ],
-            [
-                'line' => 'git reset --soft '.$base,
-                'allow_failures' => true,
-            ],
-            [
-                'line' => 'git commit -am '.$head,
-                'allow_failures' => true,
-            ],
-            [
-                'line' => sprintf('git push -u %s %s -f', $username, $head),
-                'allow_failures' => true,
-            ],
-        ];
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
 
-        $this->getHelper('process')->runCommands($commands);
+        $gitHelper->squashCommits($base, $head);
+        $gitHelper->pushToRemote('origin', $head, true, true);
 
-        $output->writeln('PR has been squashed!');
+        $adapter->createComment($prNumber, '(PR squashed)');
+
+        $output->writeln('<info>PR has been squashed!<info>');
 
         return self::COMMAND_SUCCESS;
     }

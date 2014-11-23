@@ -13,6 +13,7 @@ namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -146,21 +147,31 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     }
 
     /**
+     * @return string
+     *
      * @throws \RuntimeException
      */
     public function probePhpCsFixer()
     {
-        $builder = new ProcessBuilder(['php-cs-fixer']);
+        $execFinder = new ExecutableFinder();
+        $execFinder->setSuffixes(['.bat', '.cmd', '.sh', '']);
+
+        $fixer = $execFinder->find('php-cs-fixer', 'php-cs-fixer');
+
+        $builder = new ProcessBuilder([$fixer, '--version']);
         $builder
             ->setWorkingDirectory(getcwd())
             ->setTimeout(3600)
         ;
+
         $process = $builder->getProcess();
         $process->run();
 
         if (!$process->isSuccessful()) {
             throw new \RuntimeException('Please install php-cs-fixer');
         }
+
+        return $fixer;
     }
 
     /**

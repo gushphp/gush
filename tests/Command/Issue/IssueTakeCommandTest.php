@@ -14,6 +14,7 @@ namespace Gush\Tests\Command\Issue;
 use Gush\Command\Issue\IssueTakeCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Command\BaseTestCase;
+use Prophecy\Argument;
 
 class IssueTakeCommandTest extends BaseTestCase
 {
@@ -25,11 +26,10 @@ class IssueTakeCommandTest extends BaseTestCase
      */
     public function takes_an_issue()
     {
-        $text = $this->expectTextHelper();
-        $process = $this->expectProcessHelper();
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
-        $command->getHelperSet()->set($text, 'text');
-        $command->getHelperSet()->set($process, 'process');
+        $command->getHelperSet()->set($this->expectTextHelper());
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/master'));
+
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'issue_number' => TestAdapter::ISSUE_NUMBER],
             ['interactive' => false]
@@ -41,53 +41,51 @@ class IssueTakeCommandTest extends BaseTestCase
         );
     }
 
-    private function expectTextHelper()
+    /**
+     * @test
+     */
+    public function takes_an_issue_with_specific_base()
     {
-        $text = $this->getMock(
-            'Gush\Helper\TextHelper',
-            ['slugify']
-        );
-        $text->expects($this->once())
-            ->method('slugify')
-            ->with(
-                sprintf(
-                    '%d %s',
-                    TestAdapter::ISSUE_NUMBER,
-                    self::TEST_TITLE
-                )
-            )
-            ->will($this->returnValue(self::SLUGIFIED_STRING));
+        $tester = $this->getCommandTester($command = new IssueTakeCommand());
+        $command->getHelperSet()->set($this->expectTextHelper());
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/development'));
 
-        return $text;
+        $tester->execute(
+            ['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER, 'base_branch' => 'development'],
+            ['interactive' => false]
+        );
+
+        $this->assertEquals(
+            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
+            trim($tester->getDisplay(true))
+        );
     }
 
-    private function expectProcessHelper()
+    private function expectTextHelper()
     {
-        $process = $this->getMock(
-            'Gush\Helper\ProcessHelper',
-            ['runCommands']
-        );
-        $process
-            ->expects($this->once())
-            ->method('runCommands')
-            ->with(
-                [
-                    [
-                        'line' => 'git remote update',
-                        'allow_failures' => true,
-                    ],
-                    [
-                        'line' => sprintf('git checkout origin/master'),
-                        'allow_failures' => true,
-                    ],
-                    [
-                        'line' => sprintf('git checkout -b %s', self::SLUGIFIED_STRING),
-                        'allow_failures' => true,
-                    ],
-                ]
-            )
-        ;
+        $text = $this->prophet->prophesize('Gush\Helper\TextHelper');
+        $text->setHelperSet(Argument::any())->shouldBeCalled();
+        $text->getName()->willReturn('text');
 
-        return $process;
+        $text->slugify(
+            sprintf('%d %s', TestAdapter::ISSUE_NUMBER, self::TEST_TITLE)
+        )->willReturn(
+            self::SLUGIFIED_STRING
+        );
+
+        return $text->reveal();
+    }
+
+    private function expectGitHelper($remote = 'gushphp', $baseBranch = 'origin/master')
+    {
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git');
+
+        $gitHelper->remoteUpdate($remote)->shouldBeCalled();
+        $gitHelper->checkout($baseBranch)->shouldBeCalled();
+        $gitHelper->checkout(self::SLUGIFIED_STRING, true)->shouldBeCalled();
+
+        return $gitHelper->reveal();
     }
 }
