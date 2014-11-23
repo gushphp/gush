@@ -111,7 +111,9 @@ LOGO;
         $this->dispatcher->addSubscriber(new TableSubscriber());
         $this->dispatcher->addSubscriber(new GitRepoSubscriber($helperSet->get('git')));
         $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
-        $this->dispatcher->addSubscriber(new CommandEndSubscriber($helperSet->get('filesystem')));
+        $this->dispatcher->addSubscriber(
+            new CommandEndSubscriber($helperSet->get('filesystem'), $helperSet->get('git'))
+        );
 
         // share our dispatcher with the parent class
         $this->setDispatcher($this->dispatcher);

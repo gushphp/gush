@@ -21,12 +21,17 @@ class GitHelper extends Helper
     const UNDEFINED_REPO = 2;
 
     /** @var \Gush\Helper\ProcessHelper */
-    protected $processHelper;
+    private $processHelper;
 
     /**
      * @var FilesystemHelper
      */
-    protected $filesystemHelper;
+    private $filesystemHelper;
+
+    /**
+     * @var string
+     */
+    private $stashedBranch;
 
     public function __construct(ProcessHelper $processHelper, FilesystemHelper $filesystemHelper)
     {
@@ -61,6 +66,30 @@ class GitHelper extends Helper
         }
 
         return $activeBranch;
+    }
+
+    /**
+     * Tries to restore back to the original branch the user was
+     * in (before executing any command).
+     */
+    public function restoreStashedBranch()
+    {
+        if (null === $this->stashedBranch) {
+            return;
+        }
+
+        if (!$this->isWorkingTreeReady()) {
+            throw new \RuntimeException(
+                sprintf(
+                    'The Git working tree has uncommitted changes, unable to checkout your working branch "%"'."\n".
+                    'Please resolve this failure manually.',
+                    $this->stashedBranch
+                )
+            );
+        }
+
+        $this->checkout($this->stashedBranch);
+        $this->stashedBranch = null;
     }
 
     /**
@@ -231,6 +260,7 @@ class GitHelper extends Helper
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
 
+        $this->stashBranchName();
         $this->processHelper->runCommands(
             [
                 [
@@ -259,6 +289,7 @@ class GitHelper extends Helper
         $hash = trim($this->processHelper->runCommand('git rev-parse HEAD'));
 
         $this->processHelper->runCommand(['git', 'push', $baseRemote]);
+        $this->restoreStashedBranch();
 
         return $hash;
     }
@@ -405,8 +436,7 @@ class GitHelper extends Helper
     public function switchBranchBase($branchName, $currentBase, $newBase, $newBranchName = null)
     {
         $this->guardWorkingTreeReady();
-
-        $activeBranch = $this->getActiveBranchName($branchName);
+        $this->stashBranchName();
         $this->checkout($branchName);
 
         if ($newBranchName) {
@@ -421,20 +451,19 @@ class GitHelper extends Helper
         } catch (\Exception $e) {
             // Error, abort the rebase process
             $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
-            $this->checkout($activeBranch);
+            $this->restoreStashedBranch();
 
             throw $e;
         }
 
-        $this->checkout($activeBranch);
+        $this->restoreStashedBranch();
     }
 
     public function squashCommits($base, $branchName)
     {
         $this->guardWorkingTreeReady();
 
-        $activeBranch = $this->getActiveBranchName($branchName);
-
+        $this->stashBranchName();
         $this->checkout($branchName);
 
         $forkPoint = $this->processHelper->runCommand(
@@ -457,7 +486,7 @@ class GitHelper extends Helper
 
         $this->reset($base);
         $this->commit($message, ['a']);
-        $this->checkout($activeBranch);
+        $this->restoreStashedBranch();
     }
 
     public function syncWithRemote($remote, $branchName = null)
@@ -465,6 +494,7 @@ class GitHelper extends Helper
         $this->guardWorkingTreeReady();
 
         $activeBranchName = $this->getActiveBranchName($branchName);
+        $this->stashBranchName();
 
         if (null === $branchName) {
             $branchName = $activeBranchName;
@@ -501,6 +531,21 @@ class GitHelper extends Helper
         file_put_contents($tmpName, $message);
 
         $this->processHelper->runCommand(array_merge(['git', 'commit', '-F', $tmpName], $params));
+    }
+
+    /**
+     * Stashes the active branch-name.
+     *
+     * This will only stash the branch-name when no other branch was active
+     * already.
+     */
+    private function stashBranchName()
+    {
+        $activeBranch = $this->getActiveBranchName('HEAD');
+
+        if (null === $this->stashedBranch && 'HEAD' !== $activeBranch) {
+            $this->stashedBranch = $activeBranch;
+        }
     }
 
     private function guardWorkingTreeReady()
