@@ -244,7 +244,7 @@ interface Adapter
     /**
      * Switches the pull-request base.
      *
-     * Note. When the adapter does not support changing the base-branch, a new PR should be opened
+     * When the adapter does not support changing the base-branch, a new PR should be opened
      * with same subject, body and labels. And the old PR should be closed.
      *
      * @param int    $prNumber
