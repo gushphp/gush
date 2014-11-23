@@ -22,8 +22,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Copy an issue from one repository to another
- *
- * @author Daniel Leech <daniel@dantleech.com>
  */
 class IssueCopyCommand extends BaseCommand implements GitRepoFeature
 {
@@ -43,6 +41,7 @@ class IssueCopyCommand extends BaseCommand implements GitRepoFeature
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command moves an issue from one repository to another
+
 EOF
             )
         ;
@@ -99,4 +98,3 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 }
-
