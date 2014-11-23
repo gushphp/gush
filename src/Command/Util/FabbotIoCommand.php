@@ -84,7 +84,7 @@ EOF
         $process = new Process($commandLine, getcwd());
         $process->run();
 
-        $gitHelper->pushRemote($username, $pr['head']['ref'], true, true);
+        $gitHelper->pushToRemote($username, $pr['head']['ref'], true, true);
 
         return self::COMMAND_SUCCESS;
     }

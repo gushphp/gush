@@ -58,7 +58,7 @@ EOF
             $org = $this->getParameter('authentication')['username'];
         }
 
-        $this->getHelper('git')->pushRemote($org, ':'.$currentBranchName, true);
+        $this->getHelper('git')->pushToRemote($org, ':'.$currentBranchName, true);
 
         $output->writeln(sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName));
 

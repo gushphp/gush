@@ -312,7 +312,7 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($commands, true);
     }
 
-    public function pushRemote($remote, $ref, $setUpstream = false, $force = false)
+    public function pushToRemote($remote, $ref, $setUpstream = false, $force = false)
     {
         $command = ['git', 'push', $remote];
 

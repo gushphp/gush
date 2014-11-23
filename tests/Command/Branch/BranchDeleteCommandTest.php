@@ -68,7 +68,7 @@ class BranchDeleteCommandTest extends BaseTestCase
         $gitHelper->getName()->willReturn('git');
 
         $gitHelper->getActiveBranchName()->willReturn($branchName);
-        $gitHelper->pushRemote('cordoval', ':'.$branchName, true)->shouldBeCalled();
+        $gitHelper->pushToRemote('cordoval', ':'.$branchName, true)->shouldBeCalled();
 
         return $gitHelper->reveal();
     }

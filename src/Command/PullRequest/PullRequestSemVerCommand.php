@@ -42,7 +42,8 @@ The <info>%command.name%</info> command provides information about semver versio
     <info>$ gush %command.name% 12</info>
 
 EOF
-            );
+            )
+        ;
     }
 
     /**

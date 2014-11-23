@@ -64,7 +64,7 @@ EOF
         /** @var GitHelper $gitHelper */
 
         $gitHelper->squashCommits($base, $head);
-        $gitHelper->pushRemote('origin', $head, true, true);
+        $gitHelper->pushToRemote('origin', $head, true, true);
 
         $adapter->createComment($prNumber, '(PR squashed)');
 

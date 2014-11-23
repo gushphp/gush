@@ -66,7 +66,7 @@ class BranchPushCommandTest extends BaseTestCase
         $gitHelper->getName()->willReturn('git');
 
         $gitHelper->getActiveBranchName()->willReturn(self::TEST_BRANCH);
-        $gitHelper->pushRemote($org, self::TEST_BRANCH, true)->shouldBeCalled();
+        $gitHelper->pushToRemote($org, self::TEST_BRANCH, true)->shouldBeCalled();
 
         return $gitHelper->reveal();
     }

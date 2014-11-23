@@ -55,7 +55,7 @@ EOF
             $org = $this->getParameter('authentication')['username'];
         }
 
-        $this->getHelper('git')->pushRemote($org, $branchName, true);
+        $this->getHelper('git')->pushToRemote($org, $branchName, true);
 
         $output->writeln(
             sprintf('Branch pushed to %s/%s', $org, $branchName)

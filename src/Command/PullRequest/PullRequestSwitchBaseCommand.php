@@ -85,8 +85,8 @@ EOF
         /** @var GitHelper $gitHelper */
         $gitHelper->remoteUpdate();
         $gitHelper->switchBranchBase($branchName, $currentBase, $baseBranch, $branchName.'-switched');
-        $gitHelper->pushRemote('origin', ':'.$branchName);
-        $gitHelper->pushRemote('origin', $branchName.'-switched', true);
+        $gitHelper->pushToRemote('origin', ':'.$branchName);
+        $gitHelper->pushToRemote('origin', $branchName.'-switched', true);
 
         $switchPr = $adapter->switchPullRequestBase(
             $prNumber,

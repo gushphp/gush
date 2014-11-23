@@ -156,7 +156,7 @@ EOF
 
         $gitHelper->remoteUpdate($remote);
         $gitHelper->addNotes($commentText, $sha, 'github-comments');
-        $gitHelper->pushRemote($remote, 'refs/notes/github-comments');
+        $gitHelper->pushToRemote($remote, 'refs/notes/github-comments');
     }
 
     private function getCommitsString($commits)

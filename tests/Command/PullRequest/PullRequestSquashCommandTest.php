@@ -40,7 +40,7 @@ class PullRequestSquashCommandTest extends BaseTestCase
         $gitHelper->getName()->willReturn('git');
 
         $gitHelper->squashCommits('base_ref', 'head_ref')->shouldBeCalled();
-        $gitHelper->pushRemote('origin', 'head_ref', true, true)->shouldBeCalled();
+        $gitHelper->pushToRemote('origin', 'head_ref', true, true)->shouldBeCalled();
 
         return $gitHelper->reveal();
     }
