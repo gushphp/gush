@@ -442,6 +442,7 @@ LOGO;
             new Cmd\Issue\IssueLabelListCommand(),
             new Cmd\Issue\IssueMilestoneListCommand(),
             new Cmd\Issue\IssueShowCommand(),
+            new Cmd\Issue\IssueCopyCommand(),
             new Cmd\Issue\IssueListCommand(),
             new Cmd\Issue\LabelIssuesCommand(),
             new Cmd\Branch\BranchPushCommand(),
