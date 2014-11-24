@@ -11,8 +11,9 @@
 
 namespace Gush\Helper;
 
-use Gush\Exception\UnknownRemoteException;
+use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Exception\WorkingTreeIsNotReady;
+use Gush\Operation\RemoteMergeOperation;
 use Gush\Util\StringUtil;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -38,6 +39,11 @@ class GitHelper extends Helper
      * @var string
      */
     private $stashedBranch;
+
+    /**
+     * @var string[]
+     */
+    private $tempBranches = [];
 
     public function __construct(
         ProcessHelper $processHelper,
@@ -91,7 +97,7 @@ class GitHelper extends Helper
         if (!$this->isWorkingTreeReady()) {
             throw new \RuntimeException(
                 sprintf(
-                    'The Git working tree has uncommitted changes, unable to checkout your working branch "%"'."\n".
+                    'The Git working tree has uncommitted changes, unable to checkout your working branch "%s"'."\n".
                     'Please resolve this failure manually.',
                     $this->stashedBranch
                 )
@@ -138,10 +144,71 @@ class GitHelper extends Helper
         return $foundRepoName;
     }
 
+    /**
+     * Returns the log commits between two ranges (either commit or branch-name).
+     *
+     * Returned result is an array like:
+     * [
+     *     ['sha' => '...', 'author' => '...', 'subject' => '...', 'message' => '...'],
+     * ]
+     *
+     * Note;
+     * - Commits are by default returned in order of oldest to newest.
+     * - sha is the full commit-hash
+     * - author is the author name and e-mail address like "My Name <someone@example.com>"
+     * - Message contains the subject followed by two new lines and the actual message-body.
+     *
+     * Or an empty array when there are no logs.
+     *
+     * @param string $start
+     * @param string $end
+     *
+     * @return array[]|array
+     */
     public function getLogBetweenCommits($start, $end)
     {
-        return StringUtil::splitLines(
-            $this->processHelper->runCommand(sprintf('git log %s...%s --oneline --no-color', $start, $end))
+        // First we get all the commits, then of each commit we get the actual data
+        // We can't the commit data in one go because the body contains newlines
+
+        $commits = StringUtil::splitLines($this->processHelper->runCommand(
+            [
+                'git',
+                '--no-pager',
+                'log',
+                '--oneline',
+                '--no-color',
+                '--format=%H',
+                '--reverse',
+                $start.'..'.$end,
+            ]
+        ));
+
+        return array_map(
+            function ($commitHash) {
+                // 0=author, 1=subject, anything higher then 2 is the full body
+                $commitData = StringUtil::splitLines(
+                    $this->processHelper->runCommand(
+                        [
+                            'git',
+                            '--no-pager',
+                            'show',
+                            '--format=%an <%ae>%n%s%n%b',
+                            '--no-color',
+                            '--no-patch',
+                            $commitHash,
+                        ]
+                    )
+                );
+
+                return [
+                    'sha' => $commitHash,
+                    'author' => array_shift($commitData),
+                    'subject' => $commitData[0],
+                    // subject + \n\n + {$commitData remaining}
+                    'message' => array_shift($commitData)."\n\n".implode("\n", $commitData),
+                ];
+            },
+            $commits
         );
     }
 
@@ -188,6 +255,7 @@ class GitHelper extends Helper
         $builder = $this->processHelper->getProcessBuilder(
             [
                 'git',
+                '--no-pager',
                 'ls-files',
             ]
         );
@@ -241,46 +309,45 @@ class GitHelper extends Helper
         return substr(strtok($lines, "\n"), 8);
     }
 
+    public function createTempBranch($originalBranch)
+    {
+        $tempBranchName = 'tmp--'.$originalBranch;
+        $this->tempBranches[] = $tempBranchName;
+
+        return $tempBranchName;
+    }
+
     /**
-     * @param string $sourceRemote  Remote name for pulling as registered in the .git/config
-     * @param string $baseRemote    Remote name for pushing as registered in the .git/config
+     * @return RemoteMergeOperation
+     */
+    public function createRemoteMergeOperation()
+    {
+        return new RemoteMergeOperation($this, $this->filesystemHelper);
+    }
+
+    /**
      * @param string $base          The base branch name
      * @param string $sourceBranch  The source branch name
      * @param string $commitMessage Commit message to use for the merge-commit
-     * @param int    $options       Options (reserved for feature usage)
-     *
-     * @throws WorkingTreeIsNotReady
      *
      * @return string Thew merge-commit hash
+     *
+     * @throws WorkingTreeIsNotReady
      */
-    public function mergeRemoteBranch($sourceRemote, $baseRemote, $base, $sourceBranch, $commitMessage, $options = null)
+    public function mergeBranch($base, $sourceBranch, $commitMessage)
     {
-        if (!$this->gitConfigHelper->remoteExists($sourceRemote)) {
-            throw new UnknownRemoteException($sourceRemote);
-        }
-
         $this->guardWorkingTreeReady();
+        $this->stashBranchName();
 
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
 
-        $this->stashBranchName();
+        $this->checkout($base);
+
         $this->processHelper->runCommands(
             [
                 [
-                    'line' => 'git remote update',
-                    'allow_failures' => false,
-                ],
-                [
-                    'line' => 'git checkout '.$base,
-                    'allow_failures' => false,
-                ],
-                [
-                    'line' => ['git', 'pull', '--ff-only', $baseRemote, $base],
-                    'allow_failures' => false,
-                ],
-                [
-                    'line' => ['git', 'merge', '--no-ff', '--no-commit', $sourceRemote.'/'.$sourceBranch],
+                    'line' => ['git', 'merge', '--no-ff', '--no-commit', $sourceBranch],
                     'allow_failures' => false,
                 ],
                 [
@@ -290,12 +357,7 @@ class GitHelper extends Helper
             ]
         );
 
-        $hash = trim($this->processHelper->runCommand('git rev-parse HEAD'));
-
-        $this->processHelper->runCommand(['git', 'push', $baseRemote, $base]);
-        $this->restoreStashedBranch();
-
-        return $hash;
+        return trim($this->processHelper->runCommand('git rev-parse HEAD'));
     }
 
     public function addNotes($notes, $commitHash, $ref)
@@ -394,6 +456,7 @@ class GitHelper extends Helper
     {
         $this->guardWorkingTreeReady();
         $this->stashBranchName();
+
         $this->checkout($branchName);
 
         if ($newBranchName) {
@@ -410,40 +473,94 @@ class GitHelper extends Helper
             $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
             $this->restoreStashedBranch();
 
-            throw $e;
+            throw new \RuntimeException('Git rebase failed to switch base.', 0, $e);
         }
-
-        $this->restoreStashedBranch();
     }
 
-    public function squashCommits($base, $branchName)
+    /**
+     * @param string $base
+     * @param string $branchName
+     * @param bool   $ignoreMultipleAuthors Ignore there are multiple authors (ake force)
+     *
+     * @throws WorkingTreeIsNotReady
+     * @throws CannotSquashMultipleAuthors
+     */
+    public function squashCommits($base, $branchName, $ignoreMultipleAuthors = false)
     {
         $this->guardWorkingTreeReady();
-
         $this->stashBranchName();
+
         $this->checkout($branchName);
 
-        $forkPoint = $this->processHelper->runCommand(
-            sprintf(
-                'git merge-base --fork-point %s %s',
-                $base,
-                $branchName
+        // Check if there are multiple authors, we only use the e-mail address
+        // As the name could have changed (eg. typo's and accents)
+        if (!$ignoreMultipleAuthors) {
+            $authors = array_unique(
+                StringUtil::splitLines(
+                    $this->processHelper->runCommand(
+                        [
+                            'git',
+                            '--no-pager',
+                            'log',
+                            '--oneline',
+                            '--no-color',
+                            '--format=%ae',
+                            $base.'..'.$branchName,
+                        ]
+                    )
+                )
+            );
+
+            if (count($authors) > 1) {
+                throw new CannotSquashMultipleAuthors();
+            }
+        }
+
+        // Get commits only in the branch but not in base (in reverse order)
+        // we can't use --max-count here because that is applied before the reversing!
+        //
+        // using git-log works better then finding the fork-point with git-merge-base
+        // because this protects against edge cases were there is no valid fork-point
+
+        $firstCommitHash = StringUtil::splitLines($this->processHelper->runCommand(
+            [
+                'git',
+                '--no-pager',
+                'log',
+                '--oneline',
+                '--no-color',
+                '--format=%H',
+                '--reverse',
+                $base.'..'.$branchName,
+            ]
+        ))[0];
+
+        // 0=author anything higher then 0 is the full body
+        $commitData = StringUtil::splitLines(
+            $this->processHelper->runCommand(
+                [
+                    'git',
+                    '--no-pager',
+                    'show',
+                    '--format=%an <%ae>%n%s%n%n%b',
+                    '--no-color',
+                    '--no-patch',
+                    $firstCommitHash,
+                ]
             )
         );
 
-        $message = StringUtil::splitLines(
-            $this->processHelper->runCommand(
-                sprintf(
-                    'git rev-list %s..%s --reverse --format=%%s --max-count=1',
-                    $forkPoint,
-                    $branchName
-                )
-            )
-        )[1];
+        $author = array_shift($commitData);
+        $message = implode("\n", $commitData);
 
         $this->reset($base);
-        $this->commit($message, ['a']);
-        $this->restoreStashedBranch();
+        $this->commit(
+            $message,
+            [
+                'a',
+                '-author' => $author,
+            ]
+        );
     }
 
     public function syncWithRemote($remote, $branchName = null)
@@ -496,7 +613,7 @@ class GitHelper extends Helper
      * This will only stash the branch-name when no other branch was active
      * already.
      */
-    private function stashBranchName()
+    public function stashBranchName()
     {
         $activeBranch = $this->getActiveBranchName('HEAD');
 

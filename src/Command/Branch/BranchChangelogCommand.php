@@ -53,23 +53,20 @@ EOF
             return self::COMMAND_SUCCESS;
         }
 
+        $adapter = $this->getIssueTracker();
         $commits = $this->getHelper('git')->getLogBetweenCommits($latestTag, 'HEAD');
 
         // Filter commits that reference an issue
         $issues = [];
 
-        $adapter = $this->getIssueTracker();
-
         foreach ($commits as $commit) {
-            $commit = substr($commit, strpos($commit, ' '));
-
             // Cut issue id from branch name (merge commits)
-            if (preg_match('/\/([0-9]+)/i', $commit, $matchesGush) && isset($matchesGush[1])) {
+            if (preg_match('/\/#([0-9]+)/i', $commit['message'], $matchesGush) && isset($matchesGush[1])) {
                 $issues[] = $matchesGush[1];
             }
 
             // Cut issue id from commit message
-            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit, $matchesGitRepo)
+            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit['message'], $matchesGitRepo)
                 && isset($matchesGitRepo[1])
             ) {
                 $issues[] = $matchesGitRepo[1];
@@ -82,7 +79,7 @@ EOF
             $issue = $adapter->getIssue($id);
 
             $output->writeln(
-                sprintf("%s: %s   <info>%s</info>", $id, $issue['title'], $issue['url'])
+                sprintf("#%s: %s   <info>%s</info>", $id, $issue['title'], $issue['url'])
             );
         }
 
