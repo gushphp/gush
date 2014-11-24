@@ -16,6 +16,7 @@ use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class IssueTakeCommand extends BaseCommand implements GitRepoFeature
@@ -30,6 +31,13 @@ class IssueTakeCommand extends BaseCommand implements GitRepoFeature
             ->setDescription('Takes an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
+            ->addOption(
+                'remote',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Name of the Git remote (default is origin)',
+                null
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command takes an issue from issue tracker repository list:
@@ -46,7 +54,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $org = $input->getOption('org') ?: 'origin';
+        $remote = $input->getOption('remote') ?: 'origin';
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
 
@@ -64,8 +72,8 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        $gitHelper->remoteUpdate($org);
-        $gitHelper->checkout($org.'/'.$baseBranch);
+        $gitHelper->remoteUpdate($remote);
+        $gitHelper->checkout($remote.'/'.$baseBranch);
         $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);
