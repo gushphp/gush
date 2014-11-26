@@ -276,7 +276,7 @@ class GitHelper extends Helper
                     'allow_failures' => false,
                 ],
                 [
-                    'line' => 'git pull --ff-only',
+                    'line' => ['git', 'pull', '--ff-only', $baseRemote, $base],
                     'allow_failures' => false,
                 ],
                 [
@@ -292,7 +292,7 @@ class GitHelper extends Helper
 
         $hash = trim($this->processHelper->runCommand('git rev-parse HEAD'));
 
-        $this->processHelper->runCommand(['git', 'push', $baseRemote]);
+        $this->processHelper->runCommand(['git', 'push', $baseRemote, $base]);
         $this->restoreStashedBranch();
 
         return $hash;
