@@ -83,7 +83,7 @@ interface Adapter
      * ]
      *
      * fork_origin is used to find the original organization and repository.
-     * When this repository is the head-parent, "fork_origin" maybe null.
+     * When this repository is the head-parent, "fork_origin" may be null.
      *
      * @param string $org
      * @param string $repository
