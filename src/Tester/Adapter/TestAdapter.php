@@ -68,6 +68,37 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
+    public function getRepositoryInfo($org, $repository)
+    {
+        if ('cordoval' === $org) {
+            return [
+                'owner' => 'cordoval',
+                'html_url' => 'https://github.com/cordoval/gush',
+                'fetch_url' => 'https://github.com/cordoval/gush.git',
+                'push_url' => 'git@github.com:cordoval/gush.git',
+                'is_fork' => true,
+                'is_private' => false,
+                'fork_origin' => [
+                    'org' => 'gushphp',
+                    'repository' => 'gush',
+                ]
+            ];
+        } else {
+            return [
+                'owner' => 'cordoval',
+                'html_url' => 'https://github.com/gushphp/gush',
+                'fetch_url' => 'https://github.com/gushphp/gush.git',
+                'push_url' => 'git@github.com:gushphp/gush.git',
+                'is_fork' => false,
+                'is_private' => false,
+                'fork_origin' => null,
+            ];
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function openIssue($subject, $body, array $options = [])
     {
         return 77;
@@ -242,10 +273,11 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'repo' => 'gush',
             ],
             'base' => [
-              'ref' => 'base_ref',
-              'label' => 'base_ref',
-              'sha' => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
-              'repo' => 'gush',
+                'ref' => 'base_ref',
+                'label' => 'base_ref',
+                'sha' => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+                'user' => 'gushphp',
+                'repo' => 'gush',
             ],
         ];
     }

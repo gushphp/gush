@@ -13,6 +13,7 @@ namespace Gush\Helper;
 
 use Gush\Exception\UnknownRemoteException;
 use Gush\Exception\WorkingTreeIsNotReady;
+use Gush\Util\StringUtil;
 use Symfony\Component\Console\Helper\Helper;
 
 class GitHelper extends Helper
@@ -20,7 +21,7 @@ class GitHelper extends Helper
     const UNDEFINED_ORG = 1;
     const UNDEFINED_REPO = 2;
 
-    /** @var \Gush\Helper\ProcessHelper */
+    /** @var ProcessHelper */
     private $processHelper;
 
     /**
@@ -29,14 +30,23 @@ class GitHelper extends Helper
     private $filesystemHelper;
 
     /**
+     * @var GitConfigHelper
+     */
+    private $gitConfigHelper;
+
+    /**
      * @var string
      */
     private $stashedBranch;
 
-    public function __construct(ProcessHelper $processHelper, FilesystemHelper $filesystemHelper)
-    {
+    public function __construct(
+        ProcessHelper $processHelper,
+        GitConfigHelper $gitConfigHelper,
+        FilesystemHelper $filesystemHelper
+    ) {
         $this->processHelper = $processHelper;
         $this->filesystemHelper = $filesystemHelper;
+        $this->gitConfigHelper = $gitConfigHelper;
     }
 
     public function getName()
@@ -112,8 +122,7 @@ class GitHelper extends Helper
     public function getRepoName()
     {
         $output = $this->processHelper->runCommand('git remote show -n origin', false, null, true);
-
-        $outputLines = $this->splitLines(trim($output));
+        $outputLines = StringUtil::splitLines($output);
 
         $foundRepoName = '';
         if (!in_array('Fetch', $outputLines)) {
@@ -131,7 +140,7 @@ class GitHelper extends Helper
 
     public function getLogBetweenCommits($start, $end)
     {
-        return $this->splitLines(
+        return StringUtil::splitLines(
             $this->processHelper->runCommand(sprintf('git log %s...%s --oneline --no-color', $start, $end))
         );
     }
@@ -142,8 +151,7 @@ class GitHelper extends Helper
     public function getVendorName()
     {
         $output = $this->processHelper->runCommand('git remote show -n origin', false, null, true);
-
-        $outputLines = $this->splitLines(trim($output));
+        $outputLines = StringUtil::splitLines($output);
 
         $foundVendorName = '';
         if (!in_array('Fetch', $outputLines)) {
@@ -191,7 +199,7 @@ class GitHelper extends Helper
         $process = $builder->getProcess();
         $process->run();
 
-        return $this->splitLines($process->getOutput());
+        return StringUtil::splitLines($process->getOutput());
     }
 
     public function getIssueNumber()
@@ -247,12 +255,8 @@ class GitHelper extends Helper
      */
     public function mergeRemoteBranch($sourceRemote, $baseRemote, $base, $sourceBranch, $commitMessage, $options = null)
     {
-        if (!$this->hasGitConfig(sprintf('remote.%s.url', $sourceRemote))) {
-            if (!$this->hasGitConfig('remote.origin.url')) {
-                throw new UnknownRemoteException($sourceRemote);
-            }
-
-            $sourceRemote = 'origin';
+        if (!$this->gitConfigHelper->remoteExists($sourceRemote)) {
+            throw new UnknownRemoteException($sourceRemote);
         }
 
         $this->guardWorkingTreeReady();
@@ -272,7 +276,7 @@ class GitHelper extends Helper
                     'allow_failures' => false,
                 ],
                 [
-                    'line' => 'git pull --ff-only',
+                    'line' => ['git', 'pull', '--ff-only', $baseRemote, $base],
                     'allow_failures' => false,
                 ],
                 [
@@ -288,7 +292,7 @@ class GitHelper extends Helper
 
         $hash = trim($this->processHelper->runCommand('git rev-parse HEAD'));
 
-        $this->processHelper->runCommand(['git', 'push', $baseRemote]);
+        $this->processHelper->runCommand(['git', 'push', $baseRemote, $base]);
         $this->restoreStashedBranch();
 
         return $hash;
@@ -363,53 +367,6 @@ class GitHelper extends Helper
         return '' === trim($this->processHelper->runCommand('git status --porcelain --untracked-files=no'));
     }
 
-    public function hasGitConfig($config, $section = 'local', $expectedValue = null)
-    {
-        $value = trim(
-                $this->processHelper->runCommand(
-                sprintf(
-                    'git config --%s --get %s',
-                    $section,
-                    $config
-                ),
-                true
-            )
-        );
-
-        if ('' === $value || (null !== $expectedValue && $value !== $expectedValue)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function setGitConfig($config, $value, $overwrite = false, $section = 'local')
-    {
-        if ($this->hasGitConfig($config, $value) && $overwrite) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Unable to set git config "%s" at %s, because the value is already set.',
-                    $config,
-                    $section
-                )
-            );
-        }
-
-        $this->processHelper->runCommand(
-            sprintf(
-                'git config "%s" "%s" --%s',
-                $config,
-                $value,
-                $section
-            )
-        );
-    }
-
-    public function addRemote($name, $url)
-    {
-        $this->processHelper->runCommand(['git', 'remote', 'add', $name, $url]);
-    }
-
     public function checkout($branchName, $createBranch = false)
     {
         $command = ['git', 'checkout'];
@@ -474,7 +431,7 @@ class GitHelper extends Helper
             )
         );
 
-        $message = $this->splitLines(
+        $message = StringUtil::splitLines(
             $this->processHelper->runCommand(
                 sprintf(
                     'git rev-list %s..%s --reverse --format=%%s --max-count=1',
@@ -553,12 +510,5 @@ class GitHelper extends Helper
         if (!$this->isWorkingTreeReady()) {
             throw new WorkingTreeIsNotReady();
         }
-    }
-
-    private function splitLines($output)
-    {
-        $output = trim($output);
-
-        return ((string) $output === '') ? [] : preg_split('{\r?\n}', $output);
     }
 }

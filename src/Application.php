@@ -97,7 +97,14 @@ LOGO;
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
-        $helperSet->set(new Helpers\GitHelper($helperSet->get('process'), $helperSet->get('filesystem')));
+        $helperSet->set(new Helpers\GitConfigHelper($helperSet->get('process')));
+        $helperSet->set(
+            new Helpers\GitHelper(
+                $helperSet->get('process'),
+                $helperSet->get('git_config'),
+                $helperSet->get('filesystem')
+            )
+        );
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('question'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new Helpers\AutocompleteHelper());

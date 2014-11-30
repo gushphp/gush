@@ -14,6 +14,7 @@ namespace Gush\Command\PullRequest;
 use Gush\Command\BaseCommand;
 use Gush\Exception\AdapterException;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,7 +39,7 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
                 InputOption::VALUE_NONE,
                 'Avoid adding PR comments to the merge commit message'
             )
-            ->addOption('remote', null, InputOption::VALUE_OPTIONAL, 'Remote to push the notes to', 'origin')
+            ->addOption('remote', null, InputOption::VALUE_OPTIONAL, 'Remote to push the notes to')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command merges the given pull request:
@@ -77,6 +78,21 @@ EOF
             return;
         }
 
+        $sourceRemote = $pr['head']['user'];
+        $repository = $pr['head']['repo'];
+
+        $gitHelper = $this->getHelper('git');
+        /** @var GitHelper $gitHelper */
+
+        $this->ensureRemoteExists($sourceRemote, $repository, $output);
+
+        if (!$input->getOption('remote')) {
+            $this->ensureRemoteExists($pr['base']['user'], $pr['base']['repo'], $output);
+            $baseRemote = $pr['base']['user'];
+        } else {
+            $baseRemote = $input->getOption('remote');
+        }
+
         $commits = $adapter->getPullRequestCommits($prNumber);
 
         if (null === $prType) {
@@ -96,13 +112,7 @@ EOF
             ]
         );
 
-        $gitHelper = $this->getHelper('git');
-        /** @var GitHelper $gitHelper */
-
         try {
-            $sourceRemote = $pr['head']['user'];
-            $baseRemote = $input->getOption('remote');
-
             $base = $pr['base']['ref'];
             $sourceBranch = $pr['head']['ref'];
 
@@ -125,10 +135,31 @@ EOF
             $output->writeln('Pull Request successfully merged.');
 
             return self::COMMAND_SUCCESS;
-        } catch (AdapterException $e) {
+        } catch (\Exception $e) {
             $output->writeln('There was a problem merging: '.$e->getMessage());
 
             return self::COMMAND_FAILURE;
+        }
+    }
+
+    private function ensureRemoteExists($org, $repo, OutputInterface $output)
+    {
+        $gitConfigHelper = $this->getHelper('git_config');
+        /** @var GitConfigHelper $gitConfigHelper */
+
+        $adapter = $this->getAdapter();
+        $repoInfo = $adapter->getRepositoryInfo($org, $repo);
+
+        if (!$gitConfigHelper->remoteExists($org, $repoInfo['fetch_url'])) {
+            $output->writeln(
+                sprintf(
+                    "<info>\n[INFO] Adding remote '%s' with '%s' to git local config.</info>",
+                    $org,
+                    $repoInfo['fetch_url']
+                )
+            );
+
+            $gitConfigHelper->setRemote($org, $repoInfo['fetch_url'], $repoInfo['push_url']);
         }
     }
 

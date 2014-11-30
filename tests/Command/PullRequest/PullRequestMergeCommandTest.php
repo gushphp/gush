@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestMergeCommand;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
@@ -23,6 +24,11 @@ class PullRequestMergeCommandTest extends BaseTestCase
      * @var ObjectProphecy|GitHelper
      */
     private $git;
+
+    /**
+     * @var ObjectProphecy|GitConfigHelper
+     */
+    private $gitConfig;
 
     private static $mergeHash = '8ae59958a2632018275b8db9590e9a79331030cb';
 
@@ -43,6 +49,14 @@ Commits
 ab34567812345678123456781234567812345678 added final touches (cordoval)
 OET;
 
+    const COMMAND_DISPLAY = <<<OET
+[INFO] Adding remote 'cordoval' with 'https://github.com/cordoval/gush.git' to git local config.
+
+[INFO] Adding remote 'gushphp' with 'https://github.com/gushphp/gush.git' to git local config.
+Pull Request successfully merged.
+OET;
+
+
     /**
      * @test
      */
@@ -57,7 +71,7 @@ OET;
         $tester = $this->getTesterForCommand();
         $this->git->mergeRemoteBranch(
             'cordoval',
-            'origin',
+            'gushphp',
             'base_ref',
             'head_ref',
             Argument::that($stringComparison)
@@ -68,7 +82,7 @@ OET;
             ['interactive' => false]
         );
 
-        $this->assertEquals('Pull Request successfully merged.', trim($tester->getDisplay(true)));
+        $this->assertEquals(self::COMMAND_DISPLAY, trim($tester->getDisplay(true)));
     }
 
     /**
@@ -85,7 +99,7 @@ OET;
         $tester = $this->getTesterForCommand();
         $this->git->mergeRemoteBranch(
             'cordoval',
-            'origin',
+            'gushphp',
             'base_ref',
             'head_ref',
             Argument::that($stringComparison)
@@ -96,7 +110,7 @@ OET;
             ['interactive' => false]
         );
 
-        $this->assertEquals('Pull Request successfully merged.', trim($tester->getDisplay(true)));
+        $this->assertEquals(self::COMMAND_DISPLAY, trim($tester->getDisplay(true)));
     }
 
     /**
@@ -111,10 +125,30 @@ OET;
 
         $this->git = $this->prophet->prophesize('Gush\Helper\GitHelper');
         $this->git->getName()->willReturn('git');
-        $this->git->setHelperSet(Argument::any())->willReturn(null);
+        $this->git->setHelperSet(Argument::any())->shouldBeCalled();
+
+        $this->gitConfig = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
+        $this->gitConfig->getName()->willReturn('git_config');
+        $this->gitConfig->setHelperSet(Argument::any())->shouldBeCalled();
+
+        $this->gitConfig->remoteExists('cordoval', 'https://github.com/cordoval/gush.git')->willReturn(false);
+        $this->gitConfig->remoteExists('gushphp', 'https://github.com/gushphp/gush.git')->willReturn(false);
+
+        $this->gitConfig->setRemote(
+            'cordoval',
+            'https://github.com/cordoval/gush.git',
+            'git@github.com:cordoval/gush.git'
+        )->shouldBeCalled();
+
+        $this->gitConfig->setRemote(
+            'gushphp',
+            'https://github.com/gushphp/gush.git',
+            'git@github.com:gushphp/gush.git'
+        )->shouldBeCalled();
 
         $helperSet = $application->getHelperSet();
         $helperSet->set($this->git->reveal());
+        $helperSet->set($this->gitConfig->reveal());
 
         return $tester;
     }

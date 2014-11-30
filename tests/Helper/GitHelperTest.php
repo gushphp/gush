@@ -12,8 +12,10 @@
 namespace Gush\Tests\Helper;
 
 use Gush\Helper\FilesystemHelper;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophet;
 
@@ -33,6 +35,11 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
      * @var ProcessHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processHelper;
+
+    /**
+     * @var GitConfigHelper|ObjectProphecy
+     */
+    protected $gitConfigHelper;
 
     /**
      * @var FilesystemHelper|ObjectProphecy
@@ -58,10 +65,18 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $this->filesystemHelper = $this->prophet->prophesize('Gush\Helper\FilesystemHelper');
         $this->filesystemHelper->getName()->willReturn('filesystem');
 
+        $this->gitConfigHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
+        $this->gitConfigHelper->setHelperSet(Argument::any());
+        $this->gitConfigHelper->getName()->willReturn('git_config');
+
         $this->realFsHelper = new FilesystemHelper();
 
-        $this->git = new GitHelper(new ProcessHelper(), $this->realFsHelper);
-        $this->unitGit = new GitHelper($this->processHelper, $this->filesystemHelper->reveal());
+        $this->git = new GitHelper(new ProcessHelper(), $this->gitConfigHelper->reveal(), $this->realFsHelper);
+        $this->unitGit = new GitHelper(
+            $this->processHelper,
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
     }
 
     public function tearDown()
@@ -178,8 +193,10 @@ EOT;
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
         $message = "Black-box testing 123\n\n\nAah!";
 
+        $this->gitConfigHelper->remoteExists('origin')->willReturn(true);
+
         $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
-        $this->unitGit = new GitHelper($processHelper->reveal(), $this->filesystemHelper->reveal());
+        $this->unitGit = new GitHelper($processHelper->reveal(), $this->gitConfigHelper->reveal(), $this->filesystemHelper->reveal());
 
         $this->filesystemHelper->newTempFilename()->willReturn($tmpName);
 
@@ -198,7 +215,7 @@ EOT;
                     'allow_failures' => false,
                 ],
                 [
-                    'line' => 'git pull --ff-only',
+                    'line' => ['git', 'pull', '--ff-only', 'origin', 'master'],
                     'allow_failures' => false,
                 ],
                 [
@@ -213,7 +230,7 @@ EOT;
         )->shouldBeCalled();
 
         $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
-        $processHelper->runCommand(['git', 'push', $baseRemote])->shouldBeCalled();
+        $processHelper->runCommand(['git', 'push', $baseRemote, 'master'])->shouldBeCalled();
 
         $this->assertEquals(
             $hash,

@@ -26,7 +26,7 @@ class BranchForkCommandTest extends BaseTestCase
         $this->expectsConfig();
 
         $tester = $this->getCommandTester($command = new BranchForkCommand());
-        $command->getHelperSet()->set($this->expectGitHelper('cordoval', 'git@github.com:cordoval/gush.git'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper('cordoval', 'git@github.com:cordoval/gush.git'));
 
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
@@ -41,7 +41,7 @@ class BranchForkCommandTest extends BaseTestCase
         $this->expectsConfig();
 
         $tester = $this->getCommandTester($command = new BranchForkCommand());
-        $command->getHelperSet()->set($this->expectGitHelper('someone', 'git@github.com:cordoval/gush.git'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper('someone', 'git@github.com:cordoval/gush.git'));
 
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'other_organization' => 'someone'],
@@ -51,13 +51,13 @@ class BranchForkCommandTest extends BaseTestCase
         $this->assertEquals(sprintf(OutputFixtures::BRANCH_FORK, 'someone'), trim($tester->getDisplay(true)));
     }
 
-    private function expectGitHelper($remoteName, $gitUrl)
+    private function expectGitConfigHelper($remoteName, $gitUrl)
     {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
         $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git');
+        $gitHelper->getName()->willReturn('git_config');
 
-        $gitHelper->addRemote($remoteName, $gitUrl)->shouldBeCalled();
+        $gitHelper->setRemote($remoteName, $gitUrl)->shouldBeCalled();
 
         return $gitHelper->reveal();
     }

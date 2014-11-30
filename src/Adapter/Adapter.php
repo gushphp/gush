@@ -66,6 +66,33 @@ interface Adapter
     public function createFork($org);
 
     /**
+     * Gets the information from the requested repository.
+     *
+     * Returned value must be an array with the following data (values are by example).
+     * If a value is not supported null must be used instead, or false in case of a boolean.
+     *
+     * "owner":         "username"
+     * "html_url":      "https://github.com/octocat/Hello-World"
+     * "fetch_url":     "https://github.com/octocat/Hello-World.git"
+     * "push_url":      "git@github.com:octocat/Hello-World.git"
+     * "is_fork":       false
+     * "is_private":    false
+     * "fork_origin":   [
+     *     "org": null
+     *     "repo": null
+     * ]
+     *
+     * fork_origin is used to find the original organization and repository.
+     * When this repository is the head-parent, "fork_origin" may be null.
+     *
+     * @param string $org
+     * @param string $repository
+     *
+     * @return array
+     */
+    public function getRepositoryInfo($org, $repository);
+
+    /**
      * @param $name
      * @param $description
      * @param $homepage
@@ -186,6 +213,7 @@ interface Adapter
      *     "label": "master"
      *     "ref":   "master"
      *     "sha":   "6dcb09b5b57875f334f61aebed695e2e4193db5e"
+     *     "user":  "username"
      *     "repo":  "Hello-World"
      * ]
      *

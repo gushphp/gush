@@ -13,6 +13,7 @@ namespace Gush\Command\Branch;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitConfigHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,7 +59,10 @@ EOF
         $sourceOrg = $input->getOption('org');
         $targetOrg = $orgFork ?: $username;
 
-        $this->getHelper('git')->addRemote($targetOrg, $fork['git_url']);
+        $gitConfigHelper = $this->getHelper('git_config');
+        /** @var GitConfigHelper $gitConfigHelper */
+
+        $gitConfigHelper->setRemote($targetOrg, $fork['git_url']);
 
         $output->writeln(
             sprintf(
