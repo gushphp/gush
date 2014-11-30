@@ -128,12 +128,13 @@ EOF
 
         try {
             $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
-            $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $prNumber, $mergeNote, $gitHelper) {
+            $commits = $adapter->getPullRequestCommits($prNumber);
+            $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
                 return $this->render(
                     'merge',
                     [
                         'type' => $prType,
-                        'author' => $pr['user'],
+                        'authors' => $this->getPrAuthors($commits, $pr['user']),
                         'prNumber' => $pr['number'],
                         'prTitle' => trim($pr['title']),
                         'mergeNote' => $mergeNote,
@@ -215,7 +216,7 @@ EOF
         }
     }
 
-    private function addCommentsToMergeCommit($comments, $sha, $remote)
+    private function addCommentsToMergeCommit(array $comments, $sha, $remote)
     {
         if (0 === count($comments)) {
             return;
@@ -269,6 +270,21 @@ EOF
         }
 
         return $this->render($template, $params);
+    }
+
+    private function getPrAuthors(array $commits, $authorFallback = 'unknown')
+    {
+        if (!$commits) {
+            return $authorFallback;
+        }
+
+        $authors = [];
+
+        foreach ($commits as $commit) {
+            $authors[] = $commit['user'];
+        }
+
+        return implode(', ', array_unique($authors, SORT_STRING));
     }
 
     private function getCommitsString(array $commits)
