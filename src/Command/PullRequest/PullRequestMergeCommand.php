@@ -88,6 +88,7 @@ like "development" you can use <comment>--switch</comment> to change the base wh
 <comment>This will only merge the commits that are in the source branch but not in the original target branch!</comment>
 
     <info>$ gush %command.name% --switch=development 12</info>
+
 EOF
             )
         ;
