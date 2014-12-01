@@ -33,7 +33,7 @@ class PullRequestMergeCommandTest extends BaseTestCase
     private $mergeHash = '8ae59958a2632018275b8db9590e9a79331030cb';
 
     private $mergeMessage = <<<OET
-%s #%d Write a behat test to launch strategy (weaverryan)
+%s #%d Write a behat test to launch strategy (cordoval)
 
 This PR was merged into the base_ref branch.
 
@@ -50,7 +50,7 @@ ab34567812345678123456781234567812345678 added final touches
 OET;
 
     private $mergeMessageSquash = <<<'OET'
-%s #%d Write a behat test to launch strategy (weaverryan)
+%s #%d Write a behat test to launch strategy (cordoval)
 
 This PR was squashed before being merged into the base_ref branch (closes #%2$d).
 

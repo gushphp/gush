@@ -12,13 +12,10 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
-use Gush\Exception\AdapterException;
 use Gush\Exception\CannotSquashMultipleAuthors;
-use Gush\Exception\UnknownRemoteException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
-use Gush\Operation\RemoteMergeOperation;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

@@ -14,7 +14,7 @@ namespace Gush\Template;
 class Messages
 {
     const MERGE = <<<EOT
-{{ type }} #{{ prNumber }} {{ prTitle }} ({{ author }})
+{{ type }} #{{ prNumber }} {{ prTitle }} ({{ authors }})
 
 {{ mergeNote }}
 
