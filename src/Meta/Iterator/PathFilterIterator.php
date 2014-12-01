@@ -11,6 +11,7 @@
 
 namespace Gush\Meta\Iterator;
 
+use Symfony\Component\Finder\Expression\Expression;
 use Symfony\Component\Finder\Iterator\PathFilterIterator as BasePathFilterIterator;
 
 /**
@@ -50,5 +51,29 @@ class PathFilterIterator extends BasePathFilterIterator
         }
 
         return $match;
+    }
+
+    /**
+     * Converts glob to regexp.
+     *
+     * PCRE patterns are left unchanged.
+     * Glob strings are transformed with Glob::toRegex().
+     *
+     * @param string $str Pattern: glob or regexp
+     *
+     * @return string regexp corresponding to a given glob or regexp
+     */
+    protected function toRegex($str)
+    {
+        $expression = Expression::create($str);
+
+        if ($expression->isGlob()) {
+            $regex = $expression->getRegex();
+
+            // We don't the starts-with operator '^'
+            return $regex::BOUNDARY.substr($regex->render(), strlen($regex::BOUNDARY)+1);
+        }
+
+        return $expression->getRegex()->render();
     }
 }
