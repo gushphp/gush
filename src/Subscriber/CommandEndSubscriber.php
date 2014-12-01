@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * The CommandEndSubscriber is activated when the command is terminated.
  *
- * - Clean-up temp-files.
+ * - Clean-up temp files and branches.
  * - Restore the original working branch on exception.
  */
 class CommandEndSubscriber implements EventSubscriberInterface
@@ -51,6 +51,7 @@ class CommandEndSubscriber implements EventSubscriberInterface
     public function cleanUpTempFiles()
     {
         $this->fsHelper->clearTempFiles();
+        $this->gitHelper->clearTempBranches();
     }
 
     public function restoreStashedBranch()

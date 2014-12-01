@@ -317,6 +317,13 @@ class GitHelper extends Helper
         return $tempBranchName;
     }
 
+    public function clearTempBranches()
+    {
+        foreach ($this->tempBranches as $branch) {
+            $this->processHelper->runCommand(['git', 'branch', '-D', $branch], true);
+        }
+    }
+
     /**
      * @return RemoteMergeOperation
      */
