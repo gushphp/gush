@@ -193,33 +193,18 @@ EOT;
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
         $message = "Black-box testing 123\n\n\nAah!";
 
-        $this->gitConfigHelper->remoteExists('origin')->willReturn(true);
-
         $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
         $this->unitGit = new GitHelper($processHelper->reveal(), $this->gitConfigHelper->reveal(), $this->filesystemHelper->reveal());
 
         $this->filesystemHelper->newTempFilename()->willReturn($tmpName);
 
-        $processHelper->runCommand('git config --local --get remote.origin.url', true)->willReturn(true);
         $processHelper->runCommand('git status --porcelain --untracked-files=no')->willReturn("\n");
-        $processHelper->runCommand('git rev-parse --abbrev-ref HEAD')->willReturn("master");
+        $processHelper->runCommand('git rev-parse --abbrev-ref HEAD')->willReturn('master');
         $processHelper->runCommand(['git', 'checkout', 'master'])->shouldBeCalled();
         $processHelper->runCommands(
             [
                 [
-                    'line' => 'git remote update',
-                    'allow_failures' => false,
-                ],
-                [
-                    'line' => 'git checkout '.$base,
-                    'allow_failures' => false,
-                ],
-                [
-                    'line' => ['git', 'pull', '--ff-only', 'origin', 'master'],
-                    'allow_failures' => false,
-                ],
-                [
-                    'line' => ['git', 'merge', '--no-ff', '--no-commit', $sourceRemote.'/'.$sourceBranch],
+                    'line' => ['git', 'merge', '--no-ff', '--no-commit', 'amazing-feature'],
                     'allow_failures' => false,
                 ],
                 [
@@ -230,19 +215,8 @@ EOT;
         )->shouldBeCalled();
 
         $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
-        $processHelper->runCommand(['git', 'push', $baseRemote, 'master'])->shouldBeCalled();
 
-        $this->assertEquals(
-            $hash,
-            $this->unitGit->mergeRemoteBranch(
-                $sourceRemote,
-                $baseRemote,
-                $base,
-                $sourceBranch,
-                $this->realFsHelper,
-                $message
-            )
-        );
+        $this->assertEquals($hash, $this->unitGit->mergeBranch($base, $sourceBranch, $this->realFsHelper, $message));
     }
 
     public function repoUrlProvider()

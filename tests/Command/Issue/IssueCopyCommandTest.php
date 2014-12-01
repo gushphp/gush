@@ -25,7 +25,7 @@ class IssueCopyCommandTest extends BaseTestCase
     {
         $tester = $this->getCommandTester(new IssueCopyCommand());
         $tester->execute([
-            '--org' => 'gushphp', 
+            '--org' => 'gushphp',
             '--repo' => 'gush',
             'issue_number' => TestAdapter::ISSUE_NUMBER,
             'target_username' => 'dantleech',
@@ -36,6 +36,6 @@ class IssueCopyCommandTest extends BaseTestCase
             'interactive' => false,
         ]);
 
-        $this->assertEquals(OutputFixtures::ISSUE_COPY, trim($tester->getDisplay()));
+        $this->assertEquals(OutputFixtures::ISSUE_COPY, trim($tester->getDisplay(true)));
     }
 }

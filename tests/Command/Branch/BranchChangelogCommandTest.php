@@ -62,7 +62,12 @@ class BranchChangelogCommandTest extends BaseTestCase
     private function expectGitHelperWithTags()
     {
         $commits = [
-            '68bfa1d00 Another hack which fixes #123',
+            [
+                'sha' => '68bfa1d00',
+                'author' => 'Anonymous <someone@example.com>',
+                'subject' => ' Another hack which fixes #123',
+                'message' => ' Another hack which fixes #123'
+            ]
         ];
 
         $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');

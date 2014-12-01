@@ -12,7 +12,7 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
-use Gush\Exception\AdapterException;
+use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -31,15 +31,36 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
-            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
-            ->addArgument('pr_type', InputArgument::OPTIONAL, 'Pull Request type eg. bug, feature (default is merge)')
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')->addArgument(
+                'pr_type',
+                InputArgument::OPTIONAL,
+                'Pull Request type eg. bug, feature (default is merge)',
+                'merge'
+            )
             ->addOption(
                 'no-comments',
                 null,
                 InputOption::VALUE_NONE,
                 'Avoid adding PR comments to the merge commit message'
             )
-            ->addOption('remote', null, InputOption::VALUE_OPTIONAL, 'Remote to push the notes to')
+            ->addOption(
+                'squash',
+                null,
+                InputOption::VALUE_NONE,
+                'Squash the PR before merging'
+            )
+            ->addOption(
+                'force-squash',
+                null,
+                InputOption::VALUE_NONE,
+                'Force squashing the PR, even if there are multiple authors (this will implicitly use --squash)'
+            )
+            ->addOption(
+                'switch',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Switch the base of the pull request before merging'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command merges the given pull request:
@@ -50,6 +71,23 @@ Optionally you can prefix the merge title with a type like: bug, feature or anyt
 <comment>Using a type makes it easier to search for a such a PR-type in your git history.</comment>
 
     <info>$ gush %command.name% 12 bug</info>
+
+If there are many unrelated commits (like cs fixes) you can squash all the commits in the
+pull-request into one big commit using:
+
+    <info>$ gush %command.name% --squash 12</info>
+
+This will use the message-body and author of the first commit in the pull-request.
+
+<comment>Note:</comment> Squashing a PR requires that all the commits in the pull-request were done by one author.
+You can overwrite this behaviour with <comment>--force-squash</comment>
+
+If the pull request was opened against the master branch as target, but you rather want to merge it into another branch,
+like "development" you can use <comment>--switch</comment> to change the base when merging.
+
+<comment>This will only merge the commits that are in the source branch but not in the original target branch!</comment>
+
+    <info>$ gush %command.name% --switch=development 12</info>
 EOF
             )
         ;
@@ -62,81 +100,78 @@ EOF
     {
         $prNumber = $input->getArgument('pr_number');
         $prType = $input->getArgument('pr_type');
+        $squash = $input->getOption('squash') || $input->getOption('force-squash');
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
-        if ('open' !== $pr['state']) {
-            $output->writeln(
-                sprintf(
-                    "<error>\n[ERROR] Pull request #%s is already merged/closed, current status: %s</error>",
-                    $prNumber,
-                    $pr['state']
-                )
-            );
-
-            return;
+        if (false === $this->guardPullRequestMerge($pr, $output)) {
+            return self::COMMAND_FAILURE;
         }
-
-        $sourceRemote = $pr['head']['user'];
-        $repository = $pr['head']['repo'];
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        $this->ensureRemoteExists($sourceRemote, $repository, $output);
+        $sourceRemote = $pr['head']['user'];
+        $sourceRepository = $pr['head']['repo'];
+        $sourceBranch = $pr['head']['ref'];
 
-        if (!$input->getOption('remote')) {
-            $this->ensureRemoteExists($pr['base']['user'], $pr['base']['repo'], $output);
-            $baseRemote = $pr['base']['user'];
-        } else {
-            $baseRemote = $input->getOption('remote');
-        }
+        $targetRemote = $pr['base']['user'];
+        $targetRepository = $pr['base']['repo'];
+        $targetBranch = $pr['base']['ref'];
 
-        $commits = $adapter->getPullRequestCommits($prNumber);
-
-        if (null === $prType) {
-            $prType = 'merge';
-        }
-
-        $message = $this->render(
-            'merge',
-            [
-                'type' => $prType,
-                'author' => $pr['user'],
-                'baseBranch' => $pr['base']['ref'],
-                'prNumber' => $prNumber,
-                'prTitle' => trim($pr['title']),
-                'prBody' => trim($pr['body']),
-                'commits' => $this->getCommitsString($commits),
-            ]
-        );
+        $this->ensureRemoteExists($targetRemote, $targetRepository, $output);
+        $this->ensureRemoteExists($sourceRemote, $sourceRepository, $output);
 
         try {
-            $base = $pr['base']['ref'];
-            $sourceBranch = $pr['head']['ref'];
+            $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
+            $commits = $adapter->getPullRequestCommits($prNumber);
+            $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
+                return $this->render(
+                    'merge',
+                    [
+                        'type' => $prType,
+                        'authors' => $this->getPrAuthors($commits, $pr['user']),
+                        'prNumber' => $pr['number'],
+                        'prTitle' => trim($pr['title']),
+                        'mergeNote' => $mergeNote,
+                        'prBody' => trim($pr['body']),
+                        'commits' => $this->getCommitsString($gitHelper->getLogBetweenCommits($base, $tempBranch)),
+                    ]
+                );
+            };
 
-            $mergeCommit = $gitHelper->mergeRemoteBranch(
-                $sourceRemote,
-                $baseRemote,
-                $base,
-                $sourceBranch,
-                $message
-            );
+            $mergeOperation = $gitHelper->createRemoteMergeOperation();
+            $mergeOperation->setTarget($targetRemote, $targetBranch);
+            $mergeOperation->setSource($sourceRemote, $sourceBranch);
+            $mergeOperation->squashCommits($squash, $input->getOption('force-squash'));
+            $mergeOperation->switchBase($input->getOption('switch'));
+            $mergeOperation->setMergeMessage($messageCallback);
+
+            $mergeCommit = $mergeOperation->performMerge();
+            $mergeOperation->pushToRemote();
 
             if (!$input->getOption('no-comments')) {
                 $this->addCommentsToMergeCommit(
                     $adapter->getComments($prNumber),
                     $mergeCommit,
-                    $input->getOption('remote')
+                    $targetRemote
                 );
             }
 
-            $output->writeln('Pull Request successfully merged.');
+            $adapter->closePullRequest($prNumber);
+            $output->writeln($mergeNote);
 
             return self::COMMAND_SUCCESS;
+        } catch (CannotSquashMultipleAuthors $e) {
+            $output->writeln(
+                "<error>\n[ERROR] Can not squash commits when there are multiple authors.".
+                "Use --force-squash to continue or ask the author to squash commits manually.</error>"
+            );
+
+            return self::COMMAND_FAILURE;
         } catch (\Exception $e) {
-            $output->writeln('There was a problem merging: '.$e->getMessage());
+            $output->writeln('<error>There was a problem merging: </error> '.$e->getMessage());
 
             return self::COMMAND_FAILURE;
         }
@@ -163,7 +198,22 @@ EOF
         }
     }
 
-    private function addCommentsToMergeCommit($comments, $sha, $remote)
+    private function guardPullRequestMerge(array $pr, OutputInterface $output)
+    {
+        if ('open' !== $pr['state']) {
+            $output->writeln(
+                sprintf(
+                    "<error>\n[ERROR] Pull request #%s is already merged/closed, current status: %s</error>",
+                    $pr['number'],
+                    $pr['state']
+                )
+            );
+
+            return false;
+        }
+    }
+
+    private function addCommentsToMergeCommit(array $comments, $sha, $remote)
     {
         if (0 === count($comments)) {
             return;
@@ -190,21 +240,59 @@ EOF
         $gitHelper->pushToRemote($remote, 'refs/notes/github-comments');
     }
 
-    private function getCommitsString($commits)
+    private function getMergeNote(array $pr, $squash = false, $newBase = null)
+    {
+        if ($newBase === $pr['base']['ref']) {
+            $newBase = null;
+        }
+
+        $template = 'merge_note_';
+        $params = [
+            'prNumber' => $pr['number'],
+            'baseBranch' => $pr['base']['ref'],
+            'originalBaseBranch' => $pr['base']['ref'],
+            'targetBaseBranch' => $newBase,
+        ];
+
+        if (null !== $newBase) {
+            $template .= 'switched_base';
+
+            if ($squash) {
+                $template .= '_and_squashed';
+            }
+        } elseif ($squash) {
+            $template .= 'squashed';
+        } else {
+            $template .= 'normal';
+        }
+
+        return $this->render($template, $params);
+    }
+
+    private function getPrAuthors(array $commits, $authorFallback = 'unknown')
+    {
+        if (!$commits) {
+            return $authorFallback;
+        }
+
+        $authors = [];
+
+        foreach ($commits as $commit) {
+            $authors[] = $commit['user'];
+        }
+
+        return implode(', ', array_unique($authors, SORT_STRING));
+    }
+
+    private function getCommitsString(array $commits)
     {
         $commitsString = '';
 
         foreach ($commits as $commit) {
-            // Only use the first line
-            if (strpos($commit['message'], PHP_EOL)) {
-                $commit['message'] = explode(PHP_EOL, $commit['message'])[0];
-            }
-
             $commitsString .= sprintf(
-                "%s %s (%s)\n",
+                "%s %s\n",
                 $commit['sha'],
-                $commit['message'],
-                $commit['user']
+                $commit['subject']
             );
         }
 
