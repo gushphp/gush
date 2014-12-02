@@ -56,6 +56,8 @@ class MetaHelperTest extends \PHPUnit_Framework_TestCase
             'src/Tester/QuestionToken.php',
             'src/Util/ArrayUtil.php',
             'src/bootstrap.php',
+            'bootstrap.inc',
+            'assets/file.js',
             'tests/ApplicationTest.php',
             'tests/Command/BaseTestCase.php',
             'tests/Command/Branch/BranchChangelogCommandTest.php',
@@ -69,7 +71,15 @@ class MetaHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $expectedFileList,
-            $this->helper->filterFilesList($fileList, ['tests/', 'src/bootstrap.php'])
+            $this->helper->filterFilesList(
+                $fileList,
+                [
+                    '{^tests/.+}', // regex
+                    'src/bootstrap.php', // glob
+                    'bootstrap.inc', // glob
+                    '*.js' // glob
+                ]
+            )
         );
     }
 
