@@ -65,15 +65,16 @@ class PathFilterIterator extends BasePathFilterIterator
      */
     protected function toRegex($str)
     {
-        $expression = Expression::create($str);
+        $value = Expression::create($str);
 
-        if ($expression->isGlob()) {
-            $regex = $expression->getRegex();
+        if ($value->isGlob()) {
+            $value = $value->getRegex();
 
-            // We don't need the starts-with operator '^'
-            return $regex::BOUNDARY.substr($regex->render(), strlen($regex::BOUNDARY)+1);
+            if (false === strpos($str, '/')) {
+                $value->setStartFlag(false);
+            }
         }
 
-        return $expression->getRegex()->render();
+        return $value->render();
     }
 }
