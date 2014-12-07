@@ -66,7 +66,7 @@ class MetaHelper extends Helper
         $class = $this->getMetaClass($type);
 
         $out = [$class->getStartDelimiter()];
-        foreach (preg_split('{\r?\n}', $header) as $line) {
+        foreach (preg_split('{\r?\n}', trim($header)) as $line) {
             // avoid trailing spaces
             $out[] = ' '.$class->getDelimiter().($line ? ' '.$line : '');
         }
