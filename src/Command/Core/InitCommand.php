@@ -41,12 +41,6 @@ class InitCommand extends BaseCommand
                 InputOption::VALUE_OPTIONAL,
                 'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
             )
-            ->addOption(
-                'meta',
-                'm',
-                InputOption::VALUE_NONE,
-                'Add a local meta template'
-            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> creates .gush.yml file that Gush will use for project in current directory:
@@ -131,10 +125,6 @@ EOF
             'issue_tracker' => $issueTrackerName,
         ];
 
-        if ($input->getOption('meta')) {
-            $params['meta-header'] = $this->getMetaHeader($input, $output);
-        }
-
         if (file_exists($filename)) {
             $params = array_merge(Yaml::parse(file_get_contents($filename)), $params);
         }
@@ -146,22 +136,5 @@ EOF
         $output->writeln('<info>Configuration file saved successfully.</info>');
 
         return self::COMMAND_SUCCESS;
-    }
-
-    private function getMetaHeader($input, $output)
-    {
-        $template = $this->getHelper('template');
-        $available = $template->getNamesForDomain('meta-header');
-        $questionHelper = $this->getHelper('question');
-
-        $licenseSelection = $questionHelper->ask(
-            $input,
-            $output,
-            new ChoiceQuestion('Choose License: ', $available)
-        );
-
-        return $this->getHelper('template')
-            ->askAndRender($output, 'meta-header', $licenseSelection)
-        ;
     }
 }
