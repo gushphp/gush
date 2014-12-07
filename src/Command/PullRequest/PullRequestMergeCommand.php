@@ -160,7 +160,12 @@ EOF
                 );
             }
 
-            $adapter->closePullRequest($prNumber);
+            // Only close the PR explicitly when commit hashes have changed
+            // This prevents getting an 'ugly' closed when there was an actual merge
+            if ($squash || $input->getOption('switch')) {
+                $adapter->closePullRequest($prNumber);
+            }
+
             $output->writeln($mergeNote);
 
             return self::COMMAND_SUCCESS;

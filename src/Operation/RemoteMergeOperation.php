@@ -84,6 +84,7 @@ class RemoteMergeOperation
 
         $this->gitHelper->stashBranchName();
         $this->gitHelper->syncWithRemote($this->targetRemote, $this->targetBranch);
+        $this->gitHelper->remoteUpdate($this->sourceRemote);
 
         if ($this->switchBase) {
             $this->gitHelper->syncWithRemote($this->targetRemote, $this->switchBase);
