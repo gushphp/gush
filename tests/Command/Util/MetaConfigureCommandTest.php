@@ -11,19 +11,23 @@
 
 namespace Gush\Tests\Command\Core;
 
-use Gush\Command\Core\InitCommand;
+use Gush\Command\Util\MetaConfigureCommand;
 use Gush\Tester\QuestionToken;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
-class CoreInitCommandTest extends BaseTestCase
+class MetaConfigureCommandTest extends BaseTestCase
 {
-    const PASSWORD = 'foo';
-    const TOKEN = 'foo';
-    const USERNAME = 'bar';
-    const VERSIONEYE_TOKEN = 'token';
+    const META_HEADER = <<<OET
+This file is part of Gush package.
+
+(c) 2013-2014 Luis Cordova <cordoval@gmail.com>
+
+This source file is subject to the MIT license that is bundled
+with this source code in the file LICENSE.
+OET;
 
     private $gushLocalFilename;
 
@@ -45,31 +49,30 @@ class CoreInitCommandTest extends BaseTestCase
         }
 
         $this->config->get('local_config')->willReturn($this->gushLocalFilename);
-        $this->config->has('[adapters][github]')->willReturn(true);
-        $this->config->has('[adapters][github_enterprise]')->willReturn(true);
-        $this->config->has('[issue_trackers][jira]')->willReturn(true);
     }
 
     /**
      * @test
      */
-    public function core_init_writes_local_gush_file()
+    public function it_configures_the_meta_header()
     {
         $this->config->get('adapter')->willReturn('github_enterprise');
         $this->config->get('issue_tracker')->willReturn('github_enterprise');
 
         $expected = [
-            'adapter' => 'github',
-            'issue_tracker' => 'jira',
+            'meta-header' => self::META_HEADER,
         ];
 
-        $questionHelper = $this->expectDialogParameters();
-        $tester = $this->getCommandTester($command = new InitCommand());
+        $questionHelper = $this->expectDialogParameters(true);
+        $template = $this->expectTemplate();
+
+        $tester = $this->getCommandTester($command = new MetaConfigureCommand());
         $command->getHelperSet()->set($questionHelper);
+        $command->getHelperSet()->set($template);
 
         $tester->execute(
             [
-                'command' => 'init',
+                'command' => 'meta:configure',
             ],
             [
                 'interactive' => true,
@@ -96,25 +99,30 @@ class CoreInitCommandTest extends BaseTestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             new QuestionToken(
                 new ChoiceQuestion(
-                    'Choose adapter:',
-                    ['github', 'github_enterprise'],
-                    'github_enterprise'
+                    'Choose License:',
+                    ['mit', 'gpl3', 'no-license']
                 )
             )
-        )->willReturn('github');
-
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose issue tracker:',
-                    ['github', 'jira'],
-                    'github_enterprise'
-                )
-            )
-        )->willReturn('jira');
+        )->willReturn('mit');
 
         return $questionHelper->reveal();
+    }
+
+    private function expectTemplate()
+    {
+        $template = $this->prophet->prophesize('Gush\Helper\TemplateHelper');
+        $template->setHelperSet(Argument::any())->shouldBeCalled();
+        $template->getName()->willReturn('template');
+
+        $template->askAndRender(
+            Argument::any(),
+            'meta-header',
+            'mit'
+        )->willReturn(self::META_HEADER);
+
+        $template->getNamesForDomain('meta-header')->willReturn(['mit', 'gpl3', 'no-license']);
+        $template->setInput(Argument::any())->shouldBeCalled();
+
+        return $template->reveal();
     }
 }

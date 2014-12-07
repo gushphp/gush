@@ -439,6 +439,7 @@ LOGO;
             new Cmd\Util\VersionEyeCommand(),
             new Cmd\Util\FabbotIoCommand(),
             new Cmd\Util\MetaHeaderCommand(),
+            new Cmd\Util\MetaConfigureCommand(),
             new Cmd\Release\ReleaseCreateCommand(),
             new Cmd\Release\ReleaseListCommand(),
             new Cmd\Release\ReleaseRemoveCommand(),
