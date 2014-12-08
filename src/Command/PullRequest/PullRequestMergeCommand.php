@@ -191,12 +191,12 @@ EOF
         $adapter = $this->getAdapter();
         $repoInfo = $adapter->getRepositoryInfo($org, $repo);
 
-        if (!$gitConfigHelper->remoteExists($org, $repoInfo['fetch_url'])) {
+        if (!$gitConfigHelper->remoteExists($org, $repoInfo['push_url'])) {
             $output->writeln(
                 sprintf(
                     "<info>\n[INFO] Adding remote '%s' with '%s' to git local config.</info>",
                     $org,
-                    $repoInfo['fetch_url']
+                    $repoInfo['push_url']
                 )
             );
 
