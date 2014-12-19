@@ -66,7 +66,7 @@ class GitConfigHelper extends Helper
      */
     public function setGitConfig($config, $value, $overwrite = false, $section = 'local')
     {
-        if ($this->hasGitConfig($config, $section, $value) && $overwrite) {
+        if ($this->hasGitConfig($config, $section, $value) && !$overwrite) {
             throw new \RuntimeException(
                 sprintf(
                     'Unable to set git config "%s" at %s, because the value is already set.',
