@@ -66,16 +66,16 @@ Commits
 OET;
 
     const COMMAND_DISPLAY = <<<OET
-[INFO] Adding remote 'gushphp' with 'https://github.com/gushphp/gush.git' to git local config.
+[INFO] Adding remote 'gushphp' with 'git@github.com:gushphp/gush.git' to git local config.
 
-[INFO] Adding remote 'cordoval' with 'https://github.com/cordoval/gush.git' to git local config.
+[INFO] Adding remote 'cordoval' with 'git@github.com:cordoval/gush.git' to git local config.
 This PR was merged into the base_ref branch.
 OET;
 
     const COMMAND_DISPLAY_SQUASHED = <<<OET
-[INFO] Adding remote 'gushphp' with 'https://github.com/gushphp/gush.git' to git local config.
+[INFO] Adding remote 'gushphp' with 'git@github.com:gushphp/gush.git' to git local config.
 
-[INFO] Adding remote 'cordoval' with 'https://github.com/cordoval/gush.git' to git local config.
+[INFO] Adding remote 'cordoval' with 'git@github.com:cordoval/gush.git' to git local config.
 This PR was squashed before being merged into the base_ref branch (closes #40).
 OET;
 
@@ -198,18 +198,18 @@ OET;
         $this->gitConfig->getName()->willReturn('git_config');
         $this->gitConfig->setHelperSet(Argument::any())->shouldBeCalled();
 
-        $this->gitConfig->remoteExists('cordoval', 'https://github.com/cordoval/gush.git')->willReturn(false);
-        $this->gitConfig->remoteExists('gushphp', 'https://github.com/gushphp/gush.git')->willReturn(false);
+        $this->gitConfig->remoteExists('cordoval', 'git@github.com:cordoval/gush.git')->willReturn(false);
+        $this->gitConfig->remoteExists('gushphp', 'git@github.com:gushphp/gush.git')->willReturn(false);
 
         $this->gitConfig->setRemote(
             'cordoval',
-            'https://github.com/cordoval/gush.git',
+            'git@github.com:cordoval/gush.git',
             'git@github.com:cordoval/gush.git'
         )->shouldBeCalled();
 
         $this->gitConfig->setRemote(
             'gushphp',
-            'https://github.com/gushphp/gush.git',
+            'git@github.com:gushphp/gush.git',
             'git@github.com:gushphp/gush.git'
         )->shouldBeCalled();
 
