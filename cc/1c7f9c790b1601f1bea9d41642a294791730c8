@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2015-01-10 09:08
+
+The [inspection](https://scrutinizer-ci.com/g/gushphp/gush/inspections/41592643-635a-4372-9eaf-7df9d2049255) completed: **2 new issues**
+
+---------------------------------------------------------------------------
+
+by aik099 at 2015-01-10 09:16
+
+The build failure is unrelated I think.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-01-11 01:13
+
+I will comply, i hope this solves your problem, really sorry I have been just busy and i was a bit confused by this because I had intentionally left this out https://github.com/gushphp/gush/commit/944d9fed419383c57265d12d7ee8918569b4b992 as you can see in the commit history. I did it purposefully but i forgot now. In any case i think let's try.
