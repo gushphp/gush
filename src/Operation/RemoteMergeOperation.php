@@ -11,7 +11,6 @@
 
 namespace Gush\Operation;
 
-
 use Gush\Helper\FilesystemHelper;
 use Gush\Helper\GitHelper;
 

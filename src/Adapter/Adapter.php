@@ -96,13 +96,13 @@ interface Adapter
      * @param $name
      * @param $description
      * @param $homepage
-     * @param bool $public
-     * @param null $organization
-     * @param bool $hasIssues
-     * @param bool $hasWiki
-     * @param bool $hasDownloads
-     * @param int $teamId
-     * @param bool $autoInit
+     * @param  bool  $public
+     * @param  null  $organization
+     * @param  bool  $hasIssues
+     * @param  bool  $hasWiki
+     * @param  bool  $hasDownloads
+     * @param  int   $teamId
+     * @param  bool  $autoInit
      * @return mixed
      */
     public function createRepo(

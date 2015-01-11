@@ -13,12 +13,10 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
-use Gush\Feature\TableFeature;
-use Gush\Helper\GitRepoHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Copy an issue from one repository to another
@@ -55,13 +53,13 @@ EOF
         $issueNumber = $input->getArgument('issue_number');
         $targetUsername = $input->getArgument('target_username');
         $targetRepository = $input->getArgument('target_repository');
-        $prefix = $input->getOption('prefix') ? : '';
+        $prefix = $input->getOption('prefix') ?: '';
         $close = $input->getOption('close');
 
         $adapter = $this->getIssueTracker();
 
         $srcIssue = $adapter->getIssue($issueNumber);
-        $srcTitle = $prefix . $srcIssue['title'];
+        $srcTitle = $prefix.$srcIssue['title'];
 
         $srcUsername = $adapter->getUsername();
         $srcRepository = $adapter->getRepository();

@@ -19,7 +19,6 @@ use Gush\Event\GushEvents;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
-use Gush\Meta as Meta;
 use Gush\Subscriber\CommandEndSubscriber;
 use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
