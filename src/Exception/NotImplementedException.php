@@ -13,5 +13,4 @@ namespace Gush\Exception;
 
 final class NotImplementedException extends \RuntimeException
 {
-
 }

@@ -14,7 +14,6 @@ namespace Gush\Command\PullRequest;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitHelper;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

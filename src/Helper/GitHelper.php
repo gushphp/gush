@@ -417,7 +417,6 @@ class GitHelper extends Helper
         }
 
         $this->processHelper->runCommand($command);
-
     }
 
     public function remoteUpdate($remote = null)

@@ -54,7 +54,6 @@ EOT;
 This PR was submitted for the {{ originalBaseBranch }} branch but it was squashed and merged into the {{ targetBaseBranch }} branch instead (closes #{{ prNumber }}).
 EOT;
 
-
     /**
      * @param string $name
      *
