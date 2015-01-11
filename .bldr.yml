@@ -54,12 +54,9 @@ bldr:
                     files: [build/coverage/index.html]
                 -
                     type: exec
-                    continueOnError: false
+                    continueOnError: true
                     executable: composer
-                    arguments: [-q, install, --prefer-dist]
-                -
-                    type: notify
-                    message: Prepare Task Finished
+                    arguments: [install]
         secure:
             tasks:
                 -
@@ -85,12 +82,12 @@ bldr:
                         - ./security-checker.phar
                 -
                     type: exec
-                    continueOnError: false
+                    continueOnError: true
                     executable: php
                     arguments:
                         - ./security-checker.phar
                         - security:check
-                        - ./composer.lock
+                        - ./composer.json
         lint:
             description: Lints the files of the project
             tasks:
