@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2014 Luis Cordova <cordoval@gmail.com>
+ * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -125,7 +125,7 @@ EOT;
 {#
  # This file is part of Your Package package.
  #
- # (c) 2009-2014 You <you@yourdomain.com>
+ # (c) 2009-2015 You <you@yourdomain.com>
  #
  # This source file is subject to the MIT license that is bundled
  # with this source code in the file LICENSE.
@@ -147,7 +147,7 @@ EOT;
 /*
  * This file is part of Your Package package.
  *
- * (c) 2009-2014 You <you@yourdomain.com>
+ * (c) 2009-2015 You <you@yourdomain.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -171,7 +171,7 @@ EOT;
 /*
  * This file is part of Your Package package.
  *
- * (c) 2009-2014 You <you@yourdomain.com>
+ * (c) 2009-2015 You <you@yourdomain.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -189,7 +189,7 @@ EOT;
 /*
  * This file is part of Your Package package.
  *
- * (c) 2009-2014 You <you@yourdomain.com>
+ * (c) 2009-2015 You <you@yourdomain.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
