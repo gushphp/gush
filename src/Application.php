@@ -235,7 +235,9 @@ LOGO;
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-        if ('core:configure' !== $this->getCommandName($input)) {
+        if ('core:configure' !== $this->getCommandName($input)
+            && 'core:update' !== $this->getCommandName($input)
+        ) {
             if (null === $this->config) {
                 $this->config = Factory::createConfig();
             }
