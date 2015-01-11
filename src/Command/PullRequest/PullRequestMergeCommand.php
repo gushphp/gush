@@ -200,7 +200,7 @@ EOF
                 )
             );
 
-            $gitConfigHelper->setRemote($org, $repoInfo['fetch_url'], $repoInfo['push_url']);
+            $gitConfigHelper->setRemote($org, $repoInfo['push_url'], $repoInfo['push_url']);
         }
     }
 
