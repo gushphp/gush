@@ -34,7 +34,7 @@ class QuestionToken implements TokenInterface
     public function __construct($value, StringUtil $util = null)
     {
         $this->value = $value;
-        $this->util  = $util ?: new StringUtil();
+        $this->util = $util ?: new StringUtil();
     }
 
     /**

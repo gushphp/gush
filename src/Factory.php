@@ -94,9 +94,9 @@ class Factory
         // add dirs to the config
         $config->merge(
             [
-                'home'         => $home,
-                'home_config'  => $home.'/.gush.yml',
-                'cache-dir'    => $cacheDir,
+                'home' => $home,
+                'home_config' => $home.'/.gush.yml',
+                'cache-dir' => $cacheDir,
             ]
         );
 
