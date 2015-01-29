@@ -127,21 +127,7 @@ class GitHelper extends Helper
      */
     public function getRepoName()
     {
-        $output = $this->processHelper->runCommand('git remote show -n origin', false, null, true);
-        $outputLines = StringUtil::splitLines($output);
-
-        $foundRepoName = '';
-        if (!in_array('Fetch', $outputLines)) {
-            foreach ($outputLines as $line) {
-                if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
-                    preg_match('{(.+/)(.+)[.git]?}', $match[3], $secondMatch);
-                    $foundRepoName = str_replace('.git', '', $secondMatch[2]);
-                    break;
-                }
-            }
-        }
-
-        return $foundRepoName;
+        return $this->gitConfigHelper->getRemoteInfo('origin')['repo'];
     }
 
     /**
@@ -217,22 +203,7 @@ class GitHelper extends Helper
      */
     public function getVendorName()
     {
-        $output = $this->processHelper->runCommand('git remote show -n origin', false, null, true);
-        $outputLines = StringUtil::splitLines($output);
-
-        $foundVendorName = '';
-        if (!in_array('Fetch', $outputLines)) {
-            foreach ($outputLines as $line) {
-                if ($line && preg_match('{^  Fetch URL: (.+@)*([\w\d\.]+):(.*)}', $line, $match)) {
-                    preg_match('{(.+/)(.+)[.git]?}', $match[3], $secondMatch);
-                    $exploded = explode('/', $secondMatch[1]);
-                    $foundVendorName = $exploded[count($exploded) - 2];
-                    break;
-                }
-            }
-        }
-
-        return $foundVendorName;
+        return $this->gitConfigHelper->getRemoteInfo('origin')['vendor'];
     }
 
     /**

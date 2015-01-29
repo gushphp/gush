@@ -136,4 +136,41 @@ class GitConfigHelper extends Helper
             $this->setGitConfig('remote.'.$name.'.pushurl', $pushUrl, true);
         }
     }
+
+    /**
+     * @param string $name
+     *
+     * @return array [host, vendor, repo]
+     */
+    public function getRemoteInfo($name)
+    {
+        $info = [
+            'host' => '',
+            'vendor' => '',
+            'repo' => '',
+        ];
+
+        $output = $this->getGitConfig('remote.'.$name.'.url');
+
+        if (0 === stripos($output, 'http://') || 0 === stripos($output, 'https://')) {
+            $url = parse_url($output);
+
+            $info['host'] = $url['host'];
+            $info['path'] = ltrim($url['path'], '/');
+        } elseif (preg_match('%^(?:(?:git|ssh)://)?[^@]+@(?P<host>[^:]+):(?P<path>[^$]+)$%', $output, $match)) {
+            $info['host'] = $match['host'];
+            $info['path'] = $match['path'];
+        }
+
+        if (isset($info['path'])) {
+            $dirs = array_slice(explode('/', $info['path']), -2, 2);
+
+            $info['vendor'] = $dirs[0];
+            $info['repo'] = substr($dirs[1], -4, 4) === '.git' ? substr($dirs[1], 0, -4) : $dirs[1];
+
+            unset($info['path']);
+        }
+
+        return $info;
+    }
 }
