@@ -117,58 +117,26 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @dataProvider repoUrlProvider
      */
-    public function gets_the_repository_name($repo)
+    public function gets_the_repository_name()
     {
-        $return = <<<EOT
-* remote origin
-  Fetch URL: {$repo}
-  Push  URL: {$repo}
-  HEAD branch: (not queried)
-  Remote branches: (status not queried)
-    master
-  Local branches configured for 'git pull':
-    master                             merges with remote master
-  Local ref configured for 'git push' (status not queried):
-    (matching) pushes to (matching)
-EOT;
-
-        $this->processHelper
-            ->expects($this->any())
-            ->method('runCommand')
-            ->will($this->returnValue($return))
-        ;
+        $this->gitConfigHelper->getRemoteInfo('origin')->willReturn(
+            ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+        );
 
         $this->assertEquals('gush', $this->unitGit->getRepoName());
     }
 
     /**
      * @test
-     * @dataProvider repoUrlProvider
      */
-    public function gets_vendor_name_for_repository($repo)
+    public function gets_vendor_name_for_repository()
     {
-        $return = <<<EOT
-* remote origin
-  Fetch URL: {$repo}
-  Push  URL: {$repo}
-  HEAD branch: (not queried)
-  Remote branches: (status not queried)
-    master
-  Local branches configured for 'git pull':
-    master                             merges with remote master
-  Local ref configured for 'git push' (status not queried):
-    (matching) pushes to (matching)
-EOT;
+        $this->gitConfigHelper->getRemoteInfo('origin')->willReturn(
+            ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+        );
 
-        $this->processHelper
-            ->expects($this->any())
-            ->method('runCommand')
-            ->will($this->returnValue($return))
-        ;
-
-        $this->assertEquals(getenv('GIT_VENDOR_NAME'), $this->unitGit->getVendorName());
+        $this->assertEquals('gushphp', $this->unitGit->getVendorName());
     }
 
     /**
@@ -217,23 +185,5 @@ EOT;
         $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
 
         $this->assertEquals($hash, $this->unitGit->mergeBranch($base, $sourceBranch, $this->realFsHelper, $message));
-    }
-
-    public function repoUrlProvider()
-    {
-        return [
-            ['https://github.com/gushphp/gush'],
-            ['https://github.com/gushphp/gush.git'],
-            ['git@github.com:gushphp/gush.git'],
-            ['git@bitbucket.com:gushphp/gush.git'],
-            ['https://bitbucket.com/gushphp/gush.git'],
-            ['https://bitbucket.com/gushphp/gush'],
-            ['git@gitlab.com:gushphp/gush.git'],
-            ['https://gitlab.com/gushphp/gush.git'],
-            ['https://gitlab.com/gushphp/gush'],
-            ['git@entperprise.github.com:gushphp/gush.git'],
-            ['https://entperprise.github.com/gushphp/gush.git'],
-            ['https://entperprise.github.com/gushphp/gush'],
-        ];
     }
 }
