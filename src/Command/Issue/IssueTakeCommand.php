@@ -30,7 +30,7 @@ class IssueTakeCommand extends BaseCommand implements GitRepoFeature
             ->setName('issue:take')
             ->setDescription('Takes an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
-            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from', 'master')
+            ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from')
             ->addOption(
                 'remote',
                 null,
@@ -57,6 +57,13 @@ EOF
         $remote = $input->getOption('remote') ?: 'origin';
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
+
+        $config = $this->getApplication()->getConfig();
+        /** @var \Gush\Config $config */
+
+        if (null === $baseBranch) {
+            $baseBranch = $config->get('base') ?: 'master';
+        }
 
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
