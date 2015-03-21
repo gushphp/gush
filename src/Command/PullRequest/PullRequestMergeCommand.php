@@ -106,7 +106,7 @@ EOF
         $squash = $input->getOption('squash') || $input->getOption('force-squash');
 
         /** @var \Gush\Config $config */
-        $config = $this->getApplication()->get('config');
+        $config = $this->getApplication()->getConfig();
         if (null === $prType && $config->has('pr_type')) {
             $types = $config->get('pr_type');
 

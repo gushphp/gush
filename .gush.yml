@@ -5,3 +5,4 @@ table-pr:
     fixed_tickets: ['Fixed Tickets', '']
     license: ['License', MIT]
 base: master
+pr_type: ['feature', 'bugfix', 'refactor', 'tests', 'remove', 'style', 'documentation', 'security']
