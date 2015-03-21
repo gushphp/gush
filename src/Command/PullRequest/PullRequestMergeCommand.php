@@ -114,8 +114,7 @@ EOF
             $helper = $this->getHelper('question');
             $typesQuestion = new ChoiceQuestion(
                 'Please choose the type of PR:',
-                $types,
-                'Merge'
+                $types
             );
             $prType = $helper->ask($input, $output, $typesQuestion);
         }
