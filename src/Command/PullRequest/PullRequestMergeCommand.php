@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
 {
@@ -103,6 +104,17 @@ EOF
         $prType = $input->getArgument('pr_type');
         $squash = $input->getOption('squash') || $input->getOption('force-squash');
 
+        /** @var \Gush\Config $config */
+        $config = $this->getApplication()->get('config');
+        if ($config->has('pr_type')) {
+            $types = $config->get('pr_type');
+
+            $questions = new ChoiceQuestion(
+                'Please choose the type of PR:',
+                $types,
+                'Merge'
+            );
+        }
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
