@@ -12,6 +12,7 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Config;
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
@@ -105,7 +106,7 @@ EOF
         $prType = $input->getArgument('pr_type');
         $squash = $input->getOption('squash') || $input->getOption('force-squash');
 
-        /** @var \Gush\Config $config */
+        /** @var Config $config */
         $config = $this->getApplication()->getConfig();
         if (null === $prType && $config->has('pr_type')) {
             $types = $config->get('pr_type');
