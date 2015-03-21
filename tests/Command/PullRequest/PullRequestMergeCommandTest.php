@@ -18,6 +18,9 @@ use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
+/**
+ * @group now
+ */
 class PullRequestMergeCommandTest extends BaseTestCase
 {
     /**

@@ -20,6 +20,8 @@ env:
     - GUSH_HOME=/tmp/gush GUSH_CACHE_DIR=/tmp/gush/cache
 
 before_install:
+    # this is needed because something is broken in hhvm
+    - composer self-update
     #- curl -sS http://bldr.io/installer | php
     - php ./bldr.phar install
 
