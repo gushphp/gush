@@ -27,6 +27,7 @@ class IssueTakeCommandTest extends BaseTestCase
     public function takes_an_issue()
     {
         $this->expectsConfig();
+        $this->config->get('base')->willReturn('master');
 
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($this->expectTextHelper());
@@ -49,6 +50,7 @@ class IssueTakeCommandTest extends BaseTestCase
     public function takes_an_issue_with_specific_base()
     {
         $this->expectsConfig();
+        $this->config->get('base')->willReturn('master');
 
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($this->expectTextHelper());
@@ -71,6 +73,7 @@ class IssueTakeCommandTest extends BaseTestCase
     public function takes_an_issue_with_specific_remote()
     {
         $this->expectsConfig();
+        $this->config->get('base')->willReturn('master');
 
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($this->expectTextHelper());
