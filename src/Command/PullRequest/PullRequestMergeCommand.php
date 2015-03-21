@@ -107,18 +107,18 @@ EOF
         $squash = $input->getOption('squash') || $input->getOption('force-squash');
 
         /** @var Config $config */
-        $config = $this->getApplication()->getConfig();
-        if (null === $prType && $config->has('pr_type')) {
-            $types = $config->get('pr_type');
-
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $typesQuestion = new ChoiceQuestion(
-                'Please choose the type of PR:',
-                $types
-            );
-            $prType = $helper->ask($input, $output, $typesQuestion);
-        }
+//        $config = $this->getApplication()->getConfig();
+//        if (null === $prType && $config->has('pr_type')) {
+//            $types = $config->get('pr_type');
+//
+//            /** @var QuestionHelper $helper */
+//            $helper = $this->getHelper('question');
+//            $typesQuestion = new ChoiceQuestion(
+//                'Please choose the type of PR:',
+//                $types
+//            );
+//            $prType = $helper->ask($input, $output, $typesQuestion);
+//        }
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
