@@ -18,9 +18,6 @@ use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-/**
- * @group now
- */
 class PullRequestMergeCommandTest extends BaseTestCase
 {
     /**
@@ -294,7 +291,7 @@ OET;
             ['ask']
         );
 
-        // Always do this exception to prevent calling the real helper
+        // Always do this expectation to prevent calling the real helper
         if (null !== $prType) {
             $questionHelper->expects($this->at(0))
                 ->method('ask')

@@ -1,6 +1,7 @@
 adapter: github
 issue_tracker: github
 meta-header: "This file is part of Gush package.\n\n(c) 2013-2015 Luis Cordova <cordoval@gmail.com>\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+pr_type: ['feature', 'bugfix', 'refactor', 'tests', 'remove', 'style', 'documentation', 'security']
 table-pr:
     fixed_tickets: ['Fixed Tickets', '']
     license: ['License', MIT]
