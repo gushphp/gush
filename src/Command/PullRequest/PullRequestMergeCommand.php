@@ -12,14 +12,17 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Config;
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
 {
@@ -31,11 +34,11 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
-            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')->addArgument(
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
+            ->addArgument(
                 'pr_type',
                 InputArgument::OPTIONAL,
-                'Pull Request type eg. bug, feature (default is merge)',
-                'merge'
+                'Pull Request type eg. bug, feature (default is merge)'
             )
             ->addOption(
                 'no-comments',
@@ -125,6 +128,10 @@ EOF
         $this->ensureRemoteExists($sourceRemote, $sourceRepository, $output);
 
         try {
+            if (false === $prType = $this->getPrType($input, $output, $prType)) {
+                return self::COMMAND_FAILURE;
+            }
+
             $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
             $commits = $adapter->getPullRequestCommits($prNumber);
             $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
@@ -303,5 +310,45 @@ EOF
         }
 
         return $commitsString;
+    }
+
+    private function getPrType(InputInterface $input, OutputInterface $output, $prType)
+    {
+        /** @var Config $config */
+        $config = $this->getApplication()->getConfig();
+
+        if (!$config->has('pr_type')) {
+            if (null === $prType) {
+                $prType = 'merge';
+            }
+
+            return $prType;
+        }
+
+        $types = $config->get('pr_type');
+
+        if (null === $prType) {
+            /** @var QuestionHelper $helper */
+            $helper = $this->getHelper('question');
+
+            $prType = $helper->ask(
+                $input,
+                $output,
+                new ChoiceQuestion('Choose the type of the pull request: ', $types)
+            );
+        } elseif (!in_array($prType, $types, true)) {
+            $output->writeln(
+                sprintf(
+                    "<error>\n[ERROR] Pull-request type '%s' is not accepted, ".
+                    'choose of one of: %s.</error>',
+                    $prType,
+                    implode(', ', $types)
+                )
+            );
+
+            return false;
+        }
+
+        return $prType;
     }
 }
