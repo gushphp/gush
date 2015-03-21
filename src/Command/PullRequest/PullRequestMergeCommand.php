@@ -16,6 +16,7 @@ use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,11 +33,11 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
-            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')->addArgument(
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
+            ->addArgument(
                 'pr_type',
                 InputArgument::OPTIONAL,
-                'Pull Request type eg. bug, feature (default is merge)',
-                'merge'
+                'Pull Request type eg. bug, feature (default is merge)'
             )
             ->addOption(
                 'no-comments',
@@ -106,15 +107,19 @@ EOF
 
         /** @var \Gush\Config $config */
         $config = $this->getApplication()->get('config');
-        if ($config->has('pr_type')) {
+        if (null === $prType && $config->has('pr_type')) {
             $types = $config->get('pr_type');
 
-            $questions = new ChoiceQuestion(
+            /** @var QuestionHelper $helper */
+            $helper = $this->getHelper('question');
+            $typesQuestion = new ChoiceQuestion(
                 'Please choose the type of PR:',
                 $types,
                 'Merge'
             );
+            $prType = $helper->ask($input, $output, $typesQuestion);
         }
+
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
