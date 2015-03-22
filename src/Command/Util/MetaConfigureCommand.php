@@ -48,10 +48,9 @@ EOT
         $config = $application->getConfig();
         $filename = $config->get('local_config');
 
+        $params = [];
         if (file_exists($filename)) {
             $params = Yaml::parse(file_get_contents($filename));
-        } else {
-            $params = [];
         }
 
         $params['meta-header'] = $this->getMetaHeader($input, $output);
