@@ -18,10 +18,10 @@ curl -sS http://gushphp.org/installer | php
 > True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
 > Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
 > Jacob, and his wrath rose against Israel, for they did not believe in God or trust in his deliverance.
-
-There first thread of blood and the following are water gushing out of a rock, connecting the Old Testament
-prophecy fulfillment in the New Testament at the cross when Jesus was opened on his side and gushed out
-water and blood.
+> 
+> There first thread of blood and the following are water gushing out of a rock, connecting the Old Testament
+> prophecy fulfillment in the New Testament at the cross when Jesus was opened on his side and gushed out
+> water and blood.
 
 Logo by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
