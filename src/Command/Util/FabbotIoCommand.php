@@ -86,6 +86,8 @@ EOF
 
         $gitHelper->pushToRemote($username, $pr['head']['ref'], true, true);
 
+        $this->getHelper('gush_style')->success('Fabbot.io patch was applied and pushed.');
+
         return self::COMMAND_SUCCESS;
     }
 }

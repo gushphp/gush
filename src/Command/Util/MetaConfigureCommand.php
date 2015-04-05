@@ -53,27 +53,24 @@ EOT
             $params = Yaml::parse(file_get_contents($filename));
         }
 
-        $params['meta-header'] = $this->getMetaHeader($input, $output);
+        $params['meta-header'] = $this->getMetaHeader($output);
 
-        if (!@file_put_contents($filename, Yaml::dump($params), 0644)) {
-            $output->writeln('<error>Configuration file cannot be saved.</error>');
+        if (!file_put_contents($filename, Yaml::dump($params), 0644)) {
+            throw new \RuntimeException('Configuration file cannot be saved.', 2);
         }
 
-        $output->writeln('<info>Configuration file saved successfully.</info>');
+        $this->getHelper('gush_style')->success('Configuration file saved successfully.');
 
         return self::COMMAND_SUCCESS;
     }
 
-    private function getMetaHeader($input, $output)
+    private function getMetaHeader($output)
     {
         $template = $this->getHelper('template');
         /** @var \Gush\Helper\TemplateHelper $template */
         $available = $template->getNamesForDomain('meta-header');
-        $questionHelper = $this->getHelper('question');
 
-        $licenseSelection = $questionHelper->ask(
-            $input,
-            $output,
+        $licenseSelection = $this->getHelper('gush_style')->askQuestion(
             new ChoiceQuestion('Choose License: ', $available)
         );
 

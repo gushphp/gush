@@ -115,7 +115,9 @@ EOF
             }
         }
 
-        $output->writeln('Please check the modifications on your composer.json for updated dependencies.');
+        $this->getHelper('gush_style')->success(
+            'Please check the modifications on your composer.json for updated dependencies.'
+        );
 
         return self::COMMAND_SUCCESS;
     }

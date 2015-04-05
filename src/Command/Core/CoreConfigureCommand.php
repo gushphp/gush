@@ -73,7 +73,7 @@ EOF
         } catch (FileNotFoundException $exception) {
             $this->config = Factory::createConfig(false, false);
         } catch (\RuntimeException $exception) {
-            $this->getHelper('gush_style')->getStyle()->error($exception->getMessage());
+            $this->getHelper('gush_style')->error($exception->getMessage());
 
             $this->config = Factory::createConfig(false, false);
         }
