@@ -67,30 +67,40 @@ EOF
         $adapter->setUsername($targetUsername);
         $adapter->setRepository($targetRepository);
 
-        $output->writeln(sprintf(
-            '  <info>%s/%s</info>: Opening issue "%s"',
-            $targetUsername,
-            $targetRepository,
-            $srcTitle
-        ));
-
-        $adapter->openIssue(
-            $srcTitle,
-            $srcIssue['body'],
-            $srcIssue
+        $this->getHelper('gush_style')->success(
+            sprintf(
+                'Opened issue: %s',
+                $adapter->getIssueUrl(
+                    $adapter->openIssue(
+                        $srcTitle,
+                        $srcIssue['body'],
+                        $srcIssue
+                    )
+                )
+            )
         );
 
         $adapter->setUsername($srcUsername);
         $adapter->setRepository($srcRepository);
 
         if (true === $close) {
-            $output->writeln(sprintf(
-                '  <info>%s/%s</info>: Closing issue "<info>%s</info>"',
-                $srcUsername,
-                $srcRepository,
-                $issueNumber
-            ));
-            $adapter->closeIssue($issueNumber);
+            if ('closed' === $srcIssue['state']) {
+                $this->getHelper('gush_style')->error(
+                    sprintf(
+                        'Issue #%d was already closed.',
+                        $issueNumber
+                    )
+                );
+            } else {
+                $adapter->closeIssue($issueNumber);
+
+                $this->getHelper('gush_style')->success(
+                    sprintf(
+                        'Closed issue: %s',
+                        $adapter->getIssueUrl($issueNumber)
+                    )
+                );
+            }
         }
 
         return self::COMMAND_SUCCESS;
