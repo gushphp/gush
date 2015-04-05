@@ -14,6 +14,7 @@ namespace Gush\Command\PullRequest;
 use Gush\Command\BaseCommand;
 use Gush\Config;
 use Gush\Exception\CannotSquashMultipleAuthors;
+use Gush\Exception\UserException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -109,9 +110,7 @@ EOF
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
-        if (false === $this->guardPullRequestMerge($pr, $output)) {
-            return self::COMMAND_FAILURE;
-        }
+        $this->guardPullRequestMerge($pr);
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
@@ -124,14 +123,11 @@ EOF
         $targetRepository = $pr['base']['repo'];
         $targetBranch = $pr['base']['ref'];
 
-        $this->ensureRemoteExists($targetRemote, $targetRepository, $output);
-        $this->ensureRemoteExists($sourceRemote, $sourceRepository, $output);
+        $this->ensureRemoteExists($targetRemote, $targetRepository);
+        $this->ensureRemoteExists($sourceRemote, $sourceRepository);
 
         try {
-            if (false === $prType = $this->getPrType($input, $output, $prType)) {
-                return self::COMMAND_FAILURE;
-            }
-
+            $prType = $this->getPrType($prType);
             $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
             $commits = $adapter->getPullRequestCommits($prNumber);
             $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
@@ -173,24 +169,24 @@ EOF
                 $adapter->closePullRequest($prNumber);
             }
 
-            $output->writeln($mergeNote);
+            $this->getHelper('gush_style')->success($mergeNote);
 
             return self::COMMAND_SUCCESS;
         } catch (CannotSquashMultipleAuthors $e) {
-            $output->writeln(
-                "<error>\n[ERROR] Can not squash commits when there are multiple authors.".
-                "Use --force-squash to continue or ask the author to squash commits manually.</error>"
+            $this->getHelper('gush_style')->error(
+                [
+                    "Enable to squash commits when there are multiple authors.",
+                    "Use --force-squash to continue or ask the author to squash commits manually."
+                ]
             );
 
-            return self::COMMAND_FAILURE;
-        } catch (\Exception $e) {
-            $output->writeln('<error>There was a problem merging: </error> '.$e->getMessage());
+            $gitHelper->restoreStashedBranch();
 
             return self::COMMAND_FAILURE;
         }
     }
 
-    private function ensureRemoteExists($org, $repo, OutputInterface $output)
+    private function ensureRemoteExists($org, $repo)
     {
         $gitConfigHelper = $this->getHelper('git_config');
         /** @var GitConfigHelper $gitConfigHelper */
@@ -199,30 +195,25 @@ EOF
         $repoInfo = $adapter->getRepositoryInfo($org, $repo);
 
         if (!$gitConfigHelper->remoteExists($org, $repoInfo['push_url'])) {
-            $output->writeln(
-                sprintf(
-                    "<info>\n[INFO] Adding remote '%s' with '%s' to git local config.</info>",
-                    $org,
-                    $repoInfo['push_url']
-                )
+            $this->getHelper('gush_style')->note(
+                sprintf('Adding remote "%s" with "%s".', $org, $repoInfo['fetch_url'])
             );
 
             $gitConfigHelper->setRemote($org, $repoInfo['push_url'], $repoInfo['push_url']);
         }
     }
 
-    private function guardPullRequestMerge(array $pr, OutputInterface $output)
+    private function guardPullRequestMerge(array $pr)
     {
         if ('open' !== $pr['state']) {
-            $output->writeln(
+            throw new UserException(
                 sprintf(
-                    "<error>\n[ERROR] Pull request #%s is already merged/closed, current status: %s</error>",
+                    'Pull request #%s is already merged/closed, current status: %s',
                     $pr['number'],
                     $pr['state']
-                )
+                ),
+                self::COMMAND_FAILURE
             );
-
-            return false;
         }
     }
 
@@ -312,7 +303,7 @@ EOF
         return $commitsString;
     }
 
-    private function getPrType(InputInterface $input, OutputInterface $output, $prType)
+    private function getPrType($prType)
     {
         /** @var Config $config */
         $config = $this->getApplication()->getConfig();
@@ -328,25 +319,20 @@ EOF
         $types = $config->get('pr_type');
 
         if (null === $prType) {
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-
-            $prType = $helper->ask(
-                $input,
-                $output,
+            return $this->getHelper('gush_style')->askQuestion(
                 new ChoiceQuestion('Choose the type of the pull request: ', $types)
             );
-        } elseif (!in_array($prType, $types, true)) {
-            $output->writeln(
+        }
+
+        if (!in_array($prType, $types, true)) {
+            throw new UserException(
                 sprintf(
-                    "<error>\n[ERROR] Pull-request type '%s' is not accepted, ".
-                    'choose of one of: %s.</error>',
+                    "Pull-request type '%s' is not accepted, choose of one of: %s.",
                     $prType,
                     implode(', ', $types)
-                )
+                ),
+                self::COMMAND_FAILURE
             );
-
-            return false;
         }
 
         return $prType;
