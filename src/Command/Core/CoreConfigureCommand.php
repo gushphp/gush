@@ -13,9 +13,10 @@ namespace Gush\Command\Core;
 
 use Gush\Command\BaseCommand;
 use Gush\Exception\FileNotFoundException;
+use Gush\Exception\UserException;
 use Gush\Factory;
 use Gush\Feature\GitRepoFeature;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -72,7 +73,7 @@ EOF
         } catch (FileNotFoundException $exception) {
             $this->config = Factory::createConfig(false, false);
         } catch (\RuntimeException $exception) {
-            $output->writeln(sprintf('<error>%s</error>', $exception->getMessage()));
+            $this->getHelper('gush_style')->getStyle()->error($exception->getMessage());
 
             $this->config = Factory::createConfig(false, false);
         }
@@ -93,7 +94,7 @@ EOF
             $output->writeln('<error>Configuration file cannot be saved.</error>');
         }
 
-        $output->writeln('<info>Configuration file saved successfully.</info>');
+        $this->getHelper('gush_style')->success('Configuration file saved successfully.');
 
         return self::COMMAND_SUCCESS;
     }
@@ -112,17 +113,15 @@ EOF
         $adapterName = $input->getOption('adapter');
         $issueTrackerName = $input->getOption('issue_tracker');
 
-        /** @var QuestionHelper $questionHelper */
-        $questionHelper = $this->getHelper('question');
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
 
         if (null === $adapterName && null === $issueTrackerName) {
-            $adapterName = $questionHelper->ask(
-                $input,
-                $output,
+            $adapterName = $styleHelper->askQuestion(
                 new ChoiceQuestion('Choose adapter: ', array_keys($adapters))
             );
         } elseif (null !== $adapterName && !array_key_exists($adapterName, $adapters)) {
-            throw new \InvalidArgumentException(
+            throw new UserException(
                 sprintf(
                     'The adapter "%s" is invalid. Available adapters are "%s"',
                     $adapterName,
@@ -136,9 +135,7 @@ EOF
 
             $currentDefault = $this->config->get('adapter');
             if ($adapterName !== $currentDefault &&
-                $questionHelper->ask(
-                    $input,
-                    $output,
+                $styleHelper->askQuestion(
                     new ConfirmationQuestion(
                         sprintf('Would you like to make "%s" the default adapter?', $adapterName),
                         null === $currentDefault
@@ -150,14 +147,17 @@ EOF
         }
 
         if (null === $issueTrackerName && null === $input->getOption('adapter')) {
-            $selection = array_key_exists($adapterName, $issueTrackers) ? $adapterName : null;
-            $issueTrackerName = $questionHelper->ask(
-                $input,
-                $output,
+            $selection = array_search($adapterName, array_keys($issueTrackers), true);
+
+            if (false === $selection) {
+                $selection = null;
+            }
+
+            $issueTrackerName = $styleHelper->askQuestion(
                 new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
             );
         } elseif (null !== $issueTrackerName && !array_key_exists($issueTrackerName, $issueTrackers)) {
-            throw new \Exception(
+            throw new UserException(
                 sprintf(
                     'The issue tracker "%s" is invalid. Available adapters are "%s"',
                     $issueTrackerName,
@@ -171,9 +171,7 @@ EOF
 
             $currentDefault = $this->config->get('issue_tracker');
             if ($issueTrackerName !== $currentDefault &&
-                $questionHelper->ask(
-                    $input,
-                    $output,
+                $styleHelper->askQuestion(
                     new ConfirmationQuestion(
                         sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
                         null === $currentDefault
@@ -184,9 +182,7 @@ EOF
             }
         }
 
-        $cacheDir = $questionHelper->ask(
-            $input,
-            $output,
+        $cacheDir = $styleHelper->askQuestion(
             (new Question(
                 "Cache folder [{$this->config->get('cache-dir')}]: ",
                 $this->config->get('cache-dir')
@@ -205,9 +201,7 @@ EOF
             )
         );
 
-        $versionEyeToken = $questionHelper->ask(
-            $input,
-            $output,
+        $versionEyeToken = $styleHelper->askQuestion(
             (new Question('VersionEye token: ', 'NO_TOKEN'))
                 ->setValidator(
                     function ($field) {
@@ -240,6 +234,9 @@ EOF
         $authenticationAttempts = 0;
         $config = [];
 
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+
         if ('adapters' === $configName) {
             $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
                 $adapterName,
@@ -255,13 +252,13 @@ EOF
         while (!$isAuthenticated) {
             // Prevent endless loop with a broken test
             if ($authenticationAttempts > 50) {
-                $output->writeln("<error>To many attempts, aborting.</error>");
+                $styleHelper->error('Too many attempts, aborting.');
 
                 break;
             }
 
             if ($authenticationAttempts > 0) {
-                $output->writeln("<error>Authentication failed please try again.</error>");
+                $styleHelper->error('Authentication failed please try again.');
             }
 
             $config = $configurator->interact($input, $output);
@@ -273,8 +270,7 @@ EOF
                     $isAuthenticated = $this->isAdapterCredentialsValid($adapterName, $config);
                 }
             } catch (\Exception $e) {
-                $output->writeln("<error>{$e->getMessage()}</error>");
-                $output->writeln('');
+                $styleHelper->error($e->getMessage());
 
                 if ('adapters' !== $configName) {
                     $adapter = $this->getIssueTracker();
@@ -283,7 +279,7 @@ EOF
                 }
 
                 if (null !== $adapter && null !== $url = $adapter->getTokenGenerationUrl()) {
-                    $output->writeln("You can create valid access tokens at {$url}.");
+                    $styleHelper->note(['You can create valid access tokens at: ', $url]);
                 }
             }
 
