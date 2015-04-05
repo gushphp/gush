@@ -16,6 +16,7 @@ use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
+use Gush\Exception\UserException;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
@@ -93,6 +94,7 @@ LOGO;
         $helperSet = $this->getDefaultHelperSet();
         $helperSet->set(new Helpers\FilesystemHelper());
         $helperSet->set(new Helpers\TextHelper());
+        $helperSet->set(new Helpers\StyleHelper());
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
@@ -228,6 +230,22 @@ LOGO;
     public function getAdapterFactory()
     {
         return $this->adapterFactory;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderException($e, $output)
+    {
+        if ($e instanceof UserException) {
+            $this->getHelperSet()->get('gush_style')->error($e->getMessage());
+
+            if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+                parent::renderException($e, $output);
+            }
+        } else {
+            parent::renderException($e, $output);
+        }
     }
 
     /**
