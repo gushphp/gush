@@ -59,7 +59,7 @@ EOF
         }
 
         $url = $adapter->getPullRequest($prNumber)['url'];
-        $output->writeln("Closed {$url}");
+        $this->getHelper('gush_style')->success("Closed {$url}");
 
         return self::COMMAND_SUCCESS;
     }

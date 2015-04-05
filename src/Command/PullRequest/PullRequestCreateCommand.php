@@ -191,7 +191,7 @@ EOF
             )
         ;
 
-        $output->writeln($pullRequest['html_url']);
+        $this->getHelper('gush_style')->success("Opened pull request {$pullRequest['html_url']}");
 
         return self::COMMAND_SUCCESS;
     }

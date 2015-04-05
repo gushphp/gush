@@ -61,7 +61,7 @@ EOF
         $adapter->createComment($prNumber, $patMessage);
 
         $url = $adapter->getPullRequest($prNumber)['url'];
-        $output->writeln("Pat on the back pushed to {$url}");
+        $this->getHelper('gush_style')->success("Pat on the back pushed to {$url}");
 
         return self::COMMAND_SUCCESS;
     }

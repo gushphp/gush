@@ -27,8 +27,8 @@ class PullRequestSquashCommand extends BaseCommand implements GitRepoFeature
     {
         $this
             ->setName('pull-request:squash')
-            ->setDescription('Squashes all commits of a PR')
-            ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to squash')
+            ->setDescription('Squashes all commits of a pull request')
+            ->addArgument('pr_number', InputArgument::REQUIRED, 'pull-request number to squash')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command squashes all commits of a PR:
@@ -60,7 +60,7 @@ EOF
 
         $adapter->createComment($prNumber, '(PR squashed)');
 
-        $output->writeln('<info>PR has been squashed!<info>');
+        $this->getHelper('gush_style')->success('Pull request has been squashed!');
 
         return self::COMMAND_SUCCESS;
     }
