@@ -14,8 +14,7 @@ namespace Gush\Command\Issue;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
-use Gush\Helper\TableHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,7 +33,6 @@ class LabelIssuesCommand extends BaseCommand implements TableFeature, GitRepoFea
             ->addOption('new', null, InputOption::VALUE_NONE, 'Get only new issues/pull requests')
             ->addOption('issues', null, InputOption::VALUE_NONE, 'Get issues')
             ->addOption('pull-requests', null, InputOption::VALUE_NONE, 'Get pull requests')
-            ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Label')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command labels issue or pull requests for either the current or the given organization
@@ -65,6 +63,9 @@ EOF
         $pullRequests = $input->getOption('pull-requests');
         $issues = $input->getOption('issues');
 
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+
         $isOnlyPullRequest = $pullRequests && !$issues;
         $isOnlyIssue = $issues && !$pullRequests;
 
@@ -89,21 +90,38 @@ EOF
         $tracker = $this->getIssueTracker();
         $issues = $tracker->getIssues($params);
         $labelNames = $tracker->getLabels();
+        $new = $input->getOption('new') ? 'new' : 'existing';
 
         if (!$issues) {
-            $new = $input->getOption('new') ? 'new ' : '';
-            $output->writeln(sprintf('<error>No %sissues/pull requests found</error>', $new));
+            $styleHelper->success(sprintf('No %s issues/pull-requests found.', $new));
 
-            return self::COMMAND_FAILURE;
+            return self::COMMAND_SUCCESS;
         }
 
         if (!$labelNames) {
-            $output->writeln('<error>No Labels found.</error>');
+            $styleHelper->error('No Labels found.');
 
             return self::COMMAND_FAILURE;
         }
 
-        $issueTitleFormat = '<comment>[<info>#%s</info>] %s</comment>';
+        $validation = function ($label) use ($labelNames) {
+            return $this->validateLabels($label, $labelNames);
+        };
+
+        $styleHelper->title(sprintf('Assign labels to %s issues/pull-requests.', $new));
+        $styleHelper->text('This command helps you with assigning labels to new/existing issues/pull-request.');
+        $styleHelper->text('If you do not type any new labels the existing ones will be used.');
+        $styleHelper->newLine();
+        $styleHelper->caution(
+            [
+                'If you "update" the labels of an issue/pull-request only those labels will be used!',
+                'Any labels that were already assigned but are not selected when updating will be removed.'
+            ]
+        );
+
+        $styleHelper->section(sprintf('Issues/Pull-requests (%d total)', count($issues)));
+
+        $issueTitleFormat = ' <comment><info>#%s</info> %s</comment>';
 
         foreach ($issues as $issue) {
             if ($isOnlyPullRequest && $issue['pull_request']) {
@@ -114,50 +132,67 @@ EOF
                 continue;
             }
 
-            $output->writeln(sprintf($issueTitleFormat, $issue['number'], $issue['title']));
-            $output->writeln('<info>current labels:</info> '.$this->getIssueLabels($issue));
-            $this->showLabels($output, $labelNames);
+            $styleHelper->writeln(sprintf($issueTitleFormat, $issue['number'], $issue['title']));
+            $styleHelper->newLine();
 
-            $validation = function ($label) use ($labelNames) {
-                $labels = explode(',', $label);
-                foreach ($labels as $item) {
-                    if (!in_array($item, array_values($labelNames))) {
-                        throw new \InvalidArgumentException(sprintf('Label "%s" is invalid.', $item));
-                    }
-                }
+            $styleHelper->writeln(' <info>Current labels: </info>');
+            $this->getIssueLabels($issue['labels'], $styleHelper);
 
-                return $label;
-            };
+            $styleHelper->writeln(' <info>Available labels: </info>');
+            $this->getIssueLabels($labelNames, $styleHelper);
 
-            /** @var QuestionHelper $question */
-            $questionHelper = $this->getHelper('question');
-            if (!$label = $input->getOption('label')) {
-                $label = $questionHelper->ask(
-                    $input,
-                    $output,
-                    (new Question('<comment>Label(s)?</comment> '))
-                        ->setValidator($validation)
-                        ->setAutocompleterValues($labelNames)
-                );
+            $labels = $styleHelper->askQuestion(
+                (new Question('<comment>Assign label(s)</comment> ', implode(', ', $issue['labels'])))
+                    ->setValidator($validation)
+                    ->setAutocompleterValues($labelNames)
+            );
+
+            // Sort to ensure they can be equal
+            sort($labels);
+            sort($issue['labels']);
+
+            if ($labels !== $issue['labels']) {
+                $tracker->updateIssue($issue['number'], ['labels' => $labels]);
+                $styleHelper->success(sprintf('Updated issue/pull-request #%d.', $issue));
             }
-
-            // updates the issue
-            $tracker->updateIssue($issue['number'], ['labels' => explode(',', $label)]);
         }
+
+        $styleHelper->success('Issues/pull requests are updated.');
 
         return self::COMMAND_SUCCESS;
     }
 
-    private function showLabels(OutputInterface $output, array $labels)
+    private function validateLabels($input, array $acceptedLabels)
     {
-        /** @var TableHelper $table */
-        $table = $this->getHelper('table');
-        $table->setRows(array_chunk($labels, 3));
-        $table->render($output);
+        $inputLabels = array_map('trim', explode(',', $input));
+        $labels = [];
+
+        foreach ($inputLabels as $label) {
+            if ('' === $label) {
+                continue;
+            }
+
+            if (!in_array($label, $acceptedLabels, true)) {
+                throw new \InvalidArgumentException(
+                    sprintf('Label "%s" is not accepted, use a comma to separate labels like "L-1, L-3".', $label)
+                );
+            }
+
+            $labels[] = $label;
+        }
+
+        return $labels;
     }
 
-    private function getIssueLabels(array $issue)
+    private function getIssueLabels(array $labels, StyleHelper $style)
     {
-        return count($issue['labels']) ? join(', ', $issue['labels']) : 'N/A';
+        if (0 === count($labels)) {
+            $style->writeln(' N/A');
+            $style->newLine();
+
+            return ;
+        }
+
+        $style->listing($labels);
     }
 }
