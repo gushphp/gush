@@ -62,7 +62,9 @@ EOF
 
         $gitHelper->syncWithRemote($remote, $branchName);
 
-        $output->writeln(sprintf('Branch "%s" has been synced with remote "%s".', $branchName, $remote));
+        $this->getHelper('gush_style')->success(
+            sprintf('Branch "%s" has been synced with remote "%s".', $branchName, $remote)
+        );
 
         return self::COMMAND_SUCCESS;
     }

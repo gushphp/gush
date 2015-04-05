@@ -57,7 +57,7 @@ EOF
 
         $this->getHelper('git')->addRemote($remoteName, $fork['git_url']);
 
-        $output->writeln(sprintf('Added remote for %s', $org));
+        $this->getHelper('gush_style')->success(sprintf('Added remote for %s', $org));
 
         return self::COMMAND_SUCCESS;
     }

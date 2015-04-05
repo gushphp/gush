@@ -57,7 +57,7 @@ EOF
 
         $this->getHelper('git')->pushToRemote($org, $branchName, true);
 
-        $output->writeln(
+        $this->getHelper('gush_style')->success(
             sprintf('Branch pushed to %s/%s', $org, $branchName)
         );
 

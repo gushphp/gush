@@ -60,7 +60,9 @@ EOF
 
         $this->getHelper('git')->pushToRemote($org, ':'.$currentBranchName, true);
 
-        $output->writeln(sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName));
+        $this->getHelper('gush_style')->success(
+            sprintf('Branch %s/%s has been deleted!', $org, $currentBranchName)
+        );
 
         return self::COMMAND_SUCCESS;
     }
