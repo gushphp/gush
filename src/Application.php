@@ -106,7 +106,7 @@ LOGO;
                 $helperSet->get('filesystem')
             )
         );
-        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('question'), $this));
+        $helperSet->set(new Helpers\TemplateHelper($helperSet->get('gush_style'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new Helpers\AutocompleteHelper());
         $helperSet->set(new UpdateHelper());

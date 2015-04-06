@@ -14,10 +14,10 @@ namespace Gush\Command\PullRequest;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TemplateFeature;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, TemplateFeature
 {
@@ -131,6 +131,7 @@ EOF
         /** @var \Gush\Config $config */
 
         $base = $input->getOption('base');
+
         if (null === $base) {
             $base = $config->get('base') ?: 'master';
         }
@@ -145,17 +146,41 @@ EOF
 
         $title = '';
         $body = '';
+
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+
+        $styleHelper->title(sprintf('Open request on %s/%s', $org, $input->getOption('repo')));
+        $styleHelper->text(
+            [
+                sprintf('This pull-request will be opened on "%s/%s".', $org, $input->getOption('repo')),
+                sprintf('The source branch is "%s" on "%s".', $sourceBranch, $sourceOrg),
+            ]
+        );
+
+        $styleHelper->newLine();
+
         if (null === $issueNumber) {
-            $defaultTitle = $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
-            if (!$title = $input->getOption('title')) {
-                $title = $this->getHelper('question')->ask(
-                    $input,
-                    $output,
-                    new Question(sprintf('Title: [%s]', $defaultTitle), $defaultTitle)
+            $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
+
+            if ('' === $defaultTitle && $input->getOption('no-interaction')) {
+                $styleHelper->error(
+                    'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
                 );
+
+                return self::COMMAND_FAILURE;
             }
 
-            $body = $this->getHelper('template')->askAndRender($output, $this->getTemplateDomain(), $template);
+            $title = $styleHelper->ask('Title', $defaultTitle);
+            $body = $this->getHelper('template')->askAndRender(
+                $output,
+                $this->getTemplateDomain(),
+                $template
+            );
+        } elseif ($styleHelper->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)) {
+            $styleHelper->error("Command aborted by user.");
+
+            return self::COMMAND_FAILURE;
         }
 
         if (true === $config->get('remove-promote')) {
@@ -179,7 +204,6 @@ EOF
         }
 
         $parameters = $issueNumber ? ['issue' => $issueNumber] : [];
-
         $pullRequest = $this
             ->getAdapter()
             ->openPullRequest(
