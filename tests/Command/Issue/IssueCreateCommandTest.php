@@ -31,7 +31,7 @@ class IssueCreateCommandTest extends BaseTestCase
         $command->getHelperSet()->set($editor, 'editor');
         $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
 
-        $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
+        $this->assertEquals('[OK] Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
     }
 
     /**
@@ -52,7 +52,7 @@ class IssueCreateCommandTest extends BaseTestCase
             ]
         );
 
-        $this->assertEquals('Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
+        $this->assertEquals('[OK] Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
     }
 
     private function expectDialog()

@@ -16,6 +16,7 @@ use Gush\Config;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Factory\AdapterFactory;
+use Gush\Helper\OutputAwareInterface;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tester\Adapter\TestIssueTracker;
 use Gush\Tests\TestableApplication;
@@ -23,6 +24,7 @@ use Guzzle\Http\Client;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophet;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -53,6 +55,11 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->prophet->checkPredictions();
+    }
+
+    protected function assertCommandOutputEquals($expected, $output)
+    {
+        $this->assertEquals($expected, implode("\n", array_map('trim', explode("\n", trim($output)))));
     }
 
     /**
@@ -139,13 +146,18 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
         $application->getDispatcher()->addListener(
             GushEvents::INITIALIZE,
-            function ($event) {
+            function (ConsoleEvent $event) {
                 $command = $event->getCommand();
                 $input = $event->getInput();
+                $output = $event->getOutput();
 
                 foreach ($command->getHelperSet() as $helper) {
                     if ($helper instanceof InputAwareInterface) {
                         $helper->setInput($input);
+                    }
+
+                    if ($helper instanceof OutputAwareInterface) {
+                        $helper->setOutput($output);
                     }
                 }
             }

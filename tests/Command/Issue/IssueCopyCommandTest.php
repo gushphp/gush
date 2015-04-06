@@ -36,6 +36,6 @@ class IssueCopyCommandTest extends BaseTestCase
             'interactive' => false,
         ]);
 
-        $this->assertEquals(OutputFixtures::ISSUE_COPY, trim($tester->getDisplay(true)));
+        $this->assertCommandOutputEquals(OutputFixtures::ISSUE_COPY, $tester->getDisplay(true));
     }
 }

@@ -41,8 +41,20 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
         $tester->execute($args, ['interactive' => false]);
 
+        $url = 'https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER;
+        $expected = <<<RES
+Open request on gushphp/gush
+============================
+
+ // This pull-request will be opened on "gushphp/gush".
+ // The source branch is "issue-145" on "cordoval".
+
+
+ [OK] Opened pull request $url
+RES;
+
         $res = trim($tester->getDisplay(true));
-        $this->assertEquals('https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
+        $this->assertEquals($expected, $res);
     }
 
     /**
@@ -61,8 +73,19 @@ class PullRequestCreateCommandTest extends BaseTestCase
 
         $tester->execute($args, ['interactive' => false]);
 
+        $url = 'https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER;
+        $expected = <<<RES
+Open request on gushphp/gush
+============================
+
+ // This pull-request will be opened on "gushphp/gush".
+ // The source branch is "issue-145" on "cordoval".
+
+ [OK] Opened pull request $url
+RES;
+
         $res = trim($tester->getDisplay(true));
-        $this->assertEquals('https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER, $res);
+        $this->assertEquals($expected, $res);
     }
 
     /**

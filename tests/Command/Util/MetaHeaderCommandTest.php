@@ -20,10 +20,22 @@ use Gush\Tests\Fixtures\OutputFixtures;
 class MetaHeaderCommandTest extends BaseTestCase
 {
     private $command;
+    private static $gitWorking;
 
     public function setUp()
     {
         parent::setUp();
+
+        if (null === self::$gitWorking) {
+            system('git version', $retVal);
+
+            self::$gitWorking = $retVal === 0;
+        }
+
+        if (!self::$gitWorking) {
+            $this->markTestSkipped('Git needs to be installed for this test.');
+        }
+
         $this->command = $this->getTestCommand();
         $this->command->execute([], ['interactive' => false]);
     }
@@ -34,7 +46,7 @@ class MetaHeaderCommandTest extends BaseTestCase
      */
     public function runs_meta_header_command($file, $content)
     {
-        $this->assertEquals($content, file_get_contents($file));
+        $this->assertEquals($content, file_get_contents(__DIR__.'/../../../'.$file));
     }
 
     public function tearDown()
@@ -63,10 +75,10 @@ class MetaHeaderCommandTest extends BaseTestCase
     private function expectGitHelper()
     {
         $files = [
-            'tests/Fixtures/meta/metatest.php',
-            'tests/Fixtures/meta/metatest.css',
-            'tests/Fixtures/meta/metatest.js',
-            'tests/Fixtures/meta/metatest.twig',
+            __DIR__.'/../../Fixtures/meta/metatest.php',
+            __DIR__.'/../../Fixtures/meta/metatest.css',
+            __DIR__.'/../../Fixtures/meta/metatest.js',
+            __DIR__.'/../../Fixtures/meta/metatest.twig',
         ];
 
         $gitHelper = $this

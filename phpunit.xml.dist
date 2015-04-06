@@ -10,14 +10,14 @@
 -->
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
          backupGlobals="false"
          colors="true"
          bootstrap="vendor/autoload.php"
 >
     <php>
-        <env name="GIT_VENDOR_NAME" value="gushphp"/>
         <ini name="date.timezone" value="America/Lima"/>
+        <env name="GIT_VENDOR_NAME" value="gushphp"/>
 
         <!-- WARNING These locations are only used for testing, don't use your actual Gush installation! -->
         <!--
@@ -32,6 +32,12 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+
+    <groups>
+        <exclude>
+            <group>functional</group>
+        </exclude>
+    </groups>
 
     <filter>
         <whitelist>

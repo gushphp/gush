@@ -38,6 +38,7 @@ class PullRequestFixerCommandTest extends BaseTestCase
     {
         $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
         $processHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $processHelper->setOutput(Argument::any())->shouldBeCalled();
         $processHelper->getName()->willReturn('process');
 
         $processHelper->probePhpCsFixer()->willReturn('php-cs-fixer');

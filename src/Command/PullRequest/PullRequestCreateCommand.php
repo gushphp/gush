@@ -163,7 +163,7 @@ EOF
         if (null === $issueNumber) {
             $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
 
-            if ('' === $defaultTitle && $input->getOption('no-interaction')) {
+            if ('' === $defaultTitle && $input->isInteractive()) {
                 $styleHelper->error(
                     'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
                 );
@@ -177,8 +177,10 @@ EOF
                 $this->getTemplateDomain(),
                 $template
             );
-        } elseif ($styleHelper->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)) {
-            $styleHelper->error("Command aborted by user.");
+        } elseif ($input->isInteractive() &&
+            $consoleStyle->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)
+        ) {
+            $consoleStyle->error("Command aborted by user.");
 
             return self::COMMAND_FAILURE;
         }

@@ -19,7 +19,7 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInterface, StyleInterface
+class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInterface, StyleInterface
 {
     /**
      * @var InputInterface

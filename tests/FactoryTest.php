@@ -15,6 +15,9 @@ use Gush\Factory;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group functional
+ */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**

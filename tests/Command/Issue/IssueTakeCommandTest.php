@@ -39,7 +39,7 @@ class IssueTakeCommandTest extends BaseTestCase
         );
 
         $this->assertEquals(
-            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
+            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
             trim($tester->getDisplay(true))
         );
     }
@@ -62,7 +62,7 @@ class IssueTakeCommandTest extends BaseTestCase
         );
 
         $this->assertEquals(
-            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
+            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
             trim($tester->getDisplay(true))
         );
     }
@@ -85,7 +85,7 @@ class IssueTakeCommandTest extends BaseTestCase
         );
 
         $this->assertEquals(
-            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
+            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
             trim($tester->getDisplay(true))
         );
     }
