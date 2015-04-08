@@ -84,7 +84,8 @@ EOF
         $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);
-        $output->writeln("Issue {$url} taken!");
+
+        $this->getHelper('gush_style')->success("Issue {$url} taken!");
 
         return self::COMMAND_SUCCESS;
     }

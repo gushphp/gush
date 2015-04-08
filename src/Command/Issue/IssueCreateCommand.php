@@ -82,7 +82,7 @@ EOF
         $issue = $tracker->openIssue($title, $body);
 
         $url = $tracker->getIssueUrl($issue);
-        $output->writeln("Created issue {$url}");
+        $this->getHelper('gush_style')->success("Created issue {$url}");
 
         return self::COMMAND_SUCCESS;
     }

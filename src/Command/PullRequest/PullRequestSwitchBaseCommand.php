@@ -75,7 +75,9 @@ EOF
         $branchName = $pr['head']['ref'];
 
         if ($currentBase === $baseBranch) {
-            $output->writeln(sprintf('<info>PR base-branch is already based on %s!<info>', $baseBranch));
+            $this->getHelper('gush_style')->error(
+                sprintf('Pull-request base-branch is already based on %s!', $baseBranch)
+            );
 
             return self::COMMAND_SUCCESS;
         }
@@ -97,13 +99,17 @@ EOF
         if ($prNumber == $switchPr['number']) {
             $adapter->createComment($prNumber, sprintf('(PR base switched to %s)', $baseBranch));
 
-            $output->writeln('<info>PR base-branch been switched!<info>');
+            $this->getHelper('gush_style')->success('Pull-request base-branch has been switched!');
         } else {
             $adapter->createComment($prNumber, sprintf('(PR replaced by %s)', $switchPr['html_url']));
             $adapter->closePullRequest($prNumber);
 
-            $output->writeln('<comment>PR base-branch could not be switched, a new PR was opened<comment>');
-            $output->writeln($switchPr['html_url']);
+            $this->getHelper('gush_style')->sucess(
+                [
+                    'Pull-request base-branch could not be switched, a new pull request was opened instead: ',
+                    $switchPr['html_url']
+                ]
+            );
         }
 
         return self::COMMAND_SUCCESS;

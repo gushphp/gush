@@ -64,8 +64,12 @@ EOF
             $autoInit = true
         );
 
-        $output->writeln(
-            sprintf('Repository created %s <info>%s</info>', $result['git_url'], $result['html_url'])
+        $this->getHelper('gush_style')->success(
+            [
+                sprintf('Repository "%s" was created.', $name),
+                'Git: '.$result['git_url'],
+                'Web: '.$result['html_url'],
+            ]
         );
 
         return self::COMMAND_SUCCESS;

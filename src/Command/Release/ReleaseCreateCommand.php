@@ -87,7 +87,7 @@ EOF
         $assetContentTypes = $input->getOption('asset-content-type');
 
         if ($input->getOption('replace')) {
-            $this->removeExisting($output, $adapter, $tag);
+            $this->removeExisting($adapter, $tag);
         }
 
         // validates assets
@@ -99,8 +99,8 @@ EOF
 
         $output->writeln(
             sprintf(
-                '<info>Creating release %s for </info>%s<info> on </info>%s<info>/</info>%s',
-                $releaseName,
+                ' <info>Creating release %s for </info>%s<info> on </info>%s<info>/</info>%s',
+                $releaseName ?: $tag,
                 $tag,
                 $org,
                 $repo
@@ -118,7 +118,9 @@ EOF
             ]
         );
 
-        $output->writeln(sprintf('<info>Created release with ID </info>%s', $release['id']));
+        $this->getHelper('gush_style')->success(
+            sprintf('Created release with ID %s', $release['id'])
+        );
 
         foreach ($assetFiles as $i => $assetFile) {
             $output->writeln(
@@ -149,7 +151,7 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function removeExisting(OutputInterface $output, Adapter $adapter, $tag)
+    private function removeExisting(Adapter $adapter, $tag)
     {
         $releases = $adapter->getReleases();
         $id = null;
@@ -161,8 +163,11 @@ EOF
         }
 
         if ($id) {
-            $output->writeln(sprintf('<info>Removing existing release with tag </info>%s (id: %s)', $tag, $id));
             $adapter->removeRelease($id);
+
+            $this->getHelper('gush_style')->note(
+                sprintf('Existing release with tag %s (id: %s) was removed.', $tag, $id)
+            );
         }
     }
 }

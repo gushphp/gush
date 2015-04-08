@@ -17,6 +17,7 @@ use Gush\Helper\GitHelper;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Console\Output\StreamOutput;
 
 class PullRequestMergeCommandTest extends BaseTestCase
 {
@@ -66,25 +67,27 @@ Commits
 OET;
 
     const COMMAND_DISPLAY = <<<OET
-[INFO] Adding remote 'gushphp' with 'git@github.com:gushphp/gush.git' to git local config.
+! [NOTE] Adding remote "gushphp" with "https://github.com/gushphp/gush.git".
 
-[INFO] Adding remote 'cordoval' with 'git@github.com:cordoval/gush.git' to git local config.
-This PR was merged into the base_ref branch.
+! [NOTE] Adding remote "cordoval" with "https://github.com/cordoval/gush.git".
+
+[OK] This PR was merged into the base_ref branch.
 OET;
 
     const FAILURE_TYPE_DISPLAY = <<<OET
-[INFO] Adding remote 'gushphp' with 'git@github.com:gushphp/gush.git' to git local config.
+! [NOTE] Adding remote "gushphp" with "https://github.com/gushphp/gush.git".
 
-[INFO] Adding remote 'cordoval' with 'git@github.com:cordoval/gush.git' to git local config.
+! [NOTE] Adding remote "cordoval" with "https://github.com/cordoval/gush.git".
 
 [ERROR] Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug.
 OET;
 
     const COMMAND_DISPLAY_SQUASHED = <<<OET
-[INFO] Adding remote 'gushphp' with 'git@github.com:gushphp/gush.git' to git local config.
+! [NOTE] Adding remote "gushphp" with "https://github.com/gushphp/gush.git".
 
-[INFO] Adding remote 'cordoval' with 'git@github.com:cordoval/gush.git' to git local config.
-This PR was squashed before being merged into the base_ref branch (closes #40).
+! [NOTE] Adding remote "cordoval" with "https://github.com/cordoval/gush.git".
+
+[OK] This PR was squashed before being merged into the base_ref branch (closes #40).
 OET;
 
     private $commits = [
@@ -118,13 +121,14 @@ OET;
     {
         $message = sprintf($this->mergeMessage, 'merge', 40);
 
-        $tester = $this->getTesterForCommand($message);
+        $tester = $this->getTesterForCommand($message, false, null, false, null, $output);
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, '--no-comments' => true],
             ['interactive' => false]
         );
 
-        $this->assertEquals(self::COMMAND_DISPLAY, trim($tester->getDisplay(true)));
+        $tester->getDisplay(true);
+        $this->assertCommandOutputEquals(self::COMMAND_DISPLAY, $output);
     }
 
     /**
@@ -134,13 +138,14 @@ OET;
     {
         $message = sprintf($this->mergeMessage, 'feat', 40);
 
-        $tester = $this->getTesterForCommand($message);
+        $tester = $this->getTesterForCommand($message, false, null, false, null, $output);
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, 'pr_type' => 'feat', '--no-comments' => true],
             ['interactive' => false]
         );
 
-        $this->assertEquals(self::COMMAND_DISPLAY, trim($tester->getDisplay(true)));
+        $tester->getDisplay(true);
+        $this->assertCommandOutputEquals(self::COMMAND_DISPLAY, $output);
     }
 
     /**
@@ -150,13 +155,14 @@ OET;
     {
         $message = sprintf($this->mergeMessageSquash, 'merge', 40);
 
-        $tester = $this->getTesterForCommand($message, true);
+        $tester = $this->getTesterForCommand($message, true, null, false, null, $output);
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', '--squash' => true, 'pr_number' => 40, '--no-comments' => true],
             ['interactive' => false]
         );
 
-        $this->assertEquals(self::COMMAND_DISPLAY_SQUASHED, trim($tester->getDisplay(true)));
+        $tester->getDisplay(true);
+        $this->assertCommandOutputEquals(self::COMMAND_DISPLAY_SQUASHED, $output);
     }
 
     /**
@@ -169,14 +175,15 @@ OET;
         $this->config->get('pr_type')->willReturn(['security', 'feature', 'bug']);
 
         $message = sprintf($this->mergeMessage, 'feature', 40);
-        $tester = $this->getTesterForCommand($message, false, null, false, 'feature');
+        $tester = $this->getTesterForCommand($message, false, null, false, 'feature', $output);
 
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, '--no-comments' => true],
             ['interactive' => false]
         );
 
-        $this->assertEquals(self::COMMAND_DISPLAY, trim($tester->getDisplay(true)));
+        $tester->getDisplay(true);
+        $this->assertCommandOutputEquals(self::COMMAND_DISPLAY, $output);
     }
 
     /**
@@ -189,14 +196,15 @@ OET;
         $this->config->get('pr_type')->willReturn(['security', 'feat', 'bug']);
 
         $message = sprintf($this->mergeMessage, 'feat', 40);
-        $tester = $this->getTesterForCommand($message);
+        $tester = $this->getTesterForCommand($message, false, null, false, null, $output);
 
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, 'pr_type' => 'feat', '--no-comments' => true],
             ['interactive' => false]
         );
 
-        $this->assertEquals(self::COMMAND_DISPLAY, trim($tester->getDisplay(true)));
+        $tester->getDisplay(true);
+        $this->assertCommandOutputEquals(self::COMMAND_DISPLAY, $output);
     }
 
     /**
@@ -209,12 +217,16 @@ OET;
         $this->config->get('pr_type')->willReturn(['security', 'feature', 'bug']);
 
         $tester = $this->getTesterForCommand(null);
+
+        $this->setExpectedException(
+            'Gush\Exception\UserException',
+            "Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug."
+        );
+
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => 40, 'pr_type' => 'feat', '--no-comments' => true],
             ['interactive' => false]
         );
-
-        $this->assertEquals(self::FAILURE_TYPE_DISPLAY, trim($tester->getDisplay(true)));
     }
 
     /**
@@ -226,7 +238,7 @@ OET;
      *
      * @return \Symfony\Component\Console\Tester\CommandTester
      */
-    private function getTesterForCommand($message, $squash = false, $switch = null, $forceSquash = false, $prType = null)
+    private function getTesterForCommand($message, $squash = false, $switch = null, $forceSquash = false, $prType = null, &$output = '')
     {
         $command = new PullRequestMergeCommand();
         $tester = $this->getCommandTester($command);
@@ -286,22 +298,33 @@ OET;
         $helperSet->set($this->git->reveal());
         $helperSet->set($this->gitConfig->reveal());
 
-        $questionHelper = $this->getMock(
-            'Symfony\Component\Console\Helper\QuestionHelper',
-            ['ask']
+        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
+        $styleHelper->setInput(Argument::any())->shouldBeCalled();
+        $styleHelper->setOutput(Argument::any())->shouldBeCalled();
+
+        $styleHelper->getName()->willReturn('gush_style');
+        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
+
+        $styleHelper->success(Argument::any())->will(
+            function ($message) use (&$output) {
+                $output .= ' [OK] '.implode('', (array) $message)."\n\n";
+            }
+        );
+
+        $styleHelper->note(Argument::any())->will(
+            function ($message) use (&$output) {
+                $output .= ' ! [NOTE] '.implode('', (array) $message)."\n\n";
+            }
         );
 
         // Always do this expectation to prevent calling the real helper
         if (null !== $prType) {
-            $questionHelper->expects($this->at(0))
-                ->method('ask')
-                ->will($this->returnValue($prType))
-            ;
+            $styleHelper->askQuestion(Argument::any())->willReturn($prType);
         } else {
-            $questionHelper->expects($this->never())->method('ask');
+            $styleHelper->askQuestion(Argument::any())->shouldNotBeCalled();
         }
 
-        $helperSet->set($questionHelper);
+        $helperSet->set($styleHelper->reveal());
 
         return $tester;
     }

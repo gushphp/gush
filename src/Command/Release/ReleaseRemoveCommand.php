@@ -48,16 +48,16 @@ EOF
         $repo = $input->getOption('repo');
         $org = $input->getOption('org');
 
-        $output->writeln(
+        $this->getAdapter()->removeRelease($id);
+
+        $this->getHelper('gush_style')->success(
             sprintf(
-                '<info>Deleting release </info>%s<info> on </info>%s<info>/</info>%s',
+                'Release %s on %s/%s was deleted.',
                 $id,
                 $org,
                 $repo
             )
         );
-
-        $this->getAdapter()->removeRelease($id);
 
         return self::COMMAND_SUCCESS;
     }

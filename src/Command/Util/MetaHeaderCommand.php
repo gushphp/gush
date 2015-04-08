@@ -14,10 +14,12 @@ namespace Gush\Command\Util;
 use Gush\Command\BaseCommand;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\MetaHelper;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
 {
@@ -102,6 +104,9 @@ EOT
         $config = $this->getApplication()->getConfig();
         /** @var \Gush\Config $config */
 
+        /** @var SymfonyStyle $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+
         if (null === ($metaHeader = $config->get('meta-header')) || $input->getOption('no-local')) {
             $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
         }
@@ -116,6 +121,13 @@ EOT
 
         $supportedTypes = array_keys($meta->getSupportedFiles());
 
+        $styleHelper->title('Update copyright header of project files');
+        $styleHelper->note('This only updates files that are managed by Git version control.');
+
+        if ($dryRun) {
+            $styleHelper->block('Dry-run is enabled files will not be updated.', 'INFO', 'fg=cyan', ' ! ');
+        }
+
         foreach ($supportedTypes as $type) {
             $files = array_filter($allFiles, function ($value) use ($type) {
                 return pathinfo($value, PATHINFO_EXTENSION) === $type;
@@ -125,23 +137,17 @@ EOT
                 continue;
             }
 
-            $output->writeln([ '', sprintf('<info>Updating %s files:</info>', $type), '']);
-
-            $header = $meta->renderHeader($metaHeader, $type);
-
-            $output->writeln(
+            $styleHelper->section(sprintf('Update %s file(s)', $type));
+            $styleHelper->writeln(
                 [
+                    sprintf(' <info>The following header will be set on %d files:</info>', count($files)),
                     '',
-                    sprintf('<info>The following header will be set on %d files:</info>', count($files)),
-                    '',
-                    $header,
+                    '<comment>'.OutputFormatter::escape($meta->renderHeader($metaHeader, $type, ' ')).'<comment>',
                 ]
             );
 
-            $confirmed = $this->getHelper('question')->ask(
-                $input,
-                $output,
-                new ConfirmationQuestion('<question>Do you want to continue?</question> (y/n) ', true)
+            $confirmed = $styleHelper->askQuestion(
+                new ConfirmationQuestion('Do you want to continue?', true)
             );
 
             if (!$confirmed) {
@@ -149,28 +155,32 @@ EOT
             }
 
             $metaClass = $meta->getMetaClass($type);
+            $header = $meta->renderHeader($metaHeader, $type, '');
 
             foreach ($files as $file) {
                 $fileContent = file_get_contents($file);
 
-                if ($meta->isUpdatable($metaClass, $fileContent)) {
-                    if (false === $dryRun) {
-                        file_put_contents($file, $meta->updateContent($metaClass, $header, $fileContent));
-                    }
+                if (!$meta->isUpdatable($metaClass, $fileContent)) {
+                    $output->writeln(sprintf(' <fg=red>[SKIPPED]</>: %s', $file));
 
-                    $output->writeln(
-                        sprintf(
-                            '%s<info>Updated header in file "%s"</info>',
-                            $dryRun === false ? '' : ' <comment>[DRY-RUN] </comment>',
-                            $file
-                        )
-                    );
+                    continue;
+                }
+
+                $newContent = $meta->updateContent($metaClass, $header, $fileContent);
+
+                if (false === $dryRun) {
+                    file_put_contents($file, $newContent);
+                }
+
+                if ($newContent !== $fileContent) {
+                    $output->writeln(sprintf(' <fg=cyan>[UPDATED]</>: %s', $file));
                 } else {
-                    $output->writeln(
-                        sprintf('<info>Skipping file "%s"</info>', $file)
-                    );
+                    $output->writeln(sprintf(' <fg=green>[IGNORED]</>: %s', $file));
                 }
             }
+
+            $styleHelper->newLine();
+            $styleHelper->success(sprintf('%s files were updated.', $type));
         }
 
         return self::COMMAND_SUCCESS;

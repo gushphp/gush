@@ -72,7 +72,7 @@ EOF
             $gitHelper->commit('cs-fixer', ['a']);
         }
 
-        $output->writeln('CS fixes committed!');
+        $this->getHelper('gush_style')->success('CS fixes committed!');
 
         return self::COMMAND_SUCCESS;
     }

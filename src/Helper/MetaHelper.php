@@ -58,20 +58,21 @@ class MetaHelper extends Helper
     /**
      * @param string $header
      * @param string $type
+     * @param string $prefix
      *
      * @return string
      */
-    public function renderHeader($header, $type)
+    public function renderHeader($header, $type, $prefix = '')
     {
         $class = $this->getMetaClass($type);
 
-        $out = [$class->getStartDelimiter()];
+        $out = [$prefix.$class->getStartDelimiter()];
         foreach (preg_split('{\r?\n}', trim($header)) as $line) {
             // avoid trailing spaces
-            $out[] = ' '.$class->getDelimiter().($line ? ' '.$line : '');
+            $out[] = $prefix.' '.$class->getDelimiter().($line ? ' '.$line : '');
         }
-        $out[] = ' '.$class->getEndDelimiter();
-        $out[] = "\n";
+        $out[] = $prefix.' '.$class->getEndDelimiter();
+        $out[] = $prefix."\n";
 
         return implode("\n", $out);
     }

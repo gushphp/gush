@@ -69,28 +69,29 @@ EOT;
 EOT;
 
     const ISSUE_CLOSE = <<<EOT
-Closed https://github.com/gushphp/gush/issues/7
+[OK] Closed https://github.com/gushphp/gush/issues/7
 EOT;
 
     const ISSUE_COPY = <<<EOT
-dantleech/gushphp: Opening issue "[SomePrefix] Write a behat test to launch strategy"
-  gushphp/gush: Closing issue "7"
+[OK] Opened issue: https://github.com/gushphp/gush/issues/77
+
+[OK] Closed issue: https://github.com/gushphp/gush/issues/7
 EOT;
 
     const PULL_REQUEST_CLOSE = <<<EOT
-Closed https://github.com/gushphp/gush/pull/40
+[OK] Closed https://github.com/gushphp/gush/pull/40
 EOT;
 
     const BRANCH_SYNC = <<<EOT
-Branch "%s" has been synced with remote "%s".
+[OK] Branch "%s" has been synced with remote "%s".
 EOT;
 
     const BRANCH_DELETE = <<<EOT
-Branch %s/%s has been deleted!
+[OK] Branch %s/%s has been deleted!
 EOT;
 
     const BRANCH_FORK = <<<EOT
-Forked repository gushphp/gush into %s/gush
+[OK] Forked repository gushphp/gush into %s/gush
 EOT;
 
     const BRANCH_CHANGELOG_EMPTY = <<<EOT
@@ -102,23 +103,23 @@ EOT;
 EOT;
 
     const BRANCH_PUSH = <<<EOT
-Branch pushed to %s/%s
+[OK] Branch pushed to %s/%s
 EOT;
 
     const PULL_REQUEST_FIXER = <<<EOT
-CS fixes committed!
+[OK] CS fixes committed!
 EOT;
 
     const PULL_REQUEST_PAT_ON_THE_BACK = <<<EOT
-Pat on the back pushed to https://github.com/gushphp/gush/pull/40
+[OK] Pat on the back pushed to https://github.com/gushphp/gush/pull/40
 EOT;
 
     const PULL_REQUEST_VERSIONEYE = <<<EOT
-Please check the modifications on your composer.json for updated dependencies.
+[OK] Please check the modifications on your composer.json for updated dependencies.
 EOT;
 
     const PULL_REQUEST_SQUASH = <<<EOT
-PR has been squashed!
+[OK] Pull request has been squashed!
 EOT;
 
     const HEADER_LICENSE_TWIG = <<<EOT

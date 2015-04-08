@@ -154,12 +154,12 @@ class Factory
 
             if (!$config->isValid()) {
                 throw new \RuntimeException(
-                    "Your '$filename' seem to be invalid. Errors: ".PHP_EOL.implode(PHP_EOL, $config->getErrorList())
+                    "Your '$filename' seem to be invalid.\nErrors: \n * ".implode("\n * ", $config->getErrorList())
                 );
             }
         } catch (\Exception $exception) {
             throw new \RuntimeException(
-                $exception->getMessage().PHP_EOL.'Please run the core:configure command.',
+                $exception->getMessage()."\n\n".'Please run the core:configure command.',
                 $exception->getCode(),
                 $exception
             );

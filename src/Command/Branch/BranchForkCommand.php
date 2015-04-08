@@ -64,7 +64,7 @@ EOF
 
         $gitConfigHelper->setRemote($targetOrg, $fork['git_url']);
 
-        $output->writeln(
+        $this->getHelper('gush_style')->success(
             sprintf(
                 'Forked repository %s/%s into %s/%s',
                 $sourceOrg,

@@ -16,6 +16,7 @@ use Gush\Command\Core\CoreConfigureCommand;
 use Gush\Tester\QuestionToken;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
+use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -43,7 +44,6 @@ class CoreConfigureCommandTest extends BaseTestCase
         }
 
         $gushFilename = $homeDir.'/.gush.yml';
-        $localDir = getcwd();
         $expected = [
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
@@ -83,9 +83,9 @@ class CoreConfigureCommandTest extends BaseTestCase
             unlink($gushFilename);
         }
 
-        $questionHelper = $this->expectDialogParameters($homeDir, self::NEITHER_ADAPTER_NOR_TRACKER);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $command->getHelperSet()->set($questionHelper, 'question');
+        $this->expectDialogParameters($command->getHelperSet(), $homeDir, self::NEITHER_ADAPTER_NOR_TRACKER);
+
         $tester->execute(
             [
                 'command' => 'core:configure',
@@ -110,7 +110,6 @@ class CoreConfigureCommandTest extends BaseTestCase
         }
 
         $gushFilename = $homeDir.'/.gush.yml';
-        $localDir = getcwd();
         $expected = [
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
@@ -139,9 +138,9 @@ class CoreConfigureCommandTest extends BaseTestCase
             unlink($gushFilename);
         }
 
-        $questionHelper = $this->expectDialogParameters($homeDir, self::ADAPTER_ONLY);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $command->getHelperSet()->set($questionHelper, 'question');
+        $this->expectDialogParameters($command->getHelperSet(), $homeDir, self::ADAPTER_ONLY);
+
         $tester->execute(
             [
                 'command' => 'core:configure',
@@ -167,7 +166,6 @@ class CoreConfigureCommandTest extends BaseTestCase
         }
 
         $gushFilename = $homeDir.'/.gush.yml';
-        $localDir = getcwd();
         $expected = [
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
@@ -196,9 +194,9 @@ class CoreConfigureCommandTest extends BaseTestCase
             unlink($gushFilename);
         }
 
-        $questionHelper = $this->expectDialogParameters($homeDir, self::TRACKER_ONLY);
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $command->getHelperSet()->set($questionHelper, 'question');
+        $this->expectDialogParameters($command->getHelperSet(), $homeDir, self::TRACKER_ONLY);
+
         $tester->execute(
             [
                 'command' => 'core:configure',
@@ -214,17 +212,19 @@ class CoreConfigureCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    private function expectDialogParameters($homeDir, $option)
+    private function expectDialogParameters(HelperSet $helperSet, $homeDir, $option)
     {
-        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
+        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
+        $styleHelper->getName()->willReturn('gush_style');
+        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $styleHelper->success('Configuration file saved successfully.')->shouldBeCalled();
 
+        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
         $questionHelper->getName()->willReturn('question');
         $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
 
         if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            $styleHelper->askQuestion(
                 new QuestionToken(
                     new ChoiceQuestion(
                         'Choose adapter: ',
@@ -281,9 +281,7 @@ class CoreConfigureCommandTest extends BaseTestCase
             )->willReturn('https://company.com');
             // AdapterConfigurator End
 
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            $styleHelper->askQuestion(
                 new QuestionToken(
                     new ConfirmationQuestion(
                         'Would you like to make "github_enterprise" the default adapter?'
@@ -293,9 +291,7 @@ class CoreConfigureCommandTest extends BaseTestCase
         }
 
         if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            $styleHelper->askQuestion(
                 new QuestionToken(
                     new ChoiceQuestion(
                         'Choose issue tracker:',
@@ -352,9 +348,7 @@ class CoreConfigureCommandTest extends BaseTestCase
             )->willReturn('https://jira.company.com/');
             // IssueTrackerConfigurator End
 
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+            $styleHelper->askQuestion(
                 new QuestionToken(
                     new ConfirmationQuestion(
                         'Would you like to make "jira" the default issue tracker?'
@@ -363,22 +357,19 @@ class CoreConfigureCommandTest extends BaseTestCase
             )->willReturn(true);
         }
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+        $styleHelper->askQuestion(
             new QuestionToken(
                 new Question('Cache folder', $homeDir.'/cache')
             )
         )->willReturn($homeDir.'/cache');
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+        $styleHelper->askQuestion(
             new QuestionToken(
                 new Question('VersionEye token:', 'NO_TOKEN')
             )
         )->willReturn(self::VERSIONEYE_TOKEN);
 
-        return $questionHelper->reveal();
+        $helperSet->set($questionHelper->reveal(), 'question');
+        $helperSet->set($styleHelper->reveal(), 'gush_style');
     }
 }

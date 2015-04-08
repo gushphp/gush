@@ -35,7 +35,7 @@ class PullRequestAssignCommandTest extends BaseTestCase
 
         $this->assertEquals(
             sprintf(
-                'Pull request https://github.com/gushphp/gush/pull/%s was assigned to cordoval!',
+                '[OK] Pull request https://github.com/gushphp/gush/pull/%s was assigned to cordoval!',
                 TestAdapter::PULL_REQUEST_NUMBER
             ),
             trim($tester->getDisplay(true))

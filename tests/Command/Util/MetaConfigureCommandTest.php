@@ -90,13 +90,14 @@ OET;
 
     private function expectDialogParameters()
     {
-        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
-        $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $questionHelper->getName()->willReturn('question');
+        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
+        $styleHelper->getName()->willReturn('gush_style');
+        $styleHelper->setInput(Argument::any())->shouldBeCalled();
+        $styleHelper->setOutput(Argument::any())->shouldBeCalled();
+        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $styleHelper->success('Configuration file saved successfully.')->shouldBeCalled();
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
+        $styleHelper->askQuestion(
             new QuestionToken(
                 new ChoiceQuestion(
                     'Choose License:',
@@ -105,7 +106,7 @@ OET;
             )
         )->willReturn('mit');
 
-        return $questionHelper->reveal();
+        return $styleHelper->reveal();
     }
 
     private function expectTemplate()

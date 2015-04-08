@@ -12,19 +12,20 @@
 namespace Gush\Tests\Helper;
 
 use Gush\Helper\TemplateHelper;
+use Prophecy\Argument;
 
 class TemplateHelperTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Gush\Helper\TemplateHelper */
     protected $helper;
     protected $template;
-    protected $questionHelper;
+    protected $styleHelper;
     protected $output;
     protected $input;
 
     public function setUp()
     {
-        $this->questionHelper = $this->getMock('Symfony\Component\Console\Helper\QuestionHelper');
+        $this->styleHelper = $this->getMock('Gush\Helper\StyleHelper');
         $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
         $this->input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $this->template = $this->getMock('Gush\Template\TemplateInterface');
@@ -35,7 +36,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
 
-        $this->helper = new TemplateHelper($this->questionHelper, $application);
+        $this->helper = new TemplateHelper($this->styleHelper, $application);
         $this->helper->setInput($this->input);
     }
 
@@ -86,7 +87,6 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @dataProvider provideGetNamesForDomain
-     * @depends testRegisterTemplate
      */
     public function gets_names_for_domain($templateRegistrations, $domain, $expectedNames, $exception = false)
     {
@@ -181,7 +181,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($requirements));
 
         // less one because we test with one given option
-        $this->questionHelper->expects($this->exactly(count($requirements) - 1))
+        $this->styleHelper->expects($this->exactly(count($requirements) - 1))
             ->method('ask')
             ->will($this->returnValue('foo'));
 
