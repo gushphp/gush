@@ -113,6 +113,8 @@ EOF
 
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        /** @var GitConfigHelper $gitConfigHelper */
 
         $sourceRemote = $pr['head']['user'];
         $sourceRepository = $pr['head']['repo'];
@@ -122,8 +124,8 @@ EOF
         $targetRepository = $pr['base']['repo'];
         $targetBranch = $pr['base']['ref'];
 
-        $this->ensureRemoteExists($targetRemote, $targetRepository);
-        $this->ensureRemoteExists($sourceRemote, $sourceRepository);
+        $gitConfigHelper->ensureRemoteExists($targetRemote, $targetRepository);
+        $gitConfigHelper->ensureRemoteExists($sourceRemote, $sourceRepository);
 
         try {
             $prType = $this->getPrType($prType);
@@ -182,23 +184,6 @@ EOF
             $gitHelper->restoreStashedBranch();
 
             return self::COMMAND_FAILURE;
-        }
-    }
-
-    private function ensureRemoteExists($org, $repo)
-    {
-        $gitConfigHelper = $this->getHelper('git_config');
-        /** @var GitConfigHelper $gitConfigHelper */
-
-        $adapter = $this->getAdapter();
-        $repoInfo = $adapter->getRepositoryInfo($org, $repo);
-
-        if (!$gitConfigHelper->remoteExists($org, $repoInfo['push_url'])) {
-            $this->getHelper('gush_style')->note(
-                sprintf('Adding remote "%s" with "%s".', $org, $repoInfo['fetch_url'])
-            );
-
-            $gitConfigHelper->setRemote($org, $repoInfo['push_url'], $repoInfo['push_url']);
         }
     }
 

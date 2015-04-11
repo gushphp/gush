@@ -34,7 +34,10 @@ final class GitConfigHelperTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->processHelper = $this->getMock('Gush\Helper\ProcessHelper');
-        $this->gitConfigHelper = new GitConfigHelper($this->processHelper);
+        $this->gitConfigHelper = new GitConfigHelper(
+            $this->processHelper,
+            $this->getMockBuilder('Gush\Application')->disableOriginalConstructor()->getMock()
+        );
     }
 
     /**

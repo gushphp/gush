@@ -98,7 +98,7 @@ LOGO;
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
-        $helperSet->set(new Helpers\GitConfigHelper($helperSet->get('process')));
+        $helperSet->set(new Helpers\GitConfigHelper($helperSet->get('process'), $this));
         $helperSet->set(
             new Helpers\GitHelper(
                 $helperSet->get('process'),
