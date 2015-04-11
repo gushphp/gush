@@ -31,7 +31,8 @@ class IssueTakeCommandTest extends BaseTestCase
 
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($this->expectTextHelper());
-        $command->getHelperSet()->set($this->expectGitHelper('origin', 'origin/master'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper());
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/master'));
 
         $tester->execute(
             ['--org' => 'gushphp', '--repo' => 'gush', 'issue_number' => TestAdapter::ISSUE_NUMBER],
@@ -54,33 +55,16 @@ class IssueTakeCommandTest extends BaseTestCase
 
         $tester = $this->getCommandTester($command = new IssueTakeCommand());
         $command->getHelperSet()->set($this->expectTextHelper());
-        $command->getHelperSet()->set($this->expectGitHelper('origin', 'origin/development'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper());
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/development'));
 
         $tester->execute(
-            ['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER, 'base_branch' => 'development'],
-            ['interactive' => false]
-        );
-
-        $this->assertEquals(
-            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
-            trim($tester->getDisplay(true))
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function takes_an_issue_with_specific_remote()
-    {
-        $this->expectsConfig();
-        $this->config->get('base')->willReturn('master');
-
-        $tester = $this->getCommandTester($command = new IssueTakeCommand());
-        $command->getHelperSet()->set($this->expectTextHelper());
-        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/master'));
-
-        $tester->execute(
-            ['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER, '--remote' => 'gushphp'],
+            [
+                '--org' => 'gushphp',
+                '--repo' => 'gush',
+                'issue_number' => TestAdapter::ISSUE_NUMBER,
+                'base_branch' => 'development'
+            ],
             ['interactive' => false]
         );
 
@@ -114,6 +98,17 @@ class IssueTakeCommandTest extends BaseTestCase
         $gitHelper->remoteUpdate($remote)->shouldBeCalled();
         $gitHelper->checkout($baseBranch)->shouldBeCalled();
         $gitHelper->checkout(self::SLUGIFIED_STRING, true)->shouldBeCalled();
+
+        return $gitHelper->reveal();
+    }
+
+    private function expectGitConfigHelper($org = 'gushphp', $repo = 'gush')
+    {
+        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
+        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->getName()->willReturn('git_config');
+
+        $gitHelper->ensureRemoteExists($org, $repo)->shouldBeCalled();
 
         return $gitHelper->reveal();
     }
