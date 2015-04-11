@@ -11,6 +11,7 @@
 
 namespace Gush\Command\Issue;
 
+use Gush\Adapter\SupportsDynamicLabels;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
@@ -90,6 +91,8 @@ EOF
         $tracker = $this->getIssueTracker();
         $issues = $tracker->getIssues($params);
         $labelNames = $tracker->getLabels();
+
+        $supportDynamic = $tracker instanceof SupportsDynamicLabels;
         $new = $input->getOption('new') ? 'new' : 'existing';
 
         if (!$issues) {
@@ -98,14 +101,14 @@ EOF
             return self::COMMAND_SUCCESS;
         }
 
-        if (!$labelNames) {
-            $styleHelper->error('No Labels found.');
+        if (!$labelNames && !$supportDynamic) {
+            $styleHelper->error('No Labels found for assigning.');
 
             return self::COMMAND_FAILURE;
         }
 
-        $validation = function ($label) use ($labelNames) {
-            return $this->validateLabels($label, $labelNames);
+        $validation = function ($label) use ($labelNames, $supportDynamic) {
+            return $this->validateLabels($label, $labelNames, $supportDynamic);
         };
 
         $styleHelper->title(sprintf('Assign labels to %s issues/pull-requests.', $new));
@@ -162,7 +165,7 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function validateLabels($input, array $acceptedLabels)
+    private function validateLabels($input, array $acceptedLabels, $supportDynamic)
     {
         $inputLabels = array_map('trim', explode(',', $input));
         $labels = [];
@@ -172,7 +175,7 @@ EOF
                 continue;
             }
 
-            if (!in_array($label, $acceptedLabels, true)) {
+            if (!$supportDynamic && !in_array($label, $acceptedLabels, true)) {
                 throw new \InvalidArgumentException(
                     sprintf('Label "%s" is not accepted, use a comma to separate labels like "L-1, L-3".', $label)
                 );
