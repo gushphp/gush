@@ -67,26 +67,14 @@ Commits
 OET;
 
     const COMMAND_DISPLAY = <<<OET
-! [NOTE] Adding remote "gushphp" with "https://github.com/gushphp/gush.git".
-
-! [NOTE] Adding remote "cordoval" with "https://github.com/cordoval/gush.git".
-
 [OK] This PR was merged into the base_ref branch.
 OET;
 
     const FAILURE_TYPE_DISPLAY = <<<OET
-! [NOTE] Adding remote "gushphp" with "https://github.com/gushphp/gush.git".
-
-! [NOTE] Adding remote "cordoval" with "https://github.com/cordoval/gush.git".
-
 [ERROR] Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug.
 OET;
 
     const COMMAND_DISPLAY_SQUASHED = <<<OET
-! [NOTE] Adding remote "gushphp" with "https://github.com/gushphp/gush.git".
-
-! [NOTE] Adding remote "cordoval" with "https://github.com/cordoval/gush.git".
-
 [OK] This PR was squashed before being merged into the base_ref branch (closes #40).
 OET;
 
@@ -279,20 +267,8 @@ OET;
         $this->gitConfig->getName()->willReturn('git_config');
         $this->gitConfig->setHelperSet(Argument::any())->shouldBeCalled();
 
-        $this->gitConfig->remoteExists('cordoval', 'git@github.com:cordoval/gush.git')->willReturn(false);
-        $this->gitConfig->remoteExists('gushphp', 'git@github.com:gushphp/gush.git')->willReturn(false);
-
-        $this->gitConfig->setRemote(
-            'cordoval',
-            'git@github.com:cordoval/gush.git',
-            'git@github.com:cordoval/gush.git'
-        )->shouldBeCalled();
-
-        $this->gitConfig->setRemote(
-            'gushphp',
-            'git@github.com:gushphp/gush.git',
-            'git@github.com:gushphp/gush.git'
-        )->shouldBeCalled();
+        $this->gitConfig->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled();
+        $this->gitConfig->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled();
 
         $helperSet = $application->getHelperSet();
         $helperSet->set($this->git->reveal());

@@ -11,16 +11,25 @@
 
 namespace Gush\Helper;
 
+use Gush\Application;
 use Symfony\Component\Console\Helper\Helper;
 
 class GitConfigHelper extends Helper
 {
-    /** @var \Gush\Helper\ProcessHelper */
+    /**
+     * @var \Gush\Helper\ProcessHelper
+     */
     private $processHelper;
 
-    public function __construct(ProcessHelper $processHelper)
+    /**
+     * @var Application
+     */
+    private $application;
+
+    public function __construct(ProcessHelper $processHelper, Application $application)
     {
         $this->processHelper = $processHelper;
+        $this->application = $application;
     }
 
     /**
@@ -134,6 +143,26 @@ class GitConfigHelper extends Helper
 
         if ($pushUrl) {
             $this->setGitConfig('remote.'.$name.'.pushurl', $pushUrl, true);
+        }
+    }
+
+    /**
+     * Ensure the remote exist for the org and repo.
+     *
+     * @param string $org
+     * @param string $repo
+     */
+    public function ensureRemoteExists($org, $repo)
+    {
+        $adapter = $this->application->getAdapter();
+        $pushUrl = $adapter->getRepositoryInfo($org, $repo)['push_url'];
+
+        if (!$this->remoteExists($org, $pushUrl)) {
+            $this->getHelperSet()->get('gush_style')->note(
+                sprintf('Adding remote "%s" with "%s".', $org, $pushUrl)
+            );
+
+            $this->setRemote($org, $pushUrl, $pushUrl);
         }
     }
 

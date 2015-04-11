@@ -13,6 +13,7 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,18 +32,17 @@ class IssueTakeCommand extends BaseCommand implements GitRepoFeature
             ->setDescription('Takes an issue')
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from')
-            ->addOption(
-                'remote',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Name of the Git remote (default is origin)',
-                null
-            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command takes an issue from issue tracker repository list:
 
     <info>$ gush %command.name% 3</info>
+
+In practice this will add the organization as remote (if not registered already),
+then <comment>git checkout base_branch</comment> and create a new branch that is equal to the issue-number + title.
+
+After you are done you can open a new pull-request using the <info>$ gush pull-request:create</info> command.
+<comment>Note:</comment> you must push the branch before opening a pull-request!
 
 EOF
             )
@@ -54,9 +54,11 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $remote = $input->getOption('remote') ?: 'origin';
         $issueNumber = $input->getArgument('issue_number');
         $baseBranch = $input->getArgument('base_branch');
+
+        $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
 
         $config = $this->getApplication()->getConfig();
         /** @var \Gush\Config $config */
@@ -64,6 +66,10 @@ EOF
         if (null === $baseBranch) {
             $baseBranch = $config->get('base') ?: 'master';
         }
+
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        $gitConfigHelper->ensureRemoteExists($org, $repo);
 
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
@@ -79,8 +85,8 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        $gitHelper->remoteUpdate($remote);
-        $gitHelper->checkout($remote.'/'.$baseBranch);
+        $gitHelper->remoteUpdate($org);
+        $gitHelper->checkout($org.'/'.$baseBranch);
         $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);
