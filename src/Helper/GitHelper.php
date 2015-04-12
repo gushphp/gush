@@ -199,6 +199,31 @@ class GitHelper extends Helper
     }
 
     /**
+     * @param string $remote Remote name or git-repository url
+     * @param string $branch
+     *
+     * @return bool
+     */
+    public function remoteBranchExists($remote, $branch)
+    {
+        $result = $this->processHelper->runCommand(['git', 'ls-remote', $remote], true);
+
+        return 1 === preg_match('#(?<=\s)'.preg_quote('refs/heads/'.$branch, '#').'(?!\w)#', $result);
+    }
+
+    /**
+     * @param string $branch
+     *
+     * @return bool
+     */
+    public function branchExists($branch)
+    {
+        $result = $this->processHelper->runCommand(['git', 'branch', '--list', $branch], true);
+
+        return 1 === preg_match('#'.preg_quote($branch, '#').'(?!\w)#', $result);
+    }
+
+    /**
      * @return string The vendor name
      */
     public function getVendorName()
