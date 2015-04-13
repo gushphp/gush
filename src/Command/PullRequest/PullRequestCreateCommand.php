@@ -12,8 +12,11 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Exception\UserException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TemplateFeature;
+use Gush\Helper\GitConfigHelper;
+use Gush\Helper\GitHelper;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -35,6 +38,12 @@ class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, Te
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Source Organization - source organization name (defaults to current)'
+            )
+            ->addOption(
+                'source-repo',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Source Repository - source Repository name (defaults to current)'
             )
             ->addOption(
                 'source-branch',
@@ -123,9 +132,11 @@ EOF
     {
         $org = $input->getOption('org');
         $issueNumber = $input->getOption('issue');
-        $sourceOrg = $input->getOption('source-org');
-        $sourceBranch = $input->getOption('source-branch');
         $template = $input->getOption('template');
+
+        $sourceOrg = $input->getOption('source-org');
+        $sourceRepo = $input->getOption('source-repo') ?: $input->getOption('repo') ;
+        $sourceBranch = $input->getOption('source-branch');
 
         $config = $this->getApplication()->getConfig();
         /** @var \Gush\Config $config */
@@ -157,8 +168,9 @@ EOF
                 sprintf('The source branch is "%s" on "%s".', $sourceBranch, $sourceOrg),
             ]
         );
-
         $styleHelper->newLine();
+
+        $this->guardRemoteBranchExist($sourceOrg, $sourceRepo, $sourceBranch, $input, $styleHelper);
 
         if (null === $issueNumber) {
             $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
@@ -178,9 +190,9 @@ EOF
                 $template
             );
         } elseif ($input->isInteractive() &&
-            $consoleStyle->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)
+            $styleHelper->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)
         ) {
-            $consoleStyle->error("Command aborted by user.");
+            $styleHelper->error("Command aborted by user.");
 
             return self::COMMAND_FAILURE;
         }
@@ -220,5 +232,58 @@ EOF
         $this->getHelper('gush_style')->success("Opened pull request {$pullRequest['html_url']}");
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function guardRemoteBranchExist($org, $repo, $branch, InputInterface $input, StyleHelper $styleHelper)
+    {
+        /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+
+        $gitUrl = $this->getAdapter()->getRepositoryInfo($org, $repo)['push_url'];
+
+        if ($gitHelper->remoteBranchExists($gitUrl, $branch)) {
+            return; // branch exists, continue
+        }
+
+        if ($gitHelper->branchExists($branch)) {
+            $gitConfigHelper->ensureRemoteExists($org, $repo);
+
+            // This ensures the connection is possible, but does not ensure access is granted.
+            $gitHelper->remoteUpdate($org);
+
+            if (!$input->isInteractive()) {
+                $gitHelper->pushToRemote($org, $branch, true);
+
+                $styleHelper->success(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
+
+                return ;
+            } else {
+                $styleHelper->note(
+                    [
+                        sprintf(
+                            'Branch "%s" does not exist in "%s/%s", but it does exist locally.',
+                            $branch,
+                            $org,
+                            $repo
+                        ),
+                        'You can push the branch now, but make sure you have push access and that your SSH agent is active.'
+                    ]
+                );
+
+                if ($styleHelper->confirm('Do you want to push the branch now?', true)) {
+                    $gitHelper->pushToRemote($org, $branch, true);
+
+                    $styleHelper->success(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
+
+                    return;
+                }
+            }
+        }
+
+        throw new UserException(
+            sprintf('Can not open pull-request, remote branch "%s" does not exist in "%s/%s".', $branch, $org, $repo)
+        );
     }
 }

@@ -37,7 +37,8 @@ class PullRequestCreateCommandTest extends BaseTestCase
         $this->config->has('table-pr')->willReturn(false);
 
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper());
+        $command->getHelperSet()->set($this->expectGitHelper('cordoval'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper());
 
         $tester->execute($args, ['interactive' => false]);
 
@@ -46,15 +47,14 @@ class PullRequestCreateCommandTest extends BaseTestCase
 Open request on gushphp/gush
 ============================
 
- // This pull-request will be opened on "gushphp/gush".
- // The source branch is "issue-145" on "cordoval".
+// This pull-request will be opened on "gushphp/gush".
+// The source branch is "issue-145" on "cordoval".
 
 
- [OK] Opened pull request $url
+[OK] Opened pull request $url
 RES;
 
-        $res = trim($tester->getDisplay(true));
-        $this->assertEquals($expected, $res);
+        $this->assertCommandOutputEquals($expected, $tester->getDisplay(true));
     }
 
     /**
@@ -70,6 +70,8 @@ RES;
         $this->config->has('table-pr')->willReturn(false);
 
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper());
+        $command->getHelperSet()->set($this->expectGitConfigHelper());
 
         $tester->execute($args, ['interactive' => false]);
 
@@ -78,14 +80,13 @@ RES;
 Open request on gushphp/gush
 ============================
 
- // This pull-request will be opened on "gushphp/gush".
- // The source branch is "issue-145" on "cordoval".
+// This pull-request will be opened on "gushphp/gush".
+// The source branch is "issue-145" on "cordoval".
 
- [OK] Opened pull request $url
+[OK] Opened pull request $url
 RES;
 
-        $res = trim($tester->getDisplay(true));
-        $this->assertEquals($expected, $res);
+        $this->assertCommandOutputEquals($expected, $tester->getDisplay(true));
     }
 
     /**
@@ -102,6 +103,7 @@ RES;
 
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
         $command->getHelperSet()->set($this->expectGitHelper());
+        $command->getHelperSet()->set($this->expectGitConfigHelper());
 
         $tester->execute($args, ['interactive' => false]);
 
@@ -123,14 +125,76 @@ RES;
         $this->config->has('table-pr')->willReturn(false);
 
         $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper());
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gush'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper(true, 'gushphp', 'gush'));
+
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
         $this->assertContains('Making PR from '.$args['--source-org'].':issue-145 to gushphp:master', $res);
     }
 
-    private function expectGitHelper()
+    /**
+     * @test
+     *
+     * @dataProvider provideCommand
+     */
+    public function automatically_pushes_when_none_interactive_and_opens_pull_request($args)
+    {
+        $this->expectsConfig();
+        $this->config->has('table-pr')->willReturn(false);
+
+        $args['--source-org'] = 'gushphp';
+        $args['--source-branch'] = 'not-my-branch';
+
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gush', 'not-my-branch'));
+        $command->getHelperSet()->set($this->expectGitConfigHelper(true, 'gushphp'));
+
+        $tester->execute($args, ['interactive' => false]);
+
+        $url = 'https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER;
+        $expected = <<<RES
+Open request on gushphp/gush
+============================
+
+// This pull-request will be opened on "gushphp/gush".
+// The source branch is "not-my-branch" on "gushphp".
+
+[OK] Branch "not-my-branch" was pushed to "gushphp".
+
+
+[OK] Opened pull request $url
+RES;
+
+        $this->assertCommandOutputEquals($expected, $tester->getDisplay(true));
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideCommand
+     */
+    public function errors_when_remote_branch_missing_and_no_local_exists($args)
+    {
+        $this->expectsConfig();
+        $this->config->has('table-pr')->willReturn(false);
+
+        $args['--source-branch'] = 'not-my-branch';
+
+        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
+        $command->getHelperSet()->set($this->expectGitHelper());
+        $command->getHelperSet()->set($this->expectGitConfigHelper());
+
+        $this->setExpectedException(
+            'Gush\Exception\UserException',
+            'Can not open pull-request, remote branch "not-my-branch" does not exist in "cordoval/gush".'
+        );
+
+        $tester->execute($args, ['interactive' => false]);
+    }
+
+    private function expectGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145')
     {
         $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
         $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
@@ -139,7 +203,35 @@ RES;
         $gitHelper->getFirstCommitTitle('master', 'issue-145')->willReturn('some good title');
         $gitHelper->getActiveBranchName()->willReturn('issue-145');
 
+        $gitHelper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
+        $gitHelper->remoteBranchExists('git@github.com:cordoval/gush.git', $branch)->willReturn(true);
+
+        $gitHelper->branchExists(Argument::any())->willReturn(false);
+        $gitHelper->branchExists($branch)->will(
+            function () use ($gitHelper, $sourceOrg, $sourceRepo, $branch) {
+                $gitHelper->remoteUpdate($sourceOrg)->shouldBeCalled();
+                $gitHelper->pushToRemote($sourceOrg, $branch, true)->shouldBeCalled();
+
+                return true;
+            }
+        );
+
         return $gitHelper->reveal();
+    }
+
+    private function expectGitConfigHelper($expected = false, $sourceOrg = 'cordoval', $sourceRepo = 'gush')
+    {
+        $gitConfigHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
+        $gitConfigHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitConfigHelper->getName()->willReturn('git_config');
+
+        if ($expected) {
+            $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepo)->shouldBeCalled();
+        } else {
+            $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepo)->shouldNotBeCalled();
+        }
+
+        return $gitConfigHelper->reveal();
     }
 
     public function provideCommand()
