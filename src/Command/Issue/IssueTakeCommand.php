@@ -30,6 +30,18 @@ class IssueTakeCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('issue:take')
             ->setDescription('Takes an issue')
+            ->addOption(
+                'source-org',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Source Organization for getting git branches - source organization name (defaults to value of --org)'
+            )
+            ->addOption(
+                'source-repo',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Source Organization - source organization name (defaults to value of --repo)'
+            )
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from')
             ->setHelp(
@@ -38,11 +50,15 @@ The <info>%command.name%</info> command takes an issue from issue tracker reposi
 
     <info>$ gush %command.name% 3</info>
 
-In practice this will add the organization as remote (if not registered already),
-then <comment>git checkout base_branch</comment> and create a new branch that is equal to the issue-number + title.
+In practice this will add the organization as remote (if not registered already), then
+<comment>git checkout base_branch</> and create a new branch that is equal to the issue-number + title.
+
+<comment>Note:</> This command assumes the issue-tracker and git repository share the same organization and repository-name.
+To target a specific git repository for the checkout use the the <comment>--source-org</> and <comment>--source-repo</>
+options. The <comment>--org</> and <comment>--repo</> options always apply to the issue-tracker.
 
 After you are done you can open a new pull-request using the <info>$ gush pull-request:create</info> command.
-<comment>Note:</comment> you must push the branch before opening a pull-request!
+<fg=red;options=bold>Remember that you must push the branch before opening a pull-request!</>
 
 EOF
             )
@@ -60,6 +76,9 @@ EOF
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
 
+        $sourceOrg = $input->getOption('source-org') ?: $org;
+        $sourceRepo = $input->getOption('source-repo') ?: $repo;
+
         $config = $this->getApplication()->getConfig();
         /** @var \Gush\Config $config */
 
@@ -69,7 +88,7 @@ EOF
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->ensureRemoteExists($org, $repo);
+        $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepo);
 
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
@@ -85,8 +104,8 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
 
-        $gitHelper->remoteUpdate($org);
-        $gitHelper->checkout($org.'/'.$baseBranch);
+        $gitHelper->remoteUpdate($sourceOrg);
+        $gitHelper->checkout($sourceOrg.'/'.$baseBranch);
         $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);

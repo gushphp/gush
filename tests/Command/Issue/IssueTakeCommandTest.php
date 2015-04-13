@@ -74,6 +74,36 @@ class IssueTakeCommandTest extends BaseTestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function takes_an_issue_with_specific_source_org_and_repo()
+    {
+        $this->expectsConfig();
+        $this->config->get('base')->willReturn('master');
+
+        $tester = $this->getCommandTester($command = new IssueTakeCommand());
+        $command->getHelperSet()->set($this->expectTextHelper());
+        $command->getHelperSet()->set($this->expectGitConfigHelper('gushphp-fork', 'gush-source'));
+        $command->getHelperSet()->set($this->expectGitHelper('gushphp-fork', 'gushphp-fork/master'));
+
+        $tester->execute(
+            [
+                '--org' => 'gushphp',
+                '--repo' => 'gush',
+                '--source-org' => 'gushphp-fork',
+                '--source-repo' => 'gush-source',
+                'issue_number' => TestAdapter::ISSUE_NUMBER,
+            ],
+            ['interactive' => false]
+        );
+
+        $this->assertEquals(
+            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
+            trim($tester->getDisplay(true))
+        );
+    }
+
     private function expectTextHelper()
     {
         $text = $this->prophet->prophesize('Gush\Helper\TextHelper');
