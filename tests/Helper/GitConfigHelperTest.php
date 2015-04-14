@@ -9,15 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Helper;
+namespace Gush\tests\Helper;
 
-use Gush\Helper\FilesystemHelper;
 use Gush\Helper\GitConfigHelper;
-use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
-use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
-use Prophecy\Prophet;
 
 final class GitConfigHelperTest extends \PHPUnit_Framework_TestCase
 {

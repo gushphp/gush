@@ -28,7 +28,7 @@ class RepositoryCreateCommand extends BaseCommand
             ->setDescription('Quickly spins a repository')
             ->addArgument('name', InputArgument::REQUIRED, 'Name of the new repository')
             ->addArgument('description', InputArgument::OPTIONAL, 'Repository description')
-            ->addArgument('homepage', InputArgument::OPTIONAL, 'Repository homepage' )
+            ->addArgument('homepage', InputArgument::OPTIONAL, 'Repository homepage')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command spins a repository:

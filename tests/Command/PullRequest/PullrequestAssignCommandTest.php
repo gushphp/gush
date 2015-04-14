@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\PullRequest;
+namespace Gush\tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestAssignCommand;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tests\Command\BaseTestCase;
 
-class PullRequestAssignCommandTest extends BaseTestCase
+class PullrequestAssignCommandTest extends BaseTestCase
 {
     /**
      * @test

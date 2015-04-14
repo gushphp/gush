@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\Release;
+namespace Gush\tests\Command\Release;
 
 use Gush\Command\Release\ReleaseListCommand;
 use Gush\Tests\Command\BaseTestCase;

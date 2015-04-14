@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\PullRequest;
+namespace Gush\tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestFixerCommand;
 use Gush\Tests\Command\BaseTestCase;

@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\PullRequest;
+namespace Gush\tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestMergeCommand;
 use Gush\Helper\GitConfigHelper;
@@ -17,7 +17,6 @@ use Gush\Helper\GitHelper;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Component\Console\Output\StreamOutput;
 
 class PullRequestMergeCommandTest extends BaseTestCase
 {

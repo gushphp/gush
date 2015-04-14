@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\Util;
+namespace Gush\tests\Command\Util;
 
 use Gush\Command\Util\VersionEyeCommand;
 use Gush\Tests\Command\BaseTestCase;

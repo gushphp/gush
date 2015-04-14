@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\Core;
+namespace Gush\tests\Command\Core;
 
 use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;

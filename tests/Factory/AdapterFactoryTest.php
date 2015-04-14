@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Factory;
+namespace Gush\tests\Factory;
 
 use Gush\Factory\AdapterFactory;
 

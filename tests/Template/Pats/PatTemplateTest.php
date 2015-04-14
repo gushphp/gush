@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Template\Pats;
+namespace Gush\tests\Template\Pats;
 
 use Gush\Template\Pats\PatTemplate;
 

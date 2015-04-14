@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Template\PullRequest\Create;
+namespace Gush\tests\Template\PullRequest\Create;
 
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
 
@@ -85,7 +85,7 @@ EOF
         $requirements = $this->template->getRequirements();
 
         foreach ($requirements as $key => $requirement) {
-            list ($prompt, $default) = $requirement;
+            list($prompt, $default) = $requirement;
             if (!isset($params[$key])) {
                 $params[$key] = $default;
             }

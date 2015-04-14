@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests;
+namespace Gush\tests;
 
 use Gush\Factory;
 use Symfony\Component\Process\Process;

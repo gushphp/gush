@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command;
+namespace Gush\tests\Command;
 
 use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;

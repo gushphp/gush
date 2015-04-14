@@ -29,7 +29,7 @@ class IssueListCommand extends BaseCommand implements TableFeature, GitRepoFeatu
         $this
             ->setName('issue:list')
             ->setDescription('List issues')
-            ->addOption('label', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY)
+            ->addOption('label', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY)
             ->addOption('milestone', null, InputOption::VALUE_REQUIRED)
             ->addOption('assignee', null, InputOption::VALUE_REQUIRED, 'Username assignee. None for unassigned.')
             ->addOption('creator', null, InputOption::VALUE_REQUIRED, 'The user that created the issue.')

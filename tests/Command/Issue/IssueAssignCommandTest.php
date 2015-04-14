@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\Issue;
+namespace Gush\tests\Command\Issue;
 
 use Gush\Command\Issue\IssueAssignCommand;
 use Gush\Tester\Adapter\TestAdapter;

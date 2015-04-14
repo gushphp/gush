@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Template\PullRequest\Create;
+namespace Gush\tests\Template\PullRequest\Create;
 
 use Gush\Config;
 use Gush\Template\PullRequest\Create\PullRequestCustomTemplate;
@@ -116,7 +116,7 @@ EOF
         $requirements = $this->template->getRequirements();
 
         foreach ($requirements as $key => $requirement) {
-            list (, $default) = $requirement;
+            list(, $default) = $requirement;
             if (!isset($params[$key])) {
                 $params[$key] = $default;
             }

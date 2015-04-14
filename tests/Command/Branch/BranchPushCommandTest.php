@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\Branch;
+namespace Gush\tests\Command\Branch;
 
 use Gush\Command\Branch\BranchPushCommand;
 use Gush\Tests\Command\BaseTestCase;

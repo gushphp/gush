@@ -9,10 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Helper;
+namespace Gush\tests\Helper;
 
 use Gush\Helper\TemplateHelper;
-use Prophecy\Argument;
 
 class TemplateHelperTest extends \PHPUnit_Framework_TestCase
 {

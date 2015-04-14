@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Subscriber;
+namespace Gush\tests\Subscriber;
 
 use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Command\Command;

@@ -43,19 +43,19 @@ class ReleaseCreateCommand extends BaseCommand implements GitRepoFeature
             ->addOption(
                 'asset-file',
                 null,
-                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Assets to include in this release'
             )
             ->addOption(
                 'asset-name',
                 null,
-                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Names corresponding to asset-files'
             )
             ->addOption(
                 'asset-content-type',
                 null,
-                InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Content types corresponding to asset-files (default: application/zip)'
             )
             ->addOption('replace', null, InputOption::VALUE_NONE, 'Replace any existing release with the same name')
