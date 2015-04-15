@@ -12,16 +12,12 @@
 namespace Gush\Command\Core;
 
 use Gush\Command\BaseCommand;
-use Gush\Exception\FileNotFoundException;
-use Gush\Exception\UserException;
 use Gush\Factory;
+use Gush\Factory\AdapterFactory;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
@@ -40,18 +36,6 @@ class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('core:configure')
             ->setDescription('Configure adapter credentials and the cache folder')
-            ->addOption(
-                'adapter',
-                'a',
-                InputOption::VALUE_OPTIONAL,
-                'What adapter should be used? (github, bitbucket, gitlab)'
-            )
-            ->addOption(
-                'issue_tracker',
-                'i',
-                InputOption::VALUE_OPTIONAL,
-                'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
-            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> configure settings Gush will use (including adapters and issue trackers):
@@ -70,11 +54,7 @@ EOF
     {
         try {
             $this->config = Factory::createConfig(true, false);
-        } catch (FileNotFoundException $exception) {
-            $this->config = Factory::createConfig(false, false);
-        } catch (\RuntimeException $exception) {
-            $this->getHelper('gush_style')->error(explode("\n", $exception->getMessage()));
-
+        } catch (\Exception $exception) {
             $this->config = Factory::createConfig(false, false);
         }
     }
@@ -86,10 +66,11 @@ EOF
     {
         $filename = $this->config->get('home_config');
 
-        $yaml    = new Yaml();
+        $yaml = new Yaml();
         $content = ['parameters' => $this->config->raw()];
 
         @unlink($filename);
+
         if (!@file_put_contents($filename, $yaml->dump($content), 0644)) {
             $output->writeln('<error>Configuration file cannot be saved.</error>');
         }
@@ -107,79 +88,17 @@ EOF
         $application = $this->getApplication();
         /** @var \Gush\Application $application */
 
-        $adapters = $application->getAdapterFactory()->getAdapters();
-        $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
-
-        $adapterName = $input->getOption('adapter');
-        $issueTrackerName = $input->getOption('issue_tracker');
+        $adapters = $application->getAdapterFactory()->all();
+        $labels = $this->getAdapterLabels($adapters);
 
         /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
-        if (null === $adapterName && null === $issueTrackerName) {
-            $adapterName = $styleHelper->askQuestion(
-                new ChoiceQuestion('Choose adapter: ', array_keys($adapters))
-            );
-        } elseif (null !== $adapterName && !array_key_exists($adapterName, $adapters)) {
-            throw new UserException(
-                sprintf(
-                    'The adapter "%s" is invalid. Available adapters are "%s"',
-                    $adapterName,
-                    implode('", "', array_keys($adapters))
-                )
-            );
-        }
+        $adapterName = $styleHelper->numberedChoice('Choose adapter', $labels);
 
-        if (null !== $adapterName) {
-            $this->configureAdapter($input, $output, $adapterName);
-
-            $currentDefault = $this->config->get('adapter');
-            if ($adapterName !== $currentDefault &&
-                $styleHelper->askQuestion(
-                    new ConfirmationQuestion(
-                        sprintf('Would you like to make "%s" the default adapter?', $adapterName),
-                        null === $currentDefault
-                    )
-                )
-            ) {
-                $this->config->merge(['adapter' => $adapterName]);
-            }
-        }
-
-        if (null === $issueTrackerName && null === $input->getOption('adapter')) {
-            $selection = array_search($adapterName, array_keys($issueTrackers), true);
-
-            if (false === $selection) {
-                $selection = null;
-            }
-
-            $issueTrackerName = $styleHelper->askQuestion(
-                new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $selection)
-            );
-        } elseif (null !== $issueTrackerName && !array_key_exists($issueTrackerName, $issueTrackers)) {
-            throw new UserException(
-                sprintf(
-                    'The issue tracker "%s" is invalid. Available adapters are "%s"',
-                    $issueTrackerName,
-                    implode('", "', array_keys($issueTrackers))
-                )
-            );
-        }
-
-        if (null !== $issueTrackerName) {
-            $this->configureAdapter($input, $output, $issueTrackerName, 'issue_trackers');
-
-            $currentDefault = $this->config->get('issue_tracker');
-            if ($issueTrackerName !== $currentDefault &&
-                $styleHelper->askQuestion(
-                    new ConfirmationQuestion(
-                        sprintf('Would you like to make "%s" the default issue tracker?', $issueTrackerName),
-                        null === $currentDefault
-                    )
-                )
-            ) {
-                $this->config->merge(['issue_tracker' => $issueTrackerName]);
-            }
+        if ('noop' !== $adapterName) {
+            $this->configureAdapter($input, $output, $adapterName, $adapters[$adapterName]);
+            $this->handleDefaulting($adapterName, $adapters[$adapterName]);
         }
 
         $cacheDir = $styleHelper->askQuestion(
@@ -222,12 +141,59 @@ EOF
         );
     }
 
-    private function configureAdapter(
-        InputInterface $input,
-        OutputInterface $output,
-        $adapterName,
-        $configName = 'adapters'
-    ) {
+    private function getAdapterLabels(array $adapters)
+    {
+        $labels = ['noop' => 'Nothing'];
+        $labelPattern = '%s (%s)';
+
+        foreach ($adapters as $adapterName => $adapter) {
+            $capabilities = [];
+
+            if ($adapter['supports_repository_manager']) {
+                $capabilities[] = 'RepositoryManager';
+            }
+
+            if ($adapter['supports_issue_tracker']) {
+                $capabilities[] = 'IssueTracker';
+            }
+
+            $labels[$adapterName] = sprintf($labelPattern, $adapter['label'], implode(', ', $capabilities));
+        }
+
+        return $labels;
+    }
+
+    private function handleDefaulting($adapterName, array $adapterInfo)
+    {
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+
+        $currentDefault = $this->config->get('adapter');
+
+        if ($adapterName !== $currentDefault && $adapterInfo[AdapterFactory::SUPPORT_REPOSITORY_MANAGER] &&
+            $styleHelper->confirm(
+                sprintf('Would you like to make "%s" the default repository manager?', $adapterInfo['label']),
+                null === $currentDefault
+            )
+        ) {
+            $this->config->merge(['adapter' => $adapterName]);
+        }
+
+        $currentIssueTracker = $this->config->get('issue_tracker');
+
+        if ($adapterName !== $currentIssueTracker &&
+            $adapterInfo[AdapterFactory::SUPPORT_ISSUE_TRACKER] &&
+            $styleHelper->confirm(
+                sprintf('Would you like to make "%s" the default issue tracker?', $adapterInfo['label']),
+                null === $currentDefault
+            )
+        ) {
+            $this->config->merge(['issue_tracker' => $adapterName]);
+        }
+    }
+
+    private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName, array $adapter)
+    {
         $application = $this->getApplication();
         /** @var \Gush\Application $application */
         $isAuthenticated = false;
@@ -237,50 +203,27 @@ EOF
         /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
-        if ('adapters' === $configName) {
-            $configurator = $application->getAdapterFactory()->createAdapterConfiguration(
-                $adapterName,
-                $application->getHelperSet()
-            );
-        } else {
-            $configurator = $application->getAdapterFactory()->createIssueTrackerConfiguration(
-                $adapterName,
-                $application->getHelperSet()
-            );
-        }
+        $configurator = $application->getAdapterFactory()->createConfigurator(
+            $adapterName,
+            $application->getHelperSet()
+        );
 
         while (!$isAuthenticated) {
             // Prevent endless loop with a broken test
             if ($authenticationAttempts > 50) {
-                $styleHelper->error('Too many attempts, aborting.');
-
-                break;
+                throw new \RuntimeException('Too many attempts, aborting.');
             }
 
             if ($authenticationAttempts > 0) {
                 $styleHelper->error('Authentication failed please try again.');
             }
 
-            $config = $configurator->interact($input, $output);
-
             try {
-                if ('adapters' !== $configName) {
-                    $isAuthenticated = $this->isIssueTrackerCredentialsValid($adapterName, $config);
-                } else {
-                    $isAuthenticated = $this->isAdapterCredentialsValid($adapterName, $config);
-                }
+                $config = $configurator->interact($input, $output);
+
+                $isAuthenticated = $this->isCredentialsValid($adapterName, $adapter, $config);
             } catch (\Exception $e) {
                 $styleHelper->error($e->getMessage());
-
-                if ('adapters' !== $configName) {
-                    $adapter = $this->getIssueTracker();
-                } else {
-                    $adapter = $this->getAdapter();
-                }
-
-                if (null !== $adapter && null !== $url = $adapter->getTokenGenerationUrl()) {
-                    $styleHelper->note(['You can create valid access tokens at: ', $url]);
-                }
             }
 
             $authenticationAttempts++;
@@ -288,28 +231,42 @@ EOF
 
         if ($isAuthenticated) {
             $rawConfig = $this->config->raw();
-            $rawConfig[$configName][$adapterName] = $config;
+
+            if ($adapter[AdapterFactory::SUPPORT_REPOSITORY_MANAGER]) {
+                $rawConfig['adapters'][$adapterName] = $config;
+            }
+
+            if ($adapter[AdapterFactory::SUPPORT_ISSUE_TRACKER]) {
+                $rawConfig['issue_trackers'][$adapterName] = $config;
+            }
 
             $this->config->merge($rawConfig);
         }
     }
 
-    private function isAdapterCredentialsValid($name, array $config)
+    /**
+     * @param string $name
+     * @param array  $adapter
+     * @param array  $config
+     *
+     * @return bool
+     */
+    private function isCredentialsValid($name, array $adapter, array $config)
     {
         $application = $this->getApplication();
         /** @var \Gush\Application $application */
         $application->setConfig($this->config);
-        $adapter = $application->buildAdapter($name, $config);
+
+        $factory = $application->getAdapterFactory();
+
+        if ($adapter[AdapterFactory::SUPPORT_REPOSITORY_MANAGER]) {
+            $adapter = $factory->createRepositoryManager($name, $config, $this->config);
+        } elseif ($adapter[AdapterFactory::SUPPORT_ISSUE_TRACKER]) {
+            $adapter = $factory->createIssueTracker($name, $config, $this->config);
+        }
+
+        $adapter->authenticate();
 
         return $adapter->isAuthenticated();
-    }
-
-    private function isIssueTrackerCredentialsValid($name, array $config)
-    {
-        $application = $this->getApplication();
-        /** @var \Gush\Application $application */
-        $issueTracker = $application->buildIssueTracker($name, $config);
-
-        return $issueTracker->isAuthenticated();
     }
 }

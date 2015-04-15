@@ -18,6 +18,7 @@ use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Exception\UserException;
 use Gush\Factory\AdapterFactory;
+use Gush\Factory\RepositoryManagerFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Subscriber\CommandEndSubscriber;
@@ -253,9 +254,9 @@ LOGO;
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-        if ('core:configure' !== $this->getCommandName($input)
-            && 'core:update' !== $this->getCommandName($input)
-        ) {
+        $commandName = $this->getCommandName($input);
+
+        if ('core:configure' !== $commandName && 'core:update' !== $commandName) {
             if (null === $this->config) {
                 $this->config = Factory::createConfig();
             }
@@ -317,14 +318,14 @@ LOGO;
         if (!$process->isSuccessful()) {
             throw new \RuntimeException(
                 'The adapter type could not be determined (no Git origin configured for this repository). '.
-                'Please run the "init" command.'
+                'Please run the "core:init" command.'
             );
         }
 
         $remoteUrl = strtolower($process->getOutput());
         $ignoredAdapters = [];
 
-        foreach (array_keys($this->getAdapterFactory()->getAdapters()) as $adapterName) {
+        foreach (array_keys($this->getAdapterFactory()->all()) as $adapterName => $adapterInfo) {
             $config = $this->config->get(sprintf('[adapters][%s]', $adapterName));
 
             // Adapter is not configured ignore
@@ -334,7 +335,11 @@ LOGO;
                 continue;
             }
 
-            $adapter = $this->adapterFactory->createAdapter(
+            if (!$adapterInfo[AdapterFactory::SUPPORT_REPOSITORY_MANAGER]) {
+                continue;
+            }
+
+            $adapter = $this->adapterFactory->createRepositoryManager(
                 $adapterName,
                 $config,
                 $this->config
@@ -353,9 +358,9 @@ LOGO;
                 implode('", "', $ignoredAdapters)
             );
 
-            $exceptionMessage .= ' Please configure the adapters or run the "init" command.';
+            $exceptionMessage .= ' Please configure the adapters or run the "core:init" command.';
         } else {
-            $exceptionMessage .= ' Please run the "init" command.';
+            $exceptionMessage .= ' Please run the "core:init" command.';
         }
 
         throw new \RuntimeException($exceptionMessage);
@@ -387,7 +392,7 @@ LOGO;
                 );
             }
 
-            $adapter = $this->adapterFactory->createAdapter(
+            $adapter = $this->adapterFactory->createRepositoryManager(
                 $adapter,
                 $config,
                 $this->config

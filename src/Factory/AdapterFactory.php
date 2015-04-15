@@ -22,32 +22,26 @@ use Symfony\Component\Console\Helper\HelperSet;
  */
 class AdapterFactory
 {
+    const SUPPORT_REPOSITORY_MANAGER = 'supports_repository_manager';
+    const SUPPORT_ISSUE_TRACKER = 'supports_issue_tracker';
+
     /**
-     * @var array[]
+     * @var object|string[]
      */
     private $adapters = [];
 
     /**
-     * @var array[]
+     * @param string        $name
+     * @param string        $label
+     * @param object|string $adapterFactory
      */
-    private $issueTrackers = [];
-
-    /**
-     * @param string   $name
-     * @param callback $adapterFactory
-     * @param callback $adapterConfigurator
-     *
-     * @return AdapterFactory
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function registerAdapter($name, $adapterFactory, $adapterConfigurator)
+    public function register($name, $label, $adapterFactory)
     {
         if (isset($this->adapters[$name])) {
             throw new \InvalidArgumentException(sprintf('An adapter with name "%s" is already registered.', $name));
         }
 
-        $this->adapters[$name] = [$adapterFactory, $adapterConfigurator];
+        $this->adapters[$name] = $this->guardFactoryClassImplementation($adapterFactory, $label);
     }
 
     /**
@@ -57,7 +51,7 @@ class AdapterFactory
      *
      * @return bool
      */
-    public function hasAdapter($name)
+    public function has($name)
     {
         return isset($this->adapters[$name]);
     }
@@ -67,55 +61,13 @@ class AdapterFactory
      *
      * @return array[]
      */
-    public function getAdapters()
+    public function all()
     {
         return $this->adapters;
     }
 
     /**
-     * @param string   $name
-     * @param callback $issueTrackerFactory
-     * @param callback $issueTrackerConfigurator
-     *
-     * @return AdapterFactory
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function registerIssueTracker($name, $issueTrackerFactory, $issueTrackerConfigurator)
-    {
-        if (isset($this->issueTrackers[$name])) {
-            throw new \InvalidArgumentException(
-                sprintf('An issue tracker with name "%s" is already registered.', $name)
-            );
-        }
-
-        $this->issueTrackers[$name] = [$issueTrackerFactory, $issueTrackerConfigurator];
-    }
-
-    /**
-     * Returns whether issue tracker by name is registered.
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasIssueTracker($name)
-    {
-        return isset($this->issueTrackers[$name]);
-    }
-
-    /**
-     * Returns the registered issue trackers.
-     *
-     * @return array[]
-     */
-    public function getIssueTrackers()
-    {
-        return $this->issueTrackers;
-    }
-
-    /**
-     * Creates a new Adapter object with the given configuration.
+     * Creates a new RepositoryManager (Adapter object) with the given configuration.
      *
      * @param string $name
      * @param array  $adapterConfig
@@ -126,26 +78,38 @@ class AdapterFactory
      * @throws \InvalidArgumentException
      * @throws \LogicException
      */
-    public function createAdapter($name, array $adapterConfig, Config $globalConfig)
+    public function createRepositoryManager($name, array $adapterConfig, Config $globalConfig)
     {
-        if (!isset($this->adapters[$name])) {
-            throw new \InvalidArgumentException(
-                sprintf('No Adapter with name "%s" is registered.', $name)
-            );
+        $factory = $this->getFactoryObject($name);
+
+        if (!$factory instanceof RepositoryManagerFactory) {
+            throw new \LogicException(sprintf('Adapter %s does not support repository-management.', $name));
         }
 
-        $adapter = $this->adapters[$name][0]($adapterConfig, $globalConfig);
+        return $factory->createRepositoryManager($adapterConfig, $globalConfig);
+    }
 
-        if (!$adapter instanceof Adapter) {
-            throw new \LogicException(
-                sprintf(
-                    'Adapter-Factory callback should return a Gush\Adapter\Adapter instance, got "%s"',
-                    is_object($adapter) ? get_class($adapter) : gettype($adapter)
-                )
-            );
+    /**
+     * Creates a new IssueTracker (IssueTracker object) with the given configuration.
+     *
+     * @param string $name
+     * @param array  $adapterConfig
+     * @param Config $globalConfig
+     *
+     * @return IssueTracker
+     *
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     */
+    public function createIssueTracker($name, array $adapterConfig, Config $globalConfig)
+    {
+        $factory = $this->getFactoryObject($name);
+
+        if (!$factory instanceof IssueTrackerFactory) {
+            throw new \LogicException(sprintf('Adapter %s does not support issue-tracking.', $name));
         }
 
-        return $adapter;
+        return $factory->createIssueTracker($adapterConfig, $globalConfig);
     }
 
     /**
@@ -155,97 +119,57 @@ class AdapterFactory
      * @param HelperSet $helperSet HelperSet object
      *
      * @return Configurator
+     */
+    public function createConfigurator($name, HelperSet $helperSet)
+    {
+        return $this->getFactoryObject($name)->createConfigurator($helperSet);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return IssueTrackerFactory|RepositoryManagerFactory
      *
      * @throws \InvalidArgumentException
-     * @throws \LogicException
      */
-    public function createAdapterConfiguration($name, HelperSet $helperSet)
+    private function getFactoryObject($name)
     {
         if (!isset($this->adapters[$name])) {
-            throw new \InvalidArgumentException(
-                sprintf('No Adapter with name "%s" is registered.', $name)
-            );
+            throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $name));
         }
 
-        $configurator = $this->adapters[$name][1]($helperSet);
+        if (!is_object($this->adapters[$name]['factory'])) {
+            $factory = $this->adapters[$name]['factory'];
 
-        if (!$configurator instanceof Configurator) {
-            throw new \LogicException(
-                sprintf(
-                    'Configurator-Factory callback should return a Gush\Adapter\Configurator instance, got "%s"',
-                    is_object($configurator) ? get_class($configurator) : gettype($configurator)
-                )
-            );
+            $this->adapters[$name]['factory'] = new $factory();
         }
 
-        return $configurator;
+        return $this->adapters[$name]['factory'];
     }
 
-    /**
-     * Creates a new IssueTracker object with the given configuration.
-     *
-     * @param string $name
-     * @param array  $issueTrackerConfig
-     * @param Config $globalConfig
-     *
-     * @return IssueTracker
-     *
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     */
-    public function createIssueTracker($name, array $issueTrackerConfig, Config $globalConfig)
+    private function guardFactoryClassImplementation($adapterFactory, $label)
     {
-        if (!isset($this->issueTrackers[$name])) {
+        $adapterFactoryClass = is_object($adapterFactory) ? get_class($adapterFactory) : $adapterFactory;
+        $classImplements = class_implements($adapterFactoryClass);
+
+        $repositoryManager = in_array('Gush\Factory\RepositoryManagerFactory', $classImplements, true);
+        $issueTracker = in_array('Gush\Factory\IssueTrackerFactory', $classImplements, true);
+
+        if (!$repositoryManager && !$issueTracker) {
             throw new \InvalidArgumentException(
-                sprintf('No IssueTracker with name "%s" is registered.', $name)
-            );
-        }
-
-        $issueTracker = $this->issueTrackers[$name][0]($issueTrackerConfig, $globalConfig);
-
-        if (!$issueTracker instanceof IssueTracker) {
-            throw new \LogicException(
                 sprintf(
-                    'IssueTracker-Factory callback should returns a Gush\Adapter\IssueTracker instance, got "%s"',
-                    is_object($issueTracker) ? get_class($issueTracker) : gettype($issueTracker)
+                    'AdapterFactory class "%s" should implement "Gush\Factory\RepositoryManagerFactory" and/or '.
+                    '"Gush\Factory\IssueTrackerFactory".',
+                    $adapterFactoryClass
                 )
             );
         }
 
-        return $issueTracker;
-    }
-
-    /**
-     * Creates a new Configurator instance for the given issue tracker.
-     *
-     * @param string    $name      Name of the issue tracker (must be registered)
-     * @param HelperSet $helperSet HelperSet object
-     *
-     * @return Configurator
-     *
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     */
-    public function createIssueTrackerConfiguration($name, HelperSet $helperSet)
-    {
-        if (!isset($this->issueTrackers[$name])) {
-            throw new \InvalidArgumentException(
-                sprintf('No issue tracker with name "%s" is registered.', $name)
-            );
-        }
-
-        $configurator = $this->issueTrackers[$name][1]($helperSet);
-
-        if (!$configurator instanceof Configurator) {
-            throw new \LogicException(
-                sprintf(
-                    'IssueTracker configurator-Factory callback should return a Gush\Adapter\Configurator instance,'.
-                    'got "%s"',
-                    is_object($configurator) ? get_class($configurator) : gettype($configurator)
-                )
-            );
-        }
-
-        return $configurator;
+        return [
+            'factory' => $adapterFactory,
+            'label' => $label,
+            self::SUPPORT_REPOSITORY_MANAGER => $repositoryManager,
+            self::SUPPORT_ISSUE_TRACKER => $issueTracker,
+        ];
     }
 }

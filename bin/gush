@@ -13,6 +13,8 @@
 require __DIR__.'/../src/bootstrap.php';
 
 use Gush\Adapter;
+use Gush\Factory\LegacyAdapterFactory;
+use Gush\Factory\LegacyIssueTrackerFactory;
 
 error_reporting(-1);
 ini_set('display_errors', 1);
@@ -32,43 +34,16 @@ if (version_compare($version, '1.9.1', 'lt')) {
 $adapterFactory = new Gush\Factory\AdapterFactory();
 
 $adapters = [
-    'github' => 'Gush\Adapter\GitHubFactory',
-    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
-    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
-    'gitlab' => 'Gush\Adapter\GitLabFactory',
+    'github' => [new LegacyAdapterFactory('Gush\Adapter\GitHubFactory'), 'GitHub'],
+    'github_enterprise' => [new LegacyAdapterFactory('Gush\Adapter\GitHubEnterpriseFactory'), 'GitHub Enterprise'],
+    'bitbucket' => [new LegacyAdapterFactory('Gush\Adapter\BitbucketFactory'), 'Bitbucket'],
+    'gitlab' => [new LegacyAdapterFactory('Gush\Adapter\GitLabFactory'), 'GitLab'],
+    'jira' => [new LegacyIssueTrackerFactory('Gush\Adapter\JiraFactory'), 'Jira'],
+    'jira_enterprise' => [new LegacyIssueTrackerFactory('Gush\Adapter\JiraEnterpriseFactory'), 'Jira Enterprise'],
 ];
 
-foreach ($adapters as $adapterName => $factoryClass) {
-    if (!class_exists($factoryClass)) {
-        continue;
-    }
-
-    $adapterFactory->registerAdapter(
-        $adapterName,
-        [$factoryClass, 'createAdapter'],
-        [$factoryClass, 'createAdapterConfigurator']
-    );
-}
-
-$issueTrackers = [
-    'github' => 'Gush\Adapter\GitHubFactory',
-    'github_enterprise' => 'Gush\Adapter\GitHubEnterpriseFactory',
-    'bitbucket' => 'Gush\Adapter\BitbucketFactory',
-    'gitlab' => 'Gush\Adapter\GitLabFactory',
-    'jira' => 'Gush\Adapter\JiraFactory',
-    'jira_enterprise' => 'Gush\Adapter\JiraEnterpriseFactory',
-];
-
-foreach ($issueTrackers as $trackerName => $factoryClass) {
-    if (!class_exists($factoryClass)) {
-        continue;
-    }
-
-    $adapterFactory->registerIssueTracker(
-        $trackerName,
-        [$factoryClass, 'createIssueTracker'],
-        [$factoryClass, 'createIssueTrackerConfigurator']
-    );
+foreach ($adapters as $adapterName => $adapter) {
+    $adapterFactory->register($adapterName, $adapter[1], $adapter[0]);
 }
 
 (new Gush\Application($adapterFactory))->run();

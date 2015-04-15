@@ -256,6 +256,46 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
     }
 
     /**
+     * NumberedChoice works the same as a normal choice but
+     * prompts for a numbered list of options.
+     *
+     * $choices:
+     * * key0: Label1
+     * * key1: Label2
+     * * key2: Label3
+     *
+     * Shows:
+     * * [0]: Label1
+     * * [1]: Label2
+     * * [2]: Label3
+     *
+     * When option 0 is selected key0 is returned (instead of Label1).
+     *
+     * @param string          $question
+     * @param array           $choices
+     * @param string|int|null $default Default selection (by key)
+     *
+     * @return string|int|null
+     */
+    public function numberedChoice($question, array $choices, $default = null)
+    {
+        $labelKey = [];
+        $labels = [];
+
+        foreach ($choices as $key => $label) {
+            $labelKey[$label] = $key;
+            $labels[] = $label;
+        }
+
+        if (null !== $default) {
+            $values = array_flip($labelKey);
+            $default = $values[$default];
+        }
+
+        return $labelKey[$this->choice($question, $labels, $default)];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function progressStart($max = 0)
