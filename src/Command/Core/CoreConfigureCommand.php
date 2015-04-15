@@ -95,11 +95,20 @@ EOF
         $styleHelper = $this->getHelper('gush_style');
 
         $styleHelper->title('Gush configuration');
+        $styleHelper->text(
+            [
+                'The <info>core:configure</info> command will help to configure Gush for usage.',
+                'Your authentication credentials are never stored in the local Git repository.',
+            ]
+        );
+        $styleHelper->newLine();
+
         $styleHelper->section('Adapter configuration');
         $styleHelper->text(
             [
-                'Gush uses adapter for repository-management and issue-tracking.',
-                'Adapters starting with "<info>*</info>" are already configured.'
+                'Gush uses adapters for repository-management and issue-tracking.',
+                'Adapters displayed with a "<info>*</info>" are already configured.',
+                'You are recommended to not skip this step if you configure Gush for the first time.'
             ]
         );
         $styleHelper->newLine();
@@ -111,44 +120,30 @@ EOF
             $this->handleDefaulting($adapterName, $adapters[$adapterName]);
         }
 
-        $cacheDir = $styleHelper->askQuestion(
-            (new Question(
-                "Cache folder [{$this->config->get('cache-dir')}]: ",
-                $this->config->get('cache-dir')
-            ))->setValidator(
-                function ($dir) {
-                    if (!is_dir($dir)) {
-                        throw new \InvalidArgumentException('Cache folder does not exist.');
-                    }
-
-                    if (!is_writable($dir)) {
-                        throw new \InvalidArgumentException('Cache folder is not writable.');
-                    }
-
-                    return $dir;
-                }
-            )
-        );
-
-        $versionEyeToken = $styleHelper->askQuestion(
-            (new Question('VersionEye token: ', 'NO_TOKEN'))
-                ->setValidator(
-                    function ($field) {
-                        if (empty($field)) {
-                            throw new \InvalidArgumentException('This field cannot be empty.');
-                        }
-
-                        return $field;
-                    }
-                )
-        );
-
-        $this->config->merge(
+        $styleHelper->section('VersionEye configuration');
+        $styleHelper->text(
             [
-                'cache-dir' => $cacheDir,
-                'versioneye-token' => $versionEyeToken,
+                'VersionEye is a 3rd party service that helps to keep your Composer dependencies up-to-date.',
+                'To use this feature you must first get an API token from: https://www.versioneye.com/settings/api',
+                'The API token is only used for the <info>version-eye:check</info> command.',
+                '',
+                "If you don't want to this service use 'NO_TOKEN' as token."
             ]
         );
+
+        $versionEyeToken = $styleHelper->ask(
+            'VersionEye token',
+            $this->config->get('versioneye-token') ?: 'NO_TOKEN',
+            function ($field) {
+                if (empty($field)) {
+                    throw new \InvalidArgumentException('This field cannot be empty.');
+                }
+
+                return $field;
+            }
+        );
+
+        $this->config->merge(['versioneye-token' => $versionEyeToken]);
     }
 
     private function getAdapterLabels(array $adapters)
