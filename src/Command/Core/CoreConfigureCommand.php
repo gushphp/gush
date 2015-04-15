@@ -94,6 +94,16 @@ EOF
         /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
+        $styleHelper->title('Gush configuration');
+        $styleHelper->section('Adapter configuration');
+        $styleHelper->text(
+            [
+                'Gush uses adapter for repository-management and issue-tracking.',
+                'Adapters starting with "<info>*</info>" are already configured.'
+            ]
+        );
+        $styleHelper->newLine();
+
         $adapterName = $styleHelper->numberedChoice('Choose adapter', $labels);
 
         if ('noop' !== $adapterName) {
@@ -143,8 +153,8 @@ EOF
 
     private function getAdapterLabels(array $adapters)
     {
-        $labels = ['noop' => 'Nothing'];
-        $labelPattern = '%s (%s)';
+        $labels = ['noop' => '  Nothing (skip selection)'];
+        $labelPattern = '%s %s (%s)';
 
         foreach ($adapters as $adapterName => $adapter) {
             $capabilities = [];
@@ -157,7 +167,16 @@ EOF
                 $capabilities[] = 'IssueTracker';
             }
 
-            $labels[$adapterName] = sprintf($labelPattern, $adapter['label'], implode(', ', $capabilities));
+            $isConfigured =
+                $this->config->has(sprintf('[adapters][%s]', $adapterName)) ||
+                $this->config->has(sprintf('[issue_trackers][%s]', $adapterName));
+
+            $labels[$adapterName] = sprintf(
+                $labelPattern,
+                $isConfigured ? '<info>*</info>' : ' ',
+                $adapter['label'],
+                implode(', ', $capabilities)
+            );
         }
 
         return $labels;
