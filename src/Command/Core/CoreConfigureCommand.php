@@ -113,11 +113,20 @@ EOF
         );
         $styleHelper->newLine();
 
-        $adapterName = $styleHelper->numberedChoice('Choose adapter', $labels);
+        // Run in a loop to allow multiple selection
+        while (true) {
+            $adapterName = $styleHelper->numberedChoice('Choose adapter', $labels);
 
-        if ('noop' !== $adapterName) {
+            if ('noop' === $adapterName) {
+                break;
+            }
+
             $this->configureAdapter($input, $output, $adapterName, $adapters[$adapterName]);
             $this->handleDefaulting($adapterName, $adapters[$adapterName]);
+
+            if (!$styleHelper->confirm('Do you want to configure other adapters?', false)) {
+                break;
+        }
         }
 
         $styleHelper->section('VersionEye configuration');
@@ -253,6 +262,8 @@ EOF
             if ($adapter[AdapterFactory::SUPPORT_ISSUE_TRACKER]) {
                 $rawConfig['issue_trackers'][$adapterName] = $config;
             }
+
+            $styleHelper->success(sprintf('The "%s" adapter was successfully authenticated.', $adapter['label']));
 
             $this->config->merge($rawConfig);
         }
