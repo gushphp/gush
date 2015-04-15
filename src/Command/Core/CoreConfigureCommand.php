@@ -16,6 +16,7 @@ use Gush\Factory;
 use Gush\Factory\AdapterFactory;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\StyleHelper;
+use Guzzle\Http\Exception\ServerErrorResponseException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -85,8 +86,8 @@ EOF
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $application = $this->getApplication();
         /** @var \Gush\Application $application */
+        $application = $this->getApplication();
 
         $adapters = $application->getAdapterFactory()->all();
         $labels = $this->getAdapterLabels($adapters);
@@ -143,12 +144,26 @@ EOF
         $versionEyeToken = $styleHelper->ask(
             'VersionEye token',
             $this->config->get('versioneye-token') ?: 'NO_TOKEN',
-            function ($field) {
-                if (empty($field)) {
+            function ($token) use ($application) {
+                if ('' === trim($token)) {
                     throw new \InvalidArgumentException('This field cannot be empty.');
                 }
 
-                return $field;
+                if ('NO_TOKEN' !== $token) {
+                    $versionEyeClient = $application->buildVersionEyeClient($token);
+
+                    try {
+                        $versionEyeClient->get('/api/v2/projects')->send();
+                    } catch (ServerErrorResponseException $e) {
+                        if (false !== strrpos($e->getResponse()->getBody(), 'API token not valid.')) {
+                            throw new \InvalidArgumentException('API token not valid.');
+                        }
+
+                        throw new \InvalidArgumentException('API error: '.$e->getResponse()->getBody());
+                    }
+                }
+
+                return $token;
             }
         );
 

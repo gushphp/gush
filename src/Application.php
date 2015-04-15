@@ -427,9 +427,12 @@ LOGO;
         return $issueTracker;
     }
 
-    protected function buildVersionEyeClient()
+    public function buildVersionEyeClient($versionEyeToken = null)
     {
-        $versionEyeToken = $this->config->get('versioneye-token');
+        if (null === $versionEyeToken) {
+            $versionEyeToken = (string) $this->config->get('versioneye-token');
+        }
+
         $client = new GuzzleClient();
         $client->setBaseUrl('https://www.versioneye.com');
         $client->setDefaultOption('query', ['api_key' => $versionEyeToken]);
