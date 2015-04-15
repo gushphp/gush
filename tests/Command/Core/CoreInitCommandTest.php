@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests\Command\Core;
+namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
 use Gush\Tester\QuestionToken;

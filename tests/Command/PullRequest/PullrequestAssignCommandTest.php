@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests\Command\PullRequest;
+namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestAssignCommand;
 use Gush\Tester\Adapter\TestAdapter;

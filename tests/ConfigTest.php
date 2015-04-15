@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests;
+namespace Gush\Tests;
 
 use Github\Client;
 use Gush\Config;

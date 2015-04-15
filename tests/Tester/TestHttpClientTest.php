@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests\Tester;
+namespace Gush\Tests\Tester;
 
 use Gush\Tester\HttpClient\TestHttpClient;
 

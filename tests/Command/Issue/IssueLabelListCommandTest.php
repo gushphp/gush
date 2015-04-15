@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests\Command\Issue;
+namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueLabelListCommand;
 use Gush\Tests\Command\BaseTestCase;
