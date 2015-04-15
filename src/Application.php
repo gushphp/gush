@@ -14,6 +14,10 @@ namespace Gush;
 use Gush\Adapter\Adapter;
 use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
+
+use Gush\Command\Handler\BranchDeleteCommandHandler;
+use Gush\Event\GushEvents;
+
 use Gush\Exception\UserException;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
@@ -35,6 +39,9 @@ use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+
+use Symfony\Component\Process\ProcessBuilder;
+use Webmozart\Console\Adapter\CommandAdapter;
 
 class Application extends BaseApplication
 {
@@ -336,7 +343,7 @@ LOGO;
             new Cmd\Issue\LabelIssuesCommand(),
             new Cmd\Branch\BranchPushCommand(),
             new Cmd\Branch\BranchSyncCommand(),
-            new Cmd\Branch\BranchDeleteCommand(),
+            new CommandAdapter(new MozartCommand($branchDeleteConfig), $this),
             new Cmd\Branch\BranchForkCommand(),
             new Cmd\Branch\BranchChangelogCommand(),
             new Cmd\Branch\BranchRemoteAddCommand(),
