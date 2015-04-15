@@ -14,12 +14,13 @@ namespace Gush\Command\Branch;
 use Gush\Command\BaseCommand;
 use Gush\Exception\UserException;
 use Gush\Feature\GitRepoFeature;
+
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BranchDeleteCommand extends BaseCommand implements GitRepoFeature
+class BranchDeleteCommandConfig
 {
     /**
      * {@inheritdoc}

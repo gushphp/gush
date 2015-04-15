@@ -42,6 +42,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 use Symfony\Component\Process\ProcessBuilder;
 use Webmozart\Console\Adapter\CommandAdapter;
+use Webmozart\Console\Api\Command\Command as MozartCommand;
 
 class Application extends BaseApplication
 {
