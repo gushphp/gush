@@ -63,6 +63,7 @@ return Symfony\CS\Config\Config::create()
             'single_array_no_trailing_comma',
             'whitespacy_lines',
             // 'strict',
+            '-psr0',
         ]
     )
     ->finder($finder)
