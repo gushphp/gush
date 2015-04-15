@@ -23,7 +23,9 @@
         "gushphp/gush-github-adapter": "~2.0@dev",
         "gushphp/gush-bitbucket-adapter": "~2.0@dev",
         "gushphp/gush-gitlab-adapter": "~2.0@dev",
-        "gushphp/gush-jira-adapter": "~2.0@dev"
+        "gushphp/gush-jira-adapter": "~2.0@dev",
+        "webmozart/console": "dev-master@dev",
+        "webmozart/assert": "~1.0@dev"
     },
     "require-dev": {
         "raulfraile/ladybug": "~1.0.8",
