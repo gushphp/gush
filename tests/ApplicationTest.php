@@ -16,7 +16,9 @@ use Gush\Application;
 use Gush\Config;
 use Gush\Factory\AdapterFactory;
 use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tester\Adapter\TestAdapterFactory;
 use Gush\Tester\Adapter\TestIssueTracker;
+use Gush\Tester\Adapter\TestIssueTrackerFactory;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
@@ -47,36 +49,9 @@ EOT
     {
         $config = new Config();
         $adapterFactory = new AdapterFactory();
-
-        $adapterFactory->registerAdapter(
-            'github',
-            function () {
-                return new TestAdapter();
-            },
-            function ($helperSet) {
-                return new DefaultConfigurator(
-                    $helperSet->get('question'),
-                    'GitHub',
-                    'https://api.github.com/',
-                    'https://github.com'
-                );
-            }
-        );
-
-        $adapterFactory->registerIssueTracker(
-            'github',
-            function () {
-                return new TestIssueTracker();
-            },
-            function ($helperSet) {
-                return new DefaultConfigurator(
-                    $helperSet->get('question'),
-                    'GitHub IssueTracker',
-                    'https://api.github.com/',
-                    'https://github.com'
-                );
-            }
-        );
+        $adapterFactory->register('github', 'GitHub', new TestAdapterFactory());
+        $adapterFactory->register('github_enterprise', 'GitHub Enterprise', new TestAdapterFactory());
+        $adapterFactory->register('jira', 'Jira', new TestIssueTrackerFactory());
 
         $this->application = new TestableApplication($adapterFactory);
         $this->application->setConfig($config);

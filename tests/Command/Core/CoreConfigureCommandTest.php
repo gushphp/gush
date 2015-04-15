@@ -13,9 +13,12 @@ namespace Gush\Tests\Command\Core;
 
 use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;
+use Gush\Factory\AdapterFactory;
+use Gush\Tester\Adapter\TestConfigurator;
 use Gush\Tester\QuestionToken;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -24,110 +27,48 @@ use Symfony\Component\Yaml\Yaml;
 
 class CoreConfigureCommandTest extends BaseTestCase
 {
-    const PASSWORD = 'foo';
-    const TOKEN = 'foo';
-    const USERNAME = 'bar';
     const VERSIONEYE_TOKEN = 'token';
 
-    const ADAPTER_ONLY = 1;
-    const ADAPTER_AND_TRACKER = 2;
-    const TRACKER_ONLY = 3;
-    const NEITHER_ADAPTER_NOR_TRACKER = 4;
-
     /**
      * @test
      */
-    public function core_configure_without_options_passed()
+    public function core_configure()
     {
         if (!$homeDir = getenv('GUSH_HOME')) {
             $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
         }
 
         $gushFilename = $homeDir.'/.gush.yml';
+
         $expected = [
             'parameters' => [
                 'cache-dir' => $homeDir.'/cache',
                 'adapters' => [
-                    'github_enterprise' => [
+                    'github' => [
                         'authentication' => [
                             'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
-                            'username' => self::USERNAME,
-                            'password-or-token' => self::PASSWORD,
+                            'username' => TestConfigurator::USERNAME,
+                            'password-or-token' => TestConfigurator::PASSWORD,
                         ],
-                        'base_url' => 'https://company.com/api/v3/',
-                        'repo_domain_url' => 'https://company.com',
+                        'base_url' => 'https://api.github.com/',
+                        'repo_domain_url' => 'https://github.com',
                     ],
                 ],
                 'issue_trackers' => [
-                    'jira' => [
-                        'authentication' => [
-                            'http-auth-type' => Client::AUTH_HTTP_TOKEN,
-                            'username' => self::USERNAME,
-                            'password-or-token' => self::TOKEN,
-                        ],
-                        'base_url' => 'https://jira.company.com/api/v2/',
-                        'repo_domain_url' => 'https://jira.company.com/',
-                    ],
-                ],
-                'home' => $homeDir,
-                'home_config' => $homeDir.'/.gush.yml',
-                'adapter' => 'github_enterprise',
-                'issue_tracker' => 'jira',
-                'versioneye-token' => self::VERSIONEYE_TOKEN,
-            ]
-        ];
-
-        @mkdir($homeDir, 0777, true);
-
-        if (file_exists($gushFilename)) {
-            unlink($gushFilename);
-        }
-
-        $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $this->expectDialogParameters($command->getHelperSet(), $homeDir, self::NEITHER_ADAPTER_NOR_TRACKER);
-
-        $tester->execute(
-            [
-                'command' => 'core:configure',
-            ],
-            [
-                'interactive' => true,
-            ]
-        );
-
-        $this->assertFileExists($gushFilename);
-
-        $this->assertEquals($expected, Yaml::parse($gushFilename));
-    }
-
-    /**
-     * @test
-     */
-    public function core_configure_with_only_adapter_passed()
-    {
-        if (!$homeDir = getenv('GUSH_HOME')) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
-        }
-
-        $gushFilename = $homeDir.'/.gush.yml';
-        $expected = [
-            'parameters' => [
-                'cache-dir' => $homeDir.'/cache',
-                'adapters' => [
-                    'github_enterprise' => [
+                    'github' => [
                         'authentication' => [
                             'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
-                            'username' => self::USERNAME,
-                            'password-or-token' => self::PASSWORD,
+                            'username' => TestConfigurator::USERNAME,
+                            'password-or-token' => TestConfigurator::PASSWORD,
                         ],
-                        'base_url' => 'https://company.com/api/v3/',
-                        'repo_domain_url' => 'https://company.com',
+                        'base_url' => 'https://api.github.com/',
+                        'repo_domain_url' => 'https://github.com',
                     ],
                 ],
-                'issue_trackers' => [],
                 'home' => $homeDir,
                 'home_config' => $homeDir.'/.gush.yml',
-                'adapter' => 'github_enterprise',
+                'adapter' => 'github',
+                'issue_tracker' => 'github',
                 'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
@@ -139,12 +80,11 @@ class CoreConfigureCommandTest extends BaseTestCase
         }
 
         $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $this->expectDialogParameters($command->getHelperSet(), $homeDir, self::ADAPTER_ONLY);
+        $this->expectDialogParameters($command->getHelperSet(), $command);
 
         $tester->execute(
             [
                 'command' => 'core:configure',
-                '--adapter' => 'github_enterprise',
             ],
             [
                 'interactive' => true,
@@ -152,224 +92,32 @@ class CoreConfigureCommandTest extends BaseTestCase
         );
 
         $this->assertFileExists($gushFilename);
-
         $this->assertEquals($expected, Yaml::parse($gushFilename));
     }
 
-    /**
-     * @test
-     */
-    public function core_configure_with_only_issue_tracker_passed()
-    {
-        if (!$homeDir = getenv('GUSH_HOME')) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
-        }
-
-        $gushFilename = $homeDir.'/.gush.yml';
-        $expected = [
-            'parameters' => [
-                'cache-dir' => $homeDir.'/cache',
-                'adapters' => [],
-                'issue_trackers' => [
-                    'jira' => [
-                        'authentication' => [
-                            'http-auth-type' => Client::AUTH_HTTP_TOKEN,
-                            'username' => self::USERNAME,
-                            'password-or-token' => self::TOKEN,
-                        ],
-                        'base_url' => 'https://jira.company.com/api/v2/',
-                        'repo_domain_url' => 'https://jira.company.com/',
-                    ],
-                ],
-                'home' => $homeDir,
-                'home_config' => $homeDir.'/.gush.yml',
-                'issue_tracker' => 'jira',
-                'versioneye-token' => self::VERSIONEYE_TOKEN,
-            ]
-        ];
-
-        @mkdir($homeDir, 0777, true);
-
-        if (file_exists($gushFilename)) {
-            unlink($gushFilename);
-        }
-
-        $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $this->expectDialogParameters($command->getHelperSet(), $homeDir, self::TRACKER_ONLY);
-
-        $tester->execute(
-            [
-                'command' => 'core:configure',
-                '--issue_tracker' => 'jira',
-            ],
-            [
-                'interactive' => true,
-            ]
-        );
-
-        $this->assertFileExists($gushFilename);
-
-        $this->assertEquals($expected, Yaml::parse($gushFilename));
-    }
-
-    private function expectDialogParameters(HelperSet $helperSet, $homeDir, $option)
+    private function expectDialogParameters(HelperSet $helperSet, Command $command)
     {
         $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
         $styleHelper->getName()->willReturn('gush_style');
         $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $styleHelper->success('Configuration file saved successfully.')->shouldBeCalled();
 
-        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
-        $questionHelper->getName()->willReturn('question');
-        $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        // Common styling, no need to test
+        $styleHelper->title(Argument::any())->shouldBeCalled();
+        $styleHelper->section(Argument::any())->shouldBeCalled();
+        $styleHelper->text(Argument::any())->shouldBeCalled();
+        $styleHelper->newLine(Argument::any())->shouldBeCalled();
+        $styleHelper->success(Argument::any())->shouldBeCalled();
 
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
-            $styleHelper->askQuestion(
-                new QuestionToken(
-                    new ChoiceQuestion(
-                        'Choose adapter: ',
-                        ['github', 'github_enterprise']
-                    )
-                )
-            )->willReturn('github_enterprise');
-        }
+        $styleHelper->numberedChoice('Choose adapter', Argument::any())->willReturn('github');
+        $styleHelper->confirm('Do you want to configure other adapters?', false)->willReturn(false);
 
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::ADAPTER_ONLY === $option) {
-            // AdapterConfigurator Start
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new ChoiceQuestion(
-                        'Choose GitHub Enterprise authentication type:',
-                        ['Password', 'Token'],
-                        'Password'
-                    )
-                )
-            )->willReturn('Password');
+        // Defaulting
+        $styleHelper->confirm('Would you like to make "GitHub" the default repository manager?', true)->willReturn(true);
+        $styleHelper->confirm('Would you like to make "GitHub" the default issue tracker?', true)->willReturn(true);
 
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Username:')
-                )
-            )->willReturn(self::USERNAME);
+        // VersionEye
+        $styleHelper->ask('VersionEye token', 'NO_TOKEN', Argument::any())->willReturn(self::VERSIONEYE_TOKEN);
 
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Password:')
-                )
-            )->willReturn(self::PASSWORD);
-
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Enter your GitHub Enterprise api url []: ', '')
-                )
-            )->willReturn('https://company.com/api/v3/');
-
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Enter your GitHub Enterprise repo url []: ', '')
-                )
-            )->willReturn('https://company.com');
-            // AdapterConfigurator End
-
-            $styleHelper->askQuestion(
-                new QuestionToken(
-                    new ConfirmationQuestion(
-                        'Would you like to make "github_enterprise" the default adapter?'
-                    )
-                )
-            )->willReturn(true);
-        }
-
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option) {
-            $styleHelper->askQuestion(
-                new QuestionToken(
-                    new ChoiceQuestion(
-                        'Choose issue tracker:',
-                        ['github', 'jira']
-                    )
-                )
-            )->willReturn('jira');
-        }
-
-        if (self::NEITHER_ADAPTER_NOR_TRACKER === $option || self::TRACKER_ONLY === $option) {
-            // IssueTrackerConfigurator Start
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new ChoiceQuestion(
-                        'Choose Jira authentication type:',
-                        ['Password', 'Token'],
-                        'Password'
-                    )
-                )
-            )->willReturn('Token');
-
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Username:')
-                )
-            )->willReturn(self::USERNAME);
-
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Token:')
-                )
-            )->willReturn(self::TOKEN);
-
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Enter your Jira api url []: ', '')
-                )
-            )->willReturn('https://jira.company.com/api/v2/');
-
-            $questionHelper->ask(
-                Argument::type('Symfony\Component\Console\Input\InputInterface'),
-                Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-                new QuestionToken(
-                    new Question('Enter your Jira repo url []: ', '')
-                )
-            )->willReturn('https://jira.company.com/');
-            // IssueTrackerConfigurator End
-
-            $styleHelper->askQuestion(
-                new QuestionToken(
-                    new ConfirmationQuestion(
-                        'Would you like to make "jira" the default issue tracker?'
-                    )
-                )
-            )->willReturn(true);
-        }
-
-        $styleHelper->askQuestion(
-            new QuestionToken(
-                new Question('Cache folder', $homeDir.'/cache')
-            )
-        )->willReturn($homeDir.'/cache');
-
-        $styleHelper->askQuestion(
-            new QuestionToken(
-                new Question('VersionEye token:', 'NO_TOKEN')
-            )
-        )->willReturn(self::VERSIONEYE_TOKEN);
-
-        $helperSet->set($questionHelper->reveal(), 'question');
-        $helperSet->set($styleHelper->reveal(), 'gush_style');
+        $helperSet->set($styleHelper->reveal());
     }
 }
