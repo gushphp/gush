@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests\Subscriber;
+namespace Gush\Tests\Subscriber;
 
 use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Command\Command;

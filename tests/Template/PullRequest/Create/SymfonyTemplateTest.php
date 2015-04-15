@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\tests\Template\PullRequest\Create;
+namespace Gush\Tests\Template\PullRequest\Create;
 
 use Gush\Template\PullRequest\Create\SymfonyTemplate;
 
