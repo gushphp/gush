@@ -20,10 +20,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class CoreInitCommandTest extends BaseTestCase
 {
+    const USERNAME = 'bar';
     const PASSWORD = 'foo';
     const TOKEN = 'foo';
-    const USERNAME = 'bar';
-    const VERSIONEYE_TOKEN = 'token';
 
     private $gushLocalFilename;
 
@@ -45,9 +44,36 @@ class CoreInitCommandTest extends BaseTestCase
         }
 
         $this->config->get('local_config')->willReturn($this->gushLocalFilename);
-        $this->config->has('[adapters][github]')->willReturn(true);
-        $this->config->has('[adapters][github_enterprise]')->willReturn(true);
-        $this->config->has('[issue_trackers][jira]')->willReturn(true);
+        $this->config->has('[adapters][github]')->willReturn(false);
+        $this->config->has('[issue_trackers][jira]')->willReturn(false);
+    }
+
+    /**
+     * @test
+     */
+    public function accepts_adapter_and_issue_tracker_from_input()
+    {
+        $expected = [
+            'adapter' => 'github',
+            'issue_tracker' => 'jira',
+        ];
+
+        $questionHelper = $this->expectDialogParameters(false);
+        $tester = $this->getCommandTester($command = new InitCommand());
+        $command->getHelperSet()->set($questionHelper);
+
+        $tester->execute(
+            [
+                'command' => $command->getName(),
+                '--adapter' => 'github',
+                '--issue-tracker' => 'jira',
+            ],
+            [
+                'interactive' => false,
+            ]
+        );
+
+        $this->assertGushLocalEquals($expected);
     }
 
     /**
@@ -69,7 +95,7 @@ class CoreInitCommandTest extends BaseTestCase
 
         $tester->execute(
             [
-                'command' => 'init',
+                'command' => $command->getName(),
             ],
             [
                 'interactive' => true,
@@ -85,36 +111,28 @@ class CoreInitCommandTest extends BaseTestCase
         $this->assertEquals($expected, Yaml::parse(file_get_contents($this->gushLocalFilename)));
     }
 
-    private function expectDialogParameters()
+    private function expectDialogParameters($interactive = true)
     {
-        $questionHelper = $this->prophet->prophesize('Symfony\Component\Console\Helper\QuestionHelper');
-        $questionHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $questionHelper->getName()->willReturn('question');
+        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
+        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $styleHelper->setInput(Argument::any())->shouldBeCalled();
+        $styleHelper->setOutput(Argument::any())->shouldBeCalled();
+        $styleHelper->getName()->willReturn('gush_style');
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose adapter:',
-                    ['github', 'github_enterprise'],
-                    'github_enterprise'
-                )
-            )
-        )->willReturn('github');
+        // Common styling, no need to test
+        $styleHelper->note(Argument::any())->shouldBeCalled();
+        $styleHelper->success(Argument::any())->shouldBeCalled();
 
-        $questionHelper->ask(
-            Argument::type('Symfony\Component\Console\Input\InputInterface'),
-            Argument::type('Symfony\Component\Console\Output\OutputInterface'),
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose issue tracker:',
-                    ['github', 'jira'],
-                    'github_enterprise'
-                )
-            )
-        )->willReturn('jira');
+        if ($interactive) {
+            $styleHelper->numberedChoice('Choose repository-manager', Argument::any())->willReturn('github');
+            $styleHelper->numberedChoice('Choose issue-tracker', Argument::any())->willReturn('jira');
 
-        return $questionHelper->reveal();
+            $styleHelper->confirm(
+                'Would you like to configure the missing adapters now?',
+                Argument::any()
+            )->willReturn(false);
+        }
+
+        return $styleHelper->reveal();
     }
 }

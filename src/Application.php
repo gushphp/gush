@@ -261,27 +261,31 @@ LOGO;
                 $this->config = Factory::createConfig();
             }
 
-            if (null === $this->adapter) {
-                if (null === $adapter = $this->config->get('adapter')) {
-                    $adapter = $this->determineAdapter();
+            if ('core:init' !== $commandName) {
+                if (null === $this->adapter) {
+                    if (null === $adapter = $this->config->get('adapter')) {
+                        $adapter = $this->determineAdapter();
+                    }
+
+                    $this->buildAdapter($adapter);
                 }
 
-                $this->buildAdapter($adapter);
-            }
+                if (null === $this->issueTracker) {
+                    $issueTracker = $this->config->get('issue_tracker');
 
-            if (null === $this->issueTracker) {
-                $issueTracker = $this->config->get('issue_tracker');
+                    if ($issueTracker) {
+                        $this->buildIssueTracker($issueTracker);
+                    } elseif ($this->adapter instanceof IssueTracker) {
+                        $this->issueTracker = $this->adapter;
+                    } else {
+                        $message =
+                            'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '.
+                            PHP_EOL.
+                            'Please run the "init" or "core:configure" command to configure a (default) issue '.
+                            'tracker.';
 
-                if ($issueTracker) {
-                    $this->buildIssueTracker($issueTracker);
-                } elseif ($this->adapter instanceof IssueTracker) {
-                    $this->issueTracker = $this->adapter;
-                } else {
-                    $message = 'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '.
-                        PHP_EOL.'Please run the "init" or "core:configure" command to configure a (default) issue '.
-                        'tracker.';
-
-                    throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
+                        throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
+                    }
                 }
             }
 
