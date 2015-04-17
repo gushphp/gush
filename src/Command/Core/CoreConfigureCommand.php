@@ -127,7 +127,7 @@ EOF
 
             if (!$styleHelper->confirm('Do you want to configure other adapters?', false)) {
                 break;
-        }
+            }
         }
 
         $styleHelper->section('VersionEye configuration');
