@@ -23,16 +23,15 @@ class RemoteMergeOperation
     private $sourceRemote;
     private $targetRemote;
     private $targetBranch;
+    private $targetBase;
     private $switchBase;
     private $squash = false;
     private $forceSquash = false;
     private $message;
     private $performed = false;
 
-    public function __construct(
-        GitHelper $gitHelper,
-        FilesystemHelper $filesystemHelper
-    ) {
+    public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper)
+    {
         $this->gitHelper = $gitHelper;
         $this->filesystemHelper = $filesystemHelper;
     }
@@ -81,39 +80,83 @@ class RemoteMergeOperation
             throw new \RuntimeException('performMerge() was already called. Each operation is only usable once.');
         }
 
-        $this->gitHelper->stashBranchName();
-        $this->gitHelper->syncWithRemote($this->targetRemote, $this->targetBranch);
-        $this->gitHelper->remoteUpdate($this->sourceRemote);
+        $this->performed = true;
 
-        if ($this->switchBase) {
-            $this->gitHelper->syncWithRemote($this->targetRemote, $this->switchBase);
+        $this->gitHelper->stashBranchName();
+        $this->gitHelper->remoteUpdate($this->sourceRemote);
+        $this->gitHelper->remoteUpdate($this->targetRemote);
+
+        // To prevent pushing with an outdated base-branch (or pushing commits only existent
+        // in the local branch that has the same name as the remote-base) we checkout the
+        // "{targetRemote}/{targetBranch}" and create a temp-branch (temp-base).
+        //
+        // The temp-base equals the target-branch on the remote.
+        //
+        // Then we merge the temp-source branch into temp-base branch, and push explicitly
+        // to the remote base-branch with temp-base branch!
+        // In practice: 'git push {targetRemote} {temp-base}:{target-base}' is performed
+
+        $this->createBaseBranch();
+
+        $tempSourceBranch = $this->createSourceBranch();
+        $mergeHash = $this->gitHelper->mergeBranch($this->targetBase, $tempSourceBranch, $this->message);
+
+        $this->gitHelper->restoreStashedBranch();
+
+        return $mergeHash;
+    }
+
+    public function pushToRemote()
+    {
+        $target = trim($this->targetBase).':'.$this->targetBranch;
+
+        // Safety guard to prevent deleting a remote base branch!!
+        if (':' === $target[0]) {
+            throw new \RuntimeException(
+                sprintf('Push target "%s" does not include the local branch-name, please report this bug!', $target)
+            );
         }
 
+        $this->gitHelper->pushToRemote($this->targetRemote, $target);
+    }
+
+    private function createBaseBranch()
+    {
+        $targetBranch = null !== $this->switchBase ? $this->switchBase : $this->targetBranch;
+        $this->targetBase = $this->gitHelper->createTempBranch($this->targetRemote.'--'.$targetBranch);
+
+        $this->gitHelper->checkout($this->targetRemote.'/'.$targetBranch);
+        $this->gitHelper->checkout($this->targetBase, true);
+    }
+
+    private function createSourceBranch()
+    {
         // Create a temp branch for us to work with
-        $tempBranchName = $this->gitHelper->createTempBranch($this->sourceRemote.'--'.$this->sourceBranch);
+        $sourceBranch = $this->gitHelper->createTempBranch($this->sourceRemote.'--'.$this->sourceBranch);
+
         $this->gitHelper->checkout($this->sourceRemote.'/'.$this->sourceBranch);
-        $this->gitHelper->checkout($tempBranchName, true);
+        $this->gitHelper->checkout($sourceBranch, true);
 
         if ($this->switchBase) {
-            $this->gitHelper->switchBranchBase($tempBranchName, $this->targetBranch, $this->switchBase);
+            $this->gitHelper->switchBranchBase(
+                $sourceBranch,
+                $this->targetRemote.'/'.$this->targetBranch,
+                $this->targetBase
+            );
+
             $this->targetBranch = $this->switchBase;
         }
 
         if ($this->squash) {
-            $this->gitHelper->squashCommits($this->targetBranch, $tempBranchName, false);
+            $this->gitHelper->squashCommits($this->targetBase, $sourceBranch, $this->forceSquash);
         }
 
         // Allow a callback to allow late commits list composition
         if ($this->message instanceof \Closure) {
             $closure = $this->message;
-            $this->message = $closure($this->targetBranch, $tempBranchName);
+            $this->message = $closure($this->targetBase, $sourceBranch);
         }
 
-        return $this->gitHelper->mergeBranch($this->targetBranch, $tempBranchName, $this->message);
-    }
-
-    public function pushToRemote()
-    {
-        $this->gitHelper->pushToRemote($this->targetRemote, $this->targetBranch);
+        return $sourceBranch;
     }
 }
