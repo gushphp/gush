@@ -12,11 +12,11 @@
 namespace Gush\Command\Core;
 
 use Gush\Command\BaseCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Gush\Helper\StyleHelper;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
 class InitCommand extends BaseCommand
@@ -33,13 +33,13 @@ class InitCommand extends BaseCommand
                 'adapter',
                 'a',
                 InputOption::VALUE_OPTIONAL,
-                'What adapter should be used? (github, bitbucket, gitlab)'
+                'What repository-manager adapter should be used? (github, bitbucket, gitlab)'
             )
             ->addOption(
-                'issue tracker',
+                'issue-tracker',
                 'it',
                 InputOption::VALUE_OPTIONAL,
-                'What issue tracker should be used? (jira, github, bitbucket, gitlab)'
+                'What issue-tracker adapter should be used? (jira, github, bitbucket, gitlab)'
             )
             ->setHelp(
                 <<<EOF
@@ -52,77 +52,90 @@ EOF
         ;
     }
 
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+        $adapters = $this->getAdapters();
+
+        if (null === $input->getOption('adapter')) {
+            $input->setOption(
+                'adapter',
+                $styleHelper->numberedChoice('Choose repository-manager', $adapters[0])
+            );
+        }
+
+        if (null === $input->getOption('issue-tracker')) {
+            $input->setOption(
+                'issue-tracker',
+                $styleHelper->numberedChoice('Choose issue-tracker', $adapters[1])
+            );
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $application = $this->getApplication();
         /** @var \Gush\Application $application */
+        $application = $this->getApplication();
+
         $config = $application->getConfig();
-        $adapters = $application->getAdapterFactory()->getAdapters();
-        $issueTrackers = $application->getAdapterFactory()->getIssueTrackers();
-        $adapterName = $input->getOption('adapter');
-        $issueTrackerName = $input->getOption('issue tracker');
-
         $filename = $config->get('local_config');
+        $valid = true;
 
-        /** @var QuestionHelper $questionHelper */
-        $questionHelper = $this->getHelper('question');
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
 
-        if (null === $adapterName) {
-            $adapterName = $questionHelper->ask(
-                $input,
-                $output,
-                new ChoiceQuestion('Choose adapter: ', array_keys($adapters), $config->get('adapter'))
-            );
-        } elseif (!array_key_exists($adapterName, $adapters)) {
-            throw new \Exception(
-                sprintf(
-                    'Adapter "%s" is invalid. Available adapters are "%s"',
-                    $adapterName,
-                    implode('", "', array_keys($adapters))
-                )
-            );
+        $adapters = $this->getAdapters();
+        $repositoryManagers = $adapters[0];
+        $issueTrackers = $adapters[1];
+
+        $repositoryManager = $input->getOption('adapter');
+        $issueTracker = $input->getOption('issue-tracker');
+
+        $this->validateAdapter($repositoryManager, $repositoryManagers, 'Repository-manager', $valid);
+        $this->validateAdapter($issueTracker, $issueTrackers, 'Issue-tracker', $valid);
+
+        if (!$valid) {
+            return self::COMMAND_FAILURE;
         }
 
-        if (!$config->has(sprintf('[adapters][%s]', $adapterName))) {
-            throw new \Exception(
-                sprintf(
-                    'Adapter "%s" is not yet configured. Please run the "core:configure" command.',
-                    $adapterName
-                )
-            );
-        }
+        $this->checkAdapterConfigured(
+            $repositoryManager,
+            $repositoryManagers[$repositoryManager],
+            'adapters',
+            'Repository-manager',
+            $valid
+        );
 
-        if (null === $issueTrackerName) {
-            $issueTrackerName = $questionHelper->ask(
-                $input,
-                $output,
-                new ChoiceQuestion('Choose issue tracker: ', array_keys($issueTrackers), $config->get('issue_tracker'))
-            );
-        } elseif (!array_key_exists($issueTrackerName, $issueTrackers)) {
-            throw new \Exception(
-                sprintf(
-                    'Issue tracker "%s" is invalid. Available adapters are "%s".',
-                    $issueTrackerName,
-                    implode('", "', array_keys($issueTrackers))
-                )
-            );
-        }
+        $this->checkAdapterConfigured(
+            $issueTracker,
+            $issueTrackers[$issueTracker],
+            'issue_trackers',
+            'Issue-tracker',
+            $valid
+        );
 
-        if (!$config->has(sprintf('[issue_trackers][%s]', $issueTrackerName))) {
-            throw new \Exception(
-                sprintf(
-                    'The issue tracker "%s" is not yet configured. Please run the "core:configure" command.',
-                    $issueTrackerName
-                )
-            );
+        if (!$valid) {
+            if ($input->isInteractive() &&
+                $styleHelper->confirm('Would you like to configure the missing adapters now?')
+            ) {
+                $application->doRun(new ArrayInput(['command' => 'core:configure']), $output);
+            } else {
+                $styleHelper->note(
+                    [
+                        'You cannot use the selected repository-manager and/or issue-tracker until its configured.',
+                        'Run the "core:configure" command to configure the adapters.'
+                    ]
+                );
+            }
         }
 
         $params = [
-            'adapter' => $adapterName,
-            'issue_tracker' => $issueTrackerName,
+            'adapter' => $repositoryManager,
+            'issue_tracker' => $issueTracker,
         ];
 
         if (file_exists($filename)) {
@@ -130,11 +143,70 @@ EOF
         }
 
         if (!@file_put_contents($filename, Yaml::dump($params), 0644)) {
-            $output->writeln('<error>Configuration file cannot be saved.</error>');
+            $styleHelper->error(
+                'Configuration file cannot be saved, make sure you have write access in the current working directory.'
+            );
         }
 
-        $output->writeln('<info>Configuration file saved successfully.</info>');
+        $styleHelper->success('Configuration file saved successfully.');
 
         return self::COMMAND_SUCCESS;
+    }
+
+    private function validateAdapter($selected, array $available, $type, &$valid)
+    {
+        if (!array_key_exists($selected, $available)) {
+            $this->getHelper('gush_style')->error(
+                sprintf(
+                    '%s "%s" is invalid. Available adapters are "%s".',
+                    $type,
+                    $selected,
+                    implode('", "', array_keys($available))
+                )
+            );
+
+            $valid = false;
+        }
+    }
+
+    private function checkAdapterConfigured($selected, $label, $pathType, $typeLabel, &$valid)
+    {
+        /** @var \Gush\Application $application */
+        $application = $this->getApplication();
+        $config = $application->getConfig();
+
+        if (!$config->has(sprintf('[%s][%s]', $pathType, $selected))) {
+            $this->getHelper('gush_style')->note(
+                sprintf('%s "%s" is not configured yet.', $typeLabel, $label)
+            );
+
+            $valid = false;
+        }
+    }
+
+    private function getAdapters()
+    {
+        /** @var \Gush\Application $application */
+        $application = $this->getApplication();
+        $adapters = $application->getAdapterFactory()->all();
+
+        static $repositoryManagers, $issueTrackers;
+
+        if (null === $repositoryManagers) {
+            $repositoryManagers = [];
+            $issueTrackers = [];
+
+            foreach ($adapters as $adapterName => $adapter) {
+                if ($adapter['supports_repository_manager']) {
+                    $repositoryManagers[$adapterName] = $adapter['label'];
+                }
+
+                if ($adapter['supports_issue_tracker']) {
+                    $issueTrackers[$adapterName] = $adapter['label'];
+                }
+            }
+        }
+
+        return [$repositoryManagers, $issueTrackers];
     }
 }

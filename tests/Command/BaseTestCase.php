@@ -18,7 +18,9 @@ use Gush\Event\GushEvents;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Tester\Adapter\TestAdapter;
+use Gush\Tester\Adapter\TestAdapterFactory;
 use Gush\Tester\Adapter\TestIssueTracker;
+use Gush\Tester\Adapter\TestIssueTrackerFactory;
 use Gush\Tests\TestableApplication;
 use Guzzle\Http\Client;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -70,65 +72,9 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function getCommandTester(Command $command)
     {
         $adapterFactory = new AdapterFactory();
-        $adapterFactory->registerAdapter(
-            'github',
-            function () {
-                return new TestAdapter();
-            },
-            function ($helperSet) {
-                return new DefaultConfigurator(
-                    $helperSet->get('question'),
-                    'GitHub',
-                    'https://api.github.com/',
-                    'https://github.com'
-                );
-            }
-        );
-
-        $adapterFactory->registerAdapter(
-            'github_enterprise',
-            function () {
-                return new TestAdapter();
-            },
-            function ($helperSet) {
-                return new DefaultConfigurator(
-                    $helperSet->get('question'),
-                    'GitHub Enterprise',
-                    '',
-                    ''
-                );
-            }
-        );
-
-        $adapterFactory->registerIssueTracker(
-            'github',
-            function () {
-                return new TestIssueTracker();
-            },
-            function ($helperSet) {
-                return new DefaultConfigurator(
-                    $helperSet->get('question'),
-                    'GitHub',
-                    'https://api.github.com/',
-                    'https://github.com'
-                );
-            }
-        );
-
-        $adapterFactory->registerIssueTracker(
-            'jira',
-            function () {
-                return new TestIssueTracker();
-            },
-            function ($helperSet) {
-                return new DefaultConfigurator(
-                    $helperSet->get('question'),
-                    'Jira',
-                    '',
-                    ''
-                );
-            }
-        );
+        $adapterFactory->register('github', 'GitHub', new TestAdapterFactory());
+        $adapterFactory->register('github_enterprise', 'GitHub Enterprise', new TestAdapterFactory());
+        $adapterFactory->register('jira', 'Jira', new TestIssueTrackerFactory());
 
         $application = new TestableApplication($adapterFactory);
         $application->setAutoExit(false);
