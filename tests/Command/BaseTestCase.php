@@ -81,7 +81,6 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $application->setConfig($this->config->reveal());
         $application->setAdapter($this->adapter);
         $application->setIssueTracker($this->adapter);
-        $application->setVersionEyeClient($this->buildVersionEyeClient());
 
         $command->setApplication($application);
 
@@ -118,17 +117,6 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function buildAdapter()
     {
         return new TestAdapter();
-    }
-
-    protected function buildVersionEyeClient()
-    {
-        $client = new Client();
-        $client
-            ->setBaseUrl('https://www.versioneye.com/')
-            ->setDefaultOption('query', ['api_key' => '123'])
-        ;
-
-        return $client;
     }
 
     protected function expectsConfig($username = 'cordoval')

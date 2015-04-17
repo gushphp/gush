@@ -114,10 +114,6 @@ EOT;
 [OK] Pat on the back pushed to https://github.com/gushphp/gush/pull/40
 EOT;
 
-    const PULL_REQUEST_VERSIONEYE = <<<EOT
-[OK] Please check the modifications on your composer.json for updated dependencies.
-EOT;
-
     const PULL_REQUEST_SQUASH = <<<EOT
 [OK] Pull request has been squashed!
 EOT;

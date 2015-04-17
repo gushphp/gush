@@ -32,7 +32,6 @@ parameters:
     local: /Users/cordoval/Sites/gush
     local_config: /Users/cordoval/Sites/gush/.gush.yml
     adapter: github
-    versioneye-token: NO_TOKEN
 EOT
     ;
 
