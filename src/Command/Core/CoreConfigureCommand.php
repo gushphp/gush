@@ -129,45 +129,6 @@ EOF
                 break;
             }
         }
-
-        $styleHelper->section('VersionEye configuration');
-        $styleHelper->text(
-            [
-                'VersionEye is a 3rd party service that helps to keep your Composer dependencies up-to-date.',
-                'To use this feature you must first get an API token from: https://www.versioneye.com/settings/api',
-                'The API token is only used for the <info>version-eye:check</info> command.',
-                '',
-                "If you don't want to this service use 'NO_TOKEN' as token."
-            ]
-        );
-
-        $versionEyeToken = $styleHelper->ask(
-            'VersionEye token',
-            $this->config->get('versioneye-token') ?: 'NO_TOKEN',
-            function ($token) use ($application) {
-                if ('' === trim($token)) {
-                    throw new \InvalidArgumentException('This field cannot be empty.');
-                }
-
-                if ('NO_TOKEN' !== $token) {
-                    $versionEyeClient = $application->buildVersionEyeClient($token);
-
-                    try {
-                        $versionEyeClient->get('/api/v2/projects')->send();
-                    } catch (ServerErrorResponseException $e) {
-                        if (false !== strrpos($e->getResponse()->getBody(), 'API token not valid.')) {
-                            throw new \InvalidArgumentException('API token not valid.');
-                        }
-
-                        throw new \InvalidArgumentException('API error: '.$e->getResponse()->getBody());
-                    }
-                }
-
-                return $token;
-            }
-        );
-
-        $this->config->merge(['versioneye-token' => $versionEyeToken]);
     }
 
     private function getAdapterLabels(array $adapters)

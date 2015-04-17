@@ -27,8 +27,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class CoreConfigureCommandTest extends BaseTestCase
 {
-    const VERSIONEYE_TOKEN = 'token';
-
     /**
      * @test
      */
@@ -69,7 +67,6 @@ class CoreConfigureCommandTest extends BaseTestCase
                 'home_config' => $homeDir.'/.gush.yml',
                 'adapter' => 'github',
                 'issue_tracker' => 'github',
-                'versioneye-token' => self::VERSIONEYE_TOKEN,
             ]
         ];
 
@@ -114,9 +111,6 @@ class CoreConfigureCommandTest extends BaseTestCase
         // Defaulting
         $styleHelper->confirm('Would you like to make "GitHub" the default repository manager?', true)->willReturn(true);
         $styleHelper->confirm('Would you like to make "GitHub" the default issue tracker?', true)->willReturn(true);
-
-        // VersionEye
-        $styleHelper->ask('VersionEye token', 'NO_TOKEN', Argument::any())->willReturn(self::VERSIONEYE_TOKEN);
 
         $helperSet->set($styleHelper->reveal());
     }

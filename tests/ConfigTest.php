@@ -62,7 +62,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                     ]
                 ],
                 'cache-dir' => sys_get_temp_dir(),
-                'versioneye-token' => '1234',
             ]
         );
 

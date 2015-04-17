@@ -25,7 +25,6 @@ use Gush\Subscriber\CommandEndSubscriber;
 use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
-use Guzzle\Http\Client as GuzzleClient;
 use KevinGH\Amend\Command as UpdateCommand;
 use KevinGH\Amend\Helper as UpdateHelper;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -63,11 +62,6 @@ LOGO;
      * @var null|IssueTracker IssueTracker
      */
     protected $issueTracker;
-
-    /**
-     * @var \Guzzle\Http\Client $versionEyeClient The VersionEye Client
-     */
-    protected $versionEyeClient = null;
 
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
@@ -175,11 +169,6 @@ LOGO;
         $this->adapter = $adapter;
     }
 
-    public function setVersionEyeClient(GuzzleClient $versionEyeClient)
-    {
-        $this->versionEyeClient = $versionEyeClient;
-    }
-
     /**
      * @param IssueTracker $issueTracker
      */
@@ -194,14 +183,6 @@ LOGO;
     public function getIssueTracker()
     {
         return $this->issueTracker;
-    }
-
-    /**
-     * @return \Guzzle\Http\Client
-     */
-    public function getVersionEyeClient()
-    {
-        return $this->versionEyeClient;
     }
 
     /**
@@ -287,10 +268,6 @@ LOGO;
                         throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
                     }
                 }
-            }
-
-            if (null === $this->versionEyeClient) {
-                $this->versionEyeClient = $this->buildVersionEyeClient();
             }
         }
 
@@ -431,19 +408,6 @@ LOGO;
         return $issueTracker;
     }
 
-    public function buildVersionEyeClient($versionEyeToken = null)
-    {
-        if (null === $versionEyeToken) {
-            $versionEyeToken = (string) $this->config->get('versioneye-token');
-        }
-
-        $client = new GuzzleClient();
-        $client->setBaseUrl('https://www.versioneye.com');
-        $client->setDefaultOption('query', ['api_key' => $versionEyeToken]);
-
-        return $client;
-    }
-
     /**
      * @return \Symfony\Component\Console\Command\Command[]
      */
@@ -467,7 +431,6 @@ LOGO;
             new Cmd\PullRequest\PullRequestMilestoneListCommand(),
             new Cmd\PullRequest\PullRequestFixerCommand(),
             new Cmd\Util\DocumentationCommand(),
-            new Cmd\Util\VersionEyeCommand(),
             new Cmd\Util\FabbotIoCommand(),
             new Cmd\Util\MetaHeaderCommand(),
             new Cmd\Util\MetaConfigureCommand(),

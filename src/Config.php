@@ -113,15 +113,11 @@ class Config
             $this->errorList[] = 'lacks adapters';
         }
 
-        if (!$versioneyeTokenSet = isset($this->config['versioneye-token'])) {
-            $this->errorList[] = 'versioneyeToken is not set';
-        }
-
         if (!$cacheDirOk = (is_dir($this->get('cache-dir')) && is_writable($this->get('cache-dir')))) {
             $this->errorList[] = 'cache dir is not writable or does not exist';
         }
 
-        return $hasAdapter && $cacheDirOk && $versioneyeTokenSet ;
+        return $hasAdapter && $cacheDirOk;
     }
 
     /**
