@@ -13,6 +13,7 @@
 require __DIR__.'/../src/bootstrap.php';
 
 use Gush\Adapter;
+use Gush\ConfigFactory;
 use Gush\Factory\LegacyAdapterFactory;
 use Gush\Factory\LegacyIssueTrackerFactory;
 
@@ -46,4 +47,4 @@ foreach ($adapters as $adapterName => $adapter) {
     $adapterFactory->register($adapterName, $adapter[1], $adapter[0]);
 }
 
-(new Gush\Application($adapterFactory))->run();
+(new Gush\Application($adapterFactory, ConfigFactory::createConfig(getcwd())))->run();

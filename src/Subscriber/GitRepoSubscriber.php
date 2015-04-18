@@ -11,23 +11,20 @@
 
 namespace Gush\Subscriber;
 
-use Gush\Event\CommandEvent;
+use Gush\Command\BaseCommand;
+use Gush\Config;
 use Gush\Event\GushEvents;
+use Gush\Exception\UserException;
+use Gush\Factory\AdapterFactory;
 use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\GitHelper;
-use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class GitRepoSubscriber implements EventSubscriberInterface
+class GitRepoSubscriber extends BaseGitRepoSubscriber
 {
-    private $gitHelper;
-
-    public function __construct(GitHelper $gitHelper)
-    {
-        $this->gitHelper = $gitHelper;
-    }
-
     public static function getSubscribedEvents()
     {
         return [
@@ -36,61 +33,328 @@ class GitRepoSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function decorateDefinition(CommandEvent $event)
+    public function decorateDefinition(ConsoleCommandEvent $event)
     {
+        /** @var GitRepoFeature|BaseCommand $command */
         $command = $event->getCommand();
 
         if (!$command instanceof GitRepoFeature) {
             return;
         }
 
-        $gitFolder = $this->gitHelper->isGitFolder();
+        $command
+            ->addOption(
+                'repo-adapter',
+                'ra',
+                InputOption::VALUE_REQUIRED,
+                sprintf(
+                    'Adapter-name of the repository-manager (%s)',
+                    $this->getSupportedAdapters(AdapterFactory::SUPPORT_REPOSITORY_MANAGER)
+                ),
+                $this->application->getConfig()->get('repo_adapter', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER)
+            )
+        ;
 
+        // Repository reference information;
+        // The information is first loaded from the configuration.
+        // UNDEFINED is used as default when the configuration is not available.
+        //
+        // When UNDEFINED is used the initialize() method of this class autodetects
+        // the org and repo-name using the Git remote, and resolves the final repository (no-fork)
+        // reference. This cant be done here as the adapter is not available at this point.
         $command
             ->addOption(
                 'org',
                 'o',
                 InputOption::VALUE_REQUIRED,
-                'Name of the Git Package organization',
-                $gitFolder ? $this->gitHelper->getVendorName() : GitHelper::UNDEFINED_ORG
+                'Name of the Git organization',
+                $this->application->getConfig()->get('repo_org', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ORG)
             )
             ->addOption(
                 'repo',
                 'r',
                 InputOption::VALUE_REQUIRED,
-                'Name of the Git Package repository',
-                $gitFolder ? $this->gitHelper->getRepoName() : GitHelper::UNDEFINED_REPO
+                'Name of the Git repository',
+                $this->application->getConfig()->get('repo_name', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_REPO)
+            )
+        ;
+
+        if ($command instanceof IssueTrackerRepoFeature) {
+            $this->setIssueTrackerDef($command);
+        }
+    }
+
+    /**
+     * Set Issue-tracker configuration.
+     *
+     * When no explicit configuration for the issue-tracker is set
+     * the repository information is reused (when possible).
+     *
+     * @param BaseCommand $command
+     */
+    private function setIssueTrackerDef(BaseCommand $command)
+    {
+        $issueTracker = $this->application->getConfig()->get(
+            'issue_tracker',
+            Config::CONFIG_LOCAL,
+            GitHelper::UNDEFINED_ADAPTER
+        );
+
+        $command
+            ->addOption(
+                'issue-adapter',
+                'ia',
+                InputOption::VALUE_REQUIRED,
+                sprintf(
+                    'Adapter-name of the issue-tracker (%s)',
+                    $this->getSupportedAdapters(AdapterFactory::SUPPORT_ISSUE_TRACKER)
+                ),
+                $issueTracker
+            )
+            ->addOption(
+                'issue-org',
+                'io',
+                InputOption::VALUE_REQUIRED,
+                'Name of the issue-tracker organization',
+                $this->application->getConfig()->getFirstNotNull(
+                    ['issue_project_org', 'repo_org'],
+                    Config::CONFIG_LOCAL,
+                    GitHelper::UNDEFINED_ORG
+                )
+            )
+            ->addOption(
+                'issue-project',
+                'ip',
+                InputOption::VALUE_REQUIRED,
+                'Repository/project name of the issue-tracker in the organization',
+                $this->application->getConfig()->getFirstNotNull(
+                    ['issue_project_name', 'repo_name'],
+                    Config::CONFIG_LOCAL,
+                    GitHelper::UNDEFINED_REPO
+                )
             )
         ;
     }
 
-    public function initialize(ConsoleEvent $event)
+    public function initialize(ConsoleCommandEvent $event)
     {
+        /** @var GitRepoFeature|BaseCommand $command */
         $command = $event->getCommand();
 
-        /** @var \Gush\Command\BaseCommand $command */
-        if ($command instanceof GitRepoFeature) {
-            $input = $event->getInput();
-
-            /** @var \Gush\Adapter\BaseAdapter $adapter */
-            $adapter = $command->getAdapter();
-            $adapter
-                ->setRepository($input->getOption('repo'))
-                ->setUsername($input->getOption('org'))
-            ;
-
-            /** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
-            $issueTracker = $command->getIssueTracker();
-            $issueTracker
-                ->setRepository($input->getOption('repo'))
-                ->setUsername($input->getOption('org'))
-            ;
-
-            if (GitHelper::UNDEFINED_REPO === $input->getOption('repo')
-                || GitHelper::UNDEFINED_ORG === $input->getOption('org')
-            ) {
-                throw new \RuntimeException('Provide org and repo options if outside of a git directory.');
-            }
+        if (!$command instanceof GitRepoFeature) {
+            return;
         }
+
+        $input = $event->getInput();
+
+        if (GitHelper::UNDEFINED_ADAPTER === $input->getOption('repo-adapter')) {
+            $input->setOption('repo-adapter', $this->detectAdapterName());
+        }
+
+        $adapterFactory = $this->application->getAdapterFactory();
+        $adapterName = $input->getOption('repo-adapter');
+
+        if ($input->hasOption('issue-adapter') &&
+            GitHelper::UNDEFINED_ADAPTER === $input->getOption('issue-adapter') &&
+            $adapterFactory->supports($adapterName, AdapterFactory::SUPPORT_ISSUE_TRACKER)
+        ) {
+            $input->setOption('issue-adapter', $adapterName);
+        }
+
+        $this->validateAdaptersConfig($input);
+
+        $adapter = $this->getAdapter($adapterName);
+        $org = GitHelper::undefinedToDefault($input->getOption('org'));
+        $repo = GitHelper::undefinedToDefault($input->getOption('repo'));
+
+        $this->application->setAdapter($adapter);
+
+        // When no org and/or repo is set, determine this from the git remote,
+        // but warn its better to run "core:init" as this autodetection process
+        // is much slower!
+        if (null === $org || null === $repo) {
+            if (!$this->gitHelper->isGitFolder()) {
+                throw new UserException(
+                    'Provide the --org and --repo options when your are outside of a Git directory.'
+                );
+            }
+
+            list($org, $repo) = $this->getRepositoryReference($adapter, $org, $repo);
+
+            $this->styleHelper->note(
+                [
+                    'You did not set or provided an organization and/or repository name.',
+                    'Gush automatically detected the missing information.',
+                    sprintf('Org: "%s" / repo: "%s"', $org, $repo),
+                    'But for future reference and better performance it is advised to run "core:init".'
+                ]
+            );
+        }
+
+        $input->setOption('org', $org);
+        $input->setOption('repo', $repo);
+
+        $adapter
+            ->setRepository($repo)
+            ->setUsername($org)
+        ;
+
+        if ($command instanceof IssueTrackerRepoFeature) {
+            $this->initializeIssueTracker($event, $org, $repo, $adapterName);
+        }
+    }
+
+    private function validateAdaptersConfig(InputInterface $input)
+    {
+        $repositoryManager = $input->getOption('repo-adapter');
+
+        $errors = [];
+
+        $this->checkAdapterConfigured(
+            $repositoryManager,
+            'repository-management',
+            AdapterFactory::SUPPORT_REPOSITORY_MANAGER,
+            $errors
+        );
+
+        if ($input->hasOption('issue-adapter')) {
+            $issueTracker = $input->getOption('issue-adapter');
+
+            $this->checkAdapterConfigured(
+                $issueTracker,
+                'issue-tracking',
+                AdapterFactory::SUPPORT_ISSUE_TRACKER,
+                $errors
+            );
+        }
+
+        if ($errors) {
+            $errors[] = 'Please run the "core:configure" command.';
+
+            throw new UserException($errors);
+        }
+    }
+
+    /**
+     * @param string   $adapter
+     * @param string   $typeLabel
+     * @param string   $supports
+     * @param string[] $errors
+     */
+    private function checkAdapterConfigured($adapter, $typeLabel, $supports, array &$errors)
+    {
+        $adapterFactory = $this->application->getAdapterFactory();
+
+        if (!$adapterFactory->supports($adapter, $supports)) {
+            $errors[] = sprintf(
+                'Adapter "%s" (for %s) is not supported, supported %2$s adapters are: "%3$s"',
+                $adapter,
+                $typeLabel,
+                implode('", "', array_keys($adapterFactory->allOfType($supports)))
+            );
+
+            return;
+        }
+
+        $config = $this->application->getConfig();
+
+        if (!$config->has(sprintf('[adapters][%s]', $adapter), Config::CONFIG_SYSTEM)) {
+            $errors[] = sprintf('Adapter "%s" (for %s) is not configured yet.', $adapter, $typeLabel);
+        }
+    }
+
+    /**
+     * @param ConsoleCommandEvent $event
+     * @param string              $org
+     * @param string              $repo
+     * @param string              $adapterName
+     */
+    private function initializeIssueTracker(ConsoleCommandEvent $event, $org, $repo, $adapterName)
+    {
+        $input = $event->getInput();
+
+        $issueOrg = GitHelper::undefinedToDefault($input->getOption('issue-org'), $org);
+        $issueRepo = GitHelper::undefinedToDefault($input->getOption('issue-project'), $repo);
+        $issueAdapterName = $input->getOption('issue-adapter') ?: $adapterName;
+
+        $input->setOption('issue-org', $issueOrg);
+        $input->setOption('issue-project', $issueRepo);
+        $input->setOption('issue-adapter', $issueAdapterName);
+
+        $config = $this->application->getConfig()->get(
+            sprintf('[adapters][%s]', $issueAdapterName), Config::CONFIG_SYSTEM
+        );
+
+        $issueTracker = $this->application->getAdapterFactory()->createIssueTracker(
+            $issueAdapterName,
+            $config,
+            $this->application->getConfig()
+        );
+
+        $issueTracker->authenticate();
+
+        /** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
+        $issueTracker
+            ->setRepository($issueRepo)
+            ->setUsername($issueOrg)
+        ;
+
+        $this->application->setIssueTracker($issueTracker);
+    }
+
+    private function detectAdapterName()
+    {
+        $adapterFactory = $this->application->getAdapterFactory();
+        $appConfig = $this->application->getConfig();
+
+        $remote = $this->findRemoteName(false);
+        $remoteUrl = $this->gitConfigHelper->getGitConfig('remote.'.$remote.'.url');
+
+        $adapters = $adapterFactory->allOfType(AdapterFactory::SUPPORT_REPOSITORY_MANAGER);
+        $ignoredAdapters = [];
+
+        foreach ($adapters as $adapterName => $adapterInfo) {
+            $config = $appConfig->get(sprintf('[adapters][%s]', $adapterName));
+
+            // Adapter is not configured ignore
+            if (null === $config) {
+                $ignoredAdapters[] = $adapterName;
+
+                continue;
+            }
+
+            $adapter = $adapterFactory->createRepositoryManager($adapterName, $config, $appConfig);
+
+            if ($adapter->supportsRepository($remoteUrl)) {
+                $this->styleHelper->note(
+                    [
+                        'You did not set or provide an adapter-name for the repository-manager and/or issue-tracker.',
+                        sprintf(
+                            'Based on your Git remote "%s" Gush detected "%s" is properly the correct adapter.',
+                            $remote,
+                            $adapterName
+                        ),
+                        'But for future reference and better performance it is advised to run "core:init".'
+                    ]
+                );
+
+                return $adapterName;
+            };
+        }
+
+        $exceptionMessage = 'The adapter type could not be determined.';
+
+        if ([] !== $ignoredAdapters) {
+            $exceptionMessage .= sprintf(
+                'The following adapters (may support this repository) but are currently not configured: "%s".',
+                implode('", "', $ignoredAdapters)
+            );
+
+            $exceptionMessage .= ' Please configure the adapters or run the "core:init" command.';
+        } else {
+            $exceptionMessage .= ' Please run the "core:init" command.';
+        }
+
+        throw new UserException($exceptionMessage);
     }
 }

@@ -12,10 +12,8 @@
 namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
-use Gush\Tester\QuestionToken;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
 class CoreInitCommandTest extends BaseTestCase

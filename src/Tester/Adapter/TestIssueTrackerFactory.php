@@ -6,10 +6,8 @@
 
 namespace Gush\Tester\Adapter;
 
-use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
 use Gush\Factory\IssueTrackerFactory;
-use Gush\Factory\RepositoryManagerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
 final class TestIssueTrackerFactory implements IssueTrackerFactory

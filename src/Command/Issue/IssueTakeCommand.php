@@ -12,7 +12,7 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueTakeCommand extends BaseCommand implements GitRepoFeature
+class IssueTakeCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -79,7 +79,7 @@ EOF
         $sourceOrg = $input->getOption('source-org') ?: $org;
         $sourceRepo = $input->getOption('source-repo') ?: $repo;
 
-        $config = $this->getApplication()->getConfig();
+        $config = $this->getConfig();
         /** @var \Gush\Config $config */
 
         if (null === $baseBranch) {

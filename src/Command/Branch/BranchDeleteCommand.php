@@ -55,7 +55,7 @@ EOF
 
         $org = $input->getArgument('other_organization');
         if (null === $org) {
-            $org = $this->getParameter('authentication')['username'];
+            $org = $this->getParameter($input, 'authentication')['username'];
         }
 
         $this->getHelper('git')->pushToRemote($org, ':'.$currentBranchName, true);

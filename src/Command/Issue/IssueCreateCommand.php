@@ -12,7 +12,7 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\EditorHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class IssueCreateCommand extends BaseCommand implements GitRepoFeature
+class IssueCreateCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -52,7 +52,7 @@ EOF
         $tracker = $this->getIssueTracker();
         $emptyValidator = function ($string) {
             if (trim($string) == '') {
-                throw new \Exception('This value can not be empty');
+                throw new \Exception('This value cannot be empty');
             }
 
             return $string;
@@ -75,7 +75,7 @@ EOF
             $body = $editor->fromString('');
         }
 
-        if (!$this->getParameter('remove-promote')) {
+        if (!$this->getParameter($input, 'remove-promote')) {
             $body .= $this->appendPlug($body);
         }
 

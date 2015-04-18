@@ -12,14 +12,14 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Feature\TableFeature;
 use Gush\Helper\GitRepoHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueListCommand extends BaseCommand implements TableFeature, GitRepoFeature
+class IssueListCommand extends BaseCommand implements TableFeature, IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}

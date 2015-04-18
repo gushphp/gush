@@ -66,7 +66,7 @@ EOF
     {
         $prNumber = $input->getArgument('pr_number');
         $baseBranch = $input->getArgument('base_branch');
-        $sourceOrg = $this->getParameter('authentication')['username'];
+        $sourceOrg = $this->getParameter($input, 'authentication')['username'];
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);

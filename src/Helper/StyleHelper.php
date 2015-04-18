@@ -289,7 +289,7 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
 
         if (null !== $default) {
             $values = array_flip($labelKey);
-            $default = $values[$default];
+            $default = isset($values[$default]) ? $values[$default] : null;
         }
 
         return $labelKey[$this->choice($question, $labels, $default)];

@@ -13,16 +13,11 @@ namespace Gush\Tests\Command\Core;
 
 use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;
-use Gush\Factory\AdapterFactory;
 use Gush\Tester\Adapter\TestConfigurator;
-use Gush\Tester\QuestionToken;
 use Gush\Tests\Command\BaseTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
 class CoreConfigureCommandTest extends BaseTestCase

@@ -13,10 +13,11 @@ namespace Gush\Command;
 
 use Gush\Adapter\Adapter;
 use Gush\Adapter\IssueTracker;
+use Gush\Config;
 use Gush\Event\GushEvents;
 use Gush\Template\Messages;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -24,6 +25,16 @@ class BaseCommand extends Command
 {
     const COMMAND_SUCCESS = 1;
     const COMMAND_FAILURE = 0;
+
+    public function run(InputInterface $input, OutputInterface $output)
+    {
+        $this->getApplication()->getDispatcher()->dispatch(
+            GushEvents::DECORATE_DEFINITION,
+            new ConsoleCommandEvent($this, $input, $output)
+        );
+
+        return parent::run($input, $output);
+    }
 
     /**
      * Gets the current adapter
@@ -46,15 +57,27 @@ class BaseCommand extends Command
     }
 
     /**
+     * Gets the application configuration.
+     *
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return $this->getApplication()->getConfig();
+    }
+
+    /**
      * Gets a specific parameter
      *
-     * @param  string $key
+     * @param InputInterface $input
+     * @param string         $key
+     *
      * @return mixed
      */
-    public function getParameter($key)
+    public function getParameter(InputInterface $input, $key)
     {
-        $config = $this->getApplication()->getConfig();
-        $adapter = $config->get('adapter');
+        $config = $this->getConfig();
+        $adapter = $input->getOption('repo-adapter');
 
         if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
             return $value;
@@ -92,7 +115,7 @@ class BaseCommand extends Command
     {
         $this->getApplication()->getDispatcher()->dispatch(
             GushEvents::INITIALIZE,
-            new ConsoleEvent($this, $input, $output)
+            new ConsoleCommandEvent($this, $input, $output)
         );
     }
 

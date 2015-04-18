@@ -11,7 +11,6 @@
 
 namespace Gush\Tests\Command;
 
-use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
 use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
@@ -19,10 +18,8 @@ use Gush\Factory\AdapterFactory;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Tester\Adapter\TestAdapter;
 use Gush\Tester\Adapter\TestAdapterFactory;
-use Gush\Tester\Adapter\TestIssueTracker;
 use Gush\Tester\Adapter\TestIssueTrackerFactory;
 use Gush\Tests\TestableApplication;
-use Guzzle\Http\Client;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophet;
 use Symfony\Component\Console\Command\Command;
@@ -79,8 +76,6 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $application = new TestableApplication($adapterFactory);
         $application->setAutoExit(false);
         $application->setConfig($this->config->reveal());
-        $application->setAdapter($this->adapter);
-        $application->setIssueTracker($this->adapter);
 
         $command->setApplication($application);
 

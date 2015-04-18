@@ -12,23 +12,16 @@
 namespace Gush\Command\Core;
 
 use Gush\Command\BaseCommand;
-use Gush\Factory;
+use Gush\Config;
+use Gush\ConfigFactory;
 use Gush\Factory\AdapterFactory;
-use Gush\Feature\GitRepoFeature;
 use Gush\Helper\StyleHelper;
-use Guzzle\Http\Exception\ServerErrorResponseException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Yaml;
 
-class CoreConfigureCommand extends BaseCommand implements GitRepoFeature
+class CoreConfigureCommand extends BaseCommand
 {
-    /**
-     * @var \Gush\Config $config
-     */
-    private $config;
-
     /**
      * {@inheritdoc}
      */
@@ -51,30 +44,9 @@ EOF
     /**
      * {@inheritdoc}
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        try {
-            $this->config = Factory::createConfig(true, false);
-        } catch (\Exception $exception) {
-            $this->config = Factory::createConfig(false, false);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filename = $this->config->get('home_config');
-
-        $yaml = new Yaml();
-        $content = ['parameters' => $this->config->raw()];
-
-        @unlink($filename);
-
-        if (!@file_put_contents($filename, $yaml->dump($content), 0644)) {
-            $output->writeln('<error>Configuration file cannot be saved.</error>');
-        }
+        ConfigFactory::dumpToFile($this->getConfig(), Config::CONFIG_SYSTEM);
 
         $this->getHelper('gush_style')->success('Configuration file saved successfully.');
 
@@ -123,7 +95,6 @@ EOF
             }
 
             $this->configureAdapter($input, $output, $adapterName, $adapters[$adapterName]);
-            $this->handleDefaulting($adapterName, $adapters[$adapterName]);
 
             if (!$styleHelper->confirm('Do you want to configure other adapters?', false)) {
                 break;
@@ -136,6 +107,8 @@ EOF
         $labels = ['noop' => '  Nothing (skip selection)'];
         $labelPattern = '%s %s (%s)';
 
+        $config = $this->getConfig();
+
         foreach ($adapters as $adapterName => $adapter) {
             $capabilities = [];
 
@@ -147,9 +120,10 @@ EOF
                 $capabilities[] = 'IssueTracker';
             }
 
+
             $isConfigured =
-                $this->config->has(sprintf('[adapters][%s]', $adapterName)) ||
-                $this->config->has(sprintf('[issue_trackers][%s]', $adapterName));
+                $config->has(sprintf('[repo_adapters][%s]', $adapterName)) ||
+                $config->has(sprintf('[issue_trackers][%s]', $adapterName));
 
             $labels[$adapterName] = sprintf(
                 $labelPattern,
@@ -160,35 +134,6 @@ EOF
         }
 
         return $labels;
-    }
-
-    private function handleDefaulting($adapterName, array $adapterInfo)
-    {
-        /** @var StyleHelper $styleHelper */
-        $styleHelper = $this->getHelper('gush_style');
-
-        $currentDefault = $this->config->get('adapter');
-
-        if ($adapterName !== $currentDefault && $adapterInfo[AdapterFactory::SUPPORT_REPOSITORY_MANAGER] &&
-            $styleHelper->confirm(
-                sprintf('Would you like to make "%s" the default repository manager?', $adapterInfo['label']),
-                null === $currentDefault
-            )
-        ) {
-            $this->config->merge(['adapter' => $adapterName]);
-        }
-
-        $currentIssueTracker = $this->config->get('issue_tracker');
-
-        if ($adapterName !== $currentIssueTracker &&
-            $adapterInfo[AdapterFactory::SUPPORT_ISSUE_TRACKER] &&
-            $styleHelper->confirm(
-                sprintf('Would you like to make "%s" the default issue tracker?', $adapterInfo['label']),
-                null === $currentDefault
-            )
-        ) {
-            $this->config->merge(['issue_tracker' => $adapterName]);
-        }
     }
 
     private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName, array $adapter)
@@ -229,19 +174,12 @@ EOF
         }
 
         if ($isAuthenticated) {
-            $rawConfig = $this->config->raw();
-
-            if ($adapter[AdapterFactory::SUPPORT_REPOSITORY_MANAGER]) {
-                $rawConfig['adapters'][$adapterName] = $config;
-            }
-
-            if ($adapter[AdapterFactory::SUPPORT_ISSUE_TRACKER]) {
-                $rawConfig['issue_trackers'][$adapterName] = $config;
-            }
+            $rawConfig = $this->getConfig()->toArray(Config::CONFIG_SYSTEM);
+            $rawConfig['adapters'][$adapterName] = $config;
 
             $styleHelper->success(sprintf('The "%s" adapter was successfully authenticated.', $adapter['label']));
 
-            $this->config->merge($rawConfig);
+            $this->getConfig()->merge($rawConfig, Config::CONFIG_SYSTEM);
         }
     }
 
@@ -254,16 +192,14 @@ EOF
      */
     private function isCredentialsValid($name, array $adapter, array $config)
     {
-        $application = $this->getApplication();
         /** @var \Gush\Application $application */
-        $application->setConfig($this->config);
-
+        $application = $this->getApplication();
         $factory = $application->getAdapterFactory();
 
         if ($adapter[AdapterFactory::SUPPORT_REPOSITORY_MANAGER]) {
-            $adapter = $factory->createRepositoryManager($name, $config, $this->config);
+            $adapter = $factory->createRepositoryManager($name, $config, $this->getConfig());
         } elseif ($adapter[AdapterFactory::SUPPORT_ISSUE_TRACKER]) {
-            $adapter = $factory->createIssueTracker($name, $config, $this->config);
+            $adapter = $factory->createIssueTracker($name, $config, $this->getConfig());
         }
 
         $adapter->authenticate();

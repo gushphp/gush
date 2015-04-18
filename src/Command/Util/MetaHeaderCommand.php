@@ -101,8 +101,7 @@ EOT
         $dryRun = $input->getOption('dry-run');
         $template = $input->getOption('template');
 
-        $config = $this->getApplication()->getConfig();
-        /** @var \Gush\Config $config */
+        $config = $this->getConfig();
 
         /** @var SymfonyStyle $styleHelper */
         $styleHelper = $this->getHelper('gush_style');

@@ -19,8 +19,11 @@ use Symfony\Component\Console\Helper\Helper;
 
 class GitHelper extends Helper
 {
-    const UNDEFINED_ORG = 1;
-    const UNDEFINED_REPO = 2;
+    // Use a null character to ensure the name can never a legal name
+    // and help with detecting its undefined
+    const UNDEFINED_ORG = "org-autodetected\0";
+    const UNDEFINED_REPO = "repo-autodetected\0";
+    const UNDEFINED_ADAPTER = "adapter-autodetected\0";
 
     /** @var ProcessHelper */
     private $processHelper;
@@ -58,6 +61,21 @@ class GitHelper extends Helper
     public function getName()
     {
         return 'git';
+    }
+
+    /**
+     * @param string      $value
+     * @param string|null $default
+     *
+     * @return null|string
+     */
+    public static function undefinedToDefault($value, $default = null)
+    {
+        if (false !== strpos($value, "\0")) {
+            return $default;
+        }
+
+        return $value;
     }
 
     /**
@@ -120,14 +138,6 @@ class GitHelper extends Helper
         }
 
         return true;
-    }
-
-    /**
-     * @return string The repository name
-     */
-    public function getRepoName()
-    {
-        return $this->gitConfigHelper->getRemoteInfo('origin')['repo'];
     }
 
     /**
@@ -221,14 +231,6 @@ class GitHelper extends Helper
         $result = $this->processHelper->runCommand(['git', 'branch', '--list', $branch], true);
 
         return 1 === preg_match('#'.preg_quote($branch, '#').'(?!\w)#', $result);
-    }
-
-    /**
-     * @return string The vendor name
-     */
-    public function getVendorName()
-    {
-        return $this->gitConfigHelper->getRemoteInfo('origin')['vendor'];
     }
 
     /**

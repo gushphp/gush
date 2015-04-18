@@ -12,7 +12,7 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Copy an issue from one repository to another
  */
-class IssueCopyCommand extends BaseCommand implements GitRepoFeature
+class IssueCopyCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}

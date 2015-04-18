@@ -13,7 +13,7 @@ namespace Gush\Command\Issue;
 
 use Gush\Adapter\SupportsDynamicLabels;
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Feature\TableFeature;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class LabelIssuesCommand extends BaseCommand implements TableFeature, GitRepoFeature
+class LabelIssuesCommand extends BaseCommand implements TableFeature, IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -75,7 +75,7 @@ EOF
         if ($input->getOption('new')) {
             $filename = sprintf(
                 '%s/.last_%s-%s_%s_sync',
-                $this->getParameter('cache-dir'),
+                $this->getConfig()->get('home'),
                 $org,
                 $repo,
                 $pullRequests ? 'pr' : 'issues'

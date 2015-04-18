@@ -11,128 +11,275 @@
 
 namespace Gush\Tests;
 
-use Gush\Factory;
-use Symfony\Component\Process\Process;
+use Gush\Config;
+use Gush\ConfigFactory;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @group functional
+ * @runTestsInSeparateProcesses
  */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
-    public function creates_config_in_unix()
+    private $homedir;
+
+    protected function setUp()
     {
-        $home = getenv('GUSH_HOME');
-        $cacheDir = getenv('GUSH_CACHE_DIR');
+        putenv('GUSH_CACHE_DIR');
 
-        if (!$home || !$cacheDir) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
+        // Cant use a virtual filesystem here because PHP does not
+        // support to rename file:///temp/file to vfs://gush-home.
+        $homedir = sys_get_temp_dir();
+
+        if (!$homedir) {
+            $this->markTestSkipped('No system temp folder configured.');
         }
 
-        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            $this->markTestSkipped('This test only runs on POSIX systems.');
-        }
+        $this->homedir = $homedir.'/gush-home-'.microtime(true);
 
-        @mkdir($home, 0777, true);
+        $this->assertFileNotExists($this->homedir);
 
-        putenv("HOME={$home}");
-
-        $config = Factory::createConfig(false);
-
-        $this->assertEquals($home.'/cache', $config->get('cache-dir'));
-        $this->assertEquals($home, $config->get('home'));
-        $this->assertFileExists($home.'/cache');
-        $this->assertFileExists($home.'/cache/.htaccess');
-        $this->assertFileExists($home.'/.htaccess');
-
-        $process = new Process("rm -rf {$home}");
-        $process->run();
+        putenv('GUSH_HOME='.$this->homedir);
+        putenv('GUSH_CACHE_DIR');
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
-    public function create_config_in_windows()
+    public function testCreateConfigWithGushHomeNotExisting()
     {
-        $home = getenv('GUSH_HOME');
-        $cacheDir = getenv('GUSH_CACHE_DIR');
+        $config = ConfigFactory::createConfig();
 
-        if (!$home || !$cacheDir) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' and/OR \'GUSH_CACHE_DIR\' in your \'phpunit.xml\'.');
-        }
+        $this->assertFileExists($this->homedir.'/cache/.htaccess');
+        $this->assertFileExists($this->homedir.'/.htaccess');
 
-        if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            $this->markTestSkipped('This test only runs on Windows.');
-        }
-
-        @mkdir($home, 0777, true);
-
-        putenv("HOME={$home}");
-        putenv("GUSH_HOME");
-        putenv("GUSH_CACHE_DIR");
-        putenv("APPDATA={$home}");
-        putenv("LOCALAPPDATA={$home}");
-
-        $config = Factory::createConfig(false);
-
-        $this->assertEquals($home.'/Gush', $config->get('cache-dir'));
-        $this->assertEquals($home.'/Gush', $config->get('home'));
-        $this->assertFileExists($home.'/.htaccess');
-
-        $process = new Process("rm -rf {$home}");
-        $process->run();
+        $this->assertEquals(
+            [
+                'adapters' => [],
+                'issue_trackers' => [],
+                'home' => $this->homedir,
+                'home_config' => $this->homedir.'/.gush.yml',
+                'cache-dir' => $this->homedir.'/cache',
+            ],
+            $config->toArray()
+        );
     }
 
-    /**
-     * @test
-     * @runInSeparateProcess
-     */
-    public function load_config_with_no_local()
+    public function testCreateConfigWithCustomCacheDir()
     {
-        $home = getenv('GUSH_HOME');
-        $localDir = getenv('GUSH_LOCAL');
-        $cacheDir = getenv('GUSH_CACHE_DIR');
+        $cacheDir = sys_get_temp_dir().'/gush-cache-'.microtime(true);
 
-        if (!$home || !$cacheDir || !$localDir) {
-            $this->markTestSkipped(
-                'Please configure the "GUSH_HOME", "GUSH_LOCAL" and "GUSH_CACHE_DIR" in your "phpunit.xml".'
-            );
-        }
+        putenv('GUSH_CACHE_DIR='.$cacheDir);
 
-        @mkdir($home, 0777, true);
-        @mkdir($localDir, 0777, true);
+        $config = ConfigFactory::createConfig();
 
-        $config = [
-            'parameters' => [
-                'cache-dir' => '{$home}/cache',
-                'adapters' => ['github' => []],
-                'issue_trackers' => ['github' => []],
-            ]
-        ];
+        $this->assertFileExists($cacheDir.'/.htaccess');
+        $this->assertFileExists($this->homedir.'/.htaccess');
 
-        $localConfig = [
-            'meta-header' => 'This file is part of Gush package.'
-        ];
+        $this->assertEquals(
+            [
+                'adapters' => [],
+                'issue_trackers' => [],
+                'home' => $this->homedir,
+                'home_config' => $this->homedir.'/.gush.yml',
+                'cache-dir' => $cacheDir,
+            ],
+            $config->toArray()
+        );
+    }
 
-        file_put_contents($home.'/.gush.yml', Yaml::dump($config));
-        file_put_contents($localDir.'/.gush.yml', Yaml::dump($localConfig));
+    public function testCreateConfigWithExistingHomeConfig()
+    {
+        $content = <<<EOT
+adapter: github
+adapters:
+    github:
+        config: { base_url: 'https://api.github.com/', repo_domain_url: 'https://github.com' }
+        authentication: { username: cordoval, password-or-token: password, http-auth-type: http_password }
+EOT;
 
-        chdir($localDir);
+        (new Filesystem())->dumpFile($this->homedir.'/.gush.yml', $content);
 
-        $config = Factory::createConfig(true);
-        $this->assertEquals(['github' => []], $config->get('adapters'));
-        $this->assertTrue($config->has('meta-header'));
+        $config = ConfigFactory::createConfig();
 
-        $config = Factory::createConfig(true, false);
-        $this->assertEquals(['github' => []], $config->get('adapters'));
-        $this->assertFalse($config->has('meta-header'));
+        $this->assertEquals(
+            [
+                'adapters' => [
+                    'github' => [
+                        'config' => [
+                            'base_url' => 'https://api.github.com/',
+                            'repo_domain_url' => 'https://github.com',
+                        ],
+                        'authentication' => [
+                            'username' => 'cordoval',
+                            'password-or-token' => 'password',
+                            'http-auth-type' => 'http_password',
+                        ],
+                    ],
+                ],
+                'issue_trackers' => [],
+                'adapter' => 'github',
+                'home' => $this->homedir,
+                'home_config' => $this->homedir.'/.gush.yml',
+                'cache-dir' => $this->homedir.'/cache',
+            ],
+            $config->toArray(Config::CONFIG_ALL)
+        );
 
-        $process = new Process("rm -rf {$home}");
-        $process->run();
+        $this->assertEquals(
+            [
+                'adapters' => [
+                    'github' => [
+                        'config' => [
+                            'base_url' => 'https://api.github.com/',
+                            'repo_domain_url' => 'https://github.com',
+                        ],
+                        'authentication' => [
+                            'username' => 'cordoval',
+                            'password-or-token' => 'password',
+                            'http-auth-type' => 'http_password',
+                        ],
+                    ],
+                ],
+                'issue_trackers' => [],
+                'adapter' => 'github',
+            ],
+            $config->toArray(Config::CONFIG_SYSTEM)
+        );
+
+        $this->assertEquals(
+            [],
+            $config->toArray(Config::CONFIG_LOCAL)
+        );
+    }
+
+    public function testCreateConfigWithExistingHomeAndLocalConfig()
+    {
+        $content = <<<EOT
+adapter: github
+adapters:
+    github:
+        config: { base_url: 'https://api.github.com/', repo_domain_url: 'https://github.com' }
+        authentication: { username: cordoval, password-or-token: password, http-auth-type: http_password }
+EOT;
+
+        (new Filesystem())->dumpFile($this->homedir.'/.gush.yml', $content);
+
+        $localContent = <<<EOT
+adapter: bitbucket
+EOT;
+
+        $localDir = sys_get_temp_dir().'/gush-local-'.microtime(true);
+        $this->assertFileNotExists($localDir);
+        (new Filesystem())->dumpFile($localDir.'/.gush.yml', $localContent);
+
+        $config = ConfigFactory::createConfig($localDir);
+
+        $this->assertEquals(
+            [
+                'adapters' => [
+                    'github' => [
+                        'config' => [
+                            'base_url' => 'https://api.github.com/',
+                            'repo_domain_url' => 'https://github.com',
+                        ],
+                        'authentication' => [
+                            'username' => 'cordoval',
+                            'password-or-token' => 'password',
+                            'http-auth-type' => 'http_password',
+                        ],
+                    ],
+                ],
+                'issue_trackers' => [],
+                'adapter' => 'bitbucket',
+                'home' => $this->homedir,
+                'home_config' => $this->homedir.'/.gush.yml',
+                'cache-dir' => $this->homedir.'/cache',
+                'local' => $localDir,
+                'local_config' => $localDir.'/.gush.yml',
+            ],
+            $config->toArray(Config::CONFIG_ALL)
+        );
+
+        $this->assertEquals(
+            [
+                'adapters' => [
+                    'github' => [
+                        'config' => [
+                            'base_url' => 'https://api.github.com/',
+                            'repo_domain_url' => 'https://github.com',
+                        ],
+                        'authentication' => [
+                            'username' => 'cordoval',
+                            'password-or-token' => 'password',
+                            'http-auth-type' => 'http_password',
+                        ],
+                    ],
+                ],
+                'issue_trackers' => [],
+                'adapter' => 'github',
+            ],
+            $config->toArray(Config::CONFIG_SYSTEM)
+        );
+
+        $this->assertEquals(
+            [
+                'adapter' => 'bitbucket',
+            ],
+            $config->toArray(Config::CONFIG_LOCAL)
+        );
+    }
+
+    public function testDumpConfigToSystemFile()
+    {
+        $config = ConfigFactory::createConfig();
+
+        $this->assertFileExists($this->homedir.'/cache/.htaccess');
+        $this->assertFileExists($this->homedir.'/.htaccess');
+        $this->assertFileNotExists($this->homedir.'/.gush.yml');
+
+        ConfigFactory::dumpToFile($config, Config::CONFIG_SYSTEM);
+
+        $this->assertFileExists($this->homedir.'/.gush.yml');
+        $this->assertEquals(
+            [
+                'adapters' => [],
+                'issue_trackers' => [],
+            ],
+            Yaml::parse(file_get_contents($this->homedir.'/.gush.yml'))
+        );
+    }
+
+    public function testDumpConfigToLocalFile()
+    {
+        $localDir = sys_get_temp_dir().'/gush-local-'.microtime(true);
+
+        $config = ConfigFactory::createConfig($localDir);
+        $config->merge(
+            [
+                'adapter' => 'bitbucket',
+            ],
+            Config::CONFIG_LOCAL
+        );
+
+        $this->assertFileNotExists($localDir.'/.gush.yml');
+
+        ConfigFactory::dumpToFile($config, Config::CONFIG_LOCAL);
+        ConfigFactory::dumpToFile($config, Config::CONFIG_SYSTEM);
+
+        $this->assertFileExists($localDir.'/.gush.yml');
+        $this->assertEquals(
+            ['adapter' => 'bitbucket'],
+            Yaml::parse(file_get_contents($localDir.'/.gush.yml'))
+        );
+
+        ConfigFactory::dumpToFile($config, Config::CONFIG_SYSTEM);
+
+        $this->assertFileExists($this->homedir.'/.gush.yml');
+        $this->assertEquals(
+            [
+                'adapters' => [],
+                'issue_trackers' => [],
+            ],
+            Yaml::parse(file_get_contents($this->homedir.'/.gush.yml'))
+        );
     }
 }

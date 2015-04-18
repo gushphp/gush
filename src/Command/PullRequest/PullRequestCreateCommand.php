@@ -128,8 +128,7 @@ EOF
         $sourceRepo = $input->getOption('source-repo') ?: $input->getOption('repo') ;
         $sourceBranch = $input->getOption('source-branch');
 
-        $config = $this->getApplication()->getConfig();
-        /** @var \Gush\Config $config */
+        $config = $this->getConfig();
 
         $base = $input->getOption('base');
 
@@ -138,7 +137,7 @@ EOF
         }
 
         if (null === $sourceOrg) {
-            $sourceOrg = $this->getParameter('authentication')['username'];
+            $sourceOrg = $this->getParameter($input, 'authentication')['username'];
         }
 
         if (null === $sourceBranch) {
@@ -163,7 +162,7 @@ EOF
 
         if ('' === $defaultTitle && !$input->isInteractive()) {
             $styleHelper->error(
-                'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
+                'Title cannot be empty, use the "--title" option to provide a title in none-interactive mode.'
             );
 
             return self::COMMAND_FAILURE;

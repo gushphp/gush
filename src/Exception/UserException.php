@@ -13,4 +13,25 @@ namespace Gush\Exception;
 
 class UserException extends \Exception
 {
+    private $messages = [];
+
+    /**
+     * @param string|array $message
+     * @param int          $code
+     * @param \Exception   $previous
+     */
+    public function __construct($message, $code = 1, \Exception $previous = null)
+    {
+        $this->messages = (array) $message;
+
+        parent::__construct(implode("\n", $this->messages), $code, $previous);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
 }

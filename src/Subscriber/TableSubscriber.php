@@ -11,10 +11,9 @@
 
 namespace Gush\Subscriber;
 
-use Gush\Event\CommandEvent;
 use Gush\Event\GushEvents;
 use Gush\Feature\TableFeature;
-use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -35,7 +34,7 @@ class TableSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function decorateDefinition(CommandEvent $event)
+    public function decorateDefinition(ConsoleCommandEvent $event)
     {
         $command = $event->getCommand();
 
@@ -64,7 +63,7 @@ class TableSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function initialize(ConsoleEvent $event)
+    public function initialize(ConsoleCommandEvent $event)
     {
         $command = $event->getCommand();
 

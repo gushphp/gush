@@ -289,8 +289,7 @@ EOF
 
     private function getPrType($prType)
     {
-        /** @var Config $config */
-        $config = $this->getApplication()->getConfig();
+        $config = $this->getConfig();
 
         if (!$config->has('pr_type')) {
             if (null === $prType) {

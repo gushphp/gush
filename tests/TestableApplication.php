@@ -13,19 +13,10 @@ namespace Gush\Tests;
 
 use Gush\Application;
 use Gush\Config;
-use Gush\Tester\Adapter\TestAdapter;
 
 class TestableApplication extends Application
 {
     protected $config;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildAdapter($adapter, array $config = null)
-    {
-        return new TestAdapter();
-    }
 
     public function setConfig(Config $config)
     {

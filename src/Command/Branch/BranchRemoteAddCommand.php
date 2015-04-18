@@ -50,7 +50,7 @@ EOF
     {
         $adapter = $this->getAdapter();
         $org = $input->getArgument('other_organization');
-        $username = $this->getParameter('authentication')['username'];
+        $username = $this->getParameter($input, 'authentication')['username'];
         $remoteName = $org ?: $username;
 
         $fork = $adapter->createFork($org);

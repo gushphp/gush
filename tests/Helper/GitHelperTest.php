@@ -118,30 +118,6 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function gets_the_repository_name()
-    {
-        $this->gitConfigHelper->getRemoteInfo('origin')->willReturn(
-            ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
-        );
-
-        $this->assertEquals('gush', $this->unitGit->getRepoName());
-    }
-
-    /**
-     * @test
-     */
-    public function gets_vendor_name_for_repository()
-    {
-        $this->gitConfigHelper->getRemoteInfo('origin')->willReturn(
-            ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
-        );
-
-        $this->assertEquals('gushphp', $this->unitGit->getVendorName());
-    }
-
-    /**
-     * @test
-     */
     public function lists_files()
     {
         // Smoke test for a real listFiles
