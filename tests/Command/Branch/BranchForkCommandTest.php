@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchForkCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
 
-class BranchForkCommandTest extends BaseTestCase
+class BranchForkCommandTest extends CommandTestCase
 {
     /**
      * @test

@@ -247,7 +247,7 @@ EOF
         }
 
         throw new UserException(
-            sprintf('Can not open pull-request, remote branch "%s" does not exist in "%s/%s".', $branch, $org, $repo)
+            sprintf('Cannot open pull-request, remote branch "%s" does not exist in "%s/%s".', $branch, $org, $repo)
         );
     }
 }

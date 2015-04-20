@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCloseCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class PullRequestCloseCommandTest extends BaseTestCase
+class PullRequestCloseCommandTest extends CommandTestCase
 {
     /**
      * @test

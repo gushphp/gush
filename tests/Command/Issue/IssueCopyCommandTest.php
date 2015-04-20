@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCopyCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class IssueCopyCommandTest extends BaseTestCase
+class IssueCopyCommandTest extends CommandTestCase
 {
     /**
      * @test

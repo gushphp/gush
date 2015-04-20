@@ -13,14 +13,14 @@ namespace Gush\Tests\Command\Core;
 
 use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;
-use Gush\Tester\Adapter\TestConfigurator;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestConfigurator;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Yaml\Yaml;
 
-class CoreConfigureCommandTest extends BaseTestCase
+class CoreConfigureCommandTest extends CommandTestCase
 {
     /**
      * @test

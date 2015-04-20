@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestPatOnTheBackCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class PullRequestPatOnTheBackCommandTest extends BaseTestCase
+class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 {
     const TEMPLATE_STRING = "Good catch @weaverryan, thanks for the patch.";
 

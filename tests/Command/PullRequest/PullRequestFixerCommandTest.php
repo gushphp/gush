@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestFixerCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
 
-class PullRequestFixerCommandTest extends BaseTestCase
+class PullRequestFixerCommandTest extends CommandTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 

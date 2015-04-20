@@ -12,9 +12,9 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueLabelListCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 
-class IssueLabelListCommandTest extends BaseTestCase
+class IssueLabelListCommandTest extends CommandTestCase
 {
     /**
      * @test

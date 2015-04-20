@@ -12,9 +12,9 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueMilestoneListCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 
-class IssueMilestoneListCommandTest extends BaseTestCase
+class IssueMilestoneListCommandTest extends CommandTestCase
 {
     /**
      * @test

@@ -15,6 +15,15 @@ use Gush\Config;
 
 class ConfigTest extends BaseTestCase
 {
+    private $homedir;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->homedir = $this->getNewTmpFolder('home');
+    }
+
     public function testCreateEmptyConfigWithDefaults()
     {
         $config = $this->createConfig();
@@ -22,10 +31,9 @@ class ConfigTest extends BaseTestCase
         $this->assertEquals(
             [
                 'adapters' => [],
-                'issue_trackers' => [],
-                'home' => $this->rootFs->url().'/gush',
-                'home_config' => $this->rootFs->url().'/gush/.gush.yml',
-                'cache-dir' => $this->rootFs->url().'/gush/cache',
+                'home' => $this->homedir.'/gush',
+                'home_config' => $this->homedir.'/gush/.gush.yml',
+                'cache-dir' => $this->homedir.'/gush/cache',
             ],
             $config->toArray(Config::CONFIG_ALL)
         );
@@ -33,7 +41,6 @@ class ConfigTest extends BaseTestCase
         $this->assertEquals(
             [
                 'adapters' => [],
-                'issue_trackers' => [],
             ],
             $config->toArray(Config::CONFIG_SYSTEM)
         );
@@ -56,10 +63,9 @@ class ConfigTest extends BaseTestCase
                 'adapters' => [
                     'github' => ['base_url' => 'url']
                 ],
-                'issue_trackers' => [],
-                'home' => $this->rootFs->url().'/gush',
-                'home_config' => $this->rootFs->url().'/gush/.gush.yml',
-                'cache-dir' => $this->rootFs->url().'/gush/cache',
+                'home' => $this->homedir.'/gush',
+                'home_config' => $this->homedir.'/gush/.gush.yml',
+                'cache-dir' => $this->homedir.'/gush/cache',
             ],
             $config->toArray(Config::CONFIG_ALL)
         );
@@ -69,7 +75,6 @@ class ConfigTest extends BaseTestCase
                 'adapters' => [
                     'github' => ['base_url' => 'url'],
                 ],
-                'issue_trackers' => [],
             ],
             $config->toArray(Config::CONFIG_SYSTEM)
         );
@@ -95,12 +100,11 @@ class ConfigTest extends BaseTestCase
                 'adapters' => [
                     'github' => ['base_url' => 'url']
                 ],
-                'issue_trackers' => [],
-                'home' => $this->rootFs->url().'/gush',
-                'home_config' => $this->rootFs->url().'/gush/.gush.yml',
-                'cache-dir' => $this->rootFs->url().'/gush/cache',
-                'local' => $this->rootFs->url().'/local-gush',
-                'local_config' => $this->rootFs->url().'/local-gush/.gush.yml',
+                'home' => $this->homedir.'/gush',
+                'home_config' => $this->homedir.'/gush/.gush.yml',
+                'cache-dir' => $this->homedir.'/gush/cache',
+                'local' => $this->homedir.'/local-gush',
+                'local_config' => $this->homedir.'/local-gush/.gush.yml',
                 'repo_adapter' => ['name' => 'github'],
             ],
             $config->toArray(Config::CONFIG_ALL)
@@ -111,7 +115,6 @@ class ConfigTest extends BaseTestCase
                 'adapters' => [
                     'github' => ['base_url' => 'url'],
                 ],
-                'issue_trackers' => [],
             ],
             $config->toArray(Config::CONFIG_SYSTEM)
         );
@@ -128,8 +131,8 @@ class ConfigTest extends BaseTestCase
     {
         $config = $this->createConfig();
 
-        $this->assertEquals($this->rootFs->url().'/gush', $config->get('home'));
-        $this->assertEquals($this->rootFs->url().'/gush/.gush.yml', $config->get('home_config'));
+        $this->assertEquals($this->homedir.'/gush', $config->get('home'));
+        $this->assertEquals($this->homedir.'/gush/.gush.yml', $config->get('home_config'));
         $this->assertNull($config->get('no-key'));
 
         $this->assertEquals([], $config->get('adapters', Config::CONFIG_ALL));
@@ -147,7 +150,7 @@ class ConfigTest extends BaseTestCase
             ]
         );
 
-        $this->assertEquals($this->rootFs->url().'/gush', $config->get('[home]'));
+        $this->assertEquals($this->homedir.'/gush', $config->get('[home]'));
         $this->assertEquals(['base_url' => 'url'], $config->get('[adapters][github]'));
         $this->assertEquals('url', $config->get('[adapters][github][base_url]'));
         $this->assertNull($config->get('[no-key]'));
@@ -179,7 +182,7 @@ class ConfigTest extends BaseTestCase
 
     public function testSetConfigValue()
     {
-        $config = $this->createConfig();
+        $config = $this->createConfig(['issue_trackers' => []]);
 
         $this->assertNull($config->get('repo_adapter'));
 
@@ -206,7 +209,7 @@ class ConfigTest extends BaseTestCase
 
         $this->setExpectedException(
             'InvalidArgumentException',
-            'Invalid configuration, can not set nested configuration-key "[my_key]"'
+            'Invalid configuration, cannot set nested configuration-key "[my_key]"'
         );
 
         $config->set('[my_key]', '/root', Config::CONFIG_SYSTEM);
@@ -259,7 +262,7 @@ class ConfigTest extends BaseTestCase
 
         $this->setExpectedException(
             'InvalidArgumentException',
-            'Configuration key "home" is protected and can not be overwritten.'
+            'Configuration key "home" is protected and cannot be overwritten.'
         );
 
         $config->set('home', '/root', Config::CONFIG_SYSTEM);
@@ -283,11 +286,11 @@ class ConfigTest extends BaseTestCase
 
     private function createConfig(array $config = [], array $localConfig = [])
     {
-        $localHome = [] !== $localConfig ? $this->rootFs->url().'/local-gush' : null;
+        $localHome = [] !== $localConfig ? $this->homedir.'/local-gush' : null;
 
         return new Config(
-            $this->rootFs->url().'/gush',
-            $this->rootFs->url().'/gush/cache',
+            $this->homedir.'/gush',
+            $this->homedir.'/gush/cache',
             $config,
             $localHome,
             $localConfig

@@ -14,11 +14,11 @@ namespace Gush\Tests\Command\PullRequest;
 use Gush\Command\PullRequest\PullRequestMergeCommand;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class PullRequestMergeCommandTest extends BaseTestCase
+class PullRequestMergeCommandTest extends CommandTestCase
 {
     /**
      * @var ObjectProphecy|GitHelper

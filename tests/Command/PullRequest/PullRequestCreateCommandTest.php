@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCreateCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
 
-class PullRequestCreateCommandTest extends BaseTestCase
+class PullRequestCreateCommandTest extends CommandTestCase
 {
     public function setUp()
     {
@@ -161,7 +161,7 @@ RES;
 
         $this->setExpectedException(
             'Gush\Exception\UserException',
-            'Can not open pull-request, remote branch "not-my-branch" does not exist in "cordoval/gush".'
+            'Cannot open pull-request, remote branch "not-my-branch" does not exist in "cordoval/gush".'
         );
 
         $tester->execute($args, ['interactive' => false]);

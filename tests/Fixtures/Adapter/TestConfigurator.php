@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tester\Adapter;
+namespace Gush\Tests\Fixtures\Adapter;
 
 use Gush\Adapter\Configurator;
 use Symfony\Component\Console\Input\InputInterface;

@@ -27,10 +27,18 @@ class FilesystemHelper extends Helper
     private $fs;
 
     /**
-     * Constructor.
+     * @var string
      */
-    public function __construct()
+    private $tempdir;
+
+    /**
+     * Constructor.
+     *
+     * @param string|null $directory
+     */
+    public function __construct($directory = null)
     {
+        $this->tempdir = $directory ?: sys_get_temp_dir();
         $this->fs = new SfFilesystem();
     }
 
@@ -44,7 +52,7 @@ class FilesystemHelper extends Helper
 
     public function newTempFilename()
     {
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'gush';
+        $dir = $this->tempdir.DIRECTORY_SEPARATOR.'gush';
         $this->fs->mkdir($dir);
 
         $tmpName = tempnam($dir, '');

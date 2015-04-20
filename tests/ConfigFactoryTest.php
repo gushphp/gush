@@ -13,32 +13,21 @@ namespace Gush\Tests;
 
 use Gush\Config;
 use Gush\ConfigFactory;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @group functional
  * @runTestsInSeparateProcesses
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class ConfigFactoryTest extends BaseTestCase
 {
     private $homedir;
 
     protected function setUp()
     {
-        putenv('GUSH_CACHE_DIR');
+        parent::setUp();
 
-        // Cant use a virtual filesystem here because PHP does not
-        // support to rename file:///temp/file to vfs://gush-home.
-        $homedir = sys_get_temp_dir();
-
-        if (!$homedir) {
-            $this->markTestSkipped('No system temp folder configured.');
-        }
-
-        $this->homedir = $homedir.'/gush-home-'.microtime(true);
-
-        $this->assertFileNotExists($this->homedir);
+        $this->homedir = $this->getNewTmpFolder('gush-home');
 
         putenv('GUSH_HOME='.$this->homedir);
         putenv('GUSH_CACHE_DIR');
@@ -54,7 +43,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'adapters' => [],
-                'issue_trackers' => [],
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
                 'cache-dir' => $this->homedir.'/cache',
@@ -65,7 +53,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateConfigWithCustomCacheDir()
     {
-        $cacheDir = sys_get_temp_dir().'/gush-cache-'.microtime(true);
+        $cacheDir = $this->getNewTmpFolder('gush-cache');
 
         putenv('GUSH_CACHE_DIR='.$cacheDir);
 
@@ -77,7 +65,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'adapters' => [],
-                'issue_trackers' => [],
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
                 'cache-dir' => $cacheDir,
@@ -89,14 +76,13 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateConfigWithExistingHomeConfig()
     {
         $content = <<<EOT
-adapter: github
 adapters:
     github:
         config: { base_url: 'https://api.github.com/', repo_domain_url: 'https://github.com' }
         authentication: { username: cordoval, password-or-token: password, http-auth-type: http_password }
 EOT;
 
-        (new Filesystem())->dumpFile($this->homedir.'/.gush.yml', $content);
+        file_put_contents($this->homedir.'/.gush.yml', $content);
 
         $config = ConfigFactory::createConfig();
 
@@ -115,8 +101,6 @@ EOT;
                         ],
                     ],
                 ],
-                'issue_trackers' => [],
-                'adapter' => 'github',
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
                 'cache-dir' => $this->homedir.'/cache',
@@ -139,8 +123,6 @@ EOT;
                         ],
                     ],
                 ],
-                'issue_trackers' => [],
-                'adapter' => 'github',
             ],
             $config->toArray(Config::CONFIG_SYSTEM)
         );
@@ -154,22 +136,20 @@ EOT;
     public function testCreateConfigWithExistingHomeAndLocalConfig()
     {
         $content = <<<EOT
-adapter: github
 adapters:
     github:
         config: { base_url: 'https://api.github.com/', repo_domain_url: 'https://github.com' }
         authentication: { username: cordoval, password-or-token: password, http-auth-type: http_password }
 EOT;
 
-        (new Filesystem())->dumpFile($this->homedir.'/.gush.yml', $content);
+        file_put_contents($this->homedir.'/.gush.yml', $content);
 
         $localContent = <<<EOT
-adapter: bitbucket
+repo_adapter: bitbucket
 EOT;
 
-        $localDir = sys_get_temp_dir().'/gush-local-'.microtime(true);
-        $this->assertFileNotExists($localDir);
-        (new Filesystem())->dumpFile($localDir.'/.gush.yml', $localContent);
+        $localDir = $this->getNewTmpFolder('gush-local');
+        file_put_contents($localDir.'/.gush.yml', $localContent);
 
         $config = ConfigFactory::createConfig($localDir);
 
@@ -188,8 +168,7 @@ EOT;
                         ],
                     ],
                 ],
-                'issue_trackers' => [],
-                'adapter' => 'bitbucket',
+                'repo_adapter' => 'bitbucket',
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
                 'cache-dir' => $this->homedir.'/cache',
@@ -214,15 +193,13 @@ EOT;
                         ],
                     ],
                 ],
-                'issue_trackers' => [],
-                'adapter' => 'github',
             ],
             $config->toArray(Config::CONFIG_SYSTEM)
         );
 
         $this->assertEquals(
             [
-                'adapter' => 'bitbucket',
+                'repo_adapter' => 'bitbucket',
             ],
             $config->toArray(Config::CONFIG_LOCAL)
         );
@@ -242,7 +219,6 @@ EOT;
         $this->assertEquals(
             [
                 'adapters' => [],
-                'issue_trackers' => [],
             ],
             Yaml::parse(file_get_contents($this->homedir.'/.gush.yml'))
         );
@@ -250,7 +226,7 @@ EOT;
 
     public function testDumpConfigToLocalFile()
     {
-        $localDir = sys_get_temp_dir().'/gush-local-'.microtime(true);
+        $localDir = $this->getNewTmpFolder('gush-local');
 
         $config = ConfigFactory::createConfig($localDir);
         $config->merge(
@@ -277,7 +253,6 @@ EOT;
         $this->assertEquals(
             [
                 'adapters' => [],
-                'issue_trackers' => [],
             ],
             Yaml::parse(file_get_contents($this->homedir.'/.gush.yml'))
         );

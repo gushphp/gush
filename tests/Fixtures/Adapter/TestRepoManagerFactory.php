@@ -4,13 +4,14 @@
  * PhpStorm.
  */
 
-namespace Gush\Tester\Adapter;
+namespace Gush\Tests\Fixtures\Adapter;
 
 use Gush\Config;
 use Gush\Factory\IssueTrackerFactory;
+use Gush\Factory\RepositoryManagerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
-final class TestIssueTrackerFactory implements IssueTrackerFactory
+final class TestRepoManagerFactory implements RepositoryManagerFactory
 {
     public function createConfigurator(HelperSet $helperSet)
     {
@@ -21,8 +22,8 @@ final class TestIssueTrackerFactory implements IssueTrackerFactory
         );
     }
 
-    public function createIssueTracker(array $adapterConfig, Config $config)
+    public function createRepositoryManager(array $adapterConfig, Config $config)
     {
-        return new TestIssueTracker();
+        return new TestAdapter();
     }
 }

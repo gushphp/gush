@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchDeleteCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
 
-class BranchDeleteCommandTest extends BaseTestCase
+class BranchDeleteCommandTest extends CommandTestCase
 {
     /**
      * @test

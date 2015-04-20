@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tester\Adapter;
+namespace Gush\Tests\Fixtures\Adapter;
 
 use Gush\Adapter\BaseAdapter;
 use Gush\Adapter\IssueTracker;
@@ -21,6 +21,18 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     const ISSUE_NUMBER = 7;
 
     const RELEASE_ASSET_NUMBER = 1;
+
+    private $name;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getAdapterName()
+    {
+        return $this->name;
+    }
 
     /**
      * {@inheritdoc}

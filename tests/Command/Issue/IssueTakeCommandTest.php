@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueTakeCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
 
-class IssueTakeCommandTest extends BaseTestCase
+class IssueTakeCommandTest extends CommandTestCase
 {
     const SLUGIFIED_STRING = 'write-a-behat-test-to-launch-strategy';
     const TEST_TITLE = 'Write a behat test to launch strategy';

@@ -12,9 +12,9 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestMilestoneListCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 
-class PullRequestMilestoneListCommandTest extends BaseTestCase
+class PullRequestMilestoneListCommandTest extends CommandTestCase
 {
     /**
      * @test

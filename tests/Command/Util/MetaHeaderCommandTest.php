@@ -14,10 +14,10 @@ namespace Gush\Tests\Command\Util;
 use Gush\Command\Util\MetaHeaderCommand;
 use Gush\Helper\MetaHelper;
 use Gush\Meta as Meta;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class MetaHeaderCommandTest extends BaseTestCase
+class MetaHeaderCommandTest extends CommandTestCase
 {
     private $command;
     private static $gitWorking;

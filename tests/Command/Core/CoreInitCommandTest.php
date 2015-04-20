@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Yaml\Yaml;
 
-class CoreInitCommandTest extends BaseTestCase
+class CoreInitCommandTest extends CommandTestCase
 {
     const USERNAME = 'bar';
     const PASSWORD = 'foo';

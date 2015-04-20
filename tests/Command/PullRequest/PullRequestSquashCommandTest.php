@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestSquashCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
 
-class PullRequestSquashCommandTest extends BaseTestCase
+class PullRequestSquashCommandTest extends CommandTestCase
 {
     /**
      * @test

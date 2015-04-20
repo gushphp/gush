@@ -12,9 +12,9 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCreateCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 
-class IssueCreateCommandTest extends BaseTestCase
+class IssueCreateCommandTest extends CommandTestCase
 {
     const ISSUE_TITLE = 'bug title';
     const ISSUE_DESCRIPTION = 'not working!';

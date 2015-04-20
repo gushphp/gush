@@ -12,10 +12,10 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueShowCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 
-class IssueShowCommandTest extends BaseTestCase
+class IssueShowCommandTest extends CommandTestCase
 {
     /**
      * @test

@@ -13,12 +13,12 @@ namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Util\MetaConfigureCommand;
 use Gush\Tester\QuestionToken;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Yaml\Yaml;
 
-class MetaConfigureCommandTest extends BaseTestCase
+class MetaConfigureCommandTest extends CommandTestCase
 {
     const META_HEADER = <<<OET
 This file is part of Gush package.

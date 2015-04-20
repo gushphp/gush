@@ -12,11 +12,11 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchSyncCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
 
-class BranchSyncCommandTest extends BaseTestCase
+class BranchSyncCommandTest extends CommandTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 

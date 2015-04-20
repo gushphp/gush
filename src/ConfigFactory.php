@@ -108,8 +108,10 @@ class ConfigFactory
         // the www-data's user home and be web-accessible it is a
         // potential security risk
         foreach ([$home, $cacheDir] as $dir) {
-            if (!$fs->exists($dir.'/.htaccess')) {
-                $fs->dumpFile($dir.'/.htaccess', 'Deny from all');
+            if (!file_exists($dir.'/.htaccess')) {
+                $fs->mkdir($dir);
+
+                file_put_contents($dir.'/.htaccess', 'Deny from all');
             }
         }
 
@@ -147,10 +149,15 @@ class ConfigFactory
             );
         }
 
-        self::getFilesystem()->dumpFile(
-            $filename,
+        // Testing compatibility, write directly as there is no risk of problems
+        if ('vfs://' === substr($filename, 0, 6)) {
+            file_put_contents($filename, Yaml::dump($config->toArray($type)));
+        } else {
+            self::getFilesystem()->dumpFile(
+                $filename,
             "# Gush configuration file, any comments will be lost.\n".Yaml::dump($config->toArray($type), 2)
-        );
+            );
+        }
 
         return $filename;
     }
