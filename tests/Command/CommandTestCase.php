@@ -43,7 +43,6 @@ class CommandTestCase extends BaseTestCase
         $expectedLines = (array) $expectedLines;
 
         foreach ($expectedLines as $matchLine) {
-
             if (is_array($matchLine)) {
                 $line = $matchLine[0];
                 $lineRegex = $matchLine[1];
@@ -92,11 +91,16 @@ class CommandTestCase extends BaseTestCase
      *
      * @param array|null $systemConfig
      * @param array|null $localConfig
+     * @param \Closure|null $helperSetManipulator
      *
      * @return CommandTester
      */
-    protected function getCommandTester(Command $command, array $systemConfig = null, array $localConfig = null)
-    {
+    protected function getCommandTester(
+        Command $command,
+        array $systemConfig = null,
+        array $localConfig = null,
+        $helperSetManipulator = null
+    ) {
         if (null === $systemConfig) {
             $systemConfig = [
                 'adapters' => [
@@ -114,9 +118,30 @@ class CommandTestCase extends BaseTestCase
             $localConfig = self::$localConfig;
         }
 
-        $config = new Config('/home/user', '/temp/gush', $systemConfig, '/data/repo-dir', $localConfig);
-        $application = $this->getApplication($config);
+        if ($this->requiresRealConfigDir()) {
+            $config = new Config(
+                $this->getNewTmpFolder('home'),
+                $this->getNewTmpFolder('cache'),
+                $systemConfig,
+                $this->getNewTmpFolder('repo-dir'),
+                $localConfig
+            );
+        } else {
+            try {
+                // Note. The paths must be invalid to always trigger the exception
+                $config = new Config(':?/temp/user', ':?/temp/gush', $systemConfig, ':?/temp/repo-dir', $localConfig);
+            } catch (IOException $e) {
+                echo sprintf(
+                    "Test-class \"%s\" seems to use the filesystem! \nOverwrite requiresRealConfigDir() with 'return ".
+                    "true;' to enable the Configuration filesystem usage.",
+                    get_class($this)
+                );
 
+                throw $e;
+            }
+        }
+
+        $application = $this->getApplication($config, $helperSetManipulator);
         $command->setApplication($application);
 
         return new CommandTester($command);

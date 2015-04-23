@@ -121,13 +121,9 @@ EOF
             }
 
 
-            $isConfigured =
-                $config->has(sprintf('[repo_adapters][%s]', $adapterName)) ||
-                $config->has(sprintf('[issue_trackers][%s]', $adapterName));
-
             $labels[$adapterName] = sprintf(
                 $labelPattern,
-                $isConfigured ? '<info>*</info>' : ' ',
+                $config->has(sprintf('[adapters][%s]', $adapterName)) ? '<info>*</info>' : ' ',
                 $adapter['label'],
                 implode(', ', $capabilities)
             );

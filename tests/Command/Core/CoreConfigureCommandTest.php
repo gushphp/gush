@@ -11,102 +11,226 @@
 
 namespace Gush\Tests\Command\Core;
 
-use Github\Client;
 use Gush\Command\Core\CoreConfigureCommand;
+use Gush\Config;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestConfigurator;
-use Prophecy\Argument;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Yaml\Yaml;
 
 class CoreConfigureCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function core_configure()
+    protected function requiresRealConfigDir()
     {
-        if (!$homeDir = getenv('GUSH_HOME')) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
-        }
+        return true;
+    }
 
-        $gushFilename = $homeDir.'/.gush.yml';
+    public function testRunCommandWithNoExistingConfig()
+    {
+        $command = new CoreConfigureCommand();
+        $tester = $this->getCommandTester($command, [], []);
+
+        $this->assertFileNotExists($command->getConfig()->get('home_config'));
+
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("1\nno\n"));
+
+        $tester->execute(
+            ['command' => $command->getName()],
+            ['decorated' => false]
+        );
+
+        $display = $tester->getDisplay(true);
+
+        $this->assertCommandOutputMatches(
+            [
+                "Choose adapter:\n[0] Nothing (skip selection)",
+                '[1] GitHub (RepositoryManager, IssueTracker)',
+                'GitHub Enterprise (RepositoryManager, IssueTracker)',
+                'Jira (IssueTracker)',
+                "Do you want to configure other adapters? (yes/no) [no]:\n>\n[OK] Configuration file saved successfully.",
+                ['\[OK\]\sConfiguration file saved successfully\.$', true], // ensure saving message is the last line
+            ],
+            $display
+        );
 
         $expected = [
-            'parameters' => [
-                'cache-dir' => $homeDir.'/cache',
+            'adapters' => [
+                'github' => [
+                    'authentication' => [
+                        'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                        'username' => TestConfigurator::USERNAME,
+                        'token' => TestConfigurator::PASSWORD,
+                    ],
+                    'base_url' => 'https://api.github.com/',
+                    'repo_domain_url' => 'https://github.com',
+                ],
+            ],
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('home_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_SYSTEM));
+    }
+
+    public function testRunCommandNoSelectionWithNoExistingConfig()
+    {
+        $command = new CoreConfigureCommand();
+        $tester = $this->getCommandTester($command, [], []);
+
+        $this->assertFileNotExists($command->getConfig()->get('home_config'));
+
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("0\n"));
+
+        $tester->execute(
+            ['command' => $command->getName()],
+            ['decorated' => false]
+        );
+
+        $display = $tester->getDisplay(true);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose adapter:',
+                "Choose adapter:\n[0] Nothing (skip selection)",
+                '[1] GitHub (RepositoryManager, IssueTracker)',
+                'GitHub Enterprise (RepositoryManager, IssueTracker)',
+                'Jira (IssueTracker)',
+                ['\[OK\]\sConfiguration file saved successfully\.$', true],
+            ],
+            $display
+        );
+
+        $this->assertFileExists($command->getConfig()->get('home_config'));
+        $this->assertEquals(['adapters' => []], $command->getConfig()->toArray(Config::CONFIG_SYSTEM));
+    }
+
+    public function testRunCommandWithExistingConfig()
+    {
+        $command = new CoreConfigureCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [
                 'adapters' => [
                     'github' => [
                         'authentication' => [
-                            'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
+                            'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
                             'username' => TestConfigurator::USERNAME,
-                            'password-or-token' => TestConfigurator::PASSWORD,
+                            'token' => TestConfigurator::PASSWORD,
                         ],
                         'base_url' => 'https://api.github.com/',
                         'repo_domain_url' => 'https://github.com',
                     ],
                 ],
-                'issue_trackers' => [
-                    'github' => [
-                        'authentication' => [
-                            'http-auth-type' => Client::AUTH_HTTP_PASSWORD,
-                            'username' => TestConfigurator::USERNAME,
-                            'password-or-token' => TestConfigurator::PASSWORD,
-                        ],
-                        'base_url' => 'https://api.github.com/',
-                        'repo_domain_url' => 'https://github.com',
-                    ],
-                ],
-                'home' => $homeDir,
-                'home_config' => $homeDir.'/.gush.yml',
-                'adapter' => 'github',
-                'issue_tracker' => 'github',
-            ]
-        ];
-
-        @mkdir($homeDir, 0777, true);
-
-        if (file_exists($gushFilename)) {
-            unlink($gushFilename);
-        }
-
-        $tester = $this->getCommandTester($command = new CoreConfigureCommand());
-        $this->expectDialogParameters($command->getHelperSet(), $command);
-
-        $tester->execute(
-            [
-                'command' => 'core:configure',
             ],
-            [
-                'interactive' => true,
-            ]
+            []
         );
 
-        $this->assertFileExists($gushFilename);
-        $this->assertEquals($expected, Yaml::parse($gushFilename));
+        $this->assertFileNotExists($command->getConfig()->get('home_config'));
+
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("2\nno\n"));
+
+        $tester->execute(
+            ['command' => $command->getName()],
+            ['decorated' => false]
+        );
+
+        $display = $tester->getDisplay(true);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose adapter:',
+                "Choose adapter:\n[0] Nothing (skip selection)",
+                '[1] * GitHub (RepositoryManager, IssueTracker)',
+                'GitHub Enterprise (RepositoryManager, IssueTracker)',
+                'Jira (IssueTracker)',
+                "Do you want to configure other adapters? (yes/no) [no]:\n>\n[OK] Configuration file saved successfully.",
+                ['\[OK\]\sConfiguration file saved successfully\.$', true],
+            ],
+            $display
+        );
+
+        $expected = [
+            'adapters' => [
+                'github' => [
+                        'authentication' => [
+                            'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                            'username' => TestConfigurator::USERNAME,
+                            'token' => TestConfigurator::PASSWORD,
+                        ],
+                    'base_url' => 'https://api.github.com/',
+                    'repo_domain_url' => 'https://github.com',
+                ],
+                'github_enterprise' => [
+                        'authentication' => [
+                            'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                            'username' => TestConfigurator::USERNAME,
+                            'token' => TestConfigurator::PASSWORD,
+                        ],
+                    'base_url' => 'https://api.github.com/',
+                    'repo_domain_url' => 'https://github.com',
+                ],
+            ],
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('home_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_SYSTEM));
     }
 
-    private function expectDialogParameters(HelperSet $helperSet, Command $command)
+    public function testRunCommandWithMultipleAdapters()
     {
-        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
-        $styleHelper->getName()->willReturn('gush_style');
-        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $command = new CoreConfigureCommand();
+        $tester = $this->getCommandTester($command, [], []);
 
-        // Common styling, no need to test
-        $styleHelper->title(Argument::any())->shouldBeCalled();
-        $styleHelper->section(Argument::any())->shouldBeCalled();
-        $styleHelper->text(Argument::any())->shouldBeCalled();
-        $styleHelper->newLine(Argument::any())->shouldBeCalled();
-        $styleHelper->success(Argument::any())->shouldBeCalled();
+        $this->assertFileNotExists($command->getConfig()->get('home_config'));
 
-        $styleHelper->numberedChoice('Choose adapter', Argument::any())->willReturn('github');
-        $styleHelper->confirm('Do you want to configure other adapters?', false)->willReturn(false);
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("1\nyes\n2\nno"));
 
-        // Defaulting
-        $styleHelper->confirm('Would you like to make "GitHub" the default repository manager?', true)->willReturn(true);
-        $styleHelper->confirm('Would you like to make "GitHub" the default issue tracker?', true)->willReturn(true);
+        $tester->execute(
+            ['command' => $command->getName()],
+            ['decorated' => false]
+        );
 
-        $helperSet->set($styleHelper->reveal());
+        $display = $tester->getDisplay(true);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose adapter:',
+                "Choose adapter:\n[0] Nothing (skip selection)",
+                '[1] GitHub (RepositoryManager, IssueTracker)',
+                'GitHub Enterprise (RepositoryManager, IssueTracker)',
+                'Jira (IssueTracker)',
+                // ask twice
+                "Do you want to configure other adapters? (yes/no) [no]:\n>\nChoose adapter:",
+                ['\[OK\]\sConfiguration file saved successfully\.$', true], // ensure saving message is the last line
+            ],
+            $display
+        );
+
+        $expected = [
+            'adapters' => [
+                'github' => [
+                    'authentication' => [
+                        'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                        'username' => TestConfigurator::USERNAME,
+                        'token' => TestConfigurator::PASSWORD,
+                    ],
+                    'base_url' => 'https://api.github.com/',
+                    'repo_domain_url' => 'https://github.com',
+                ],
+                'github_enterprise' => [
+                    'authentication' => [
+                        'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                        'username' => TestConfigurator::USERNAME,
+                        'token' => TestConfigurator::PASSWORD,
+                    ],
+                    'base_url' => 'https://api.github.com/',
+                    'repo_domain_url' => 'https://github.com',
+                ],
+            ],
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('home_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_SYSTEM));
     }
 }
