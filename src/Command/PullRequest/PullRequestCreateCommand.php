@@ -175,7 +175,7 @@ EOF
         if (null === $issueNumber) {
             $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
 
-            if ('' === $defaultTitle && $input->isInteractive()) {
+            if ('' === $defaultTitle && !$input->isInteractive()) {
                 $styleHelper->error(
                     'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
                 );
@@ -183,11 +183,13 @@ EOF
                 return self::COMMAND_FAILURE;
             }
 
-            $title = $styleHelper->ask('Title', $defaultTitle);
-            $body = $this->getHelper('template')->askAndRender(
-                $output,
-                $this->getTemplateDomain(),
-                $template
+            $title = trim($styleHelper->ask('Title', $defaultTitle));
+            $body = trim(
+                $this->getHelper('template')->askAndRender(
+                    $output,
+                    $this->getTemplateDomain(),
+                    $template
+                )
             );
         } elseif ($input->isInteractive() &&
             $styleHelper->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)
