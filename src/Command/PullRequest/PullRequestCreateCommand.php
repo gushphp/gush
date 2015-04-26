@@ -127,10 +127,9 @@ EOF
         $sourceOrg = $input->getOption('source-org');
         $sourceRepo = $input->getOption('source-repo') ?: $input->getOption('repo') ;
         $sourceBranch = $input->getOption('source-branch');
+        $base = $input->getOption('base');
 
         $config = $this->getConfig();
-
-        $base = $input->getOption('base');
 
         if (null === $base) {
             $base = $config->get('base') ?: 'master';

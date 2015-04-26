@@ -17,12 +17,11 @@ use Gush\Adapter\IssueTracker;
 class TestAdapter extends BaseAdapter implements IssueTracker
 {
     const PULL_REQUEST_NUMBER = 40;
-
     const ISSUE_NUMBER = 7;
-
     const RELEASE_ASSET_NUMBER = 1;
 
     private $name;
+    private $pullRequest;
 
     public function __construct($name)
     {
@@ -82,7 +81,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getRepositoryInfo($org, $repository)
     {
-        if ('cordoval' === $org) {
+        if ('cordoval' === $org || 'user' === $org) {
             return [
                 'owner' => 'cordoval',
                 'html_url' => 'https://github.com/cordoval/gush',
@@ -252,6 +251,38 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = [])
     {
+        list($sourceOrg, $sourceBranch) = explode(':', $head);
+
+        $this->pullRequest = [
+            'url' => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
+            'number' => self::PULL_REQUEST_NUMBER,
+            'state' => 'open',
+            'title' => $subject,
+            'body' => $body,
+            'labels' => [],
+            'milestone' => 'some_good_stuff',
+            'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
+            'user' => 'cordoval',
+            'assignee' => null,
+            'merge_commit' => null,
+            'merged' => false,
+            'merged_by' => null,
+            'head' => [
+                'ref' => $sourceBranch,
+                'sha' => '6dcb09b5b57875f334f61aebed695e2e4193db5e',
+                'user' => $sourceOrg,
+                'repo' => 'gush',
+            ],
+            'base' => [
+                'ref' => $base,
+                'label' => 'base_ref',
+                'sha' => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+                'user' => 'gushphp',
+                'repo' => 'gush',
+            ],
+        ];
+
         return [
             'html_url' => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
             'number' => self::PULL_REQUEST_NUMBER,
@@ -263,6 +294,19 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getPullRequest($id)
     {
+        if (self::PULL_REQUEST_NUMBER === $id) {
+            if (!$this->pullRequest) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'ID #%d is reserved for testing, call openPullRequest() first before using this id',
+                        self::PULL_REQUEST_NUMBER
+                    )
+                );
+            }
+
+            return $this->pullRequest;
+        }
+
         return [
             'url' => 'https://github.com/gushphp/gush/pull/'.$id,
             'number' => $id,
