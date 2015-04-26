@@ -51,6 +51,7 @@ Open request on gushphp/gush
 // The source branch is "issue-145" on "cordoval".
 
 
+
 [OK] Opened pull request $url
 RES;
 
@@ -162,6 +163,7 @@ Open request on gushphp/gush
 // The source branch is "not-my-branch" on "gushphp".
 
 [OK] Branch "not-my-branch" was pushed to "gushphp".
+
 
 
 [OK] Opened pull request $url

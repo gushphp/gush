@@ -17,9 +17,7 @@ class DefaultTemplate extends AbstractTemplate
 {
     public function render()
     {
-        $out = [];
-
-        return implode(PHP_EOL, $out);
+        return $this->parameters['description'];
     }
 
     /**
@@ -27,7 +25,9 @@ class DefaultTemplate extends AbstractTemplate
      */
     public function getRequirements()
     {
-        return [];
+        return [
+            'description' => ['Description', ''],
+        ];
     }
 
     public function getName()
