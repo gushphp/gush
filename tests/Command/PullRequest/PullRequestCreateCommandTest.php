@@ -63,38 +63,6 @@ RES;
      *
      * @dataProvider provideCommand
      */
-    public function opens_pull_request_from_an_issue($args)
-    {
-        $args['--issue'] = '145';
-
-        $this->expectsConfig();
-        $this->config->has('table-pr')->willReturn(false);
-
-        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper());
-        $command->getHelperSet()->set($this->expectGitConfigHelper());
-
-        $tester->execute($args, ['interactive' => false]);
-
-        $url = 'https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER;
-        $expected = <<<RES
-Open request on gushphp/gush
-============================
-
-// This pull-request will be opened on "gushphp/gush".
-// The source branch is "issue-145" on "cordoval".
-
-[OK] Opened pull request $url
-RES;
-
-        $this->assertCommandOutputEquals($expected, $tester->getDisplay(true));
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider provideCommand
-     */
     public function opens_pull_request_autodetecting_current_branch_and_default_master($args)
     {
         $args['--verbose'] = true;
