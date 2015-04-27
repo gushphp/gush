@@ -182,17 +182,6 @@ EOF
             $body = $this->appendPlug($body);
         }
 
-        if (true === $input->getOption('verbose')) {
-            $message = sprintf(
-                'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
-                $sourceOrg,
-                $sourceBranch,
-                $org,
-                $base
-            );
-            $output->writeln($message);
-        }
-
         $parameters = [];
         $pullRequest = $this
             ->getAdapter()
