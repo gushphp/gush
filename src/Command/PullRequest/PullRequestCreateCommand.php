@@ -51,11 +51,10 @@ class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, Te
                 InputOption::VALUE_REQUIRED,
                 'Source Branch - source branch name (defaults to current)'
             )
-            ->addOption('issue', null, InputOption::VALUE_REQUIRED, 'Issue Number')
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'PR Title')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command is used to make a pull request
+The <info>%command.name%</info> command is used to make a pull-request
 against the configured organization and repository.
 
     <info>$ gush %command.name%</info>
@@ -67,11 +66,11 @@ context.
 
     <info>$ gush %command.name% --source-branch=my_branch --source-org=my_org --base=dev</info>
 
-A pull request template can be specified with the <info>template</info> option:
+A pull-request template can be specified with the <info>template</info> option:
 
     <info>$ gush %command.name% --template=symfony</info>
 
-This will use the symfony specific pull request template, the full list of
+This will use the Symfony specific pull-request template, the full list of
 available templates is displayed in the description of the <info>template</info>
 option.
 
@@ -100,14 +99,6 @@ table-pr: []
 </comment>
 <info>This will still ask the title and description, but no additional fields.</info>
 
-
-The command %command.name% can also accept an issue number along with the other options:
-
-    <info>$ gush %command.name% --issue=10430</info>
-
-Passing an issue number will turn the issue into a pull request, provided permissions
-allow it. Turning an issue in a pull request will keep the original title and existing comments.
-
 When using a template you will be prompted to fill out the required parameters.
 
 EOF
@@ -131,7 +122,6 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $org = $input->getOption('org');
-        $issueNumber = $input->getOption('issue');
         $template = $input->getOption('template');
 
         $sourceOrg = $input->getOption('source-org');
@@ -155,9 +145,6 @@ EOF
             $sourceBranch = $this->getHelper('git')->getActiveBranchName();
         }
 
-        $title = '';
-        $body = '';
-
         /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
@@ -172,54 +159,30 @@ EOF
 
         $this->guardRemoteBranchExist($sourceOrg, $sourceRepo, $sourceBranch, $input, $styleHelper);
 
-        if (null === $issueNumber) {
-            $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
+        $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($base, $sourceBranch);
 
-            if ('' === $defaultTitle && !$input->isInteractive()) {
-                $styleHelper->error(
-                    'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
-                );
-
-                return self::COMMAND_FAILURE;
-            }
-
-            $title = trim($styleHelper->ask('Title', $defaultTitle));
-            $body = trim(
-                $this->getHelper('template')->askAndRender(
-                    $output,
-                    $this->getTemplateDomain(),
-                    $template
-                )
+        if ('' === $defaultTitle && !$input->isInteractive()) {
+            $styleHelper->error(
+                'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
             );
-        } elseif ($input->isInteractive() &&
-            $styleHelper->confirm(sprintf('Replace issue #%d with a pull-request?', $issueNumber), true)
-        ) {
-            $styleHelper->error("Command aborted by user.");
 
             return self::COMMAND_FAILURE;
         }
+
+        $title = trim($styleHelper->ask('Title', $defaultTitle));
+        $body = trim(
+            $this->getHelper('template')->askAndRender(
+                $output,
+                $this->getTemplateDomain(),
+                $template
+            )
+        );
 
         if (true === $config->get('remove-promote')) {
             $body = $this->appendPlug($body);
         }
 
-        if (true === $input->getOption('verbose')) {
-            $message = sprintf(
-                'Making PR from <info>%s:%s</info> to <info>%s:%s</info>',
-                $sourceOrg,
-                $sourceBranch,
-                $org,
-                $base
-            );
-
-            if (null !== $issueNumber) {
-                $message = $message.' for issue #'.$issueNumber;
-            }
-
-            $output->writeln($message);
-        }
-
-        $parameters = $issueNumber ? ['issue' => $issueNumber] : [];
+        $parameters = [];
         $pullRequest = $this
             ->getAdapter()
             ->openPullRequest(

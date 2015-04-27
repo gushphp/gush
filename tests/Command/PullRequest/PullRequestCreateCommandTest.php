@@ -63,42 +63,8 @@ RES;
      *
      * @dataProvider provideCommand
      */
-    public function opens_pull_request_from_an_issue($args)
-    {
-        $args['--issue'] = '145';
-
-        $this->expectsConfig();
-        $this->config->has('table-pr')->willReturn(false);
-
-        $tester = $this->getCommandTester($command = new PullRequestCreateCommand());
-        $command->getHelperSet()->set($this->expectGitHelper());
-        $command->getHelperSet()->set($this->expectGitConfigHelper());
-
-        $tester->execute($args, ['interactive' => false]);
-
-        $url = 'https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER;
-        $expected = <<<RES
-Open request on gushphp/gush
-============================
-
-// This pull-request will be opened on "gushphp/gush".
-// The source branch is "issue-145" on "cordoval".
-
-[OK] Opened pull request $url
-RES;
-
-        $this->assertCommandOutputEquals($expected, $tester->getDisplay(true));
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider provideCommand
-     */
     public function opens_pull_request_autodetecting_current_branch_and_default_master($args)
     {
-        $args['--verbose'] = true;
-
         $this->expectsConfig();
         $this->config->has('table-pr')->willReturn(false);
 
@@ -109,7 +75,10 @@ RES;
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
-        $this->assertContains('Making PR from cordoval:issue-145 to gushphp:master', $res);
+        $this->assertContains(
+            'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
+            $res
+        );
     }
 
     /**
@@ -119,7 +88,6 @@ RES;
      */
     public function opens_pull_request_to_a_specific_organization_or_username($args)
     {
-        $args['--verbose'] = true;
         $args['--source-org'] = 'gushphp';
 
         $this->expectsConfig();
@@ -132,7 +100,10 @@ RES;
         $tester->execute($args, ['interactive' => false]);
 
         $res = trim($tester->getDisplay(true));
-        $this->assertContains('Making PR from '.$args['--source-org'].':issue-145 to gushphp:master', $res);
+        $this->assertContains(
+            'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
+            $res
+        );
     }
 
     /**
