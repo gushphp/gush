@@ -12,11 +12,11 @@
 namespace Gush\Command\Branch;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BranchChangelogCommand extends BaseCommand implements GitRepoFeature
+class BranchChangelogCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -25,13 +25,11 @@ class BranchChangelogCommand extends BaseCommand implements GitRepoFeature
     {
         $this
             ->setName('branch:changelog')
-            ->setDescription('Reports what got fixed or closed since last release on current branch')
+            ->setDescription('Reports what got fixed or closed since last release on current branch.')
             ->setHelp(
                 <<<EOF
 Reports what got fixed or closed since last release on current branch.
 reference: http://www.lornajane.net/posts/2014/github-powered-changelog-scripts
-
-The <info>%command.name%</info> command :
 
     <info>$ gush %command.name%</info>
 
@@ -48,35 +46,24 @@ EOF
         try {
             $latestTag = $this->getHelper('git')->getLastTagOnBranch();
         } catch (\RuntimeException $e) {
-            $output->writeln('<info>There were no tags found</info>');
+            $this->getHelper('gush_style')->note(
+                sprintf('No tags were found on branch "%s".', $this->getHelper('git')->getActiveBranchName())
+            );
 
             return self::COMMAND_SUCCESS;
         }
 
         $adapter = $this->getIssueTracker();
         $commits = $this->getHelper('git')->getLogBetweenCommits($latestTag, 'HEAD');
-
-        // Filter commits that reference an issue
-        $issues = [];
-
-        foreach ($commits as $commit) {
-            // Cut issue id from branch name (merge commits)
-            if (preg_match('/\/#([0-9]+)/i', $commit['message'], $matchesGush) && isset($matchesGush[1])) {
-                $issues[] = $matchesGush[1];
-            }
-
-            // Cut issue id from commit message
-            if (preg_match('/[close|closes|fix|fixes] #([0-9]+)/i', $commit['message'], $matchesGitRepo)
-                && isset($matchesGitRepo[1])
-            ) {
-                $issues[] = $matchesGitRepo[1];
-            }
-        }
-
-        sort($issues);
+        $issues = $this->getIssuesFromCommits($commits);
 
         foreach ($issues as $id) {
-            $issue = $adapter->getIssue($id);
+            // ignore missing issues
+            try {
+                $issue = $adapter->getIssue($id);
+            } catch (\Exception $e) {
+                continue;
+            }
 
             $output->writeln(
                 sprintf("#%s: %s   <info>%s</info>", $id, $issue['title'], $issue['url'])
@@ -84,5 +71,26 @@ EOF
         }
 
         return self::COMMAND_SUCCESS;
+    }
+
+    /**
+     * @param array $commits
+     *
+     * @return integer[]
+     */
+    private function getIssuesFromCommits(array $commits)
+    {
+        $issues = [];
+
+        foreach ($commits as $commit) {
+            if (preg_match('{#([0-9]+)}i', $commit['message'], $matchesGush)) {
+                $issues[] = $matchesGush[1];
+            }
+        }
+
+        $issues = array_unique($issues);
+        sort($issues);
+
+        return $issues;
     }
 }

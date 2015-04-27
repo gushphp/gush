@@ -94,14 +94,6 @@ EOT;
 [OK] Forked repository gushphp/gush into %s/gush
 EOT;
 
-    const BRANCH_CHANGELOG_EMPTY = <<<EOT
-There were no tags found
-EOT;
-
-    const BRANCH_CHANGELOG = <<<EOT
-#123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123
-EOT;
-
     const BRANCH_PUSH = <<<EOT
 [OK] Branch pushed to %s/%s
 EOT;
