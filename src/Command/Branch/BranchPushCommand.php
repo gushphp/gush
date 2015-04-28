@@ -15,6 +15,7 @@ use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class BranchPushCommand extends BaseCommand implements GitRepoFeature
@@ -28,13 +29,19 @@ class BranchPushCommand extends BaseCommand implements GitRepoFeature
             ->setName('branch:push')
             ->setDescription('Pushes and tracks the current local branch into user own fork')
             ->addArgument(
-                'other_organization',
+                'target_organization',
                 InputArgument::OPTIONAL,
-                'Organization (default to username) to where to push the branch'
+                'Organization of the branch you wan\'t to push to.'
+            )
+            ->addOption(
+                'set-upstream',
+                'u',
+                InputOption::VALUE_NONE,
+                'Set the target_organization as the default upstream'
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command pushes the current local branch into user own fork:
+The <info>%command.name%</info> command pushes the current local branch into your own fork:
 
     <info>$ gush %command.name%</info>
 
@@ -49,13 +56,13 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $branchName = $this->getHelper('git')->getActiveBranchName();
+        $org = $input->getArgument('target_organization');
 
-        $org = $input->getArgument('other_organization');
         if (null === $org) {
             $org = $this->getParameter($input, 'authentication')['username'];
         }
 
-        $this->getHelper('git')->pushToRemote($org, $branchName, true);
+        $this->getHelper('git')->pushToRemote($org, $branchName, (bool) $input->getOption('set-upstream'));
 
         $this->getHelper('gush_style')->success(
             sprintf('Branch pushed to %s/%s', $org, $branchName)

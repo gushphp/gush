@@ -29,15 +29,22 @@ class BranchForkCommand extends BaseCommand implements GitRepoFeature
             ->setName('branch:fork')
             ->setDescription('Forks current upstream repository')
             ->addArgument(
-                'other_organization',
+                'target_organization',
                 InputArgument::OPTIONAL,
-                'Organization (default to username) to where we will fork the upstream repository'
+                'Target organization to create the fork in. (Defaults to your username)'
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command forks the upstream repository and creates local remote:
+The <info>%command.name%</info> command forks the upstream (defined by --org and --repo) repository
+and adds the remote to your local Git configuration:
 
     <info>$ gush %command.name%</info>
+
+By default this will fork the upstream to your username-organization, to fork into a different
+target-organization use the following instead (where my-other-org is the name of the organization
+you want to fork to):
+
+    <info>$ gush %command.name% my-other-org</info>
 
 EOF
             )
@@ -49,20 +56,15 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getAdapter();
-        $orgFork = $input->getArgument('other_organization');
-        $username = $this->getParameter($input, 'authentication')['username'];
-
-        $fork = $adapter->createFork($orgFork);
-
-        $repo = $input->getOption('repo');
         $sourceOrg = $input->getOption('org');
-        $targetOrg = $orgFork ?: $username;
+        $repo = $input->getOption('repo');
+        $targetOrg = $input->getArgument('target_organization');
 
-        $gitConfigHelper = $this->getHelper('git_config');
-        /** @var GitConfigHelper $gitConfigHelper */
+        if (null === $targetOrg) {
+            $targetOrg = $this->getParameter($input, 'authentication')['username'];
+        }
 
-        $gitConfigHelper->setRemote($targetOrg, $fork['git_url']);
+        $fork = $this->getAdapter()->createFork($targetOrg);
 
         $this->getHelper('gush_style')->success(
             sprintf(
@@ -72,6 +74,14 @@ EOF
                 $targetOrg,
                 $repo
             )
+        );
+
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        $gitConfigHelper->setRemote($targetOrg, $fork['git_url']);
+
+        $this->getHelper('gush_style')->success(
+            sprintf('Added remote "%s" with "%s".', $targetOrg, $fork['git_url'])
         );
 
         return self::COMMAND_SUCCESS;

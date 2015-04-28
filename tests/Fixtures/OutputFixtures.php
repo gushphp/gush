@@ -82,22 +82,6 @@ EOT;
 [OK] Closed https://github.com/gushphp/gush/pull/40
 EOT;
 
-    const BRANCH_SYNC = <<<EOT
-[OK] Branch "%s" has been synced with remote "%s".
-EOT;
-
-    const BRANCH_DELETE = <<<EOT
-[OK] Branch %s/%s has been deleted!
-EOT;
-
-    const BRANCH_FORK = <<<EOT
-[OK] Forked repository gushphp/gush into %s/gush
-EOT;
-
-    const BRANCH_PUSH = <<<EOT
-[OK] Branch pushed to %s/%s
-EOT;
-
     const PULL_REQUEST_FIXER = <<<EOT
 [OK] CS fixes committed!
 EOT;
