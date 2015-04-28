@@ -16,14 +16,11 @@ use Gush\Tests\Command\CommandTestCase;
 
 class PullRequestLabelListCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function labels_current_branch_pull_request()
+    public function testShowAvailablePullRequestLabels()
     {
         $tester = $this->getCommandTester(new PullRequestLabelListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals('bug', trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches(['bug', 'feature', 'documentation'], $tester->getDisplay());
     }
 }

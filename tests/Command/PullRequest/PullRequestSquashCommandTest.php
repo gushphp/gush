@@ -13,35 +13,24 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestSquashCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
 
 class PullRequestSquashCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function squashes_commits_and_pushes_force_pull_request_branch()
+    public function testSquashesCommitsAndForcePushesBranch()
     {
-        $this->expectsConfig();
+        $tester = $this->getCommandTester(new PullRequestSquashCommand());
+        $tester->execute(['pr_number' => 10]);
 
-        $tester = $this->getCommandTester($command = new PullRequestSquashCommand());
-        $command->getHelperSet()->set($this->expectGitHelper('base_ref', 'head_ref'));
-
-        $tester->execute(['--org' => 'cordoval', '--repo' => 'gush', 'pr_number' => 40], ['interactive' => false]);
-
-        $this->assertEquals(OutputFixtures::PULL_REQUEST_SQUASH, trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches('Pull-request has been squashed!', $tester->getDisplay());
     }
 
-    private function expectGitHelper()
+    protected function getGitHelper($isGitFolder = true)
     {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git');
-
+        $gitHelper = parent::getGitHelper($isGitFolder);
         $gitHelper->squashCommits('base_ref', 'head_ref')->shouldBeCalled();
-        $gitHelper->pushToRemote('origin', 'head_ref', true, true)->shouldBeCalled();
+        $gitHelper->pushToRemote('origin', 'head_ref', false, true)->shouldBeCalled();
 
-        return $gitHelper->reveal();
+        return $gitHelper;
     }
 }

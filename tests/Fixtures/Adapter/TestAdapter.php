@@ -235,7 +235,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getLabels()
     {
-        return ['bug'];
+        return ['bug', 'feature', 'documentation'];
     }
 
     /**

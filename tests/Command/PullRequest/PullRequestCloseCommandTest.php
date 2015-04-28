@@ -18,17 +18,13 @@ use Gush\Tests\Fixtures\OutputFixtures;
 
 class PullRequestCloseCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function closes_a_pull_request()
+    public function testClosePullRequest()
     {
         $tester = $this->getCommandTester(new PullRequestCloseCommand());
         $tester->execute(
-            ['--org' => 'gushphp', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER],
-            ['interactive' => false]
+            ['pr_number' => 10]
         );
 
-        $this->assertEquals(OutputFixtures::PULL_REQUEST_CLOSE, trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches('Closed https://github.com/gushphp/gush/pull/10', $tester->getDisplay());
     }
 }

@@ -111,10 +111,10 @@ EOF
 
         $this->guardPullRequestMerge($pr);
 
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
-        $gitConfigHelper = $this->getHelper('git_config');
+        $gitHelper = $this->getHelper('git');
         /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
 
         $sourceRemote = $pr['head']['user'];
         $sourceRepository = $pr['head']['repo'];
@@ -220,9 +220,8 @@ EOF
             );
         }
 
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
-
+        $gitHelper = $this->getHelper('git');
         $gitHelper->remoteUpdate($remote);
         $gitHelper->addNotes($commentText, $sha, 'github-comments');
         $gitHelper->pushToRemote($remote, 'refs/notes/github-comments');

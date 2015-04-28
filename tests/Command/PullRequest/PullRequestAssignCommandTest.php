@@ -15,30 +15,21 @@ use Gush\Command\PullRequest\PullRequestAssignCommand;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
 
-class PullrequestAssignCommandTest extends CommandTestCase
+class PullRequestAssignCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function assigns_pull_request_to_user()
+    public function testAssignPullRequestToUser()
     {
         $tester = $this->getCommandTester($command = new PullRequestAssignCommand());
         $tester->execute(
             [
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
-                'pr_number' => TestAdapter::PULL_REQUEST_NUMBER,
+                'pr_number' => 10,
                 'username' => 'cordoval',
-            ],
-            ['interactive' => false]
+            ]
         );
 
-        $this->assertEquals(
-            sprintf(
-                '[OK] Pull request https://github.com/gushphp/gush/pull/%s was assigned to cordoval!',
-                TestAdapter::PULL_REQUEST_NUMBER
-            ),
-            trim($tester->getDisplay(true))
+        $this->assertCommandOutputMatches(
+            'Pull-request https://github.com/gushphp/gush/pull/10 is now assigned to "cordoval"!',
+            $tester->getDisplay()
         );
     }
 }

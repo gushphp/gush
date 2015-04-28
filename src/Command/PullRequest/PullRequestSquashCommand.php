@@ -52,15 +52,14 @@ EOF
         $base = $pr['base']['ref'];
         $head = $pr['head']['ref'];
 
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
-
+        $gitHelper = $this->getHelper('git');
         $gitHelper->squashCommits($base, $head);
-        $gitHelper->pushToRemote('origin', $head, true, true);
+        $gitHelper->pushToRemote('origin', $head, false, true);
 
         $adapter->createComment($prNumber, '(PR squashed)');
 
-        $this->getHelper('gush_style')->success('Pull request has been squashed!');
+        $this->getHelper('gush_style')->success('Pull-request has been squashed!');
 
         return self::COMMAND_SUCCESS;
     }

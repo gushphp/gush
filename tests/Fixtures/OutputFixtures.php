@@ -26,16 +26,6 @@ class OutputFixtures
 1 release(s)
 EOT;
 
-    const PULL_REQUEST_LIST = <<<EOT
-+----+-------------------+-------+------------------+-----------+-----------------------------------------+
-| ID | Title             | State | Created          | User      | Link                                    |
-+----+-------------------+-------+------------------+-----------+-----------------------------------------+
-| 17 | New feature added | Open  | 2014-04-14 17:24 | pierredup | https://github.com/gushphp/gush/pull/17 |
-+----+-------------------+-------+------------------+-----------+-----------------------------------------+
-
-1 pull request(s)
-EOT;
-
     const ISSUE_SHOW = <<<EOT
 Issue #60 (open): by weaverryan [cordoval]
 Type: Pull Request
@@ -77,23 +67,7 @@ EOT;
 
 [OK] Closed issue: https://github.com/gushphp/gush/issues/7
 EOT;
-
-    const PULL_REQUEST_CLOSE = <<<EOT
-[OK] Closed https://github.com/gushphp/gush/pull/40
-EOT;
-
-    const PULL_REQUEST_FIXER = <<<EOT
-[OK] CS fixes committed!
-EOT;
-
-    const PULL_REQUEST_PAT_ON_THE_BACK = <<<EOT
-[OK] Pat on the back pushed to https://github.com/gushphp/gush/pull/40
-EOT;
-
-    const PULL_REQUEST_SQUASH = <<<EOT
-[OK] Pull request has been squashed!
-EOT;
-
+    
     const HEADER_LICENSE_TWIG = <<<EOT
 {#
  # This file is part of Your Package package.

@@ -13,48 +13,83 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestFixerCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
 use Prophecy\Argument;
+use Symfony\Component\Console\Helper\HelperSet;
 
 class PullRequestFixerCommandTest extends CommandTestCase
 {
-    const TEST_BRANCH_NAME = 'test_branch';
-
-    /**
-     * @test
-     */
-    public function fixes_coding_style_on_current_branch_pull_requested()
+    public function testFixCodingStyleOnCurrentBranch()
     {
-        $tester = $this->getCommandTester($command = new PullRequestFixerCommand());
-        $command->getHelperSet()->set($this->expectProcessHelper());
-        $command->getHelperSet()->set($this->expectGitHelper());
+        $command = new PullRequestFixerCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(true, false)->reveal());
+            }
+        );
+        $tester->execute([]);
+
+        $this->assertCommandOutputMatches('CS fixes committed!', $tester->getDisplay());
+    }
+
+    public function testFixCodingStyleOnCurrentBranchNoChanges()
+    {
+        $command = new PullRequestFixerCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(true, false)->reveal());
+            }
+        );
 
         $tester->execute([]);
 
-        $this->assertEquals(OutputFixtures::PULL_REQUEST_FIXER, trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches('CS fixes committed!', $tester->getDisplay());
     }
 
-    private function expectProcessHelper()
+    public function testWipCommitCurrentChangesAndFixCodingStyleOnCurrentBranch()
     {
-        $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
-        $processHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $processHelper->setOutput(Argument::any())->shouldBeCalled();
-        $processHelper->getName()->willReturn('process');
+        $command = new PullRequestFixerCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(false)->reveal());
+            }
+        );
 
+        $tester->execute([]);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Your working tree has uncommitted changes, committing changes with "WIP" as message.',
+                'CS fixes committed!'
+            ],
+            $tester->getDisplay()
+        );
+    }
+
+    protected function getProcessHelper()
+    {
+        $processHelper = parent::getProcessHelper();
         $processHelper->probePhpCsFixer()->willReturn('php-cs-fixer');
         $processHelper->runCommand('php-cs-fixer fix .', true)->shouldBeCalled();
 
-        return $processHelper->reveal();
+        return $processHelper;
     }
 
-    private function expectGitHelper($wcReady = false, $hasChanges = true)
+    private function getLocalGitHelper($wcReady = true, $hasChanges = true)
     {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git');
+        $gitHelper = parent::getGitHelper();
 
         if ($wcReady) {
             $gitHelper->isWorkingTreeReady()->willReturn(true);
+            $gitHelper->commit('wip', ['a'])->shouldNotBeCalled();
         } else {
             $gitHelper->isWorkingTreeReady()->willReturn(false);
             $gitHelper->commit('wip', ['a'])->shouldBeCalled();
@@ -67,8 +102,9 @@ class PullRequestFixerCommandTest extends CommandTestCase
             $gitHelper->commit('cs-fixer', ['a'])->shouldBeCalled();
         } else {
             $gitHelper->isWorkingTreeReady(true)->willReturn(true);
+            $gitHelper->commit('cs-fixer', ['a'])->shouldNotBeCalled();
         }
 
-        return $gitHelper->reveal();
+        return $gitHelper;
     }
 }

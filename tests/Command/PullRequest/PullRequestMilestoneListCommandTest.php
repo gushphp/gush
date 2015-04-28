@@ -16,14 +16,11 @@ use Gush\Tests\Command\CommandTestCase;
 
 class PullRequestMilestoneListCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function lists_pull_requests_associated_milestones()
+    public function testPullRequestsAvailableMilestones()
     {
         $tester = $this->getCommandTester(new PullRequestMilestoneListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals('version 1.0', trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches('version 1.0', $tester->getDisplay());
     }
 }
