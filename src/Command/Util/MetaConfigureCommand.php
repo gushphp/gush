@@ -12,6 +12,8 @@
 namespace Gush\Command\Util;
 
 use Gush\Command\BaseCommand;
+use Gush\Config;
+use Gush\ConfigFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -43,21 +45,8 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $application = $this->getApplication();
-        /** @var \Gush\Application $application */
-        $config = $application->getConfig();
-        $filename = $config->get('local_config');
-
-        $params = [];
-        if (file_exists($filename)) {
-            $params = Yaml::parse(file_get_contents($filename));
-        }
-
-        $params['meta-header'] = $this->getMetaHeader($output);
-
-        if (!file_put_contents($filename, Yaml::dump($params), 0644)) {
-            throw new \RuntimeException('Configuration file cannot be saved.', 2);
-        }
+        $this->getConfig()->set('meta-header', $this->getMetaHeader($output), Config::CONFIG_LOCAL);
+        ConfigFactory::dumpToFile($this->getConfig(), Config::CONFIG_LOCAL);
 
         $this->getHelper('gush_style')->success('Configuration file saved successfully.');
 
@@ -66,12 +55,12 @@ EOT
 
     private function getMetaHeader($output)
     {
-        $template = $this->getHelper('template');
         /** @var \Gush\Helper\TemplateHelper $template */
+        $template = $this->getHelper('template');
         $available = $template->getNamesForDomain('meta-header');
 
         $licenseSelection = $this->getHelper('gush_style')->askQuestion(
-            new ChoiceQuestion('Choose License: ', $available)
+            new ChoiceQuestion('Choose License', $available)
         );
 
         return $this->getHelper('template')->askAndRender($output, 'meta-header', $licenseSelection);

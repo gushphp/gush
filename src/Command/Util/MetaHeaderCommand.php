@@ -18,7 +18,6 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
@@ -145,11 +144,7 @@ EOT
                 ]
             );
 
-            $confirmed = $styleHelper->askQuestion(
-                new ConfirmationQuestion('Do you want to continue?', true)
-            );
-
-            if (!$confirmed) {
+            if (!$styleHelper->confirm('Do you want to continue?', true)) {
                 continue;
             }
 
