@@ -12,6 +12,7 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
+use Gush\Config;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -39,7 +40,17 @@ The <info>%command.name%</info> command takes an issue from the issue-tracker:
     <info>$ gush %command.name% 3</info>
 
 In practice this will add the organization as remote (if not registered already), then
-<comment>git checkout base_branch</> and create a new branch that is equal to the issue-number + title.
+<comment>git checkout org/base_branch</> and create a new branch that is equal to the issue-number + title.
+
+When no "base_branch" argument is provided the "base" is fetched from your local .gush.yml config-file,
+if no base is set "master" is used.
+
+Note: If you don't use "master" as your default base branch you can set the default "base" in your
+local .gush.yml config-file:
+
+<comment>
+base: develop
+</comment>
 
 After you are done you can open a new pull-request using the <info>$ gush pull-request:create</info> command.
 
@@ -59,36 +70,23 @@ EOF
         $org = $input->getOption('org');
         $repo = $input->getOption('repo');
 
-        $sourceOrg = $input->getOption('source-org') ?: $org;
-        $sourceRepo = $input->getOption('source-repo') ?: $repo;
-
-        $config = $this->getConfig();
-        /** @var \Gush\Config $config */
-
         if (null === $baseBranch) {
-            $baseBranch = $config->get('base') ?: 'master';
+            $baseBranch = $this->getConfig()->get('base', Config::CONFIG_LOCAL, 'master');
         }
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepo);
+        $gitConfigHelper->ensureRemoteExists($org, $repo);
 
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
 
-        $slugTitle = $this->getHelper('text')->slugify(
-            sprintf(
-                '%s %s',
-                $issueNumber,
-                $issue['title']
-            )
-        );
+        $slugTitle = $this->getHelper('text')->slugify(sprintf('%s %s', $issueNumber, $issue['title']));
 
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
-
-        $gitHelper->remoteUpdate($sourceOrg);
-        $gitHelper->checkout($sourceOrg.'/'.$baseBranch);
+        $gitHelper = $this->getHelper('git');
+        $gitHelper->remoteUpdate($org);
+        $gitHelper->checkout($org.'/'.$baseBranch);
         $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);
