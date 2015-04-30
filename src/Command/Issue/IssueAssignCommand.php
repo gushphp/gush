@@ -52,7 +52,7 @@ EOF
         $adapter->updateIssue($issueNumber, ['assignee' => $username]);
 
         $url = $adapter->getIssueUrl($issueNumber);
-        $this->getHelper('gush_style')->success("Issue {$url} was assigned to {$username}!");
+        $this->getHelper('gush_style')->success("Issue {$url} is now assigned to {$username}!");
 
         return self::COMMAND_SUCCESS;
     }

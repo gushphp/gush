@@ -13,18 +13,60 @@ namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueShowCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
+use Symfony\Component\Console\Helper\HelperSet;
 
 class IssueShowCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function shows_issue_with_number_passed()
+    public function testShowsIssue()
     {
         $tester = $this->getCommandTester(new IssueShowCommand());
-        $tester->execute(['--issue_number' => 60, '--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute(['issue' => 60]);
 
-        $this->assertEquals(trim(OutputFixtures::ISSUE_SHOW), trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches(
+            [
+                'Issue #60 (open): by weaverryan [cordoval]',
+                'Milestone: v1.0',
+                'Labels: actionable, easy pick',
+                'Title: Write a behat test to launch strategy',
+                'Link: https://github.com/gushphp/gush/issues/60',
+                'Help me conquer the world. Teach them to use Gush.'
+            ],
+            $tester->getDisplay()
+        );
+    }
+
+    public function testShowsIssueWithNumberFromBranchName()
+    {
+        $command = new IssueShowCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper('test_branch')->reveal());
+            }
+        );
+
+        $tester->execute();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Issue #60 (open): by weaverryan [cordoval]',
+                'Milestone: v1.0',
+                'Labels: actionable, easy pick',
+                'Title: Write a behat test to launch strategy',
+                'Link: https://github.com/gushphp/gush/issues/60',
+                'Help me conquer the world. Teach them to use Gush.'
+            ],
+            $tester->getDisplay()
+        );
+    }
+
+    private function getLocalGitHelper()
+    {
+        $helper = $this->getGitHelper(true);
+        $helper->getIssueNumber()->willReturn(60);
+
+        return $helper;
     }
 }

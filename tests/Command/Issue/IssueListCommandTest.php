@@ -18,35 +18,47 @@ use Gush\Tests\Fixtures\OutputFixtures;
 class IssueListCommandTest extends CommandTestCase
 {
     /**
-     * @test
      * @dataProvider provideCommand
      */
-    public function lists_issues_with_arguments($args)
+    public function testListsIssuesWithArguments($args)
     {
         $tester = $this->getCommandTester(new IssueListCommand());
-        $tester->execute($args, ['interactive' => false]);
+        $tester->execute($args);
+
+        $display = $tester->getDisplay();
 
         if (isset($args['--type']) && 'issue' === $args['--type']) {
-            $this->assertEquals(OutputFixtures::ISSUE_LIST_NO_PR, trim($tester->getDisplay(true)));
+            $rows = [
+                ['2', 'open', '', 'hard issue', 'weaverryan', 'cordoval', 'some_good_stuff', 'critic', '1969-12-31 10:00', 'https://github.com/gushphp/gush/issues/2'],
+            ];
         } else {
-            $this->assertEquals(OutputFixtures::ISSUE_LIST_ALL, trim($tester->getDisplay(true)));
+            $rows = [
+                ['1', 'open', 'PR', 'easy issue', 'cordoval', 'cordoval', 'good_release', 'critic,easy pick', '1969-12-31 10:00', 'https://github.com/gushphp/gush/issues/1'],
+                ['2', 'open', '', 'hard issue', 'weaverryan', 'cordoval', 'some_good_stuff', 'critic', '1969-12-31 10:00', 'https://github.com/gushphp/gush/issues/2'],
+            ];
         }
+
+        $this->assertTableOutputMatches(
+            ['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link'],
+            $rows,
+            $display
+        );
     }
 
     public function provideCommand()
     {
         return [
-            [['--org' => 'gushphp', '--repo' => 'gush']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--type' => 'issue']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--assignee' => 'cordoval']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--mentioned' => 'cordoval']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--creator' => 'cordoval']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--milestone' => 'some good st...']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--label' => ['critical']]],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--state' => 'open']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--sort' => 'created']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--direction' => 'asc']],
-            [['--org' => 'gushphp', '--repo' => 'gush', '--since' => '11 day ago']],
+            [[]],
+            [['--type' => 'issue']],
+            [['--assignee' => 'cordoval']],
+            [['--mentioned' => 'cordoval']],
+            [['--creator' => 'cordoval']],
+            [['--milestone' => 'some good st...']],
+            [['--label' => ['critical']]],
+            [['--state' => 'open']],
+            [['--sort' => 'created']],
+            [['--direction' => 'asc']],
+            [['--since' => '11 day ago']],
         ];
     }
 }

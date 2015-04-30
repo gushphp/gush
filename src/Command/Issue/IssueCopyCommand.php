@@ -67,17 +67,16 @@ EOF
         $adapter->setUsername($targetUsername);
         $adapter->setRepository($targetRepository);
 
-        $this->getHelper('gush_style')->success(
-            sprintf(
-                'Opened issue: %s',
-                $adapter->getIssueUrl(
-                    $adapter->openIssue(
-                        $srcTitle,
-                        $srcIssue['body'],
-                        $srcIssue
-                    )
-                )
+        $issueUrl = $adapter->getIssueUrl(
+            $adapter->openIssue(
+                $srcTitle,
+                $srcIssue['body'],
+                $srcIssue
             )
+        );
+
+        $this->getHelper('gush_style')->success(
+            sprintf('Opened issue: %s', $issueUrl)
         );
 
         $adapter->setUsername($srcUsername);

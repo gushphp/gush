@@ -18,10 +18,12 @@ class TestAdapter extends BaseAdapter implements IssueTracker
 {
     const PULL_REQUEST_NUMBER = 40;
     const ISSUE_NUMBER = 7;
+    const ISSUE_NUMBER_CREATED = 77;
     const RELEASE_ASSET_NUMBER = 1;
 
     private $name;
     private $pullRequest;
+    private $issue;
 
     public function __construct($name)
     {
@@ -112,6 +114,26 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function openIssue($subject, $body, array $options = [])
     {
+        $this->issue = [
+            'url' => $this->getIssueUrl(self::ISSUE_NUMBER_CREATED),
+            'number' => self::ISSUE_NUMBER_CREATED,
+            'state' => 'open',
+            'title' => $subject,
+            'body' => $body,
+            'user' => 'weaverryan',
+            'labels' => isset($options['labels']) ? $options['labels'] : [],
+            'assignee' => isset($options['assignee']) ? $options['assignee'] : null,
+            'milestone' => isset($options['milestone']) ? $options['milestone'] : null,
+            'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
+            'closed_by' => null,
+            'pull_request' => false,
+
+            // debugging info
+            'org' => $this->username,
+            'repo' => $this->repository,
+        ];
+
         return 77;
     }
 
@@ -120,6 +142,19 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getIssue($id)
     {
+        if (self::ISSUE_NUMBER_CREATED === $id) {
+            if (!$this->issue) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'ID #%d is reserved for testing, call openIssue() first before using this id',
+                        self::ISSUE_NUMBER_CREATED
+                    )
+                );
+            }
+
+            return $this->issue;
+        }
+
         return [
             'url' => $this->getIssueUrl($id),
             'number' => $id,
@@ -134,6 +169,10 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             'updated_at' => new \DateTime('2014-05-14T15:30:00+0100'),
             'closed_by' => null,
             'pull_request' => true,
+
+            // debugging info
+            'org' => $this->username,
+            'repo' => $this->repository,
         ];
     }
 

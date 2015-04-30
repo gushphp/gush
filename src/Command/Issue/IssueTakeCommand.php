@@ -30,35 +30,18 @@ class IssueTakeCommand extends BaseCommand implements IssueTrackerRepoFeature
         $this
             ->setName('issue:take')
             ->setDescription('Takes an issue')
-            ->addOption(
-                'source-org',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Source Organization for getting git branches - source organization name (defaults to value of --org)'
-            )
-            ->addOption(
-                'source-repo',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Source Organization - source organization name (defaults to value of --repo)'
-            )
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Number of the issue')
             ->addArgument('base_branch', InputArgument::OPTIONAL, 'Name of the base branch to checkout from')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command takes an issue from issue tracker repository list:
+The <info>%command.name%</info> command takes an issue from the issue-tracker:
 
     <info>$ gush %command.name% 3</info>
 
 In practice this will add the organization as remote (if not registered already), then
 <comment>git checkout base_branch</> and create a new branch that is equal to the issue-number + title.
 
-<comment>Note:</> This command assumes the issue-tracker and git repository share the same organization and repository-name.
-To target a specific git repository for the checkout use the the <comment>--source-org</> and <comment>--source-repo</>
-options. The <comment>--org</> and <comment>--repo</> options always apply to the issue-tracker.
-
 After you are done you can open a new pull-request using the <info>$ gush pull-request:create</info> command.
-<fg=red;options=bold>Remember that you must push the branch before opening a pull-request!</>
 
 EOF
             )

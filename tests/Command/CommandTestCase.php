@@ -30,8 +30,15 @@ class CommandTestCase extends BaseTestCase
         'issue_adapter' => 'github_enterprise',
         'repo_org' => 'gushphp',
         'repo_name' => 'gush',
+        'remove-promote' => true,
     ];
 
+    /**
+     * @param $expected
+     * @param $output
+     *
+     * @deprecated Use assertCommandOutputMatches instead
+     */
     protected function assertCommandOutputEquals($expected, $output)
     {
         $this->assertEquals($expected, implode("\n", array_map('trim', explode("\n", trim($output)))));

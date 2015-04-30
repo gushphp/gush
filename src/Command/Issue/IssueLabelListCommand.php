@@ -13,11 +13,10 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\IssueTrackerRepoFeature;
-use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueLabelListCommand extends BaseCommand implements TableFeature, IssueTrackerRepoFeature
+class IssueLabelListCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -26,7 +25,7 @@ class IssueLabelListCommand extends BaseCommand implements TableFeature, IssueTr
     {
         $this
             ->setName('issue:label:list')
-            ->setDescription('Lists the issue\'s labels')
+            ->setDescription('Lists the available issue\'s labels')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command lists the issue's available labels for either the current or the given
@@ -42,24 +41,12 @@ EOF
     /**
      * {@inheritdoc}
      */
-    public function getTableDefaultLayout()
-    {
-        return 'compact';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getIssueTracker();
         $labels = $tracker->getLabels();
 
-        $table = $this->getHelper('table');
-        $table->formatRows($labels, function ($label) {
-            return [$label];
-        });
-        $table->render($output, $table);
+        $this->getHelper('gush_style')->listing($labels);
 
         return $labels;
     }
