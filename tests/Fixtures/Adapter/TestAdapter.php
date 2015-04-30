@@ -351,7 +351,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             'number' => $id,
             'state' => 'open',
             'title' => 'Write a behat test to launch strategy',
-            'body' => 'Help me conquer the world. Teach them to use gush.',
+            'body' => 'Help me conquer the world. Teach them to use Gush.',
             'labels' => ['actionable', 'easy pick'],
             'milestone' => 'some_good_stuff',
             'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
@@ -417,6 +417,29 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function closePullRequest($id)
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false)
+    {
+        $pr = $this->getPullRequest($prNumber);
+
+        if ($forceNewPr) {
+            $newPr = $this->openPullRequest(
+                $newBase,
+                $newHead,
+                $pr['title'],
+                $pr['body']
+            );
+
+            $this->closePullRequest($prNumber);
+
+            return $newPr;
+        }
+
+        return ['html_url' => $this->getPullRequestUrl($prNumber), 'number' => $prNumber];
     }
 
     /**
@@ -531,4 +554,5 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             ]
         ];
     }
+
 }
