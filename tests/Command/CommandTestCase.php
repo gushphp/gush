@@ -14,6 +14,7 @@ namespace Gush\Tests\Command;
 use Gush\Config;
 use Gush\Tests\BaseTestCase;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 class CommandTestCase extends BaseTestCase
 {

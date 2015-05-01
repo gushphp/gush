@@ -107,10 +107,10 @@ bldr:
                     continueOnError: false
                     executable: phpunit
                     arguments:
-                        - '--verbose'
-                        - '--exclude-group ""'
-                        - '--coverage-html=build/coverage'
-                        - '--coverage-text=php://stdout'
+                        - --verbose
+                        - --exclude-group=""
+                        - --coverage-html=build/coverage
+                        - --coverage-text=php://stdout
         testLocal:
             description: Runs the PHPUnit Tests
             tasks:

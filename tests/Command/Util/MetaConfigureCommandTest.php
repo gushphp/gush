@@ -49,4 +49,9 @@ OET;
 
         $this->assertEquals(sprintf(self::META_HEADER, date('Y')), $command->getConfig()->get('meta-header'));
     }
+
+    protected function requiresRealConfigDir()
+    {
+        return true;
+    }
 }

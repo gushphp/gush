@@ -26,8 +26,8 @@ cache:
         - $HOME/.composer/cache
 
 env:
-    - GUSH_USE_TMP=true
-    - GUSH_USE_TMP=false
+    - GUSH_USE_FS=true
+    - GUSH_USE_FS=false
 
 before_install:
     - composer self-update

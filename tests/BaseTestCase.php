@@ -47,7 +47,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (getenv('GUSH_USE_TMP')) {
+        if ('true' === getenv('GUSH_USE_FS')) {
             $this->tmpFs = sys_get_temp_dir();
 
             if (!$this->tmpFs) {
@@ -60,7 +60,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     protected function getNewTmpFolder($name)
     {
-        if (getenv('GUSH_USE_TMP')) {
+        if ('true' === getenv('GUSH_USE_FS')) {
             $path = $this->tmpFs.'/'.$name.(++self::$dirCounter).microtime(true);
         } else {
             $path = $this->tmpFs->url().'/'.$name;
