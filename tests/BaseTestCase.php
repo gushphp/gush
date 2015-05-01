@@ -151,7 +151,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function getGitHelper($isGitFolder = true)
     {
         $gitHelper = $this->prophesize(GitHelper::class);
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        $gitHelper->setHelperSet(Argument::any())->willReturn();
         $gitHelper->clearTempBranches()->willReturn(null);
         $gitHelper->getName()->willReturn('git');
         $gitHelper->isGitFolder()->willReturn($isGitFolder);
@@ -165,7 +165,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function getGitConfigHelper()
     {
         $helper = $this->prophesize(GitConfigHelper::class);
-        $helper->setHelperSet(Argument::any())->shouldBeCalled();
+        $helper->setHelperSet(Argument::any())->willReturn();
         $helper->getName()->willReturn('git_config');
 
         return $helper;
@@ -177,8 +177,8 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function getProcessHelper()
     {
         $helper = $this->prophesize(ProcessHelper::class);
-        $helper->setHelperSet(Argument::any())->shouldBeCalled();
-        $helper->setOutput(Argument::any())->shouldBeCalled();
+        $helper->setHelperSet(Argument::any())->willReturn();
+        $helper->setOutput(Argument::any())->willReturn();
         $helper->getName()->willReturn('process');
 
         return $helper;

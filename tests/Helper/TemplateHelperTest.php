@@ -11,31 +11,62 @@
 
 namespace Gush\Tests\Helper;
 
+use Gush\Helper\StyleHelper;
 use Gush\Helper\TemplateHelper;
+use Gush\Template\TemplateInterface;
+use Gush\Tests\BaseTestCase;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\BufferedOutput;
 
-class TemplateHelperTest extends \PHPUnit_Framework_TestCase
+class TemplateHelperTest extends BaseTestCase
 {
-    /** @var \Gush\Helper\TemplateHelper */
-    protected $helper;
-    protected $template;
-    protected $styleHelper;
-    protected $output;
-    protected $input;
+    /**
+     * @var \Gush\Helper\TemplateHelper
+     */
+    private $helper;
+
+    /**
+     * @var \Prophecy\Prophecy\ObjectProphecy
+     */
+    private $template;
+
+    /**
+     * @var ArrayInput
+     */
+    private $input;
+
+    /**
+     * @var BufferedOutput
+     */
+    private $output;
+
+    /**
+     * @var \Gush\Application
+     */
+    private $application;
 
     public function setUp()
     {
-        $this->styleHelper = $this->getMock('Gush\Helper\StyleHelper');
-        $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
-        $this->input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $this->template = $this->getMock('Gush\Template\TemplateInterface');
+        parent::setUp();
 
-        $application = $this->getMockBuilder('Gush\Application')
-            ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
-            ->getMock()
-        ;
+        $this->template = $this->prophesize('Gush\Template\TemplateInterface');
 
-        $this->helper = new TemplateHelper($this->styleHelper, $application);
+        $inputDef = new InputDefinition();
+        $inputDef->addOption(new InputOption('test-option', null, InputOption::VALUE_OPTIONAL));
+
+        $this->input = new ArrayInput(['--test-option' => null], $inputDef);
+        $this->output = new BufferedOutput();
+
+        $this->application = $this->getApplication();
+
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->application->getHelperSet()->get('gush_style');
+        $styleHelper->setInput($this->input);
+        $styleHelper->setOutput($this->output);
+
+        $this->helper = new TemplateHelper($styleHelper, $this->application);
         $this->helper->setInput($this->input);
     }
 
@@ -55,16 +86,16 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function registers_template($name, $parts, $exception = false)
     {
-        if (true === $exception) {
+        $this->template->getName()->willReturn($name);
+
+        if ($exception) {
             $this->setExpectedException('InvalidArgumentException');
         }
 
-        $this->template->expects($this->once())
-            ->method('getName')
-            ->will($this->returnValue($name))
-        ;
-        $this->helper->registerTemplate($this->template);
+        $this->helper->registerTemplate($this->template->reveal());
+
         $res = $this->helper->getTemplate($parts[0], $parts[1]);
+
         $this->assertInstanceOf('Gush\Template\TemplateInterface', $res);
     }
 
@@ -72,13 +103,20 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                ['foo/bar', 'foo/bong', 'bar/boo'], 'foo', ['bar', 'bong'],
+                ['foo/bar', 'foo/bong', 'bar/boo'],
+                'foo',
+                ['bar', 'bong'],
             ],
             [
-                ['foo/bar', 'foo/bong', 'bar/boo' ], 'bar', ['boo'],
+                ['foo/bar', 'foo/bong', 'bar/boo'],
+                'bar',
+                ['boo'],
             ],
             [
-                [], 'bar', [], true,
+                [],
+                'bar',
+                [],
+                true,
             ],
         ];
     }
@@ -89,20 +127,19 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function gets_names_for_domain($templateRegistrations, $domain, $expectedNames, $exception = false)
     {
-        if (true === $exception) {
+        foreach ($templateRegistrations as $templateRegistration) {
+            $template = $this->prophesize('Gush\Template\TemplateInterface');
+            $template->getName()->willReturn($templateRegistration);
+
+            $this->helper->registerTemplate($template->reveal());
+        }
+
+        if ($exception) {
             $this->setExpectedException('InvalidArgumentException', 'Unknown template domain');
         }
 
-        foreach ($templateRegistrations as $templateRegistration) {
-            $template = $this->getMock('Gush\Template\TemplateInterface');
-            $template->expects($this->once())
-                ->method('getName')
-                ->will($this->returnValue($templateRegistration))
-            ;
-            $this->helper->registerTemplate($template);
-        }
-
         $res = $this->helper->getNamesForDomain($domain);
+
         $this->assertEquals($expectedNames, $res);
     }
 
@@ -123,8 +160,8 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     public function gets_helper($domain, $name)
     {
         $res = $this->helper->getTemplate($domain, $name);
-        $this->assertNotNull($res);
-        $this->assertInstanceof('Gush\Template\TemplateInterface', $res);
+
+        $this->assertInstanceof(TemplateInterface::class, $res);
     }
 
     /**
@@ -132,17 +169,18 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage has not been registered
      */
-    public function backfires_when_getting_wrong_helper()
+    public function errors_when_getting_wrong_helper()
     {
-        $this->helper->getTemplate('foobar', 'barfoo');
+        $this->helper->getTemplate('foobar', 'bar-foo');
     }
 
     public function provideParameterize()
     {
         return [
-            [[
-                'foo' => ['This is foo', 'default-bar'],
-            ]]
+            [
+                ['foo' => ['This is foo', 'default-bar']],
+                ['foo' => 'foo', 'test-option' => 'test-option']
+            ]
         ];
     }
 
@@ -150,50 +188,23 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider provideParameterize
      */
-    public function parameterizes($requirements)
+    public function parameterizes($requirements, $bindArguments)
     {
         $requirements['test-option'] = ['This is bar', 'default-foo'];
 
-        $this->template->expects($this->once())
-            ->method('getName')
-            ->will($this->returnValue('test/foobar'));
+        $this->input->setOption('test-option', 'test-option');
 
-        $this->input->expects($this->any())
-            ->method('hasOption')
-            ->will($this->returnCallback(function ($option) {
-                if ($option == 'test-option') {
-                    return true;
-                }
-            }))
-        ;
+        $this->template->getName()->willReturn('test/foobar')->shouldBeCalled();
+        $this->template->getRequirements()->willReturn($requirements)->shouldBeCalled();
+        $this->template->bind($bindArguments)->shouldBeCalled();
+        $this->template->render()->willReturn('foo')->shouldBeCalled();
 
-        $this->input->expects($this->any())
-            ->method('getOption')
-            ->will($this->returnCallback(function ($option) {
-                if ($option == 'test-option') {
-                    return 'test-option';
-                }
-            }));
+        // // less one because we test with one given option
+        $this->setExpectedApplicationInput(array_fill(0, count($requirements) - 1, 'foo'));
 
-        $this->template->expects($this->once())
-            ->method('getRequirements')
-            ->will($this->returnValue($requirements));
+        $this->helper->registerTemplate($this->template->reveal());
+        $res = $this->helper->askAndRender('test', 'foobar');
 
-        // less one because we test with one given option
-        $this->styleHelper->expects($this->exactly(count($requirements) - 1))
-            ->method('ask')
-            ->will($this->returnValue('foo'));
-
-        $this->template->expects($this->once())
-            ->method('bind');
-
-        $this->template->expects($this->once())
-            ->method('render')
-            ->will($this->returnValue('foo'));
-
-        $this->helper->registerTemplate($this->template);
-
-        $res = $this->helper->askAndRender($this->output, 'test', 'foobar');
         $this->assertEquals('foo', $res);
     }
 
@@ -202,41 +213,37 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function binds_and_renders()
     {
-        $this->template->expects($this->once())
-            ->method('getName')
-            ->will($this->returnValue('test/foobar'))
-        ;
+        $this->input->setOption('test-option', 'test-option');
 
-        $this->input->expects($this->any())
-            ->method('hasOption')
-            ->will($this->returnCallback(function ($option) {
-                if ($option == 'test-option') {
-                    return true;
-                }
-            }))
-        ;
+        $this->template->getName()->willReturn('test/foobar')->shouldBeCalled();
+        $this->template->bind(['author' => 'cslucano'])->shouldBeCalled();
+        $this->template->render()->willReturn('foo')->shouldBeCalled();
 
-        $this->input->expects($this->any())
-            ->method('getOption')
-            ->will($this->returnCallback(function ($option) {
-                if ($option == 'test-option') {
-                    return 'test-option';
-                }
-            }))
-        ;
-
-        $this->template->expects($this->once())
-            ->method('bind')
-        ;
-
-        $this->template->expects($this->once())
-            ->method('render')
-            ->will($this->returnValue('foo'))
-        ;
-
-        $this->helper->registerTemplate($this->template);
-
+        $this->helper->registerTemplate($this->template->reveal());
         $res = $this->helper->bindAndRender(['author' => 'cslucano'], 'test', 'foobar');
+
         $this->assertEquals('foo', $res);
+    }
+
+    /**
+     * @param array|string $input
+     */
+    private function setExpectedApplicationInput($input)
+    {
+        if (is_array($input)) {
+            $input = implode("\n", $input);
+        }
+
+        $helper = $this->application->getHelperSet()->get('gush_question');
+        $helper->setInputStream($this->getInputStream($input));
+    }
+
+    private function getInputStream($input)
+    {
+        $stream = fopen('php://memory', 'r+', false);
+        fwrite($stream, $input);
+        rewind($stream);
+
+        return $stream;
     }
 }

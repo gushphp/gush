@@ -63,6 +63,6 @@ EOT
             new ChoiceQuestion('Choose License', $available)
         );
 
-        return $this->getHelper('template')->askAndRender($output, 'meta-header', $licenseSelection);
+        return $this->getHelper('template')->askAndRender('meta-header', $licenseSelection);
     }
 }

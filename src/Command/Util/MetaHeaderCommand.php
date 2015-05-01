@@ -106,7 +106,7 @@ EOT
         $styleHelper = $this->getHelper('gush_style');
 
         if (null === ($metaHeader = $config->get('meta-header')) || $input->getOption('no-local')) {
-            $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
+            $metaHeader = $this->getHelper('template')->askAndRender('meta-header', $template);
         }
 
         $allFiles = $this->getHelper('git')->listFiles();

@@ -170,7 +170,6 @@ EOF
         $title = trim($styleHelper->ask('Title', $defaultTitle));
         $body = trim(
             $this->getHelper('template')->askAndRender(
-                $output,
                 $this->getTemplateDomain(),
                 $template
             )
