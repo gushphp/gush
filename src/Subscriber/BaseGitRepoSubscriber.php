@@ -15,11 +15,9 @@ use Gush\Adapter\Adapter;
 use Gush\Application;
 use Gush\Config;
 use Gush\Exception\UserException;
-use Gush\Factory\AdapterFactory;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Gush\Helper\StyleHelper;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class BaseGitRepoSubscriber implements EventSubscriberInterface

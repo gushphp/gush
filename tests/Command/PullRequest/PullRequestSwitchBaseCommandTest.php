@@ -11,12 +11,9 @@
 
 namespace Gush\Tests\Command\PullRequest;
 
-use Gush\Command\PullRequest\PullRequestCreateCommand;
 use Gush\Command\PullRequest\PullRequestSwitchBaseCommand;
-use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
-use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class PullRequestSwitchBaseCommandTest extends CommandTestCase

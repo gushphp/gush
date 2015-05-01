@@ -17,7 +17,6 @@ use Gush\ConfigFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Yaml\Yaml;
 
 class MetaConfigureCommand extends BaseCommand
 {

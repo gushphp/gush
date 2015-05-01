@@ -13,7 +13,6 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestAssignCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\Adapter\TestAdapter;
 
 class PullRequestAssignCommandTest extends CommandTestCase
 {

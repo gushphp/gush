@@ -13,7 +13,6 @@ namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueListCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
 
 class IssueListCommandTest extends CommandTestCase
 {

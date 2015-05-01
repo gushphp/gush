@@ -17,7 +17,6 @@ use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Prophecy\Prophet;
 
 class GitHelperTest extends \PHPUnit_Framework_TestCase
 {

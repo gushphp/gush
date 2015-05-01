@@ -14,7 +14,6 @@ namespace Gush\Tests\Command\Issue;
 use Gush\Command\Issue\IssueCloseCommand;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
-use Gush\Tests\Fixtures\OutputFixtures;
 
 class IssueCloseCommandTest extends CommandTestCase
 {

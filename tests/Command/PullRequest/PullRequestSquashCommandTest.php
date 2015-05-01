@@ -13,7 +13,6 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestSquashCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Prophecy\Argument;
 
 class PullRequestSquashCommandTest extends CommandTestCase
 {

@@ -13,7 +13,6 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestFixerCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class PullRequestFixerCommandTest extends CommandTestCase

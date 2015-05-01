@@ -18,7 +18,7 @@ class CommandTester extends BaseCommandTester
     /**
      * {@inheritdoc}
      */
-    public function execute(array $input = [], array $options = array())
+    public function execute(array $input = [], array $options = [])
     {
         $options = array_merge(['decorated' => false], $options);
 

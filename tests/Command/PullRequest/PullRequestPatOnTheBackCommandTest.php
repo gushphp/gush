@@ -13,8 +13,6 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestPatOnTheBackCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\Adapter\TestAdapter;
-use Gush\Tests\Fixtures\OutputFixtures;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class PullRequestPatOnTheBackCommandTest extends CommandTestCase

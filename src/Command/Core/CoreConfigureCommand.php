@@ -18,7 +18,6 @@ use Gush\Factory\AdapterFactory;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class CoreConfigureCommand extends BaseCommand
 {
@@ -119,7 +118,6 @@ EOF
             if ($adapter['supports_issue_tracker']) {
                 $capabilities[] = 'IssueTracker';
             }
-
 
             $labels[$adapterName] = sprintf(
                 $labelPattern,

@@ -13,7 +13,6 @@ namespace Gush\Tests\Command\Release;
 
 use Gush\Command\Release\ReleaseListCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
 
 class ReleaseListCommandTest extends CommandTestCase
 {

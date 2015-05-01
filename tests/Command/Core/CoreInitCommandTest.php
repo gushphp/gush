@@ -16,7 +16,6 @@ use Gush\Config;
 use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestConfigurator;
-use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class CoreInitCommandTest extends CommandTestCase

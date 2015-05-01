@@ -11,7 +11,6 @@
 
 namespace Gush;
 
-use Gush\Exception\FileNotFoundException;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -155,7 +154,7 @@ class ConfigFactory
         } else {
             self::getFilesystem()->dumpFile(
                 $filename,
-            "# Gush configuration file, any comments will be lost.\n".Yaml::dump($config->toArray($type), 2)
+                "# Gush configuration file, any comments will be lost.\n".Yaml::dump($config->toArray($type), 2)
             );
         }
 

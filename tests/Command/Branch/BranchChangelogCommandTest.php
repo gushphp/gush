@@ -13,8 +13,6 @@ namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchChangelogCommand;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
-use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class BranchChangelogCommandTest extends CommandTestCase

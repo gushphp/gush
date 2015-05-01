@@ -554,5 +554,4 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             ]
         ];
     }
-
 }

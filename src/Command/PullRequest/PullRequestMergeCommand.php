@@ -12,7 +12,6 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
-use Gush\Config;
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Exception\UserException;
 use Gush\Feature\GitRepoFeature;

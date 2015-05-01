@@ -13,7 +13,6 @@ namespace Gush\Tests\Command;
 
 use Gush\Config;
 use Gush\Tests\BaseTestCase;
-use Prophecy\Prophet;
 use Symfony\Component\Console\Command\Command;
 
 class CommandTestCase extends BaseTestCase

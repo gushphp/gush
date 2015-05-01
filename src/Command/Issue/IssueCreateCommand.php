@@ -16,11 +16,9 @@ use Gush\Exception\UserException;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\EditorHelper;
 use Gush\Helper\StyleHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 class IssueCreateCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
@@ -70,10 +68,10 @@ EOF
             $body = $styleHelper->ask('Body (enter "e" to open editor)', '');
 
             if ('e' === $body) {
-            /** @var EditorHelper $editor */
+                /** @var EditorHelper $editor */
             $editor = $this->getHelper('editor');
-            $body = $editor->fromString('');
-        }
+                $body = $editor->fromString('');
+            }
 
             $input->setOption('body', $body);
         }

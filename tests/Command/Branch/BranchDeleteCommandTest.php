@@ -14,8 +14,6 @@ namespace Gush\Tests\Command\Branch;
 use Gush\Command\Branch\BranchDeleteCommand;
 use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
-use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class BranchDeleteCommandTest extends CommandTestCase
