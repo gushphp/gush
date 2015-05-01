@@ -18,13 +18,6 @@ use Symfony\Component\Console\Command\Command;
 
 class CommandTestCase extends BaseTestCase
 {
-    /**
-     * @deprecated, remove this after all tests are updated.
-     *
-     * @var Prophet
-     */
-    protected $prophet;
-
     protected static $localConfig = [
         'repo_adapter' => 'github_enterprise',
         'issue_adapter' => 'github_enterprise',
@@ -32,17 +25,6 @@ class CommandTestCase extends BaseTestCase
         'repo_name' => 'gush',
         'remove-promote' => true,
     ];
-
-    /**
-     * @param $expected
-     * @param $output
-     *
-     * @deprecated Use assertCommandOutputMatches instead
-     */
-    protected function assertCommandOutputEquals($expected, $output)
-    {
-        $this->assertEquals($expected, implode("\n", array_map('trim', explode("\n", trim($output)))));
-    }
 
     protected function assertCommandOutputMatches($expectedLines, $output, $regex = false)
     {
