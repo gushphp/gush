@@ -13,6 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,11 +47,23 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $prNumber = $input->getArgument('pr_number');
+
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
         $base = $pr['base']['ref'];
         $head = $pr['head']['ref'];
+
+        $sourceOrg = $pr['head']['user'];
+        $branchName = $pr['head']['ref'];
+
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        $gitConfigHelper->ensureRemoteExists($pr['user'], $pr['head']['repo']);
+
+        /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+        $gitHelper->remoteUpdate($sourceOrg);
 
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
