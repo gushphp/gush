@@ -29,15 +29,26 @@ class BranchRemoteAddCommand extends BaseCommand implements GitRepoFeature
             ->setDescription('Adds a remote with url used from adapter')
             ->addArgument(
                 'other_organization',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'Organization or username the remote will point to'
+            )
+            ->addArgument(
+                'other_repository',
+                InputArgument::OPTIONAL,
+                'Repository-name the remote will point to'
+            )
+            ->addArgument(
+                'remote',
+                InputArgument::OPTIONAL,
+                'Remote name. When not provided the other_organization is used as remote-name'
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command adds a remote with url used from adapter:
+The <info>%command.name%</info> command adds a remote with a url provided by the adapter:
 
-    <info>$ gush %command.name% sstok</info>
+    <info>$ gush %command.name% sstok gush</info>
 
+<fg=yellow;options=bold>Warning! Any existing remote with the same name will be overwritten!</>
 EOF
             )
         ;
@@ -48,16 +59,14 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adapter = $this->getAdapter();
-        $org = $input->getArgument('other_organization');
-        $username = $this->getParameter($input, 'authentication')['username'];
-        $remoteName = $org ?: $username;
+        $org = $input->getArgument('other_organization') ?: $this->getParameter($input, 'authentication')['username'];
+        $repo = $input->getArgument('other_repository') ?: $input->getOption('repo');
+        $remoteName = $input->getArgument('remote') ?: $org;
 
-        $fork = $adapter->createFork($org);
+        $repoInfo = $this->getAdapter()->getRepositoryInfo($org, $repo);
 
-        $this->getHelper('git')->addRemote($remoteName, $fork['git_url']);
-
-        $this->getHelper('gush_style')->success(sprintf('Added remote for %s', $org));
+        $this->getHelper('git_config')->setRemote($remoteName, $repoInfo['push_url']);
+        $this->getHelper('gush_style')->success(sprintf('Added remote "%s" with "%s"', $remoteName, $repoInfo['push_url']));
 
         return self::COMMAND_SUCCESS;
     }
