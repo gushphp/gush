@@ -41,11 +41,22 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $application = $this->getApplication();
-        /** @var \Gush\Application $application */
-        $config = $application->getConfig();
-        (new Filesystem())->remove($config->get('cache-dir'));
+        $cacheDir = $this->getConfig()->get('cache-dir');
 
-        $output->writeln('Cache has been cleared.');
+        // Confirmation is used to ensure the user knows which directory will be deleted.
+        // If cache dir is set directly to the system TEMP (not /tmp/gush) it should not be deleted!
+        if ($input->isInteractive() &&
+            !$this->getHelper('gush_style')->confirm(sprintf('Remove/clear directory "%s"?', $cacheDir), false)
+        ) {
+            $this->getHelper('gush_style')->error('User aborted.');
+
+            return self::COMMAND_FAILURE;
+        }
+
+        (new Filesystem())->remove($cacheDir);
+
+        $this->getHelper('gush_style')->success('Cache has been cleared.');
+
+        return self::COMMAND_SUCCESS;
     }
 }
