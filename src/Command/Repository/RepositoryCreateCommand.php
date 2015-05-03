@@ -12,11 +12,13 @@
 namespace Gush\Command\Repository;
 
 use Gush\Command\BaseCommand;
+use Gush\Feature\GitRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RepositoryCreateCommand extends BaseCommand
+class RepositoryCreateCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -29,6 +31,24 @@ class RepositoryCreateCommand extends BaseCommand
             ->addArgument('name', InputArgument::REQUIRED, 'Name of the new repository')
             ->addArgument('description', InputArgument::OPTIONAL, 'Repository description')
             ->addArgument('homepage', InputArgument::OPTIONAL, 'Repository homepage')
+            ->addOption(
+                'private',
+                null,
+                InputOption::VALUE_NONE,
+                'Make a private repository (may require a plan upgrade)'
+            )
+            ->addOption(
+                'no-init',
+                null,
+                InputOption::VALUE_NONE,
+                'Create an empty repository instead of having an "initial commit"'
+            )
+            ->addOption(
+                'target-org',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Target organization (defaults to your username)'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command spins a repository:
@@ -55,13 +75,13 @@ EOF
             $name,
             $description,
             $homepage,
-            true,
-            $organization = null,
+            !$input->getOption('private'),
+            $organization = $input->getOption('target-org') ?: null,
             $hasIssues = true,
             $hasWiki = false,
             $hasDownloads = false,
             $teamId = null,
-            $autoInit = true
+            $autoInit = !$input->getOption('no-init')
         );
 
         $this->getHelper('gush_style')->success(
