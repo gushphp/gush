@@ -60,20 +60,44 @@ class BranchChangelogCommandTest extends CommandTestCase
         );
     }
 
+    public function testSearchWithIssuePattern()
+    {
+        $command = new BranchChangelogCommand();
+        $tester = $this->getCommandTester($command);
+
+        $tester->execute(['--search' => ['/#(?P<id>[0-9]+)/i', '/GITHUB-(?P<id>[0-9]+)/i']]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                '#123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123',
+                'GITHUB-500: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/500',
+            ],
+            $display
+        );
+    }
+
     protected function getGitHelper($isGitFolder = true, $hasTag = true)
     {
         $helper = parent::getGitHelper($isGitFolder);
         $helper->getActiveBranchName()->willReturn('master');
 
         if ($hasTag) {
-            $helper->getLastTagOnBranch()->willReturn(self::TEST_TAG_NAME);
-            $helper->getLogBetweenCommits(self::TEST_TAG_NAME, 'HEAD')->willReturn(
+            $helper->getLastTagOnBranch('master')->willReturn(self::TEST_TAG_NAME);
+            $helper->getLogBetweenCommits(self::TEST_TAG_NAME, 'master')->willReturn(
                 [
                     [
                         'sha' => '68bfa1d00',
                         'author' => 'Anonymous <someone@example.com>',
                         'subject' => ' Another hack which fixes #123',
                         'message' => ' Another hack which fixes #123'
+                    ],
+                    [
+                        'sha' => '68bfa1d05',
+                        'author' => 'Anonymous <someone@example.com>',
+                        'subject' => ' Another hack which fixes GITHUB-500',
+                        'message' => ' Another hack which fixes GITHUB-500'
                     ]
                 ]
             );
