@@ -188,7 +188,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
         $adapters = $adapterFactory->allOfType(AdapterFactory::SUPPORT_REPOSITORY_MANAGER);
 
         foreach ($adapters as $adapterName => $adapterInfo) {
-            if (null === $config = $appConfig->get(sprintf('[adapters][%s]', $adapterName))) {
+            if (null === $config = $appConfig->get(['adapters', $adapterName])) {
                 continue;
             }
 

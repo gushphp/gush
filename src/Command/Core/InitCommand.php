@@ -200,7 +200,7 @@ EOF
         $application = $this->getApplication();
         $config = $application->getConfig();
 
-        if (!$config->has(sprintf('[adapters][%s]', $selected))) {
+        if (!$config->has(['adapters', $selected])) {
             $this->getHelper('gush_style')->note(
                 sprintf('%s "%s" is not configured yet.', $typeLabel, $label)
             );

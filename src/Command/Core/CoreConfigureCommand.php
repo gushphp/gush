@@ -121,7 +121,7 @@ EOF
 
             $labels[$adapterName] = sprintf(
                 $labelPattern,
-                $config->has(sprintf('[adapters][%s]', $adapterName)) ? '<info>*</info>' : ' ',
+                $config->has(['adapters', $adapterName]) ? '<info>*</info>' : ' ',
                 $adapter['label'],
                 implode(', ', $capabilities)
             );

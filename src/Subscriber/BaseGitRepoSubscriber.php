@@ -53,7 +53,7 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
      */
     protected function getAdapter($adapterName)
     {
-        $config = $this->application->getConfig()->get(sprintf('[adapters][%s]', $adapterName), Config::CONFIG_SYSTEM);
+        $config = $this->application->getConfig()->get(['adapters', $adapterName], Config::CONFIG_SYSTEM);
         $adapter = $this->application->getAdapterFactory()->createRepositoryManager(
             $adapterName,
             $config,
@@ -113,8 +113,8 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
         if (null !== $adapter) {
             $username = $config->getFirstNotNull(
                 [
-                    sprintf('[adapters][%s][username]', $adapter),
-                    sprintf('[adapters][%s][authentication][username]', $adapter)
+                    ['adapters', $adapter, 'username'],
+                    ['adapters', $adapter, 'authentication', 'username'],
                 ],
                 Config::CONFIG_SYSTEM
             );

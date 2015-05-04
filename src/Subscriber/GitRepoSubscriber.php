@@ -258,7 +258,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         $config = $this->application->getConfig();
 
-        if (!$config->has(sprintf('[adapters][%s]', $adapter), Config::CONFIG_SYSTEM)) {
+        if (!$config->has(['adapters', $adapter], Config::CONFIG_SYSTEM)) {
             $errors[] = sprintf('Adapter "%s" (for %s) is not configured yet.', $adapter, $typeLabel);
         }
     }
@@ -281,9 +281,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
         $input->setOption('issue-project', $issueRepo);
         $input->setOption('issue-adapter', $issueAdapterName);
 
-        $config = $this->application->getConfig()->get(
-            sprintf('[adapters][%s]', $issueAdapterName), Config::CONFIG_SYSTEM
-        );
+        $config = $this->application->getConfig()->get(['adapters', $issueAdapterName], Config::CONFIG_SYSTEM);
 
         $issueTracker = $this->application->getAdapterFactory()->createIssueTracker(
             $issueAdapterName,
@@ -314,7 +312,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
         $ignoredAdapters = [];
 
         foreach ($adapters as $adapterName => $adapterInfo) {
-            $config = $appConfig->get(sprintf('[adapters][%s]', $adapterName));
+            $config = $appConfig->get(['adapters', $adapterName]);
 
             // Adapter is not configured ignore
             if (null === $config) {

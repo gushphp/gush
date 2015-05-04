@@ -11,9 +11,6 @@
 
 namespace Gush;
 
-use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
 /**
  * The Config class holds and configuration for the Gush application.
  *
@@ -78,11 +75,6 @@ final class Config
     ];
 
     /**
-     * @var \Symfony\Component\PropertyAccess\PropertyAccessorInterface
-     */
-    private $accessor;
-
-    /**
      * Constructor.
      *
      * @param string      $homedir
@@ -106,11 +98,6 @@ final class Config
 
             $this->config[self::CONFIG_LOCAL] = $localConfig;
         }
-
-        $this->accessor = PropertyAccess::createPropertyAccessorBuilder()
-            ->disableExceptionOnInvalidIndex()
-            ->getPropertyAccessor()
-        ;
     }
 
     /**
@@ -187,35 +174,35 @@ final class Config
     /**
      * Returns a config value.
      *
-     * @param string                      $key      Single level key like "adapters" or property-path
-     *                                              "[adapters][github]"
+     * @param string|string[]             $keys     Single level key like 'adapters' or array-path
+     *                                              like ['adapters', 'github']
      * @param string                      $type     Either Config::CONFIG_SYSTEM Config::CONFIG_LOCAL
      *                                              or Config::CONFIG_ALL
      * @param string|int|float|bool|array $default  Default value to use when no config is found (null)
      *
      * @return string|int|float|bool|array
      */
-    public function get($key, $type = self::CONFIG_ALL, $default = null)
+    public function get($keys, $type = self::CONFIG_ALL, $default = null)
     {
         $this->guardConfigSlot($type);
 
-        // array_key_exists is cheaper for a single level config
-        // then creating a property path so try that first.
-        if (array_key_exists(trim($key, '[]'), $this->config[$type])) {
-            return $this->config[$type][trim($key, '[]')];
+        $keys = (array) $keys;
+
+        if (count($keys) === 1) {
+            return array_key_exists($keys[0], $this->config[$type]) ? $this->config[$type][$keys[0]] : $default;
         }
 
-        try {
-            $value = $this->accessor->getValue($this->config[$type], $key);
-        } catch (NoSuchPropertyException $e) {
-            return $default;
+        $current = $this->config[$type];
+
+        foreach ($keys as $key) {
+            if (!is_array($current) || !array_key_exists($key, $current)) {
+                return $default;
+            }
+
+            $current = $current[$key];
         }
 
-        if (null !== $value) {
-            return $value;
-        }
-
-        return $default;
+        return $current;
     }
 
     /**

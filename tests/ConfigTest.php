@@ -150,22 +150,22 @@ class ConfigTest extends BaseTestCase
             ]
         );
 
-        $this->assertEquals($this->homedir.'/gush', $config->get('[home]'));
-        $this->assertEquals(['base_url' => 'url'], $config->get('[adapters][github]'));
-        $this->assertEquals('url', $config->get('[adapters][github][base_url]'));
-        $this->assertNull($config->get('[no-key]'));
+        $this->assertEquals($this->homedir.'/gush', $config->get('home'));
+        $this->assertEquals(['base_url' => 'url'], $config->get(['adapters', 'github']));
+        $this->assertEquals('url', $config->get(['adapters', 'github', 'base_url']));
+        $this->assertNull($config->get(['no-key']));
 
         $this->assertEquals(
             ['github' => ['base_url' => 'url']],
-            $config->get('[adapters]', Config::CONFIG_ALL)
+            $config->get('adapters', Config::CONFIG_ALL)
         );
 
         $this->assertEquals(
             ['github' => ['base_url' => 'url']],
-            $config->get('[adapters]', Config::CONFIG_SYSTEM)
+            $config->get(['adapters'], Config::CONFIG_SYSTEM)
         );
 
-        $this->assertNull($config->get('[adapters]', Config::CONFIG_LOCAL));
+        $this->assertNull($config->get('adapters', Config::CONFIG_LOCAL));
     }
 
     public function testCannotGetConfigForUnsupportedSlot()

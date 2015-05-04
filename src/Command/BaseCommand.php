@@ -79,7 +79,7 @@ class BaseCommand extends Command
         $config = $this->getConfig();
         $adapter = $input->getOption('repo-adapter');
 
-        if ($value = $config->get(sprintf('[adapters][%s][%s]', $adapter, $key))) {
+        if ($value = $config->get(['adapters', $adapter, $key])) {
             return $value;
         }
 
