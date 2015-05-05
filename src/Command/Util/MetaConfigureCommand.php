@@ -44,7 +44,7 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getConfig()->set('meta-header', $this->getMetaHeader($output), Config::CONFIG_LOCAL);
+        $this->getConfig()->set('meta-header', $this->getMetaHeader(), Config::CONFIG_LOCAL);
         ConfigFactory::dumpToFile($this->getConfig(), Config::CONFIG_LOCAL);
 
         $this->getHelper('gush_style')->success('Configuration file saved successfully.');
@@ -52,7 +52,7 @@ EOT
         return self::COMMAND_SUCCESS;
     }
 
-    private function getMetaHeader($output)
+    private function getMetaHeader()
     {
         /** @var \Gush\Helper\TemplateHelper $template */
         $template = $this->getHelper('template');

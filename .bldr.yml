@@ -6,7 +6,6 @@ bldr:
             description: Travis Profile
             jobs:
                 - prepare
-                - lint
                 - test
         local:
             description: Local Development Profile
@@ -21,10 +20,6 @@ bldr:
             description: Gush merge flow
             jobs:
                 - gushMerge
-        secure:
-            description: run security script
-            jobs:
-                - secure
         minor:
             description: minor run
             jobs:
@@ -57,48 +52,6 @@ bldr:
                     continueOnError: true
                     executable: composer
                     arguments: [install]
-        secure:
-            tasks:
-                -
-                    type: exec
-                    continueOnError: true
-                    executable: rm
-                    arguments:
-                        - ./security-checker.phar
-                -
-                    type: exec
-                    continueOnError: true
-                    executable: curl
-                    arguments:
-                        - -o
-                        - security-checker.phar
-                        - http://get.sensiolabs.org/security-checker.phar
-                -
-                    type: exec
-                    continueOnError: true
-                    executable: chmod
-                    arguments:
-                        - +x
-                        - ./security-checker.phar
-                -
-                    type: exec
-                    continueOnError: true
-                    executable: php
-                    arguments:
-                        - ./security-checker.phar
-                        - security:check
-                        - ./composer.json
-        lint:
-            description: Lints the files of the project
-            tasks:
-                -
-                    type: apply
-                    continueOnError: false
-                    src:
-                        - { path: [src, tests], files: "*.php", recursive: true }
-                    output: /dev/null
-                    executable: php
-                    arguments: [-l]
         test:
             description: Runs the PHPUnit Tests
             tasks:

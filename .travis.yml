@@ -35,4 +35,3 @@ before_install:
 
 script:
     - php ./bldr.phar run travis
-    - php ./bldr.phar run secure

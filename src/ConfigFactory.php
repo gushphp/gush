@@ -46,7 +46,7 @@ class ConfigFactory
             if (getenv('APPDATA')) {
                 $home = strtr(getenv('APPDATA'), '\\', '/').'/Gush';
             } elseif (getenv('HOME')) {
-                $home = (string) getenv('GUSH_HOME').'/.gush';
+                $home = (string) getenv('HOME').'/.gush';
             }
         }
 
@@ -84,7 +84,7 @@ class ConfigFactory
     public static function createConfig($localHome = null)
     {
         $home = static::getHomedir();
-        $cacheDir = self::getCacheDir($home, $home);
+        $cacheDir = self::getCacheDir($home);
         $localConfig = [];
 
         $systemConfig = self::loadFileOrEmpty($home.'/.gush.yml');
