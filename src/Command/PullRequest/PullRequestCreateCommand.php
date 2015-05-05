@@ -127,18 +127,16 @@ EOF
         $sourceOrg = $input->getOption('source-org');
         $sourceRepo = $input->getOption('source-repo') ?: $input->getOption('repo') ;
         $sourceBranch = $input->getOption('source-branch');
-
-        $config = $this->getApplication()->getConfig();
-        /** @var \Gush\Config $config */
-
         $base = $input->getOption('base');
+
+        $config = $this->getConfig();
 
         if (null === $base) {
             $base = $config->get('base') ?: 'master';
         }
 
         if (null === $sourceOrg) {
-            $sourceOrg = $this->getParameter('authentication')['username'];
+            $sourceOrg = $this->getParameter($input, 'authentication')['username'];
         }
 
         if (null === $sourceBranch) {
@@ -163,7 +161,7 @@ EOF
 
         if ('' === $defaultTitle && !$input->isInteractive()) {
             $styleHelper->error(
-                'Title can not be empty, use the "--title" option to provide a title in none-interactive mode.'
+                'Title cannot be empty, use the "--title" option to provide a title in none-interactive mode.'
             );
 
             return self::COMMAND_FAILURE;
@@ -172,7 +170,6 @@ EOF
         $title = trim($styleHelper->ask('Title', $defaultTitle));
         $body = trim(
             $this->getHelper('template')->askAndRender(
-                $output,
                 $this->getTemplateDomain(),
                 $template
             )
@@ -248,7 +245,7 @@ EOF
         }
 
         throw new UserException(
-            sprintf('Can not open pull-request, remote branch "%s" does not exist in "%s/%s".', $branch, $org, $repo)
+            sprintf('Cannot open pull-request, remote branch "%s" does not exist in "%s/%s".', $branch, $org, $repo)
         );
     }
 }

@@ -12,127 +12,357 @@
 namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
-use Gush\Tester\QuestionToken;
-use Gush\Tests\Command\BaseTestCase;
-use Prophecy\Argument;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Yaml\Yaml;
+use Gush\Config;
+use Gush\Exception\UserException;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestConfigurator;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class CoreInitCommandTest extends BaseTestCase
+class CoreInitCommandTest extends CommandTestCase
 {
-    const USERNAME = 'bar';
-    const PASSWORD = 'foo';
-    const TOKEN = 'foo';
-
-    private $gushLocalFilename;
-
-    protected function setUp()
+    protected function requiresRealConfigDir()
     {
-        parent::setUp();
-
-        if (!$homeDir = getenv('GUSH_HOME')) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
-        }
-
-        $localDir = $homeDir.'/local_test';
-        $this->gushLocalFilename = $localDir.'/.gush.yml';
-
-        @mkdir($localDir, 0777, true);
-
-        if (file_exists($this->gushLocalFilename)) {
-            unlink($this->gushLocalFilename);
-        }
-
-        $this->config->get('local_config')->willReturn($this->gushLocalFilename);
-        $this->config->has('[adapters][github]')->willReturn(false);
-        $this->config->has('[issue_trackers][jira]')->willReturn(false);
+        return true;
     }
 
-    /**
-     * @test
-     */
-    public function accepts_adapter_and_issue_tracker_from_input()
+    protected function getGitConfigHelper($hasRemote = true)
     {
-        $expected = [
-            'adapter' => 'github',
-            'issue_tracker' => 'jira',
-        ];
-
-        $questionHelper = $this->expectDialogParameters(false);
-        $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($questionHelper);
-
-        $tester->execute(
+        $helper = parent::getGitConfigHelper();
+        $helper->getRemoteInfo('origin')->willReturn(
             [
-                'command' => $command->getName(),
-                '--adapter' => 'github',
-                '--issue-tracker' => 'jira',
-            ],
-            [
-                'interactive' => false,
+                'host' => 'github.com',
+                'vendor' => 'gushphp',
+                'repo' => 'gush',
             ]
         );
 
-        $this->assertGushLocalEquals($expected);
+        $helper->remoteExists('cordoval')->willReturn(false);
+        $helper->remoteExists('origin')->willReturn($hasRemote);
+        $helper->getGitConfig('remote.origin.url')->willReturn('git@github.com:gushphp/gush.git');
+
+        return $helper;
     }
 
-    /**
-     * @test
-     */
-    public function core_init_writes_local_gush_file()
+    public function testRunCommandWithAutoDetectedOptionsFromGitRemote()
     {
-        $this->config->get('adapter')->willReturn('github_enterprise');
-        $this->config->get('issue_tracker')->willReturn('github_enterprise');
-
-        $expected = [
-            'adapter' => 'github',
-            'issue_tracker' => 'jira',
-        ];
-
-        $questionHelper = $this->expectDialogParameters();
-        $tester = $this->getCommandTester($command = new InitCommand());
-        $command->getHelperSet()->set($questionHelper);
-
-        $tester->execute(
-            [
-                'command' => $command->getName(),
-            ],
-            [
-                'interactive' => true,
-            ]
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            []
         );
 
-        $this->assertGushLocalEquals($expected);
+        $this->assertFileNotExists($command->getConfig()->get('local_config'));
+
+        // adapter, issue-tracker, org, repo, issue-org, issue-project
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("\n\n\n\n\n\n"));
+
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose repository-manager',
+                '[0] GitHub',
+                '[1] GitHub Enterprise',
+                'Choose issue-tracker',
+                '[2] Jira',
+                'Specify the repository organization name',
+                'Specify the repository name',
+                'Specify the issue-tracker organization name',
+                'Specify the issue-tracker repository/project name',
+                ['\[OK\]\sConfiguration file saved successfully\.$', true], // ensure saving message is the last line
+            ],
+            $display
+        );
+
+        $expected = [
+            'repo_adapter' => 'github_enterprise',
+            'issue_tracker' => 'github_enterprise',
+            'repo_org' => 'gushphp',
+            'repo_name' => 'gush',
+            'issue_project_org' => 'gushphp',
+            'issue_project_name' => 'gush',
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('local_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
     }
 
-    private function assertGushLocalEquals(array $expected)
+    public function testRunCommandWithoutExistingLocalConfigAndNoRemote()
     {
-        $this->assertFileExists($this->gushLocalFilename);
-        $this->assertEquals($expected, Yaml::parse(file_get_contents($this->gushLocalFilename)));
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [
+                'adapters' => [
+                    'github' => [
+                        'authentication' => [
+                            'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                            'username' => TestConfigurator::USERNAME,
+                            'token' => TestConfigurator::PASSWORD,
+                        ],
+                        'base_url' => 'https://api.github.com/',
+                        'repo_domain_url' => 'https://github.com',
+                    ],
+                ],
+            ],
+            [],
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitConfigHelper(false)->reveal());
+            }
+        );
+
+        $this->assertFileNotExists($command->getConfig()->get('local_config'));
+
+        // adapter, issue-tracker, org, repo, issue-org, issue-project
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("0\n0\nMyOrg\nMyRepo\nIOrg\nIRepo\n"));
+
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose repository-manager',
+                '[0] GitHub',
+                '[1] GitHub Enterprise',
+                'Choose issue-tracker',
+                '[2] Jira',
+                'Specify the repository organization name',
+                'Specify the repository name',
+                'Specify the issue-tracker organization name',
+                'Specify the issue-tracker repository/project name',
+                ['\[OK\]\sConfiguration file saved successfully\.$', true], // ensure saving message is the last line
+            ],
+            $display
+        );
+
+        $expected = [
+            'repo_adapter' => 'github',
+            'issue_tracker' => 'github',
+            'repo_org' => 'MyOrg',
+            'repo_name' => 'MyRepo',
+            'issue_project_org' => 'IOrg',
+            'issue_project_name' => 'IRepo',
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('local_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
     }
 
-    private function expectDialogParameters($interactive = true)
+    public function testRunCommandWithNoConfiguredAdapter()
     {
-        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
-        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $styleHelper->setInput(Argument::any())->shouldBeCalled();
-        $styleHelper->setOutput(Argument::any())->shouldBeCalled();
-        $styleHelper->getName()->willReturn('gush_style');
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [],
+            []
+        );
 
-        // Common styling, no need to test
-        $styleHelper->note(Argument::any())->shouldBeCalled();
-        $styleHelper->success(Argument::any())->shouldBeCalled();
+        // adapter, issue-tracker, org, repo, issue-org, issue-project, confirm configure, select 0 (nothing)
+        $helper = $command->getHelper('gush_question');
+        $helper->setInputStream($this->getInputStream("0\n0\nMyOrg\nMyRepo\nIOrg\nIRepo\nyes\n0\n"));
 
-        if ($interactive) {
-            $styleHelper->numberedChoice('Choose repository-manager', Argument::any())->willReturn('github');
-            $styleHelper->numberedChoice('Choose issue-tracker', Argument::any())->willReturn('jira');
+        $tester->execute();
 
-            $styleHelper->confirm(
+        $display = $tester->getDisplay(true);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose repository-manager',
+                '[0] GitHub',
+                '[1] GitHub Enterprise',
+                'Choose issue-tracker',
+                '[2] Jira',
+                'Specify the repository organization name',
+                'Specify the repository name',
+                'Specify the issue-tracker organization name',
+                'Specify the issue-tracker repository/project name',
+                'Repository-manager "GitHub" is not configured yet.',
+                'Issue-tracker "GitHub" is not configured yet.',
                 'Would you like to configure the missing adapters now?',
-                Argument::any()
-            )->willReturn(false);
-        }
+                ['\[OK\]\sConfiguration file saved successfully\.$', true],
+            ],
+            $display
+        );
 
-        return $styleHelper->reveal();
+        $expected = [
+            'repo_adapter' => 'github',
+            'issue_tracker' => 'github',
+            'repo_org' => 'MyOrg',
+            'repo_name' => 'MyRepo',
+            'issue_project_org' => 'IOrg',
+            'issue_project_name' => 'IRepo',
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('local_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
+    }
+
+    public function testLocalConfiguringWithRequiredOptionsInNonInteractive()
+    {
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [],
+            []
+        );
+
+        $tester->execute(
+            ['--repo-adapter' => 'github', '--org' => 'MyOrg', '--repo' => 'MyRepo'],
+            ['interactive' => false]
+        );
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Repository-manager "GitHub" is not configured yet.',
+                'Issue-tracker "GitHub" is not configured yet.',
+                'Run the "core:configure" command to configure the adapters.',
+                ['\[OK\]\sConfiguration file saved successfully\.$', true],
+            ],
+            $display
+        );
+
+        $expected = [
+            'repo_adapter' => 'github',
+            'issue_tracker' => 'github',
+            'repo_org' => 'MyOrg',
+            'repo_name' => 'MyRepo',
+            'issue_project_org' => 'MyOrg',
+            'issue_project_name' => 'MyRepo',
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('local_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
+    }
+
+    public function testLocalConfiguringWithAllOptionsInNonInteractive()
+    {
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [],
+            []
+        );
+
+        $tester->execute(
+            [
+                'command' => $command->getName(),
+                '--repo-adapter' => 'github',
+                '--org' => 'MyOrg',
+                '--repo' => 'MyRepo',
+                '--issue-adapter' => 'jira',
+                '--issue-org' => 'IOrg',
+                '--issue-project' => 'IRepo'
+            ],
+            ['interactive' => false]
+        );
+
+        $display = $tester->getDisplay(true);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Repository-manager "GitHub" is not configured yet.',
+                'Issue-tracker "Jira" is not configured yet.',
+                'Run the "core:configure" command to configure the adapters.',
+                ['\[OK\]\sConfiguration file saved successfully\.$', true],
+            ],
+            $display
+        );
+
+        $expected = [
+            'repo_adapter' => 'github',
+            'issue_tracker' => 'jira',
+            'repo_org' => 'MyOrg',
+            'repo_name' => 'MyRepo',
+            'issue_project_org' => 'IOrg',
+            'issue_project_name' => 'IRepo',
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('local_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
+    }
+
+    public function testLocalAutoConfiguringInNonInteractive()
+    {
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [
+                'adapters' => [
+                    'github' => [
+                        'authentication' => [
+                            'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                            'username' => TestConfigurator::USERNAME,
+                            'token' => TestConfigurator::PASSWORD,
+                        ],
+                        'base_url' => 'https://api.github.com/',
+                        'repo_domain_url' => 'https://github.com',
+                    ],
+                ],
+            ],
+            []
+        );
+
+        $tester->execute(
+            [],
+            ['interactive' => false]
+        );
+
+        $display = $tester->getDisplay();
+
+        $this->assertNotContains('Run the "core:configure" command to configure the adapters.', $display);
+        $this->assertCommandOutputMatches(
+            [
+                'You did not provide an organization and/or repository name.',
+                'Org: "gushphp" / repo: "gush"',
+                ['\[OK\]\sConfiguration file saved successfully\.$', true],
+            ],
+            $display
+        );
+
+        $expected = [
+            'repo_adapter' => 'github',
+            'issue_tracker' => 'github',
+            'repo_org' => 'gushphp',
+            'repo_name' => 'gush',
+            'issue_project_org' => 'gushphp',
+            'issue_project_name' => 'gush',
+        ];
+
+        $this->assertFileExists($command->getConfig()->get('local_config'));
+        $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
+    }
+
+    public function testGivesErrorWhenNotInGitFolder()
+    {
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [],
+            [],
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitHelper(false)->reveal());
+            }
+        );
+
+        $this->setExpectedException(
+            UserException::class,
+            sprintf(
+                'You can only run the "%s" command when you are in a Git directory',
+                $command->getName()
+            )
+        );
+
+        $tester->execute(
+            [],
+            ['interactive' => false] // not relevant for this but prevents hanging on broken test
+        );
     }
 }

@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tester\Adapter;
+namespace Gush\Tests\Fixtures\Adapter;
 
 use Gush\Adapter\Configurator;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,9 +36,9 @@ class TestConfigurator implements Configurator
         $config = [];
         $config['base_url'] = $this->apiUrl;
         $config['repo_domain_url'] = $this->repoUrl;
-        $config['authentication']['http-auth-type'] = self::AUTH_HTTP_PASSWORD;
+        $config['authentication']['http-auth-type'] = self::AUTH_HTTP_TOKEN;
         $config['authentication']['username'] = self::USERNAME;
-        $config['authentication']['password-or-token'] = self::PASSWORD;
+        $config['authentication']['token'] = self::PASSWORD;
 
         return $config;
     }

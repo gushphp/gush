@@ -13,11 +13,10 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
-use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestLabelListCommand extends BaseCommand implements TableFeature, GitRepoFeature
+class PullRequestLabelListCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -26,10 +25,10 @@ class PullRequestLabelListCommand extends BaseCommand implements TableFeature, G
     {
         $this
             ->setName('pull-request:label:list')
-            ->setDescription('Lists the pull-request\'s labels')
+            ->setDescription('Lists the available labels for pull-requests')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command lists the pull-request's available labels for either the current
+The <info>%command.name%</info> command lists the available labels for pull-requests for either the current
 or the given organization and repository:
 
     <info>$ gush %command.name%</info>
@@ -42,25 +41,13 @@ EOF
     /**
      * {@inheritdoc}
      */
-    public function getTableDefaultLayout()
-    {
-        return 'compact';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
         $labels = $adapter->getLabels();
 
-        $table = $this->getHelper('table');
-        $table->formatRows($labels, function ($label) {
-            return [$label];
-        });
-        $table->render($output, $table);
+        $this->getHelper('gush_style')->listing($labels);
 
-        return $labels;
+        return self::COMMAND_SUCCESS;
     }
 }

@@ -12,9 +12,12 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -35,6 +38,19 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
      * @var StyleInterface
      */
     private $style;
+
+    /**
+     * @var QuestionHelper
+     */
+    private $questionHelper;
+
+    /**
+     * @param QuestionHelper $questionHelper
+     */
+    public function __construct(QuestionHelper $questionHelper)
+    {
+        $this->questionHelper = $questionHelper;
+    }
 
     /**
      * @param InputInterface $input
@@ -228,7 +244,10 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
      */
     public function ask($question, $default = null, $validator = null)
     {
-        return $this->getStyle()->ask($question, $default, $validator);
+        $question = new Question($question, $default);
+        $question->setValidator($validator);
+
+        return $this->askQuestion($question, $validator);
     }
 
     /**
@@ -236,7 +255,10 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
      */
     public function askHidden($question, $validator = null)
     {
-        return $this->getStyle()->askHidden($question, $validator);
+        $question = new Question($question);
+        $question->setHidden(true);
+
+        return $this->askQuestion($question, $validator);
     }
 
     /**
@@ -244,7 +266,7 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
      */
     public function confirm($question, $default = true)
     {
-        return $this->getStyle()->confirm($question, $default);
+        return $this->askQuestion(new ConfirmationQuestion($question, $default));
     }
 
     /**
@@ -252,7 +274,12 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
      */
     public function choice($question, array $choices, $default = null)
     {
-        return $this->getStyle()->choice($question, $choices, $default);
+        if (null !== $default) {
+            $values = array_flip($choices);
+            $default = $values[$default];
+        }
+
+        return $this->askQuestion(new ChoiceQuestion($question, $choices, $default));
     }
 
     /**
@@ -289,7 +316,7 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
 
         if (null !== $default) {
             $values = array_flip($labelKey);
-            $default = $values[$default];
+            $default = isset($values[$default]) ? $values[$default] : null;
         }
 
         return $labelKey[$this->choice($question, $labels, $default)];
@@ -334,6 +361,10 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
      */
     public function askQuestion(Question $question)
     {
-        return $this->getStyle()->askQuestion($question);
+        $answer = $this->questionHelper->ask($this->input, $this->output, $question);
+
+        $this->newLine();
+
+        return $answer;
     }
 }

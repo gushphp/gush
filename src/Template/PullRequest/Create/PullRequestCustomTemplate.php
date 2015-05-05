@@ -54,7 +54,7 @@ class PullRequestCustomTemplate extends AbstractSymfonyTemplate
             if (!is_array($rowData) || count($rowData) != 2) {
                 throw new \RuntimeException(
                     sprintf(
-                        'table-pr table row-data "%s" must be an array with exactly two values like: '.
+                        'table-pr table row-data "%s" must be an array with at least two values like: '.
                         '[Label, default value].'.PHP_EOL.'please check your local .gush.yml',
                         $name
                     )
@@ -65,6 +65,9 @@ class PullRequestCustomTemplate extends AbstractSymfonyTemplate
         return $fields;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'pull-request-create/custom';

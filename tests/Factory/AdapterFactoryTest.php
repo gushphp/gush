@@ -11,8 +11,15 @@
 
 namespace Gush\Tests\Factory;
 
+use Gush\Adapter\Adapter;
+use Gush\Adapter\Configurator;
+use Gush\Adapter\IssueTracker;
+use Gush\Config;
 use Gush\Factory\AdapterFactory;
-use Prophecy\Argument;
+use Gush\Tests\Fixtures\Adapter\TestAdapterFactory;
+use Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory;
+use Gush\Tests\Fixtures\Adapter\TestRepoManagerFactory;
+use Symfony\Component\Console\Helper\HelperSet;
 
 class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,47 +28,48 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     private $adapterFactory;
 
+    /**
+     * @var Config
+     */
+    private $config;
+
     protected function setUp()
     {
         $this->adapterFactory = new AdapterFactory();
+        $this->config = new Config('/home/user', '/tmp');
     }
 
-    /**
-     * @test
-     */
-    public function registers_adapters()
+    public function testRegisterAdapterFactoryObject()
     {
-        $repoManager = $this->prophesize('Gush\Factory\RepositoryManagerFactory')->reveal();
-
-        // Test with class-name (lazy init)
-        $issueTracker = get_class($this->prophesize('Gush\Factory\IssueTrackerFactory')->reveal());
+        $repoManager = new TestAdapterFactory();
 
         $this->adapterFactory->register(
             'test',
             'Testing',
             $repoManager
-        );
-
-        $this->adapterFactory->register(
-            'test2',
-            'Testing2',
-            $issueTracker
         );
 
         $this->assertTrue($this->adapterFactory->has('test'));
-        $this->assertTrue($this->adapterFactory->has('test2'));
-        $this->assertFalse($this->adapterFactory->has('test3'));
+        $this->assertFalse($this->adapterFactory->has('test2'));
     }
 
-    /**
-     * @test
-     */
-    public function gets_adapters()
+    public function testRegisterLazyAdapter()
+    {
+        $this->adapterFactory->register(
+            'test',
+            'Testing',
+            TestIssueTrackerFactory::class
+        );
+
+        $this->assertTrue($this->adapterFactory->has('test'));
+        $this->assertFalse($this->adapterFactory->has('test2'));
+    }
+
+    public function testGetAllAdapters()
     {
         $this->assertEquals([], $this->adapterFactory->all());
 
-        $repoManager = $this->prophesize('Gush\Factory\RepositoryManagerFactory')->reveal();
-        $issueTracker = $this->prophesize('Gush\Factory\IssueTrackerFactory')->reveal();
+        $repoManager = new TestRepoManagerFactory();
 
         $this->adapterFactory->register(
             'test',
@@ -72,7 +80,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test2',
             'Testing2',
-            $issueTracker
+            TestIssueTrackerFactory::class
         );
 
         $this->assertEquals(
@@ -84,7 +92,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => false,
                 ],
                 'test2' => [
-                    'factory' => $issueTracker,
+                    'factory' => TestIssueTrackerFactory::class,
                     'label' => 'Testing2',
                     AdapterFactory::SUPPORT_REPOSITORY_MANAGER => false,
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => true,
@@ -94,18 +102,15 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function registers_adapter_with_same_name()
+    public function testCannotRegisterAdapterWithExistingName()
     {
-        $repoManager = $this->prophesize('Gush\Factory\RepositoryManagerFactory');
-        $issueTracker = $this->prophesize('Gush\Factory\IssueTrackerFactory');
+        $repoManager = new TestAdapterFactory();
+        $issueTracker = new TestIssueTrackerFactory();
 
         $this->adapterFactory->register(
             'test',
             'Testing',
-            $repoManager->reveal()
+            $repoManager
         );
 
         $this->setExpectedException('InvalidArgumentException', 'An adapter with name "test" is already registered.');
@@ -113,95 +118,91 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test',
             'Testing2',
-            $issueTracker->reveal()
+            $issueTracker
         );
     }
 
-    /**
-     * @test
-     */
-    public function creates_configurator()
+    public function testCreatesObjectFromLazyFactory()
     {
-        $configurator = $this->prophesize('Gush\Factory\Configurator')->reveal();
-
-        $repoManager = $this->prophesize('Gush\Factory\RepositoryManagerFactory');
-        $repoManager->createConfigurator(Argument::any())->willReturn($configurator);
-
         $this->adapterFactory->register(
             'test',
             'Testing',
-            $repoManager->reveal()
-        );
-
-        $createdConfigurator = $this->adapterFactory->createConfigurator(
-            'test',
-            $this->prophesize('Symfony\Component\Console\Helper\HelperSet')->reveal()
-        );
-
-        $this->assertEquals($configurator, $createdConfigurator);
-    }
-
-    /**
-     * @test
-     */
-    public function creates_repository_manager()
-    {
-        $adapter = $this->prophesize('Gush\Adapter\Adapter')->reveal();
-
-        $factory = $this->prophesize('Gush\Factory\RepositoryManagerFactory');
-        $factory->createRepositoryManager(Argument::any(), Argument::any())->willReturn($adapter);
-
-        $this->adapterFactory->register(
-            'test',
-            'Testing',
-            $factory->reveal()
+            TestAdapterFactory::class
         );
 
         $createdAdapter = $this->adapterFactory->createRepositoryManager(
             'test',
             [],
-            $this->prophesize('Gush\Config')->reveal()
+            $this->config
         );
 
-        $this->assertEquals($adapter, $createdAdapter);
+        $this->assertInstanceOf(Adapter::class, $createdAdapter);
     }
 
-    /**
-     * @test
-     */
-    public function creates_issue_tracker()
+    public function testCreateConfigurator()
     {
-        $adapter = $this->prophesize('Gush\Adapter\IssueTracker')->reveal();
-
-        $factory = $this->prophesize('Gush\Factory\IssueTrackerFactory');
-        $factory->createIssueTracker(Argument::any(), Argument::any())->willReturn($adapter);
+        $repoManager = new TestAdapterFactory();
 
         $this->adapterFactory->register(
             'test',
             'Testing',
-            $factory->reveal()
+            $repoManager
+        );
+
+        $createdConfigurator = $this->adapterFactory->createConfigurator(
+            'test',
+            $this->prophesize(HelperSet::class)->reveal()
+        );
+
+        $this->assertInstanceOf(Configurator::class, $createdConfigurator);
+    }
+
+    public function testCreateRepositoryManagerAdapter()
+    {
+        $factory = new TestAdapterFactory();
+
+        $this->adapterFactory->register(
+            'test',
+            'Testing',
+            $factory
+        );
+
+        $createdAdapter = $this->adapterFactory->createRepositoryManager(
+            'test',
+            [],
+            $this->config
+        );
+
+        $this->assertInstanceOf(Adapter::class, $createdAdapter);
+    }
+
+    public function testCreateIssueTrackerAdapter()
+    {
+        $factory = new TestIssueTrackerFactory();
+
+        $this->adapterFactory->register(
+            'test',
+            'Testing',
+            $factory
         );
 
         $createdAdapter = $this->adapterFactory->createIssueTracker(
             'test',
             [],
-            $this->prophesize('Gush\Config')->reveal()
+            $this->config
         );
 
-        $this->assertEquals($adapter, $createdAdapter);
+        $this->assertInstanceOf(IssueTracker::class, $createdAdapter);
     }
 
-    /**
-     * @test
-     */
-    public function creates_adapter_with_non_existent_name()
+    public function testCannotCreateUnregisteredAdapter()
     {
         $this->setExpectedException('InvalidArgumentException', 'No Adapter with name "test2" is registered.');
 
         $this->adapterFactory->createRepositoryManager(
             'test2',
             [],
-            $this->prophesize('Gush\Config')->reveal()
+            $this->config
         );
     }
 }

@@ -13,6 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Herrera\Version\Dumper;
 use Herrera\Version\Parser;
@@ -30,7 +31,7 @@ class PullRequestSemVerCommand extends BaseCommand implements GitRepoFeature
     {
         $this
             ->setName('pull-request:semver')
-            ->setDescription('Provides information about the semver version of a pull request')
+            ->setDescription('Provides information about the semver version of a pull-request')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
             ->addOption('major', null, InputOption::VALUE_NONE, 'Conveys it is a major feature')
             ->addOption('minor', null, InputOption::VALUE_NONE, 'Conveys it is a minor feature')
@@ -51,27 +52,27 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $prNumber = $input->getArgument('pr_number');
-        $adapter = $this->getAdapter();
-        $pr = $adapter->getPullRequest($prNumber);
+        $pr = $this->getAdapter()->getPullRequest($input->getArgument('pr_number'));
+
+        $sourceOrg = $pr['head']['user'];
         $branchName = $pr['head']['ref'];
 
-        $gitHelper = $this->getHelper('git');
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
+
         /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+        $gitHelper->remoteUpdate($sourceOrg);
 
-        $gitHelper->remoteUpdate();
-
-        $lastTag = $gitHelper->getLastTagOnBranch('origin/'.$branchName);
+        $lastTag = $gitHelper->getLastTagOnBranch($sourceOrg.'/'.$branchName);
 
         if (empty($lastTag)) {
             $lastTag = '0.0.0';
         }
 
         // adjust case for format v2.3
-        if ($lastTag[0] === 'v') {
-            $lastTag = ltrim($lastTag, 'v');
-        }
-
+        $lastTag = ltrim($lastTag, 'v');
         $builder = Parser::toBuilder($lastTag);
 
         switch (true) {

@@ -12,18 +12,15 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueMilestoneListCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 
-class IssueMilestoneListCommandTest extends BaseTestCase
+class IssueMilestoneListCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function lists_milestones()
+    public function testListsMilestones()
     {
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals("version 1.0", trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches("version 1.0", $tester->getDisplay());
     }
 }

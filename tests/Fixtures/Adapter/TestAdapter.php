@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tester\Adapter;
+namespace Gush\Tests\Fixtures\Adapter;
 
 use Gush\Adapter\BaseAdapter;
 use Gush\Adapter\IssueTracker;
@@ -17,10 +17,23 @@ use Gush\Adapter\IssueTracker;
 class TestAdapter extends BaseAdapter implements IssueTracker
 {
     const PULL_REQUEST_NUMBER = 40;
-
     const ISSUE_NUMBER = 7;
-
+    const ISSUE_NUMBER_CREATED = 77;
     const RELEASE_ASSET_NUMBER = 1;
+
+    private $name;
+    private $pullRequest;
+    private $issue;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getAdapterName()
+    {
+        return $this->name;
+    }
 
     /**
      * {@inheritdoc}
@@ -70,7 +83,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getRepositoryInfo($org, $repository)
     {
-        if ('cordoval' === $org) {
+        if ('cordoval' === $org || 'user' === $org) {
             return [
                 'owner' => 'cordoval',
                 'html_url' => 'https://github.com/cordoval/gush',
@@ -101,6 +114,26 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function openIssue($subject, $body, array $options = [])
     {
+        $this->issue = [
+            'url' => $this->getIssueUrl(self::ISSUE_NUMBER_CREATED),
+            'number' => self::ISSUE_NUMBER_CREATED,
+            'state' => 'open',
+            'title' => $subject,
+            'body' => $body,
+            'user' => 'weaverryan',
+            'labels' => isset($options['labels']) ? $options['labels'] : [],
+            'assignee' => isset($options['assignee']) ? $options['assignee'] : null,
+            'milestone' => isset($options['milestone']) ? $options['milestone'] : null,
+            'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
+            'closed_by' => null,
+            'pull_request' => false,
+
+            // debugging info
+            'org' => $this->username,
+            'repo' => $this->repository,
+        ];
+
         return 77;
     }
 
@@ -109,6 +142,19 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getIssue($id)
     {
+        if (self::ISSUE_NUMBER_CREATED === $id) {
+            if (!$this->issue) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'ID #%d is reserved for testing, call openIssue() first before using this id',
+                        self::ISSUE_NUMBER_CREATED
+                    )
+                );
+            }
+
+            return $this->issue;
+        }
+
         return [
             'url' => $this->getIssueUrl($id),
             'number' => $id,
@@ -123,6 +169,10 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             'updated_at' => new \DateTime('2014-05-14T15:30:00+0100'),
             'closed_by' => null,
             'pull_request' => true,
+
+            // debugging info
+            'org' => $this->username,
+            'repo' => $this->repository,
         ];
     }
 
@@ -224,7 +274,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getLabels()
     {
-        return ['bug'];
+        return ['bug', 'feature', 'documentation'];
     }
 
     /**
@@ -240,6 +290,38 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = [])
     {
+        list($sourceOrg, $sourceBranch) = explode(':', $head);
+
+        $this->pullRequest = [
+            'url' => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
+            'number' => self::PULL_REQUEST_NUMBER,
+            'state' => 'open',
+            'title' => $subject,
+            'body' => $body,
+            'labels' => [],
+            'milestone' => 'some_good_stuff',
+            'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
+            'user' => 'cordoval',
+            'assignee' => null,
+            'merge_commit' => null,
+            'merged' => false,
+            'merged_by' => null,
+            'head' => [
+                'ref' => $sourceBranch,
+                'sha' => '6dcb09b5b57875f334f61aebed695e2e4193db5e',
+                'user' => $sourceOrg,
+                'repo' => 'gush',
+            ],
+            'base' => [
+                'ref' => $base,
+                'label' => 'base_ref',
+                'sha' => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
+                'user' => 'gushphp',
+                'repo' => 'gush',
+            ],
+        ];
+
         return [
             'html_url' => 'https://github.com/gushphp/gush/pull/'.self::PULL_REQUEST_NUMBER,
             'number' => self::PULL_REQUEST_NUMBER,
@@ -251,12 +333,25 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getPullRequest($id)
     {
+        if (self::PULL_REQUEST_NUMBER === $id) {
+            if (!$this->pullRequest) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'ID #%d is reserved for testing, call openPullRequest() first before using this id',
+                        self::PULL_REQUEST_NUMBER
+                    )
+                );
+            }
+
+            return $this->pullRequest;
+        }
+
         return [
             'url' => 'https://github.com/gushphp/gush/pull/'.$id,
             'number' => $id,
             'state' => 'open',
             'title' => 'Write a behat test to launch strategy',
-            'body' => 'Help me conquer the world. Teach them to use gush.',
+            'body' => 'Help me conquer the world. Teach them to use Gush.',
             'labels' => ['actionable', 'easy pick'],
             'milestone' => 'some_good_stuff',
             'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
@@ -322,6 +417,29 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function closePullRequest($id)
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false)
+    {
+        $pr = $this->getPullRequest($prNumber);
+
+        if ($forceNewPr) {
+            $newPr = $this->openPullRequest(
+                $newBase,
+                $newHead,
+                $pr['title'],
+                $pr['body']
+            );
+
+            $this->closePullRequest($prNumber);
+
+            return $newPr;
+        }
+
+        return ['html_url' => $this->getPullRequestUrl($prNumber), 'number' => $prNumber];
     }
 
     /**

@@ -13,29 +13,11 @@ namespace Gush\Tests\Template\PullRequest\Create;
 
 use Gush\Config;
 use Gush\Template\PullRequest\Create\PullRequestCustomTemplate;
+use Gush\Tests\BaseTestCase;
 
-class PullRequestCustomTemplateTest extends \PHPUnit_Framework_TestCase
+class PullRequestCustomTemplateTest extends BaseTestCase
 {
-    /** @var PullRequestCustomTemplate */
-    protected $template;
-
-    /**
-     * @var \Gush\Application|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $application;
-
-    public function setUp()
-    {
-        $this->application = $this->getMockBuilder('Gush\Application')
-            ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
-            ->getMock()
-        ;
-
-        $this->template = new PullRequestCustomTemplate($this->application);
-    }
-
-    public function provideTemplate()
+    public static function provideTemplate()
     {
         return [
             [
@@ -86,10 +68,12 @@ EOF
     }
 
     /**
-     * @test
      * @dataProvider provideTemplate
+     *
+     * @param array  $params
+     * @param string $expected
      */
-    public function runs_template_command($params, $expected)
+    public function testRenderTemplate(array $params, $expected)
     {
         $table = [
             'bug_fix' => ['Bug Fix?', 'n'],
@@ -99,24 +83,14 @@ EOF
             'tests_pass' => ['Tests Pass?', 'n'],
             'fixed_tickets' => ['Fixed Tickets', ''],
             'license' => ['License', 'MIT'],
-            'description' => ['Description', ''],
         ];
 
-        $config = new Config();
-        $config->merge([
-            'table-pr' => $table
-        ]);
-
-        $this->application
-            ->expects($this->atLeastOnce())
-            ->method('getConfig')
-            ->will($this->returnValue($config))
-        ;
-
-        $requirements = $this->template->getRequirements();
+        $template = $this->getCustomTemplate($table);
+        $requirements = $template->getRequirements();
 
         foreach ($requirements as $key => $requirement) {
             list(, $default) = $requirement;
+
             if (!isset($params[$key])) {
                 $params[$key] = $default;
             }
@@ -124,93 +98,79 @@ EOF
 
         $params['description'] = 'This is a description';
 
-        $this->template->bind($params);
-        $res = $this->template->render();
+        $template->bind($params);
+        $res = $template->render();
 
         $this->assertEquals(self::normalizeWhiteSpace($expected), self::normalizeWhiteSpace($res));
     }
 
-    /**
-     * @test
-     */
-    public function errors_when_table_is_empty()
+    public function testThrowsErrorWhenTableIsEmpty()
     {
-        $config = new Config();
-        $config->merge([
-            'table-pr' => []
-        ]);
-
-        $this->application
-            ->expects($this->atLeastOnce())
-            ->method('getConfig')
-            ->will($this->returnValue($config))
-        ;
+        $template = $this->getCustomTemplate([]);
 
         $this->setExpectedException(
             'RuntimeException',
-            'table-pr structure requires at least one row, please check your local .gush.yml'
+            'table-pr structure requires at least one row'
         );
 
-        $this->template->getRequirements();
+        $template->getRequirements();
     }
 
     /**
      * @test
      */
-    public function errors_with_name_not_a_string()
+    public function testThrowsExceptionWhenNameIsNoString()
     {
-        $config = new Config();
-        $config->merge([
-            'table-pr' => [
+        $template = $this->getCustomTemplate(
+            [
                 0 => ['Bug Fix?', 'n'],
             ]
-        ]);
-
-        $this->application
-            ->expects($this->atLeastOnce())
-            ->method('getConfig')
-            ->will($this->returnValue($config))
-        ;
+        );
 
         $this->setExpectedException(
             'RuntimeException',
-            'table-pr table row-name must be a string, please check your local .gush.yml'
+            'table-pr table row-name must be a string'
         );
 
-        $this->template->getRequirements();
+        $template->getRequirements();
     }
 
     /**
      * @test
      */
-    public function errors_with_invalid_row()
+    public function testThrowsExceptionWhenRowIsInvalid()
     {
-        $config = new \Gush\Config();
-        $config->merge([
-            'table-pr' => [
+        $template = $this->getCustomTemplate(
+            [
                 'new_feature' => ['Bug Fix?', 'no'],
                 'bug_fix' => ['Bug Fix?'],
             ]
-        ]);
-
-        $this->application
-            ->expects($this->atLeastOnce())
-            ->method('getConfig')
-            ->will($this->returnValue($config))
-        ;
+        );
 
         $this->setExpectedException(
             'RuntimeException',
-            'table-pr table row-data "bug_fix" must be an array with exactly two values like: [Label, default value].'
+            'table-pr table row-data "bug_fix" must be an array with at least two values like: [Label, default value].'
         );
 
-        $this->template->getRequirements();
+        $template->getRequirements();
+    }
+
+    private function getCustomTemplate(array $requirements)
+    {
+        $config = new Config(
+            '/home/user',
+            '/temp/gush',
+            [],
+            '/data/repo-dir',
+            ['table-pr' => $requirements ]
+        );
+
+        return new PullRequestCustomTemplate($this->getApplication($config));
     }
 
     private static function normalizeWhiteSpace($input)
     {
-        $input = str_replace("\r\n", "\n", $input);
-        $input = str_replace("\r", "\n", $input);
+        $input = str_replace(PHP_EOL, "\n", $input);
         $input = preg_replace('/^\s+$/m', '', $input);
 
         return $input;

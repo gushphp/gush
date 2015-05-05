@@ -57,6 +57,24 @@ class AdapterFactory
     }
 
     /**
+     * Returns whether the adapter by name supports
+     * the requirements.
+     *
+     * @param string $name
+     * @param string $supports
+     *
+     * @return bool
+     */
+    public function supports($name, $supports)
+    {
+        if (!isset($this->adapters[$name])) {
+            return false;
+        }
+
+        return $this->adapters[$name][$supports];
+    }
+
+    /**
      * Returns registered adapters.
      *
      * @return array[]
@@ -64,6 +82,40 @@ class AdapterFactory
     public function all()
     {
         return $this->adapters;
+    }
+
+    /**
+     * Returns all registered adapters of a specific type.
+     *
+     * @param string $type AdapterFactory::SUPPORT_REPOSITORY_MANAGER or
+     *                     AdapterFactorySUPPORT_ISSUE_TRACKER
+     *
+     * @return array[]
+     */
+    public function allOfType($type)
+    {
+        return array_filter(
+            $this->adapters,
+            function ($adapter) use ($type) {
+                return $adapter[$type];
+            }
+        );
+    }
+
+    /**
+     * Returns the requested adapter-factory configuration.
+     *
+     * @param string $name
+     *
+     * @return array[]
+     */
+    public function get($name)
+    {
+        if (!isset($this->adapters[$name])) {
+            throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $name));
+        }
+
+        return $this->adapters[$name];
     }
 
     /**

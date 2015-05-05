@@ -13,27 +13,43 @@ namespace Gush\Tests;
 
 use Gush\Application;
 use Gush\Config;
-use Gush\Tester\Adapter\TestAdapter;
+use Gush\Factory\AdapterFactory;
 
 class TestableApplication extends Application
 {
-    protected $config;
+    /**
+     * @var \closure
+     */
+    private $helperSetManipulator;
+
+    /**
+     * @param AdapterFactory $adapterFactory
+     * @param Config         $config
+     * @param \Closure       $helperSetManipulator
+     */
+    public function __construct(AdapterFactory $adapterFactory, Config $config, $helperSetManipulator)
+    {
+        $this->helperSetManipulator = $helperSetManipulator;
+
+        parent::__construct($adapterFactory, $config, '@package_version@');
+    }
 
     /**
      * {@inheritdoc}
+     *
+     * Overwritten so the helpers can be mocked.
+     * This method is called within the constructor so setting it later
+     * will not give the expected result.
+     *
+     * @return \Symfony\Component\Console\Helper\HelperSet
      */
-    public function buildAdapter($adapter, array $config = null)
+    protected function getDefaultHelperSet()
     {
-        return new TestAdapter();
-    }
+        $helperSet = parent::getDefaultHelperSet();
 
-    public function setConfig(Config $config)
-    {
-        $this->config = $config;
-    }
+        $callback = $this->helperSetManipulator;
+        $callback($helperSet);
 
-    public function getDispatcher()
-    {
-        return $this->dispatcher;
+        return $helperSet;
     }
 }

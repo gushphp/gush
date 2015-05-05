@@ -38,7 +38,7 @@ class BranchSyncCommand extends BaseCommand implements GitRepoFeature
                 <<<EOF
 The <info>%command.name%</info> command syncs local branch with it's origin version:
 
-    <info>$ gush %command.name% develop</info>
+    <info>$ gush %command.name% develop origin</info>
 
 EOF
             )

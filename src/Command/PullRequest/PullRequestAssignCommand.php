@@ -52,7 +52,7 @@ EOF
         $adapter->updatePullRequest($issueNumber, ['assignee' => $username]);
 
         $url = $adapter->getPullRequest($issueNumber)['url'];
-        $this->getHelper('gush_style')->success("Pull request {$url} was assigned to {$username}!");
+        $this->getHelper('gush_style')->success("Pull-request {$url} is now assigned to \"{$username}\"!");
 
         return self::COMMAND_SUCCESS;
     }

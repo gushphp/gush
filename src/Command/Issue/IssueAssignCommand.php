@@ -12,12 +12,12 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueAssignCommand extends BaseCommand implements GitRepoFeature
+class IssueAssignCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -52,7 +52,7 @@ EOF
         $adapter->updateIssue($issueNumber, ['assignee' => $username]);
 
         $url = $adapter->getIssueUrl($issueNumber);
-        $this->getHelper('gush_style')->success("Issue {$url} was assigned to {$username}!");
+        $this->getHelper('gush_style')->success("Issue {$url} is now assigned to {$username}!");
 
         return self::COMMAND_SUCCESS;
     }

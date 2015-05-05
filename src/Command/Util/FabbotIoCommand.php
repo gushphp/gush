@@ -57,7 +57,7 @@ EOF
 
         $prNumber = $input->getArgument('pr_number');
 
-        $github = $this->getParameter('authentication');
+        $github = $this->getParameter($input, 'authentication');
         $username = $github['username'];
 
         $adapter = $this->getAdapter();

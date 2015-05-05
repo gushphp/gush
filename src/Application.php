@@ -14,14 +14,12 @@ namespace Gush;
 use Gush\Adapter\Adapter;
 use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
-use Gush\Event\CommandEvent;
-use Gush\Event\GushEvents;
 use Gush\Exception\UserException;
 use Gush\Factory\AdapterFactory;
-use Gush\Factory\RepositoryManagerFactory;
 use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Subscriber\CommandEndSubscriber;
+use Gush\Subscriber\CoreInitSubscriber;
 use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
@@ -29,10 +27,14 @@ use KevinGH\Amend\Command as UpdateCommand;
 use KevinGH\Amend\Helper as UpdateHelper;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleExceptionEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Process\ProcessBuilder;
 
 class Application extends BaseApplication
 {
@@ -54,17 +56,17 @@ LOGO;
     protected $config;
 
     /**
-     * @var null|Adapter $adapter The Hub Adapter
+     * @var null|Adapter
      */
     protected $adapter;
 
     /**
-     * @var null|IssueTracker IssueTracker
+     * @var null|IssueTracker
      */
     protected $issueTracker;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var EventDispatcher
      */
     protected $dispatcher;
 
@@ -73,23 +75,71 @@ LOGO;
      */
     protected $adapterFactory;
 
-    public function __construct(AdapterFactory $adapterFactory, $name = 'Gush', $version = '@package_version@')
+    /**
+     * Constructor.
+     *
+     * @param AdapterFactory $adapterFactory
+     * @param Config         $config
+     * @param string         $version
+     */
+    public function __construct(AdapterFactory $adapterFactory, Config $config, $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
             $version = ltrim($version, 'v');
         }
 
-        try {
-            // try setting the config as early as possible, so all the subscribers and helpers can use it
-            $this->config = Factory::createConfig();
-        } catch (\RuntimeException $exception) {
-            // if Gush is not yet configured, then just catch the exception and move along
-        }
+        parent::__construct('Gush', $version);
 
-        $helperSet = $this->getDefaultHelperSet();
+        $this->adapterFactory = $adapterFactory;
+        $this->config = $config;
+
+        // The parent dispatcher is private and has
+        // no accessor, so we set it here to make it accessible.
+        $this->dispatcher = new EventDispatcher();
+
+        $this->registerSubscribers();
+        $this->addCommands($this->getCommands());
+    }
+
+    protected function registerSubscribers()
+    {
+        $helperSet = $this->getHelperSet();
+
+        $this->dispatcher->addSubscriber(new TableSubscriber());
+        $this->dispatcher->addSubscriber(
+            new GitRepoSubscriber(
+                $this,
+                $helperSet->get('git'),
+                $helperSet->get('git_config'),
+                $helperSet->get('gush_style')
+            )
+        );
+
+        $this->dispatcher->addSubscriber(
+            new CoreInitSubscriber(
+                $this,
+                $helperSet->get('git'),
+                $helperSet->get('git_config'),
+                $helperSet->get('gush_style')
+            )
+        );
+
+        $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
+        $this->dispatcher->addSubscriber(
+            new CommandEndSubscriber($helperSet->get('filesystem'), $helperSet->get('git'))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultHelperSet()
+    {
+        $helperSet = parent::getDefaultHelperSet();
         $helperSet->set(new Helpers\FilesystemHelper());
         $helperSet->set(new Helpers\TextHelper());
-        $helperSet->set(new Helpers\StyleHelper());
+        $helperSet->set(new Helpers\GushQuestionHelper());
+        $helperSet->set(new Helpers\StyleHelper($helperSet->get('gush_question')));
         $helperSet->set(new Helpers\TableHelper());
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
@@ -106,26 +156,7 @@ LOGO;
         $helperSet->set(new Helpers\AutocompleteHelper());
         $helperSet->set(new UpdateHelper());
 
-        // the parent dispatcher is private and has
-        // no accessor, so we set it here so we can access it.
-        $this->dispatcher = new EventDispatcher();
-
-        // add our subscribers to the event dispatcher
-        $this->dispatcher->addSubscriber(new TableSubscriber());
-        $this->dispatcher->addSubscriber(new GitRepoSubscriber($helperSet->get('git')));
-        $this->dispatcher->addSubscriber(new TemplateSubscriber($helperSet->get('template')));
-        $this->dispatcher->addSubscriber(
-            new CommandEndSubscriber($helperSet->get('filesystem'), $helperSet->get('git'))
-        );
-
-        // share our dispatcher with the parent class
-        $this->setDispatcher($this->dispatcher);
-
-        parent::__construct($name, $version);
-        $this->setHelperSet($helperSet);
-        $this->addCommands($this->getCommands());
-
-        $this->adapterFactory = $adapterFactory;
+        return $helperSet;
     }
 
     /**
@@ -137,31 +168,44 @@ LOGO;
     }
 
     /**
-     * Overrides the add method and dispatch
-     * an event enabling subscribers to decorate
-     * the command definition.
+     * Get the Repository adapter.
      *
-     * {@inheritdoc}
-     */
-    public function add(Command $command)
-    {
-        $this->dispatcher->dispatch(
-            GushEvents::DECORATE_DEFINITION,
-            new CommandEvent($command)
-        );
-
-        parent::add($command);
-    }
-
-    /**
-     * @return Adapter|null
+     * @return Adapter
+     *
+     * @throws \RuntimeException
      */
     public function getAdapter()
     {
+        if (null === $this->adapter) {
+            throw new \RuntimeException(
+                'No repo-adapter set, make sure the current command implements "Gush\Feature\GitRepoFeature".'
+            );
+        }
+
         return $this->adapter;
     }
 
     /**
+     * Get the IssueTracker adapter.
+     *
+     * @return IssueTracker
+     *
+     * @throws \RuntimeException
+     */
+    public function getIssueTracker()
+    {
+        if (null === $this->issueTracker) {
+            throw new \RuntimeException(
+                'No issue-adapter set, make sure the current command implements "Gush\Feature\IssueTrackerRepoFeature".'
+            );
+        }
+
+        return $this->issueTracker;
+    }
+
+    /**
+     * Set the Repository Adapter.
+     *
      * @param Adapter $adapter
      */
     public function setAdapter(Adapter $adapter)
@@ -170,22 +214,18 @@ LOGO;
     }
 
     /**
+     * Set the IssueTracker Adapter.
+     *
      * @param IssueTracker $issueTracker
      */
-    public function setIssueTracker($issueTracker)
+    public function setIssueTracker(IssueTracker $issueTracker)
     {
         $this->issueTracker = $issueTracker;
     }
 
     /**
-     * @return IssueTracker|null
-     */
-    public function getIssueTracker()
-    {
-        return $this->issueTracker;
-    }
-
-    /**
+     * Get the application configuration.
+     *
      * @return Config
      */
     public function getConfig()
@@ -194,13 +234,8 @@ LOGO;
     }
 
     /**
-     * @param Config $config
+     * @return EventDispatcher
      */
-    public function setConfig(Config $config)
-    {
-        $this->config = $config;
-    }
-
     public function getDispatcher()
     {
         return $this->dispatcher;
@@ -217,195 +252,46 @@ LOGO;
     /**
      * {@inheritdoc}
      */
-    public function renderException($e, $output)
-    {
-        if ($e instanceof UserException) {
-            $this->getHelperSet()->get('gush_style')->error($e->getMessage());
-
-            if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
-                parent::renderException($e, $output);
-            }
-        } else {
-            parent::renderException($e, $output);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-        $commandName = $this->getCommandName($input);
-
-        if ('core:configure' !== $commandName && 'core:update' !== $commandName) {
-            if (null === $this->config) {
-                $this->config = Factory::createConfig();
-            }
-
-            if ('core:init' !== $commandName) {
-                if (null === $this->adapter) {
-                    if (null === $adapter = $this->config->get('adapter')) {
-                        $adapter = $this->determineAdapter();
-                    }
-
-                    $this->buildAdapter($adapter);
-                }
-
-                if (null === $this->issueTracker) {
-                    $issueTracker = $this->config->get('issue_tracker');
-
-                    if ($issueTracker) {
-                        $this->buildIssueTracker($issueTracker);
-                    } elseif ($this->adapter instanceof IssueTracker) {
-                        $this->issueTracker = $this->adapter;
-                    } else {
-                        $message =
-                            'Adapter "%s" doesn\'t support issue-tracking and no issue tracker is configured. '.
-                            PHP_EOL.
-                            'Please run the "init" or "core:configure" command to configure a (default) issue '.
-                            'tracker.';
-
-                        throw new \RuntimeException(sprintf($message, get_class($this->adapter)));
-                    }
-                }
-            }
-        }
-
-        /** @var \Symfony\Component\Console\Helper\Helper[] $helperSet */
         $helperSet = $command->getHelperSet();
+
         foreach ($helperSet as $helper) {
             if ($helper instanceof OutputAwareInterface) {
                 $helper->setOutput($output);
             }
+
+            if ($helper instanceof InputAwareInterface) {
+                $helper->setInput($input);
+            }
         }
 
-        parent::doRunCommand($command, $input, $output);
-    }
+        $event = new ConsoleCommandEvent($command, $input, $output);
+        $this->dispatcher->dispatch(ConsoleEvents::COMMAND, $event);
 
-    /**
-     * @return Adapter
-     */
-    private function determineAdapter()
-    {
-        $builder = new ProcessBuilder(['git', 'config', '--get', 'remote.origin.url']);
-        $builder
-            ->setWorkingDirectory(getcwd())
-            ->setTimeout(3600)
-        ;
+        try {
+            $exitCode = $command->run($input, $output);
+        } catch (\Exception $e) {
+            $event = new ConsoleExceptionEvent($command, $input, $output, $e, $e->getCode());
+            $this->dispatcher->dispatch(ConsoleEvents::EXCEPTION, $event);
 
-        $process = $builder->getProcess();
-        $process->run();
+            if ($e instanceof UserException) {
+                $this->getHelperSet()->get('gush_style')->error($e->getMessages());
 
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException(
-                'The adapter type could not be determined (no Git origin configured for this repository). '.
-                'Please run the "core:init" command.'
-            );
-        }
-
-        $remoteUrl = strtolower($process->getOutput());
-        $ignoredAdapters = [];
-
-        foreach (array_keys($this->getAdapterFactory()->all()) as $adapterName => $adapterInfo) {
-            $config = $this->config->get(sprintf('[adapters][%s]', $adapterName));
-
-            // Adapter is not configured ignore
-            if (null === $config) {
-                $ignoredAdapters[] = $adapterName;
-
-                continue;
+                if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+                    throw $e;
+                }
+            } else {
+                throw $event->getException();
             }
 
-            if (!$adapterInfo[AdapterFactory::SUPPORT_REPOSITORY_MANAGER]) {
-                continue;
-            }
-
-            $adapter = $this->adapterFactory->createRepositoryManager(
-                $adapterName,
-                $config,
-                $this->config
-            );
-
-            if ($adapter->supportsRepository($remoteUrl)) {
-                return $adapter;
-            };
+            $exitCode = $event->getExitCode();
+        } finally {
+            $event = new ConsoleTerminateEvent($command, $input, $output, $exitCode);
+            $this->dispatcher->dispatch(ConsoleEvents::TERMINATE, $event);
         }
 
-        $exceptionMessage = 'The adapter type could not be determined.';
-
-        if ([] !== $ignoredAdapters) {
-            $exceptionMessage .= sprintf(
-                'Note, the following adapters (may support this repository) but are currently not configured: "%s".',
-                implode('", "', $ignoredAdapters)
-            );
-
-            $exceptionMessage .= ' Please configure the adapters or run the "core:init" command.';
-        } else {
-            $exceptionMessage .= ' Please run the "core:init" command.';
-        }
-
-        throw new \RuntimeException($exceptionMessage);
-    }
-
-    /**
-     * Builds the adapter for the application
-     *
-     * @param string|Adapter $adapter
-     * @param array          $config
-     *
-     * @return Adapter
-     *
-     * @throws \RuntimeException when the adapter configuration is invalid
-     */
-    public function buildAdapter($adapter, array $config = null)
-    {
-        if (!$adapter instanceof Adapter) {
-            if (null === $config) {
-                $config = $this->config->get(sprintf('[adapters][%s]', $adapter));
-            }
-
-            if (null === $config) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'The adapter "%s" is not configured yet. Please run the "core:configure" command to configure.',
-                        $adapter
-                    )
-                );
-            }
-
-            $adapter = $this->adapterFactory->createRepositoryManager(
-                $adapter,
-                $config,
-                $this->config
-            );
-        }
-
-        $adapter->authenticate();
-        $this->setAdapter($adapter);
-
-        return $adapter;
-    }
-
-    /**
-     * Builds the issue tracker for the application.
-     *
-     * @param string $issueTrackerName
-     * @param array  $config
-     *
-     * @return IssueTracker
-     */
-    public function buildIssueTracker($issueTrackerName, array $config = null)
-    {
-        $issueTracker = $this->adapterFactory->createIssueTracker(
-            $issueTrackerName,
-            $config ?: $this->config->get(sprintf('[issue_trackers][%s]', $issueTrackerName)),
-            $this->config
-        );
-
-        $issueTracker->authenticate();
-        $this->setIssueTracker($issueTracker);
-
-        return $issueTracker;
+        return $event->getExitCode();
     }
 
     /**
@@ -418,6 +304,7 @@ LOGO;
 
         return [
             $updateCommand,
+            new Cmd\HelpCommand(),
             new Cmd\PullRequest\PullRequestCreateCommand(),
             new Cmd\PullRequest\PullRequestMergeCommand(),
             new Cmd\PullRequest\PullRequestCloseCommand(),

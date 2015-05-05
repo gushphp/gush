@@ -12,20 +12,28 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCloseCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 
-class IssueCloseCommandTest extends BaseTestCase
+class IssueCloseCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function closes_an_issue()
+    public function testCloseIssue()
     {
         $tester = $this->getCommandTester(new IssueCloseCommand());
-        $tester->execute(['--org' => 'gushphp', 'issue_number' => TestAdapter::ISSUE_NUMBER], ['interactive' => false]);
+        $tester->execute(
+            [
+                'issue_number' => TestAdapter::ISSUE_NUMBER,
+            ]
+        );
 
-        $this->assertEquals(OutputFixtures::ISSUE_CLOSE, trim($tester->getDisplay(true)));
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            sprintf(
+                'Closed https://github.com/gushphp/gush/issues/%s',
+                TestAdapter::ISSUE_NUMBER
+            ),
+            $display
+        );
     }
 }

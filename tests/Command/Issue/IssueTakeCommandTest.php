@@ -12,134 +12,148 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueTakeCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class IssueTakeCommandTest extends BaseTestCase
+class IssueTakeCommandTest extends CommandTestCase
 {
     const SLUGIFIED_STRING = 'write-a-behat-test-to-launch-strategy';
     const TEST_TITLE = 'Write a behat test to launch strategy';
 
-    /**
-     * @test
-     */
-    public function takes_an_issue()
+    public function testTakeIssue()
     {
-        $this->expectsConfig();
-        $this->config->get('base')->willReturn('master');
-
-        $tester = $this->getCommandTester($command = new IssueTakeCommand());
-        $command->getHelperSet()->set($this->expectTextHelper());
-        $command->getHelperSet()->set($this->expectGitConfigHelper());
-        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/master'));
-
-        $tester->execute(
-            ['--org' => 'gushphp', '--repo' => 'gush', 'issue_number' => TestAdapter::ISSUE_NUMBER],
-            ['interactive' => false]
+        $command = new IssueTakeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->expectTextHelper()->reveal());
+                $helperSet->set($this->getGitConfigHelper()->reveal());
+                $helperSet->set($this->getLocalGitHelper()->reveal());
+            }
         );
 
-        $this->assertEquals(
-            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
-            trim($tester->getDisplay(true))
+        $tester->execute(['issue_number' => TestAdapter::ISSUE_NUMBER]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken', TestAdapter::ISSUE_NUMBER),
+            $display
         );
     }
 
-    /**
-     * @test
-     */
-    public function takes_an_issue_with_specific_base()
+    public function testTakeIssueWithSpecificBase()
     {
-        $this->expectsConfig();
-        $this->config->get('base')->willReturn('master');
-
-        $tester = $this->getCommandTester($command = new IssueTakeCommand());
-        $command->getHelperSet()->set($this->expectTextHelper());
-        $command->getHelperSet()->set($this->expectGitConfigHelper());
-        $command->getHelperSet()->set($this->expectGitHelper('gushphp', 'gushphp/development'));
-
-        $tester->execute(
-            [
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
-                'issue_number' => TestAdapter::ISSUE_NUMBER,
-                'base_branch' => 'development'
-            ],
-            ['interactive' => false]
+        $command = new IssueTakeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->expectTextHelper()->reveal());
+                $helperSet->set($this->getGitConfigHelper()->reveal());
+                $helperSet->set($this->getLocalGitHelper('gushphp', 'gushphp/development')->reveal());
+            }
         );
 
-        $this->assertEquals(
-            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
-            trim($tester->getDisplay(true))
+        $tester->execute(['issue_number' => TestAdapter::ISSUE_NUMBER, 'base_branch' => 'development']);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken', TestAdapter::ISSUE_NUMBER),
+            $display
         );
     }
 
-    /**
-     * @test
-     */
-    public function takes_an_issue_with_specific_source_org_and_repo()
+    public function testTakeIssueWithSpecificBaseFromConfig()
     {
-        $this->expectsConfig();
-        $this->config->get('base')->willReturn('master');
+        $command = new IssueTakeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            array_merge(self::$localConfig, ['base' => 'development']),
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->expectTextHelper()->reveal());
+                $helperSet->set($this->getGitConfigHelper()->reveal());
+                $helperSet->set($this->getLocalGitHelper('gushphp', 'gushphp/development')->reveal());
+            }
+        );
 
-        $tester = $this->getCommandTester($command = new IssueTakeCommand());
-        $command->getHelperSet()->set($this->expectTextHelper());
-        $command->getHelperSet()->set($this->expectGitConfigHelper('gushphp-fork', 'gush-source'));
-        $command->getHelperSet()->set($this->expectGitHelper('gushphp-fork', 'gushphp-fork/master'));
+        $tester->execute(['issue_number' => TestAdapter::ISSUE_NUMBER]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken', TestAdapter::ISSUE_NUMBER),
+            $display
+        );
+    }
+
+    public function testTakeIssueFromSpecificOrgAndRepo()
+    {
+        $command = new IssueTakeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->expectTextHelper()->reveal());
+                $helperSet->set($this->getGitConfigHelper('gushphp-fork', 'gush-source')->reveal());
+                $helperSet->set($this->getLocalGitHelper('gushphp-fork', 'gushphp-fork/master')->reveal());
+            }
+        );
 
         $tester->execute(
             [
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
-                '--source-org' => 'gushphp-fork',
-                '--source-repo' => 'gush-source',
+                '--org' => 'gushphp-fork',
+                '--repo' => 'gush-source',
+                '--issue-org' => 'gushphp',
+                '--issue-project' => 'gush',
                 'issue_number' => TestAdapter::ISSUE_NUMBER,
-            ],
-            ['interactive' => false]
+            ]
         );
 
-        $this->assertEquals(
-            sprintf('[OK] Issue https://github.com/gushphp/gush/issues/%s taken!', TestAdapter::ISSUE_NUMBER),
-            trim($tester->getDisplay(true))
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            sprintf('Issue https://github.com/gushphp/gush/issues/%s taken', TestAdapter::ISSUE_NUMBER),
+            $display
         );
     }
 
     private function expectTextHelper()
     {
-        $text = $this->prophet->prophesize('Gush\Helper\TextHelper');
+        $text = $this->prophesize('Gush\Helper\TextHelper');
         $text->setHelperSet(Argument::any())->shouldBeCalled();
         $text->getName()->willReturn('text');
 
         $text->slugify(
             sprintf('%d %s', TestAdapter::ISSUE_NUMBER, self::TEST_TITLE)
-        )->willReturn(
-            self::SLUGIFIED_STRING
-        );
+        )->willReturn(self::SLUGIFIED_STRING);
 
-        return $text->reveal();
+        return $text;
     }
 
-    private function expectGitHelper($remote = 'origin', $baseBranch = 'origin/master')
+    private function getLocalGitHelper($remote = 'gushphp', $baseBranch = 'gushphp/master')
     {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git');
-
+        $gitHelper = $this->getGitHelper();
         $gitHelper->remoteUpdate($remote)->shouldBeCalled();
         $gitHelper->checkout($baseBranch)->shouldBeCalled();
         $gitHelper->checkout(self::SLUGIFIED_STRING, true)->shouldBeCalled();
 
-        return $gitHelper->reveal();
+        return $gitHelper;
     }
 
-    private function expectGitConfigHelper($org = 'gushphp', $repo = 'gush')
+    protected function getGitConfigHelper($org = 'gushphp', $repo = 'gush')
     {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git_config');
+        $helper = parent::getGitConfigHelper();
+        $helper->ensureRemoteExists($org, $repo)->shouldBeCalled();
 
-        $gitHelper->ensureRemoteExists($org, $repo)->shouldBeCalled();
-
-        return $gitHelper->reveal();
+        return $helper;
     }
 }

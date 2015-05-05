@@ -17,14 +17,19 @@
 >
     <php>
         <ini name="date.timezone" value="America/Lima"/>
-        <env name="GIT_VENDOR_NAME" value="gushphp"/>
 
-        <!-- WARNING These locations are only used for testing, don't use your actual Gush installation! -->
         <!--
-        <env name="GUSH_HOME" value="/PATH/TO/GUSH/HOME"/>
-        <env name="GUSH_LOCAL" value="/PATH/TO/GUSH/LOCAL"/>
-        <env name="GUSH_CACHE_DIR" value="/PATH/TO/GUSH/CACHE"/>
+            Uncomment the "GUSH_USE_FS" env-option to use the real filesystem.
+            This will use the system temp-folder for storing the configuration
+            and the creating the cache folder.
+
+            This should only be done when you need to read the raw configuration
+            content or when you are using a virtual environment for testing.
+
+            The tests will generate a large amount of IO and will not remove the
+            directories afterwards.
         -->
+        <!--<env name="GUSH_USE_FS" value="true"/>-->
     </php>
 
     <testsuites>

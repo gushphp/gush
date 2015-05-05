@@ -12,34 +12,39 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestPatOnTheBackCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
+use Gush\Tests\Command\CommandTestCase;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class PullRequestPatOnTheBackCommandTest extends BaseTestCase
+class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 {
     const TEMPLATE_STRING = "Good catch @weaverryan, thanks for the patch.";
 
-    /**
-     * @test
-     */
-    public function pats_on_the_back_contributor_of_a_pull_request()
+    public function testPatContributorOfPullRequestOnTheBack()
     {
-        $template = $this->expectTemplateHelper();
-        $tester = $this->getCommandTester($command = new PullRequestPatOnTheBackCommand());
-        $command->getHelperSet()->set($template, 'template');
-        $tester->execute(
-            ['--org' => 'gushphp', '--repo' => 'gush', 'pr_number' => TestAdapter::PULL_REQUEST_NUMBER],
-            ['interactive' => false]
+        $tester = $this->getCommandTester(
+            new PullRequestPatOnTheBackCommand(),
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getTemplateHelper());
+            }
         );
 
-        $this->assertEquals(OutputFixtures::PULL_REQUEST_PAT_ON_THE_BACK, trim($tester->getDisplay(true)));
+        $tester->execute(['pr_number' => 10], ['interactive' => false]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
+            $display
+        );
     }
 
-    private function expectTemplateHelper()
+    private function getTemplateHelper()
     {
         $template = $this->getMockBuilder('Gush\Helper\TemplateHelper')
             ->disableOriginalConstructor()
+            ->setMethods(['bindAndRender'])
             ->getMock()
         ;
 

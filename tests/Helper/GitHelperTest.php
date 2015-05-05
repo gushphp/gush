@@ -17,39 +17,33 @@ use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Prophecy\Prophet;
 
 class GitHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var GitHelper
      */
-    protected $git;
+    private $git;
 
     /**
      * @var GitHelper
      */
-    protected $unitGit;
+    private $unitGit;
 
     /**
      * @var ProcessHelper|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $processHelper;
+    private $processHelper;
 
     /**
      * @var GitConfigHelper|ObjectProphecy
      */
-    protected $gitConfigHelper;
+    private $gitConfigHelper;
 
     /**
      * @var FilesystemHelper|ObjectProphecy
      */
     private $filesystemHelper;
-
-    /**
-     * @var Prophet
-     */
-    private $prophet;
 
     /**
      * @var FilesystemHelper
@@ -58,14 +52,12 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->prophet = new Prophet();
-
         $this->processHelper = $this->getMock('Gush\Helper\ProcessHelper');
 
-        $this->filesystemHelper = $this->prophet->prophesize('Gush\Helper\FilesystemHelper');
+        $this->filesystemHelper = $this->prophesize('Gush\Helper\FilesystemHelper');
         $this->filesystemHelper->getName()->willReturn('filesystem');
 
-        $this->gitConfigHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
+        $this->gitConfigHelper = $this->prophesize('Gush\Helper\GitConfigHelper');
         $this->gitConfigHelper->setHelperSet(Argument::any());
         $this->gitConfigHelper->getName()->willReturn('git_config');
 
@@ -77,11 +69,6 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
             $this->gitConfigHelper->reveal(),
             $this->filesystemHelper->reveal()
         );
-    }
-
-    public function tearDown()
-    {
-        $this->prophet->checkPredictions();
     }
 
     /**
@@ -118,30 +105,6 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function gets_the_repository_name()
-    {
-        $this->gitConfigHelper->getRemoteInfo('origin')->willReturn(
-            ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
-        );
-
-        $this->assertEquals('gush', $this->unitGit->getRepoName());
-    }
-
-    /**
-     * @test
-     */
-    public function gets_vendor_name_for_repository()
-    {
-        $this->gitConfigHelper->getRemoteInfo('origin')->willReturn(
-            ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
-        );
-
-        $this->assertEquals('gushphp', $this->unitGit->getVendorName());
-    }
-
-    /**
-     * @test
-     */
     public function lists_files()
     {
         // Smoke test for a real listFiles
@@ -155,14 +118,17 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     public function merges_remote_branch_in_clean_wc()
     {
         $base = 'master';
-        $baseRemote = $sourceRemote = 'origin';
         $sourceBranch = 'amazing-feature';
         $tmpName = $this->realFsHelper->newTempFilename();
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
         $message = "Black-box testing 123\n\n\nAah!";
 
-        $processHelper = $this->prophet->prophesize('Gush\Helper\ProcessHelper');
-        $this->unitGit = new GitHelper($processHelper->reveal(), $this->gitConfigHelper->reveal(), $this->filesystemHelper->reveal());
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
 
         $this->filesystemHelper->newTempFilename()->willReturn($tmpName);
 

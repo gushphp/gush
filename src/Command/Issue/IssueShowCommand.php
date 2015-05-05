@@ -12,12 +12,12 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\IssueTrackerRepoFeature;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueShowCommand extends BaseCommand implements GitRepoFeature
+class IssueShowCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -27,15 +27,15 @@ class IssueShowCommand extends BaseCommand implements GitRepoFeature
         $this
             ->setName('issue:show')
             ->setDescription('Shows given issue')
-            ->addOption('issue_number', 'i', InputOption::VALUE_REQUIRED, 'Issue number')
+            ->addArgument('issue', InputArgument::OPTIONAL, 'Issue number')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command shows issue details for either the current or the given organization
 and repo:
 
-    <info>$ gush %command.name% --issue_number=60</info>
+    <info>$ gush %command.name% 60</info>
 
-You can also call the command without options to pick up the current issue from the branch name:
+You can also call the command without the issue argument to pick up the current issue from the branch name:
 
     <info>$ gush %command.name%</info>
 
@@ -49,7 +49,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (null === $issueNumber = $input->getOption('issue_number')) {
+        if (null === $issueNumber = $input->getArgument('issue')) {
             $issueNumber = $this->getHelper('git')->getIssueNumber();
         }
 
@@ -71,10 +71,13 @@ EOF
         } else {
             $output->writeln('Type: Issue');
         }
+
         $output->writeln('Milestone: '.$issue['milestone']);
+
         if ($issue['labels'] > 0) {
             $output->writeln('Labels: '.implode(', ', $issue['labels']));
         }
+
         $output->writeln(
             [
                 'Title: '.$issue['title'],

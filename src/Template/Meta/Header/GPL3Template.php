@@ -49,7 +49,7 @@ EOT;
     public function getRequirements()
     {
         return [
-            'package_name' => ['Package Name?:', 'Your Package'],
+            'package_name' => ['Package Name', 'Your Package'],
         ];
     }
 

@@ -12,53 +12,66 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchForkCommand;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
-use Prophecy\Argument;
+use Gush\Tests\Command\CommandTestCase;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class BranchForkCommandTest extends BaseTestCase
+class BranchForkCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function forks_repository_to_users_vendor_name()
+    public function testForkRepositoryToUserOrg()
     {
-        $this->expectsConfig();
-
-        $tester = $this->getCommandTester($command = new BranchForkCommand());
-        $command->getHelperSet()->set($this->expectGitConfigHelper('cordoval', 'git@github.com:cordoval/gush.git'));
-
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
-
-        $this->assertEquals(sprintf(OutputFixtures::BRANCH_FORK, 'cordoval'), trim($tester->getDisplay(true)));
-    }
-
-    /**
-     * @test
-     */
-    public function forks_repository_to_specific_vendor_name()
-    {
-        $this->expectsConfig();
-
-        $tester = $this->getCommandTester($command = new BranchForkCommand());
-        $command->getHelperSet()->set($this->expectGitConfigHelper('someone', 'git@github.com:cordoval/gush.git'));
-
-        $tester->execute(
-            ['--org' => 'gushphp', '--repo' => 'gush', 'other_organization' => 'someone'],
-            ['interactive' => false]
+        $command = new BranchForkCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitConfigHelper()->reveal());
+            }
         );
 
-        $this->assertEquals(sprintf(OutputFixtures::BRANCH_FORK, 'someone'), trim($tester->getDisplay(true)));
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Forked repository gushphp/gush into cordoval/gush',
+                'Added remote "cordoval" with "git@github.com:cordoval/gush.git".',
+            ],
+            $display
+        );
     }
 
-    private function expectGitConfigHelper($remoteName, $gitUrl)
+    public function testForkRepositoryTosSpecificOrg()
     {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitConfigHelper');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git_config');
+        $command = new BranchForkCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitConfigHelper('someone')->reveal());
+            }
+        );
 
-        $gitHelper->setRemote($remoteName, $gitUrl)->shouldBeCalled();
+        $tester->execute(['target_organization' => 'someone']);
 
-        return $gitHelper->reveal();
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Forked repository gushphp/gush into someone/gush',
+                'Added remote "someone" with "git@github.com:cordoval/gush.git".',
+            ],
+            $display
+        );
+    }
+
+    protected function getGitConfigHelper($remoteName = 'cordoval')
+    {
+        $gitHelper = parent::getGitConfigHelper();
+        $gitHelper->setRemote($remoteName, 'git@github.com:cordoval/gush.git')->shouldBeCalled();
+
+        return $gitHelper;
     }
 }

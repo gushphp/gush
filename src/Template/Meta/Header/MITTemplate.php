@@ -41,9 +41,9 @@ EOT;
     public function getRequirements()
     {
         return [
-            'package-name' => ['Package Name?:', 'Your Package'],
-            'copyright-holder' => ['Copyright Holder:', 'You <you@yourdomain.com>'],
-            'copyright-from' => ['Copyright Starts From:', '2009'],
+            'package-name' => ['Package Name', 'Your Package'],
+            'copyright-holder' => ['Copyright Holder', 'You <you@yourdomain.com>'],
+            'copyright-from' => ['Copyright Starts From', '2009'],
         ];
     }
 

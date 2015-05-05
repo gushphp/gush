@@ -61,6 +61,10 @@ EOF
         $gitHelper->add('.');
 
         if (!$gitHelper->isWorkingTreeReady()) {
+            $this->getHelper('gush_style')->note(
+                'Your working tree has uncommitted changes, committing changes with "WIP" as message.'
+            );
+
             $gitHelper->commit('wip', ['a']);
         }
 

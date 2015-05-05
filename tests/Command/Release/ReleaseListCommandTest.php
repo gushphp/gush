@@ -12,19 +12,23 @@
 namespace Gush\Tests\Command\Release;
 
 use Gush\Command\Release\ReleaseListCommand;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
+use Gush\Tests\Command\CommandTestCase;
 
-class ReleaseListCommandTest extends BaseTestCase
+class ReleaseListCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function lists_releases()
+    public function testListsReleases()
     {
         $tester = $this->getCommandTester(new ReleaseListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals(trim(OutputFixtures::RELEASE_LIST), trim($tester->getDisplay(true)));
+        $display = $tester->getDisplay();
+
+        $this->assertTableOutputMatches(
+            ['ID', 'Name', 'Tag', 'Draft', 'Prerelease', 'Created', 'Published'],
+            [
+                ['1', 'v1.0.0', 'v1.0.0', 'no', 'no', '2014-01-05 10:00', '2014-01-05 10:00'],
+            ],
+            $display
+        );
     }
 }

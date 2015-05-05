@@ -9,121 +9,49 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Tests\Command\Core;
+namespace Gush\Tests\Command\Util;
 
 use Gush\Command\Util\MetaConfigureCommand;
-use Gush\Tester\QuestionToken;
-use Gush\Tests\Command\BaseTestCase;
-use Prophecy\Argument;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Yaml\Yaml;
+use Gush\Tests\Command\CommandTestCase;
 
-class MetaConfigureCommandTest extends BaseTestCase
+class MetaConfigureCommandTest extends CommandTestCase
 {
     const META_HEADER = <<<OET
 This file is part of Gush package.
 
-(c) 2013-2014 Luis Cordova <cordoval@gmail.com>
+(c) 2013-%d Luis Cordova <cordoval@gmail.com>
 
 This source file is subject to the MIT license that is bundled
 with this source code in the file LICENSE.
 OET;
 
-    private $gushLocalFilename;
-
-    protected function setUp()
+    public function testConfigureConfiguresMetaHeader()
     {
-        parent::setUp();
+        $command = new MetaConfigureCommand();
+        $tester = $this->getCommandTester(
+            $command
+        );
 
-        if (!$homeDir = getenv('GUSH_HOME')) {
-            $this->markTestSkipped('Please add the \'GUSH_HOME\' in your \'phpunit.xml\'.');
-        }
-
-        $localDir = $homeDir.'/local_test';
-        $this->gushLocalFilename = $localDir.'/.gush.yml';
-
-        @mkdir($localDir, 0777, true);
-
-        if (file_exists($this->gushLocalFilename)) {
-            unlink($this->gushLocalFilename);
-        }
-
-        $this->config->get('local_config')->willReturn($this->gushLocalFilename);
-    }
-
-    /**
-     * @test
-     */
-    public function it_configures_the_meta_header()
-    {
-        $this->config->get('adapter')->willReturn('github_enterprise');
-        $this->config->get('issue_tracker')->willReturn('github_enterprise');
-
-        $expected = [
-            'meta-header' => self::META_HEADER,
-        ];
-
-        $questionHelper = $this->expectDialogParameters(true);
-        $template = $this->expectTemplate();
-
-        $tester = $this->getCommandTester($command = new MetaConfigureCommand());
-        $command->getHelperSet()->set($questionHelper);
-        $command->getHelperSet()->set($template);
-
-        $tester->execute(
+        $this->setExpectedCommandInput(
+            $command,
             [
-                'command' => 'meta:configure',
-            ],
-            [
-                'interactive' => true,
+                '0', // mit
+                'Gush', // Package Name
+                'Luis Cordova <cordoval@gmail.com>', // Copyright Holder
+                '2013', // Copyright Starts From
             ]
         );
 
-        $this->assertGushLocalEquals($expected);
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+        $this->assertCommandOutputMatches('Configuration file saved successfully.', $display);
+
+        $this->assertEquals(sprintf(self::META_HEADER, date('Y')), $command->getConfig()->get('meta-header'));
     }
 
-    private function assertGushLocalEquals(array $expected)
+    protected function requiresRealConfigDir()
     {
-        $this->assertFileExists($this->gushLocalFilename);
-        $this->assertEquals($expected, Yaml::parse(file_get_contents($this->gushLocalFilename)));
-    }
-
-    private function expectDialogParameters()
-    {
-        $styleHelper = $this->prophet->prophesize('Gush\Helper\StyleHelper');
-        $styleHelper->getName()->willReturn('gush_style');
-        $styleHelper->setInput(Argument::any())->shouldBeCalled();
-        $styleHelper->setOutput(Argument::any())->shouldBeCalled();
-        $styleHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $styleHelper->success('Configuration file saved successfully.')->shouldBeCalled();
-
-        $styleHelper->askQuestion(
-            new QuestionToken(
-                new ChoiceQuestion(
-                    'Choose License:',
-                    ['mit', 'gpl3', 'no-license']
-                )
-            )
-        )->willReturn('mit');
-
-        return $styleHelper->reveal();
-    }
-
-    private function expectTemplate()
-    {
-        $template = $this->prophet->prophesize('Gush\Helper\TemplateHelper');
-        $template->setHelperSet(Argument::any())->shouldBeCalled();
-        $template->getName()->willReturn('template');
-
-        $template->askAndRender(
-            Argument::any(),
-            'meta-header',
-            'mit'
-        )->willReturn(self::META_HEADER);
-
-        $template->getNamesForDomain('meta-header')->willReturn(['mit', 'gpl3', 'no-license']);
-        $template->setInput(Argument::any())->shouldBeCalled();
-
-        return $template->reveal();
+        return true;
     }
 }

@@ -11,100 +11,66 @@
 
 namespace Gush\Tests\Subscriber;
 
-use Gush\Subscriber\TableSubscriber;
+use Gush\Command\BaseCommand;
+use Gush\Tests\BaseTestCase;
+use Gush\Tests\Command\CommandTester;
+use Gush\Tests\Fixtures\Command\TemplateTestCommand;
 
-class TableSubscriberTest extends \PHPUnit_Framework_TestCase
+class TableSubscriberTest extends BaseTestCase
 {
-    protected $subscriber;
-    protected $commandEvent;
-    protected $consoleEvent;
-    protected $command;
-    protected $tableHelper;
-    protected $input;
-
-    public function setUp()
+    public function testAddsOptionsForTemplateFeaturedCommand()
     {
-        $this->commandEvent = $this->getMockBuilder(
-            'Gush\Event\CommandEvent'
-        )->disableOriginalConstructor()->getMock();
+        $command = new TemplateTestCommand();
+        $commandDef = $command->getDefinition();
 
-        $this->consoleEvent = $this->getMockBuilder(
-            'Symfony\Component\Console\Event\ConsoleEvent'
-        )->disableOriginalConstructor()->getMock();
+        $this->assertFalse($commandDef->hasOption('table-layout'));
 
-        $this->command = $this->getMockBuilder(
-            'Gush\Tests\Subscriber\TestTableCommand'
-        )->disableOriginalConstructor()->getMock();
+        $this->runCommandTest($command);
 
-        $this->tableHelper = $this->getMock(
-            'Gush\Helper\TableHelper'
-        );
-
-        $this->input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-
-        $this->subscriber = new TableSubscriber();
+        $this->assertTrue($commandDef->hasOption('table-layout'));
+        $this->assertTrue($commandDef->hasOption('table-no-header'));
+        $this->assertTrue($commandDef->hasOption('table-no-footer'));
     }
 
-    /**
-     * @test
-     */
-    public function decorates_a_definition()
-    {
-        $this->commandEvent->expects($this->once())
-            ->method('getCommand')
-            ->will($this->returnValue($this->command))
-        ;
-        $this->command->expects($this->at(0))
-            ->method('addOption')
-            ->will($this->returnValue($this->command))
-        ;
-        $this->command->expects($this->at(1))
-            ->method('addOption')
-            ->will($this->returnValue($this->command))
-        ;
-        $this->command->expects($this->at(2))
-            ->method('addOption')
-            ->will($this->returnValue($this->command))
-        ;
-
-        $this->subscriber->decorateDefinition($this->commandEvent);
-    }
-
-    public function provideInitialize()
+    public function provideTemplateTypes()
     {
         return [
             ['default', true],
             ['borderless', true],
             ['compact', true],
-
             ['foobar', false],
         ];
     }
 
     /**
      * @test
-     * @dataProvider provideInitialize
+     * @dataProvider provideTemplateTypes
      */
-    public function initializes($layoutName, $valid)
+    public function testThrowsExceptionOnUnsupportedTemplateType($layoutName, $valid)
     {
-        $this->consoleEvent->expects($this->once())
-            ->method('getCommand')
-            ->will($this->returnValue($this->command))
-        ;
-        $this->consoleEvent->expects($this->once())
-            ->method('getInput')
-            ->will($this->returnValue($this->input))
-        ;
-        $this->input->expects($this->once())
-            ->method('getOption')
-            ->with('table-layout')
-            ->will($this->returnValue($layoutName))
-        ;
+        $command = new TemplateTestCommand();
 
         if (false === $valid) {
             $this->setExpectedException('InvalidArgumentException', 'must be passed one of');
         }
 
-        $this->subscriber->initialize($this->consoleEvent);
+        $this->runCommandTest($command, ['--table-layout' => $layoutName]);
+    }
+
+    /**
+     * @param BaseCommand $command
+     * @param array       $input
+     *
+     * @return CommandTester
+     */
+    private function runCommandTest(BaseCommand $command, array $input = [])
+    {
+        $application = $this->getApplication();
+        $command->setApplication($application);
+
+        $commandTest = new CommandTester($command);
+        $commandTest->execute(array_merge($input, ['command' => $command->getName()]), ['decorated' => false]);
+
+        return $commandTest;
     }
 }

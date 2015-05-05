@@ -12,71 +12,101 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchChangelogCommand;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
-use Prophecy\Argument;
+use Gush\Tests\Command\CommandTestCase;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class BranchChangelogCommandTest extends BaseTestCase
+class BranchChangelogCommandTest extends CommandTestCase
 {
     const TEST_TAG_NAME = '1.2.3';
 
-    /**
-     * @test
-     */
-    public function expects_an_exception_when_no_tags_on_branch()
+    public function testFailsWhenNoTagsAreFoundOnBranch()
     {
-        $tester = $this->getCommandTester($command = new BranchChangelogCommand());
-        $command->getHelperSet()->set($this->expectGitHelperWithoutTags());
-
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
-
-        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG_EMPTY, trim($tester->getDisplay(true)));
-    }
-
-    /**
-     * @test
-     */
-    public function finds_tag_on_branch_to_build_changelog()
-    {
-        $tester = $this->getCommandTester($command = new BranchChangelogCommand());
-        $command->getHelperSet()->set($this->expectGitHelperWithTags());
-
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush']);
-
-        $this->assertEquals(OutputFixtures::BRANCH_CHANGELOG, trim($tester->getDisplay(true)));
-    }
-
-    private function expectGitHelperWithoutTags()
-    {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
-        $gitHelper->getName()->willReturn('git');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-
-        $gitHelper->getLastTagOnBranch()->willThrow(
-            new \RuntimeException('fatal: No names found, cannot describe anything.')
+        $command = new BranchChangelogCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitHelper(true, false)->reveal());
+            }
         );
 
-        return $gitHelper->reveal();
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches('No tags were found on branch "master"', $display);
     }
 
-    private function expectGitHelperWithTags()
+    public function testShowChangelogWhenTagIsFoundForBranch()
     {
-        $commits = [
+        $command = new BranchChangelogCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitHelper()->reveal());
+            }
+        );
+
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            '#123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123',
+            $display
+        );
+    }
+
+    public function testSearchWithIssuePattern()
+    {
+        $command = new BranchChangelogCommand();
+        $tester = $this->getCommandTester($command);
+
+        $tester->execute(['--search' => ['/#(?P<id>[0-9]+)/i', '/GITHUB-(?P<id>[0-9]+)/i']]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
             [
-                'sha' => '68bfa1d00',
-                'author' => 'Anonymous <someone@example.com>',
-                'subject' => ' Another hack which fixes #123',
-                'message' => ' Another hack which fixes #123'
-            ]
-        ];
+                '#123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123',
+                'GITHUB-500: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/500',
+            ],
+            $display
+        );
+    }
 
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
-        $gitHelper->getName()->willReturn('git');
+    protected function getGitHelper($isGitFolder = true, $hasTag = true)
+    {
+        $helper = parent::getGitHelper($isGitFolder);
+        $helper->getActiveBranchName()->willReturn('master');
 
-        $gitHelper->getLastTagOnBranch()->willReturn(self::TEST_TAG_NAME);
-        $gitHelper->getLogBetweenCommits(self::TEST_TAG_NAME, 'HEAD')->willReturn($commits);
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
+        if ($hasTag) {
+            $helper->getLastTagOnBranch('master')->willReturn(self::TEST_TAG_NAME);
+            $helper->getLogBetweenCommits(self::TEST_TAG_NAME, 'master')->willReturn(
+                [
+                    [
+                        'sha' => '68bfa1d00',
+                        'author' => 'Anonymous <someone@example.com>',
+                        'subject' => ' Another hack which fixes #123',
+                        'message' => ' Another hack which fixes #123'
+                    ],
+                    [
+                        'sha' => '68bfa1d05',
+                        'author' => 'Anonymous <someone@example.com>',
+                        'subject' => ' Another hack which fixes GITHUB-500',
+                        'message' => ' Another hack which fixes GITHUB-500'
+                    ]
+                ]
+            );
+        } else {
+            $helper->getLastTagOnBranch()->willThrow(
+                new \RuntimeException('fatal: No names found, cannot describe anything.')
+            );
+        }
 
-        return $gitHelper->reveal();
+        return $helper;
     }
 }

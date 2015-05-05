@@ -12,83 +12,63 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchSyncCommand;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
-use Prophecy\Argument;
+use Gush\Tests\Command\CommandTestCase;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class BranchSyncCommandTest extends BaseTestCase
+class BranchSyncCommandTest extends CommandTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
 
-    /**
-     * @test
-     */
-    public function syncs_current_branch_with_origin()
+    public function testSyncCurrentBranchWithRemote()
     {
-        $tester = $this->getCommandTester($command = new BranchSyncCommand());
-        $command->getHelperSet()->set($this->expectGitHelper());
+        $command = new BranchSyncCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper()->reveal());
+            }
+        );
 
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals(
-            sprintf(OutputFixtures::BRANCH_SYNC, self::TEST_BRANCH_NAME, 'origin'),
-            trim($tester->getDisplay(true))
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Branch "'.self::TEST_BRANCH_NAME.'" has been synced with remote "origin".',
+            $display
         );
     }
 
-    /**
-     * @test
-     */
-    public function syncs_specific_branch_with_origin()
+    public function testSyncsSpecificRanchWithSpecificRemote()
     {
-        $branch = 'development';
-        $remote = 'origin';
-
-        $tester = $this->getCommandTester($command = new BranchSyncCommand());
-        $command->getHelperSet()->set($this->expectGitHelper($remote, $branch));
-
-        $tester->execute(
-            ['--org' => 'gushphp', '--repo' => 'gush', 'branch_name' => $branch],
-            ['interactive' => false]
+        $command = new BranchSyncCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper('cordoval', 'development')->reveal());
+            }
         );
 
-        $this->assertEquals(
-            sprintf(OutputFixtures::BRANCH_SYNC, $branch, 'origin'),
-            trim($tester->getDisplay(true))
+        $tester->execute(['remote' => 'cordoval', 'branch_name' => 'development']);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Branch "development" has been synced with remote "cordoval".',
+            $display
         );
     }
 
-    /**
-     * @test
-     */
-    public function syncs_specific_branch_with_specific_remote()
+    private function getLocalGitHelper($remote = 'origin', $branch = self::TEST_BRANCH_NAME)
     {
-        $branch = 'development';
-        $remote = 'upstream';
+        $helper = $this->getGitHelper();
+        $helper->getActiveBranchName()->willReturn($branch);
+        $helper->syncWithRemote($remote, $branch)->shouldBeCalled();
 
-        $tester = $this->getCommandTester($command = new BranchSyncCommand());
-        $command->getHelperSet()->set($this->expectGitHelper($remote, $branch));
-
-        $tester->execute(
-            ['--org' => 'gushphp', '--repo' => 'gush', 'branch_name' => $branch, 'remote' => $remote],
-            ['interactive' => false]
-        );
-
-        $this->assertEquals(
-            sprintf(OutputFixtures::BRANCH_SYNC, $branch, $remote),
-            trim($tester->getDisplay(true))
-        );
-    }
-
-    private function expectGitHelper($remote = 'origin', $branch = self::TEST_BRANCH_NAME)
-    {
-        $gitHelper = $this->prophet->prophesize('Gush\Helper\GitHelper');
-        $gitHelper->setHelperSet(Argument::any())->shouldBeCalled();
-        $gitHelper->getName()->willReturn('git');
-
-        $gitHelper->getActiveBranchName()->willReturn($branch);
-        $gitHelper->syncWithRemote($remote, $branch)->shouldBeCalled();
-
-        return $gitHelper->reveal();
+        return $helper;
     }
 }

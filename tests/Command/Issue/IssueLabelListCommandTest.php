@@ -12,18 +12,15 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueLabelListCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
 
-class IssueLabelListCommandTest extends BaseTestCase
+class IssueLabelListCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function labels_an_issue_as_bug()
+    public function testShowAvailableIssueLabels()
     {
         $tester = $this->getCommandTester(new IssueLabelListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals('bug', trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches(['bug', 'feature', 'documentation'], $tester->getDisplay());
     }
 }

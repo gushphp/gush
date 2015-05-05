@@ -18,7 +18,6 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MetaHeaderCommand extends BaseCommand implements TemplateFeature
@@ -101,14 +100,13 @@ EOT
         $dryRun = $input->getOption('dry-run');
         $template = $input->getOption('template');
 
-        $config = $this->getApplication()->getConfig();
-        /** @var \Gush\Config $config */
+        $config = $this->getConfig();
 
         /** @var SymfonyStyle $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
         if (null === ($metaHeader = $config->get('meta-header')) || $input->getOption('no-local')) {
-            $metaHeader = $this->getHelper('template')->askAndRender($output, 'meta-header', $template);
+            $metaHeader = $this->getHelper('template')->askAndRender('meta-header', $template);
         }
 
         $allFiles = $this->getHelper('git')->listFiles();
@@ -146,11 +144,7 @@ EOT
                 ]
             );
 
-            $confirmed = $styleHelper->askQuestion(
-                new ConfirmationQuestion('Do you want to continue?', true)
-            );
-
-            if (!$confirmed) {
+            if (!$styleHelper->confirm('Do you want to continue?', true)) {
                 continue;
             }
 

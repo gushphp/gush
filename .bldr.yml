@@ -107,6 +107,8 @@ bldr:
                     continueOnError: false
                     executable: phpunit
                     arguments:
+                        - --verbose
+                        - --exclude-group=""
                         - --coverage-html=build/coverage
                         - --coverage-text=php://stdout
         testLocal:

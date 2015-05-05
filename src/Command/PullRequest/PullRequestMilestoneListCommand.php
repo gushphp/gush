@@ -26,7 +26,7 @@ class PullRequestMilestoneListCommand extends BaseCommand implements TableFeatur
     {
         $this
             ->setName('pull-request:list:milestones')
-            ->setDescription('Lists the pull-request\'s milestones')
+            ->setDescription('Lists the pull-request\'s available milestones')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command lists the pull-request's available milestones for either the current

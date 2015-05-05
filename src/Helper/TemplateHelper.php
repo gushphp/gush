@@ -19,24 +19,23 @@ use Gush\Template\TemplateInterface;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class TemplateHelper extends Helper implements InputAwareInterface
 {
     /**
      * @var array
      */
-    protected $templates = [];
+    private $templates = [];
 
     /**
      * @var StyleHelper
      */
-    protected $style;
+    private $style;
 
     /**
      * @var InputInterface
      */
-    protected $input;
+    private $input;
 
     /**
      * @var Application
@@ -66,6 +65,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
     public function getCustomTemplate($domain)
     {
         $config = $this->application->getConfig();
+
         if ('pull-request-create' === $domain &&  null !== $config && $config->has('table-pr')) {
             return 'custom';
         }
@@ -82,9 +82,9 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Registers a template
+     * Registers a template.
      *
-     * @param \Gush\Template\TemplateInterface $template
+     * @param TemplateInterface $template
      *
      * @throws \InvalidArgumentException
      */
@@ -93,24 +93,30 @@ class TemplateHelper extends Helper implements InputAwareInterface
         $templateName = $template->getName();
         $parts = explode('/', $templateName);
 
-        if (count($parts) != 2) {
-            throw new \InvalidArgumentException(sprintf(
-                'Template name "%s" is not formatted properly, should be like "domain/template-name"',
-                $templateName
-            ));
+        if (count($parts) !== 2) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Template name "%s" is not formatted properly, should be like "domain/template-name"',
+                    $templateName
+                )
+            );
         }
 
         list($domain, $name) = $parts;
+
         $this->templates[$domain][$name] = $template;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'template';
     }
 
     /**
-     * Retrieves a template
+     * Retrieves a template by domain and name.
      *
      * @param string $domain Domain of the template
      * @param string $name   Name of the template
@@ -137,25 +143,23 @@ class TemplateHelper extends Helper implements InputAwareInterface
      * user for any parameters that are not available from the
      * input, then binds the parameters to the template.
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface    Output from the command
-     * @param \Gush\Template\TemplateInterface  Template to render
+     * @param TemplateInterface $template Template to render
+     *
+     * @internal param OutputInterface $output Output from the command
      */
-    public function parameterize(OutputInterface $output, TemplateInterface $template)
+    public function parameterize(TemplateInterface $template)
     {
         $params = [];
+
         foreach ($template->getRequirements() as $key => $requirement) {
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
                 list($prompt, $default) = $requirement;
-                $prompt  = $default ? $prompt.' ('.$default.')' : $prompt;
 
                 if ('description' === $key) {
-                    $prompt .= ' (enter "e" to open editor)';
-
-                    $v = $this->style->ask($prompt.' ', $default);
+                    $v = $this->style->ask($prompt.' (enter "e" to open editor)', $default);
 
                     if ('e' === $v) {
                         $editor = $this->getHelperSet()->get('editor');
-
                         $v = $editor->fromString('');
                     }
                 } else {
@@ -172,20 +176,20 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Asks and renders will render the template. If any requirements
-     * are missing from the Input it will demand the parameters from
-     * the user.
+     * Asks and renders will render the template.
      *
-     * @param OutputInterface $output         Output from command
-     * @param string          $templateDomain Domain for the template, e.g. pull-request
-     * @param string          $templateName   Name of the template, e.g. symfony-doc
+     * If any requirements are missing from the Input it will demand the
+     * parameters from the user.
+     *
+     * @param string $templateDomain Domain for the template, e.g. pull-request
+     * @param string $templateName   Name of the template, e.g. symfony-doc
      *
      * @return string Rendered template string
      */
-    public function askAndRender(OutputInterface $output, $templateDomain, $templateName)
+    public function askAndRender($templateDomain, $templateName)
     {
         $template = $this->getTemplate($templateDomain, $templateName);
-        $this->parameterize($output, $template);
+        $this->parameterize($template);
 
         return $template->render();
     }
@@ -209,8 +213,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
     }
 
     /**
-     * Returns the names of registered templates in the given
-     * domain.
+     * Returns the names of registered templates in the given domain.
      *
      * @param string $domain Return template names for this domain
      *

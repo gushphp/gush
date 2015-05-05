@@ -12,70 +12,110 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCreateCommand;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
+use Symfony\Component\Console\Helper\HelperSet;
 
-class IssueCreateCommandTest extends BaseTestCase
+class IssueCreateCommandTest extends CommandTestCase
 {
     const ISSUE_TITLE = 'bug title';
     const ISSUE_DESCRIPTION = 'not working!';
 
-    /**
-     * @test
-     */
-    public function creates_an_issue_non_interactively()
+    public function testCreateIssueNonInteractive()
     {
-        $questionHelper = $this->expectDialog();
-        $editor = $this->expectEditor();
-        $tester = $this->getCommandTester($command = new IssueCreateCommand());
-        $command->getHelperSet()->set($questionHelper, 'question');
-        $command->getHelperSet()->set($editor, 'editor');
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $command = new IssueCreateCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getEditorHelper());
+            }
+        );
 
-        $this->assertEquals('[OK] Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
-    }
-
-    /**
-     * @test
-     */
-    public function creates_an_issue_with_inline_options()
-    {
-        $tester = $this->getCommandTester($command = new IssueCreateCommand());
         $tester->execute(
-            [
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
-                '--issue_title' => self::ISSUE_TITLE,
-                '--issue_body' => self::ISSUE_DESCRIPTION
-            ],
-            [
-                'interactive' => false
-            ]
+            ['--title' => self::ISSUE_TITLE, '--body' => self::ISSUE_DESCRIPTION],
+            ['interactive' => false]
         );
 
-        $this->assertEquals('[OK] Created issue https://github.com/gushphp/gush/issues/77', trim($tester->getDisplay(true)));
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Created issue https://github.com/gushphp/gush/issues/77',
+            $display
+        );
+
+        $issue = $command->getIssueTracker()->getIssue(TestAdapter::ISSUE_NUMBER_CREATED);
+
+        $this->assertEquals(self::ISSUE_TITLE, $issue['title']);
+        $this->assertEquals(self::ISSUE_DESCRIPTION, $issue['body']);
     }
 
-    private function expectDialog()
+    public function testCreateIssueInteractive()
     {
-        $questionHelper = $this->getMock(
-            'Symfony\Component\Console\Helper\QuestionHelper',
-            ['ask']
+        $command = new IssueCreateCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getEditorHelper());
+            }
         );
-        $questionHelper->expects($this->at(0))
-            ->method('ask')
-            ->will($this->returnValue(self::ISSUE_TITLE))
+
+        $this->setExpectedCommandInput($command, [self::ISSUE_TITLE, self::ISSUE_DESCRIPTION]);
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Created issue https://github.com/gushphp/gush/issues/77',
+            $display
+        );
+
+        $issue = $command->getIssueTracker()->getIssue(TestAdapter::ISSUE_NUMBER_CREATED);
+
+        $this->assertEquals(self::ISSUE_TITLE, $issue['title']);
+        $this->assertEquals(self::ISSUE_DESCRIPTION, $issue['body']);
+    }
+
+    public function testCreateIssueInteractiveWithExternalEditor()
+    {
+        $command = new IssueCreateCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getEditorHelper(true));
+            }
+        );
+
+        $this->setExpectedCommandInput($command, [self::ISSUE_TITLE, 'e']);
+        $tester->execute();
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Created issue https://github.com/gushphp/gush/issues/77',
+            $display
+        );
+
+        $issue = $command->getIssueTracker()->getIssue(TestAdapter::ISSUE_NUMBER_CREATED);
+
+        $this->assertEquals(self::ISSUE_TITLE, $issue['title']);
+        $this->assertEquals(self::ISSUE_DESCRIPTION, $issue['body']);
+    }
+
+    private function getEditorHelper($useEditor = false)
+    {
+        $editor = $this->getMockBuilder('Gush\Helper\EditorHelper')
+            ->disableOriginalConstructor()
+            ->setMethods(['fromString'])
+            ->getMock()
         ;
 
-        return $questionHelper;
-    }
-
-    private function expectEditor()
-    {
-        $editor = $this->getMock(
-            'Gush\Helper\EditorHelper',
-            ['fromString']
-        );
-        $editor->expects($this->at(0))
+        $editor->expects($useEditor ? $this->once() : $this->never())
             ->method('fromString')
             ->will($this->returnValue(self::ISSUE_DESCRIPTION))
         ;

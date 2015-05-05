@@ -11,10 +11,10 @@
 
 namespace Gush\Subscriber;
 
-use Gush\Event\CommandEvent;
+use Gush\Command\BaseCommand;
 use Gush\Event\GushEvents;
 use Gush\Feature\TableFeature;
-use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -35,8 +35,9 @@ class TableSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function decorateDefinition(CommandEvent $event)
+    public function decorateDefinition(ConsoleCommandEvent $event)
     {
+        /** @var TableFeature|BaseCommand $command */
         $command = $event->getCommand();
 
         if ($command instanceof TableFeature) {
@@ -64,25 +65,25 @@ class TableSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function initialize(ConsoleEvent $event)
+    public function initialize(ConsoleCommandEvent $event)
     {
         $command = $event->getCommand();
 
-        if ($command instanceof TableFeature) {
-            $input = $event->getInput();
-            $layout = $input->getOption('table-layout');
+        if (!$command instanceof TableFeature) {
+            return;
+        }
 
-            if ($layout) {
-                if (!in_array($layout, $this->validLayouts)) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            'The table-layout option must be passed one of "%s" but was given "%s"',
-                            implode(', ', $this->validLayouts),
-                            $layout
-                        )
-                    );
-                }
-            }
+        $input = $event->getInput();
+        $layout = $input->getOption('table-layout');
+
+        if ($layout && !in_array($layout, $this->validLayouts, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The table-layout option must be passed one of "%s" but was given "%s"',
+                    implode(', ', $this->validLayouts),
+                    $layout
+                )
+            );
         }
     }
 }

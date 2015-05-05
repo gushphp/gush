@@ -12,19 +12,22 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestListCommand;
-use Gush\Tests\Command\BaseTestCase;
-use Gush\Tests\Fixtures\OutputFixtures;
+use Gush\Tests\Command\CommandTestCase;
 
-class PullRequestListCommandTest extends BaseTestCase
+class PullRequestListCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function lists_pull_requests()
+    public function testListsPullRequests()
     {
         $tester = $this->getCommandTester(new PullRequestListCommand());
-        $tester->execute(['--org' => 'gushphp', '--repo' => 'gush'], ['interactive' => false]);
+        $tester->execute();
 
-        $this->assertEquals(trim(OutputFixtures::PULL_REQUEST_LIST), trim($tester->getDisplay(true)));
+        $this->assertCommandOutputMatches('1 pull request(s)', $tester->getDisplay());
+        $this->assertTableOutputMatches(
+            ['ID', 'Title', 'State', 'Created', 'User', 'Link'],
+            [
+                ['17', 'New feature added', 'Open', '2014-04-14 17:24', 'pierredup', 'https://github.com/gushphp/gush/pull/17'],
+            ],
+            $tester->getDisplay()
+        );
     }
 }

@@ -12,35 +12,26 @@
 namespace Gush\Command\Core;
 
 use Gush\Command\BaseCommand;
+use Gush\Config;
+use Gush\ConfigFactory;
+use Gush\Helper\GitHelper;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class InitCommand extends BaseCommand
 {
     /**
-     * {@inheritdoc}
+     * Configures the current command.
+     *
+     * Actual options are configured by the CoreInitSubscriber.
      */
     protected function configure()
     {
         $this
             ->setName('core:init')
             ->setDescription('Configures a local .gush.yml config file')
-            ->addOption(
-                'adapter',
-                'a',
-                InputOption::VALUE_OPTIONAL,
-                'What repository-manager adapter should be used? (github, bitbucket, gitlab)'
-            )
-            ->addOption(
-                'issue-tracker',
-                'it',
-                InputOption::VALUE_OPTIONAL,
-                'What issue-tracker adapter should be used? (jira, github, bitbucket, gitlab)'
-            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> creates .gush.yml file that Gush will use for project in current directory:
@@ -58,19 +49,52 @@ EOF
         $styleHelper = $this->getHelper('gush_style');
         $adapters = $this->getAdapters();
 
-        if (null === $input->getOption('adapter')) {
-            $input->setOption(
-                'adapter',
-                $styleHelper->numberedChoice('Choose repository-manager', $adapters[0])
-            );
-        }
+        $input->setOption(
+            'repo-adapter',
+            $styleHelper->numberedChoice(
+                'Choose repository-manager',
+                $adapters[0],
+                GitHelper::undefinedToDefault($input->getOption('repo-adapter'))
+            )
+        );
 
-        if (null === $input->getOption('issue-tracker')) {
-            $input->setOption(
-                'issue-tracker',
-                $styleHelper->numberedChoice('Choose issue-tracker', $adapters[1])
-            );
-        }
+        $input->setOption(
+            'issue-adapter',
+            $styleHelper->numberedChoice(
+                'Choose issue-tracker',
+                $adapters[1],
+                GitHelper::undefinedToDefault($input->getOption('issue-adapter'))
+            )
+        );
+
+        $input->setOption(
+            'org',
+            $styleHelper->ask(
+                'Specify the repository organization name',
+                GitHelper::undefinedToDefault($input->getOption('org'))
+            )
+        );
+
+        $input->setOption(
+            'repo',
+            $styleHelper->ask('Specify the repository name', GitHelper::undefinedToDefault($input->getOption('repo')))
+        );
+
+        $input->setOption(
+            'issue-org',
+            $styleHelper->ask(
+                'Specify the issue-tracker organization name',
+                GitHelper::undefinedToDefault($input->getOption('issue-org'), $input->getOption('org'))
+            )
+        );
+
+        $input->setOption(
+            'issue-project',
+            $styleHelper->ask(
+                'Specify the issue-tracker repository/project name',
+                GitHelper::undefinedToDefault($input->getOption('issue-project'), $input->getOption('repo'))
+            )
+        );
     }
 
     /**
@@ -82,7 +106,6 @@ EOF
         $application = $this->getApplication();
 
         $config = $application->getConfig();
-        $filename = $config->get('local_config');
         $valid = true;
 
         /** @var StyleHelper $styleHelper */
@@ -92,8 +115,14 @@ EOF
         $repositoryManagers = $adapters[0];
         $issueTrackers = $adapters[1];
 
-        $repositoryManager = $input->getOption('adapter');
-        $issueTracker = $input->getOption('issue-tracker');
+        $repositoryManager = GitHelper::undefinedToDefault($input->getOption('repo-adapter'));
+        $issueTracker = GitHelper::undefinedToDefault($input->getOption('issue-adapter'));
+
+        $org = GitHelper::undefinedToDefault($input->getOption('org'));
+        $repo = GitHelper::undefinedToDefault($input->getOption('repo'));
+
+        $issueOrg = GitHelper::undefinedToDefault($input->getOption('issue-org'), $org);
+        $issueRepo = GitHelper::undefinedToDefault($input->getOption('issue-project'), $repo);
 
         $this->validateAdapter($repositoryManager, $repositoryManagers, 'Repository-manager', $valid);
         $this->validateAdapter($issueTracker, $issueTrackers, 'Issue-tracker', $valid);
@@ -105,7 +134,6 @@ EOF
         $this->checkAdapterConfigured(
             $repositoryManager,
             $repositoryManagers[$repositoryManager],
-            'adapters',
             'Repository-manager',
             $valid
         );
@@ -113,7 +141,6 @@ EOF
         $this->checkAdapterConfigured(
             $issueTracker,
             $issueTrackers[$issueTracker],
-            'issue_trackers',
             'Issue-tracker',
             $valid
         );
@@ -134,19 +161,17 @@ EOF
         }
 
         $params = [
-            'adapter' => $repositoryManager,
+            'repo_adapter' => $repositoryManager,
             'issue_tracker' => $issueTracker,
+            'repo_org' => $org,
+            'repo_name' => $repo,
+            'issue_project_org' => $issueOrg,
+            'issue_project_name' => $issueRepo,
         ];
 
-        if (file_exists($filename)) {
-            $params = array_merge(Yaml::parse(file_get_contents($filename)), $params);
-        }
+        $config->merge($params, Config::CONFIG_LOCAL);
 
-        if (!@file_put_contents($filename, Yaml::dump($params), 0644)) {
-            $styleHelper->error(
-                'Configuration file cannot be saved, make sure you have write access in the current working directory.'
-            );
-        }
+        ConfigFactory::dumpToFile($config, Config::CONFIG_LOCAL);
 
         $styleHelper->success('Configuration file saved successfully.');
 
@@ -169,13 +194,13 @@ EOF
         }
     }
 
-    private function checkAdapterConfigured($selected, $label, $pathType, $typeLabel, &$valid)
+    private function checkAdapterConfigured($selected, $label, $typeLabel, &$valid)
     {
         /** @var \Gush\Application $application */
         $application = $this->getApplication();
         $config = $application->getConfig();
 
-        if (!$config->has(sprintf('[%s][%s]', $pathType, $selected))) {
+        if (!$config->has(['adapters', $selected])) {
             $this->getHelper('gush_style')->note(
                 sprintf('%s "%s" is not configured yet.', $typeLabel, $label)
             );

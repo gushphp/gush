@@ -12,33 +12,29 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueAssignCommand;
-use Gush\Tester\Adapter\TestAdapter;
-use Gush\Tests\Command\BaseTestCase;
+use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 
-class IssueAssignCommandTest extends BaseTestCase
+class IssueAssignCommandTest extends CommandTestCase
 {
-    /**
-     * @test
-     */
-    public function assigns_issue()
+    public function testAssignsIssue()
     {
-        $tester = $this->getCommandTester($command = new IssueAssignCommand());
+        $tester = $this->getCommandTester(new IssueAssignCommand());
         $tester->execute(
             [
-                '--org' => 'gushphp',
-                '--repo' => 'gush',
                 'issue_number' => TestAdapter::ISSUE_NUMBER,
                 'username' => 'cordoval',
-            ],
-            ['interactive' => false]
+            ]
         );
 
-        $this->assertEquals(
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
             sprintf(
-                '[OK] Issue https://github.com/gushphp/gush/issues/%s was assigned to cordoval!',
+                'Issue https://github.com/gushphp/gush/issues/%s is now assigned to cordoval!',
                 TestAdapter::ISSUE_NUMBER
             ),
-            trim($tester->getDisplay(true))
+            $display
         );
     }
 }
