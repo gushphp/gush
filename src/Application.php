@@ -49,12 +49,12 @@ class Application extends BaseApplication
     const MANIFESTO_FILE_URL = 'http://gushphp.org/manifest.json';
 
     const GUSH_LOGO = <<<LOGO
-   _____ _    _  _____ _    _
-  / ____| |  | |/ ____| |  | |
- | |  __| |  | | (___ | |__| |
- | | |_ | |  | |\___ \|  __  |
- | |__| | |__| |____) | |  | |
-  \_____|\____/|_____/|_|  |_|
+   _____ _    _  _____ _    _       ____________
+  / ____| |  | |/ ____| |  | |     |__   __   __|
+ | |  __| |  | | (___ | |__| |        | |  | |
+ | | |_ | |  | |\___ \|  __  |        | |  | |
+ | |__| | |__| |____) | |  | |      __| |__| |__
+  \_____|\____/|_____/|_|  |_|     |____________|
 
 LOGO;
 
@@ -344,7 +344,7 @@ LOGO;
             new Cmd\Issue\LabelIssuesCommand(),
             new Cmd\Branch\BranchPushCommand(),
             new Cmd\Branch\BranchSyncCommand(),
-            new CommandAdapter(new MozartCommand($branchDeleteConfig), $this),
+            new CommandAdapter(new MozartCommand(new Cmd\Handler\BranchDeleteCommandConfig()), $this),
             new Cmd\Branch\BranchForkCommand(),
             new Cmd\Branch\BranchChangelogCommand(),
             new Cmd\Branch\BranchRemoteAddCommand(),
