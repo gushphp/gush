@@ -269,14 +269,13 @@ LOGO;
         $event = new ConsoleCommandEvent($command, $input, $output);
         $this->dispatcher->dispatch(ConsoleEvents::COMMAND, $event);
 
-        $exitCode = 0;
-
         try {
             $exitCode = $command->run($input, $output);
         } catch (\Exception $e) {
-            $exitCode = $e->getCode();
+            $event = new ConsoleTerminateEvent($command, $input, $output, $e->getCode());
+            $this->dispatcher->dispatch(ConsoleEvents::TERMINATE, $event);
 
-            $event = new ConsoleExceptionEvent($command, $input, $output, $e, $e->getCode());
+            $event = new ConsoleExceptionEvent($command, $input, $output, $e, $event->getExitCode());
             $this->dispatcher->dispatch(ConsoleEvents::EXCEPTION, $event);
 
             if ($e instanceof UserException) {
@@ -285,15 +284,17 @@ LOGO;
                 if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
                     throw $e;
                 }
+
+                return $event->getExitCode();
             } else {
                 throw $event->getException();
             }
-        } finally {
-            $event = new ConsoleTerminateEvent($command, $input, $output, $exitCode);
-            $this->dispatcher->dispatch(ConsoleEvents::TERMINATE, $event);
         }
 
-        return $exitCode;
+        $event = new ConsoleTerminateEvent($command, $input, $output, $exitCode);
+        $this->dispatcher->dispatch(ConsoleEvents::TERMINATE, $event);
+
+        return $event->getExitCode();
     }
 
     /**
