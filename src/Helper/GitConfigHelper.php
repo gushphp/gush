@@ -12,6 +12,7 @@
 namespace Gush\Helper;
 
 use Gush\Application;
+use Gush\Util\StringUtil;
 use Symfony\Component\Console\Helper\Helper;
 
 class GitConfigHelper extends Helper
@@ -101,13 +102,14 @@ class GitConfigHelper extends Helper
      *
      * @return string
      */
-    public function getGitConfig($config, $section = 'local')
+    public function getGitConfig($config, $section = 'local', $all = false)
     {
         return trim(
             $this->processHelper->runCommand(
                 sprintf(
-                    'git config --%s --get %s',
+                    'git config --%s --%s %s',
                     $section,
+                    $all ? 'get-all' : 'get',
                     $config
                 ),
                 true
@@ -163,6 +165,28 @@ class GitConfigHelper extends Helper
             );
 
             $this->setRemote($org, $pushUrl, $pushUrl);
+        }
+    }
+
+    /**
+     * Ensures the fetching of notes is configured for the remote.
+     *
+     * @param string $remote
+     */
+    public function ensureNotesFetching($remote)
+    {
+        $fetches = StringUtil::splitLines(
+            $this->getGitConfig('remote.'.$remote.'.fetch', 'local', true)
+        );
+
+        if (!in_array('+refs/notes/*:refs/notes/*', $fetches, true)) {
+            $this->getHelperSet()->get('gush_style')->note(
+                sprintf('Set fetching of notes for remote "%s".', $remote)
+            );
+
+            $this->processHelper->runCommand(
+                ['git', 'config', '--add', '--local', 'remote.'.$remote.'.fetch', '+refs/notes/*:refs/notes/*']
+            );
         }
     }
 

@@ -156,6 +156,8 @@ EOF
             $mergeOperation->pushToRemote();
 
             if (!$input->getOption('no-comments')) {
+                $gitConfigHelper->ensureNotesFetching($targetRemote);
+
                 $this->addCommentsToMergeCommit(
                     $adapter->getComments($prNumber),
                     $mergeCommit,
