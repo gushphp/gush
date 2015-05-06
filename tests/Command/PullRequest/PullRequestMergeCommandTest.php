@@ -140,6 +140,7 @@ OET;
             null,
             null,
             function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitConfigHelper(false)->reveal());
                 $helperSet->set(
                     $this->getLocalGitHelper(
                         sprintf($this->mergeMessage, 'merge', 10),
@@ -283,7 +284,7 @@ OET;
             null,
             array_merge(CommandTestCase::$localConfig, ['pr_type' => ['security', 'feature', 'bug']]),
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getGitConfigHelper()->reveal());
+                $helperSet->set($this->getGitConfigHelper(false)->reveal());
                 $helperSet->set($this->getLocalGitHelper(null, false, false, null, false)->reveal());
             }
         );
@@ -301,13 +302,15 @@ OET;
         );
     }
 
-    protected function getGitConfigHelper($expected = true)
+    protected function getGitConfigHelper($notes = true)
     {
         $helper = parent::getGitConfigHelper();
 
-        if ($expected) {
-            $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled(); // base
-            $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled(); // source
+        $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled(); // base
+        $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled(); // source
+
+        if ($notes) {
+            $helper->ensureNotesFetching('gushphp')->shouldBeCalled();
         }
 
         return $helper;
