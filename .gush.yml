@@ -12,7 +12,7 @@ pr_type:
 table-pr:
     fixed_tickets: ['Fixed Tickets', '']
     license: [License, MIT]
-base: 1.0
+base: '1.0'
 repo_adapter: github
 issue_tracker: github
 repo_org: gushphp
