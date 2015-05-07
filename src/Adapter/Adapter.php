@@ -246,18 +246,6 @@ interface Adapter
     public function getPullRequestCommits($id);
 
     /**
-     * Merges a pull-request by id.
-     *
-     * @param int    $id
-     * @param string $message
-     *
-     * @return string sha1 of the merge commit
-     *
-     * @throws AdapterException when merging failed
-     */
-    public function mergePullRequest($id, $message);
-
-    /**
      * Updates the state of a pull-request by id.
      *
      * @param int   $id
