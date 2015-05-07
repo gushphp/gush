@@ -46,25 +46,9 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function isAuthenticated()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function authenticate()
     {
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTokenGenerationUrl()
-    {
-        return null;
     }
 
     /**

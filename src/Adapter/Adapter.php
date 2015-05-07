@@ -37,23 +37,6 @@ interface Adapter
     public function authenticate();
 
     /**
-     * Returns true if the adapter is authenticated, false otherwise.
-     *
-     * @return bool
-     */
-    public function isAuthenticated();
-
-    /**
-     * Returns the URL for generating a token.
-     *
-     * If the adapter doesn't support tokens,
-     * this will return null instead.
-     *
-     * @return null|string
-     */
-    public function getTokenGenerationUrl();
-
-    /**
      * Creates a fork from upstream and returns an array
      * with the forked url e.g. 'git@github.com:cordoval/repoName.git'
      *
@@ -244,18 +227,6 @@ interface Adapter
      *                          or if the pull request does not exist (anymore)
      */
     public function getPullRequestCommits($id);
-
-    /**
-     * Merges a pull-request by id.
-     *
-     * @param int    $id
-     * @param string $message
-     *
-     * @return string sha1 of the merge commit
-     *
-     * @throws AdapterException when merging failed
-     */
-    public function mergePullRequest($id, $message);
 
     /**
      * Updates the state of a pull-request by id.
