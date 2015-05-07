@@ -196,8 +196,6 @@ EOF
             $adapter = $factory->createIssueTracker($name, $config, $this->getConfig());
         }
 
-        $adapter->authenticate();
-
-        return $adapter->isAuthenticated();
+        return $adapter->authenticate();
     }
 }

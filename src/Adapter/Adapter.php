@@ -37,23 +37,6 @@ interface Adapter
     public function authenticate();
 
     /**
-     * Returns true if the adapter is authenticated, false otherwise.
-     *
-     * @return bool
-     */
-    public function isAuthenticated();
-
-    /**
-     * Returns the URL for generating a token.
-     *
-     * If the adapter doesn't support tokens,
-     * this will return null instead.
-     *
-     * @return null|string
-     */
-    public function getTokenGenerationUrl();
-
-    /**
      * Creates a fork from upstream and returns an array
      * with the forked url e.g. 'git@github.com:cordoval/repoName.git'
      *
