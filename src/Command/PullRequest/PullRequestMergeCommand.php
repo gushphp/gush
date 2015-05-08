@@ -46,6 +46,12 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
                 'Avoid adding PR comments to the merge commit message'
             )
             ->addOption(
+                'fast-forward',
+                'ff',
+                InputOption::VALUE_NONE,
+                'Merge pull-request using fast forward (no merge commit will be created)'
+            )
+            ->addOption(
                 'squash',
                 null,
                 InputOption::VALUE_NONE,
@@ -91,6 +97,14 @@ like "development" you can use <comment>--switch</comment> to change the base wh
 
     <info>$ gush %command.name% --switch=development 12</info>
 
+Pull-requests are merged as non fast-forward, which means a merge-commit (or merge bubble) is
+created when merging. But sometimes you would rather want to merge without creating a merge bubble.
+
+To merge a pull-request as fast-forward (no merge-commit) use the <comment>--fast-forward</comment>
+option. Note that no merge-message is available and the changes are merged as if they were created in
+the target branch directly!
+
+    <info>$ gush %command.name% --fast-forward 12</info>
 EOF
             )
         ;
@@ -151,11 +165,12 @@ EOF
             $mergeOperation->squashCommits($squash, $input->getOption('force-squash'));
             $mergeOperation->switchBase($input->getOption('switch'));
             $mergeOperation->setMergeMessage($messageCallback);
+            $mergeOperation->useFastForward($input->getOption('fast-forward'));
 
             $mergeCommit = $mergeOperation->performMerge();
             $mergeOperation->pushToRemote();
 
-            if (!$input->getOption('no-comments')) {
+            if (!$input->getOption('no-comments') && !$input->getOption('fast-forward')) {
                 $gitConfigHelper->ensureNotesFetching($targetRemote);
 
                 $this->addCommentsToMergeCommit(
@@ -302,9 +317,7 @@ EOF
         $types = $config->get('pr_type');
 
         if (null === $prType) {
-            return $this->getHelper('gush_style')->askQuestion(
-                new ChoiceQuestion('Choose the type of the pull request: ', $types)
-            );
+            return $this->getHelper('gush_style')->choice('Choose the type of the pull request', $types);
         }
 
         if (!in_array($prType, $types, true)) {

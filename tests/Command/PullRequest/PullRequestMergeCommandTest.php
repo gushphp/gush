@@ -257,6 +257,37 @@ OET;
         $this->assertCommandOutputMatches(sprintf(self::COMMAND_SWITCH_BASE, 'develop'), $display);
     }
 
+    public function testMergePullRequestWithFastForward()
+    {
+        $command = new PullRequestMergeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitConfigHelper(false)->reveal());
+                $helperSet->set(
+                    $this->getLocalGitHelper(
+                        sprintf($this->mergeMessage, 'merge', 10, 'develop'),
+                        false,
+                        false,
+                        null,
+                        false,
+                        true
+                    )->reveal()
+                );
+            }
+        );
+
+        $tester->execute(
+            ['pr_number' => 10, '--fast-forward' => true, 'pr_type' => 'merge'],
+            ['interactive' => false]
+        );
+
+        $display = $tester->getDisplay();
+        $this->assertCommandOutputMatches(sprintf(self::COMMAND_DISPLAY, 'develop'), $display);
+    }
+
     public function testMergePullRequestInteractiveTypeAsk()
     {
         $command = new PullRequestMergeCommand();
@@ -316,7 +347,7 @@ OET;
         return $helper;
     }
 
-    private function getLocalGitHelper($message = null, $squash = false, $forceSquash = false, $switch = null, $withComments = true)
+    private function getLocalGitHelper($message = null, $squash = false, $forceSquash = false, $switch = null, $withComments = true, $fastForward = false)
     {
         $helper = parent::getGitHelper();
 
@@ -332,6 +363,7 @@ OET;
             $mergeOperation->setSource('cordoval', 'head_ref')->shouldBeCalled();
             $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();
             $mergeOperation->switchBase($switch)->shouldBeCalled();
+            $mergeOperation->useFastForward($fastForward)->shouldBeCalled();
             $mergeOperation->setMergeMessage(
                 Argument::that(
                     function ($closure) use ($message, $switch) {
