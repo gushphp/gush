@@ -14,6 +14,10 @@ namespace Gush;
 use Gush\Adapter\Adapter;
 use Gush\Adapter\IssueTracker;
 use Gush\Command as Cmd;
+
+use Gush\Command\Handler\BranchDeleteCommandHandler;
+use Gush\Event\GushEvents;
+
 use Gush\Exception\UserException;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper as Helpers;
@@ -36,17 +40,21 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+use Symfony\Component\Process\ProcessBuilder;
+use Webmozart\Console\Adapter\CommandAdapter;
+use Webmozart\Console\Api\Command\Command as MozartCommand;
+
 class Application extends BaseApplication
 {
     const MANIFESTO_FILE_URL = 'http://gushphp.org/manifest.json';
 
     const GUSH_LOGO = <<<LOGO
-   _____ _    _  _____ _    _
-  / ____| |  | |/ ____| |  | |
- | |  __| |  | | (___ | |__| |
- | | |_ | |  | |\___ \|  __  |
- | |__| | |__| |____) | |  | |
-  \_____|\____/|_____/|_|  |_|
+   _____ _    _  _____ _    _       ____________
+  / ____| |  | |/ ____| |  | |     |__   __   __|
+ | |  __| |  | | (___ | |__| |        | |  | |
+ | | |_ | |  | |\___ \|  __  |        | |  | |
+ | |__| | |__| |____) | |  | |      __| |__| |__
+  \_____|\____/|_____/|_|  |_|     |____________|
 
 LOGO;
 
@@ -339,7 +347,7 @@ LOGO;
             new Cmd\Issue\LabelIssuesCommand(),
             new Cmd\Branch\BranchPushCommand(),
             new Cmd\Branch\BranchSyncCommand(),
-            new Cmd\Branch\BranchDeleteCommand(),
+            new CommandAdapter(new MozartCommand(new Cmd\Handler\BranchDeleteCommandConfig()), $this),
             new Cmd\Branch\BranchForkCommand(),
             new Cmd\Branch\BranchChangelogCommand(),
             new Cmd\Branch\BranchRemoteAddCommand(),
