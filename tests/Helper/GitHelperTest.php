@@ -150,6 +150,29 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 
         $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
 
-        $this->assertEquals($hash, $this->unitGit->mergeBranch($base, $sourceBranch, $this->realFsHelper, $message));
+        $this->assertEquals($hash, $this->unitGit->mergeBranch($base, $sourceBranch, $message));
+    }
+
+    /**
+     * @test
+     */
+    public function merges_remote_branch_fast_forward_in_clean_wc()
+    {
+        $base = 'master';
+        $sourceBranch = 'amazing-feature';
+
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $processHelper->runCommand('git status --porcelain --untracked-files=no')->willReturn("\n");
+        $processHelper->runCommand('git rev-parse --abbrev-ref HEAD')->willReturn('master');
+        $processHelper->runCommand(['git', 'checkout', 'master'])->shouldBeCalled();
+        $processHelper->runCommand(['git', 'merge', '--ff', 'amazing-feature'])->shouldBeCalled();
+
+        $this->assertNull($this->unitGit->mergeBranch($base, $sourceBranch, null, true));
     }
 }

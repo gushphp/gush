@@ -334,20 +334,27 @@ class GitHelper extends Helper
      * @param string $base          The base branch name
      * @param string $sourceBranch  The source branch name
      * @param string $commitMessage Commit message to use for the merge-commit
+     * @param bool   $fastForward   Perform merge using fast-forward (default false)
      *
-     * @return string Thew merge-commit hash
+     * @return string|null The merge-commit hash or null when fast-forward was used
      *
      * @throws WorkingTreeIsNotReady
      */
-    public function mergeBranch($base, $sourceBranch, $commitMessage)
+    public function mergeBranch($base, $sourceBranch, $commitMessage, $fastForward = false)
     {
         $this->guardWorkingTreeReady();
         $this->stashBranchName();
 
+        $this->checkout($base);
+
+        if ($fastForward) {
+            $this->processHelper->runCommand(['git', 'merge', '--ff', $sourceBranch]);
+
+            return null;
+        }
+
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
-
-        $this->checkout($base);
 
         $this->processHelper->runCommands(
             [
