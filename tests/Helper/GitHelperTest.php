@@ -138,7 +138,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $processHelper->runCommands(
             [
                 [
-                    'line' => ['git', 'merge', '--no-ff', '--no-commit', 'amazing-feature'],
+                    'line' => ['git', 'merge', '--no-ff', '--no-commit', '--no-log', 'amazing-feature'],
                     'allow_failures' => false,
                 ],
                 [

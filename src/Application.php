@@ -338,6 +338,7 @@ LOGO;
             new Cmd\Issue\IssueListCommand(),
             new Cmd\Issue\LabelIssuesCommand(),
             new Cmd\Branch\BranchPushCommand(),
+            new Cmd\Branch\BranchMergeCommand(),
             new Cmd\Branch\BranchSyncCommand(),
             new Cmd\Branch\BranchDeleteCommand(),
             new Cmd\Branch\BranchForkCommand(),
