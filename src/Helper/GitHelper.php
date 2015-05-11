@@ -336,7 +336,7 @@ class GitHelper extends Helper
      * @param string $commitMessage Commit message to use for the merge-commit
      * @param bool   $fastForward   Perform merge using fast-forward (default false)
      *
-     * @return string|null The merge-commit hash or null when fast-forward was used
+     * @return null|string The merge-commit hash or null when fast-forward was used
      *
      * @throws WorkingTreeIsNotReady
      */
@@ -359,7 +359,7 @@ class GitHelper extends Helper
         $this->processHelper->runCommands(
             [
                 [
-                    'line' => ['git', 'merge', '--no-ff', '--no-commit', $sourceBranch],
+                    'line' => ['git', 'merge', '--no-ff', '--no-commit', '--no-log', $sourceBranch],
                     'allow_failures' => false,
                 ],
                 [
@@ -368,6 +368,49 @@ class GitHelper extends Helper
                 ],
             ]
         );
+
+        return trim($this->processHelper->runCommand('git rev-parse HEAD'));
+    }
+
+    /**
+     * Same as mergeBranch() but appends a commits log to the merge message.
+     *
+     * @param string $base              The base branch name
+     * @param string $sourceBranch      The source branch name
+     * @param string $commitMessage     Commit message to use for the merge-commit
+     * @param string $sourceBranchLabel Actual branch (to use as replacement for the log)
+     *                                  Else the temp-branch name is used.
+     *
+     * @return string The merge-commit hash
+     *
+     * @throws WorkingTreeIsNotReady
+     */
+    public function mergeBranchWithLog($base, $sourceBranch, $commitMessage, $sourceBranchLabel = null)
+    {
+        $this->guardWorkingTreeReady();
+        $this->stashBranchName();
+
+        $this->checkout($base);
+
+        if (null === $sourceBranchLabel) {
+            $sourceBranchLabel = $sourceBranch;
+        }
+
+        $this->processHelper->runCommand(
+            ['git', 'merge', '--no-ff', '--log' , '--no-commit', $sourceBranch]
+        );
+
+        // Extract commits log
+        $commitMessage .= preg_replace(
+            '/^([^\n]+)\n\n\* ([^\n]+):/',
+            "\n\n* $sourceBranchLabel:",
+            file_get_contents(getcwd().'/.git/MERGE_MSG')
+        );
+
+        $tmpName = $this->filesystemHelper->newTempFilename();
+        file_put_contents($tmpName, $commitMessage);
+
+        $this->processHelper->runCommand(['git', 'commit', '-F', $tmpName]);
 
         return trim($this->processHelper->runCommand('git rev-parse HEAD'));
     }

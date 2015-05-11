@@ -30,6 +30,7 @@ class RemoteMergeOperation
     private $message;
     private $performed = false;
     private $fastForward = false;
+    private $withLog = false;
 
     public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper)
     {
@@ -68,9 +69,10 @@ class RemoteMergeOperation
         return $this;
     }
 
-    public function setMergeMessage($message)
+    public function setMergeMessage($message, $withLog = false)
     {
         $this->message = $message;
+        $this->withLog = $withLog;
 
         return $this;
     }
@@ -105,12 +107,22 @@ class RemoteMergeOperation
         $this->createBaseBranch();
 
         $tempSourceBranch = $this->createSourceBranch();
-        $mergeHash = $this->gitHelper->mergeBranch(
-            $this->targetBase,
-            $tempSourceBranch,
-            $this->message,
-            $this->fastForward
-        );
+
+        if ($this->withLog) {
+            $mergeHash = $this->gitHelper->mergeBranchWithLog(
+                $this->targetBase,
+                $tempSourceBranch,
+                $this->message,
+                $this->sourceBranch
+            );
+        } else {
+            $mergeHash = $this->gitHelper->mergeBranch(
+                $this->targetBase,
+                $tempSourceBranch,
+                $this->message,
+                $this->fastForward
+            );
+        }
 
         $this->gitHelper->restoreStashedBranch();
 
