@@ -260,8 +260,8 @@ EOF
         } catch (CannotSquashMultipleAuthors $e) {
             $this->getHelper('gush_style')->error(
                 [
-                    "Enable to squash commits when there are multiple authors.",
-                    "Use --force-squash to continue or ask the author to squash commits manually."
+                    'Unable to squash commits when there are multiple authors.',
+                    'Use --force-squash to continue or ask the author to squash commits manually.'
                 ]
             );
 
