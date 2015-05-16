@@ -12,6 +12,7 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -22,7 +23,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestSemVerCommand extends BaseCommand implements GitRepoFeature
+class PullRequestSemVerCommand extends BaseCommand implements GitRepoFeature, GitFolderFeature
 {
     /**
      * {@inheritdoc}

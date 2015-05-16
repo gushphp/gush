@@ -14,6 +14,7 @@ namespace Gush\Command\Util;
 use Gush\Adapter\GitHubAdapter;
 use Gush\Command\BaseCommand;
 use Gush\Exception\WorkingTreeIsNotReady;
+use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class FabbotIoCommand extends BaseCommand implements GitRepoFeature
+class FabbotIoCommand extends BaseCommand implements GitRepoFeature, GitFolderFeature
 {
     /**
      * {@inheritdoc}

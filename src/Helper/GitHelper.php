@@ -127,12 +127,21 @@ class GitHelper extends Helper
     }
 
     /**
+     * Returns whether the current working dir is a Git folder.
+     *
+     * @param bool $requireRoot Require folder is the root of the Git repository,
+     *                          default is true.
+     *
      * @return bool Whether we are inside a git folder or not
      */
-    public function isGitFolder()
+    public function isGitFolder($requireRoot = true)
     {
         try {
-            $this->processHelper->runCommand('git rev-parse', false, null, true);
+            $topFolder = $this->processHelper->runCommand(['git', 'rev-parse', '--show-toplevel']);
+
+            if ($requireRoot && str_replace('\\', '/', getcwd()) !== $topFolder) {
+                return false;
+            }
         } catch (\RuntimeException $e) {
             return false;
         }
