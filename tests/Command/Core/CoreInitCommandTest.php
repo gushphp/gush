@@ -355,7 +355,7 @@ class CoreInitCommandTest extends CommandTestCase
         $this->setExpectedException(
             UserException::class,
             sprintf(
-                'You can only run the "%s" command when you are in a Git directory',
+                'The "%s" command can only be executed from a the root of a Git repository.',
                 $command->getName()
             )
         );

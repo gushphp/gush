@@ -13,6 +13,7 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Config;
+use Gush\Feature\GitFolderFeature;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -20,7 +21,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueTakeCommand extends BaseCommand implements IssueTrackerRepoFeature
+class IssueTakeCommand extends BaseCommand implements IssueTrackerRepoFeature, GitFolderFeature
 {
     /**
      * {@inheritdoc}

@@ -14,6 +14,7 @@ namespace Gush\Command\PullRequest;
 use Gush\Command\BaseCommand;
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Exception\UserException;
+use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -23,7 +24,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature
+class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature, GitFolderFeature
 {
     /**
      * {@inheritdoc}

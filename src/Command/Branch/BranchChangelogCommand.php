@@ -12,13 +12,14 @@
 namespace Gush\Command\Branch;
 
 use Gush\Command\BaseCommand;
+use Gush\Feature\GitFolderFeature;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BranchChangelogCommand extends BaseCommand implements IssueTrackerRepoFeature
+class BranchChangelogCommand extends BaseCommand implements IssueTrackerRepoFeature, GitFolderFeature
 {
     /**
      * {@inheritdoc}

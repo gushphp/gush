@@ -12,6 +12,7 @@
 namespace Gush\Command\Util;
 
 use Gush\Command\BaseCommand;
+use Gush\Feature\GitFolderFeature;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\MetaHelper;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -20,7 +21,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class MetaHeaderCommand extends BaseCommand implements TemplateFeature
+class MetaHeaderCommand extends BaseCommand implements TemplateFeature, GitFolderFeature
 {
     /**
      * {@inheritdoc}
