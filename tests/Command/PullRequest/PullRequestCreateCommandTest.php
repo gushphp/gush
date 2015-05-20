@@ -321,7 +321,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
     {
         $helper = $this->getGitHelper();
 
-        $helper->getFirstCommitTitle('master', 'issue-145')->willReturn('some good title');
+        $helper->getFirstCommitTitle('gushphp/master', 'issue-145')->willReturn('some good title');
         $helper->getActiveBranchName()->willReturn('issue-145');
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
