@@ -174,11 +174,11 @@ final class Config
     /**
      * Returns a config value.
      *
-     * @param string|string[]             $keys     Single level key like 'adapters' or array-path
-     *                                              like ['adapters', 'github']
-     * @param string                      $type     Either Config::CONFIG_SYSTEM Config::CONFIG_LOCAL
-     *                                              or Config::CONFIG_ALL
-     * @param string|int|float|bool|array $default  Default value to use when no config is found (null)
+     * @param string|string[]             $keys    Single level key like 'adapters' or array-path
+     *                                             like ['adapters', 'github']
+     * @param string                      $type    Either Config::CONFIG_SYSTEM Config::CONFIG_LOCAL
+     *                                             or Config::CONFIG_ALL
+     * @param string|int|float|bool|array $default Default value to use when no config is found (null)
      *
      * @return string|int|float|bool|array
      */
@@ -208,11 +208,11 @@ final class Config
     /**
      * Returns the first none-null configuration value.
      *
-     * @param string[] $keys                        Array of single level keys like "adapters" or property-path
-     *                                              "[adapters][github]" to check
-     * @param string                      $type     Either Config::CONFIG_SYSTEM Config::CONFIG_LOCAL
-     *                                              or Config::CONFIG_ALL
-     * @param string|int|float|bool|array $default  Default value to use when no config is found (null)
+     * @param string[]                    $keys    Array of single level keys like "adapters" or property-path
+     *                                             "[adapters][github]" to check
+     * @param string                      $type    Either Config::CONFIG_SYSTEM Config::CONFIG_LOCAL
+     *                                             or Config::CONFIG_ALL
+     * @param string|int|float|bool|array $default Default value to use when no config is found (null)
      *
      * @return string|int|float|bool|array
      */

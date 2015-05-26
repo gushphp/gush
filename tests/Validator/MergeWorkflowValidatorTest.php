@@ -190,7 +190,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-     public function testBranchRestrictionsDeniesAccessForUnknownBranchWithPolicyDeny()
+    public function testBranchRestrictionsDeniesAccessForUnknownBranchWithPolicyDeny()
     {
         $restrictions = [
             'master' => ['master', 'develop'],
