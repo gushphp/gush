@@ -78,8 +78,8 @@ class CommandTestCase extends BaseTestCase
     /**
      * @param Command $command
      *
-     * @param array|null $systemConfig
-     * @param array|null $localConfig
+     * @param array|null    $systemConfig
+     * @param array|null    $localConfig
      * @param \Closure|null $helperSetManipulator
      *
      * @return CommandTester

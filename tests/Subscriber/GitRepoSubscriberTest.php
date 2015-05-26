@@ -304,9 +304,9 @@ class GitRepoSubscriberTest extends BaseTestCase
     }
 
     /**
-     * @param BaseCommand $command
-     * @param array          $input
-     * @param array          $localConfig
+     * @param BaseCommand   $command
+     * @param array         $input
+     * @param array         $localConfig
      * @param \Closure|null $helperSetManipulator
      *
      * @return CommandTester
