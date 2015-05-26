@@ -156,7 +156,7 @@ EOF
         );
         $styleHelper->newLine();
 
-        $this->guardRemoteBranchExist($sourceOrg, $sourceRepo, $sourceBranch, $input, $styleHelper);
+        $this->guardRemoteBranchExist($sourceOrg, $sourceRepo, $sourceBranch, $styleHelper);
 
         $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($org.'/'.$base, $sourceBranch);
 
@@ -197,7 +197,7 @@ EOF
         return self::COMMAND_SUCCESS;
     }
 
-    private function guardRemoteBranchExist($org, $repo, $branch, InputInterface $input, StyleHelper $styleHelper)
+    private function guardRemoteBranchExist($org, $repo, $branch, StyleHelper $styleHelper)
     {
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
@@ -213,36 +213,12 @@ EOF
         if ($gitHelper->branchExists($branch)) {
             $gitConfigHelper->ensureRemoteExists($org, $repo);
 
-            // This ensures the connection is possible, but does not ensure access is granted.
             $gitHelper->remoteUpdate($org);
+            $gitHelper->pushToRemote($org, $branch, true);
 
-            if (!$input->isInteractive()) {
-                $gitHelper->pushToRemote($org, $branch, true);
+            $styleHelper->note(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
 
-                $styleHelper->success(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
-
-                return ;
-            } else {
-                $styleHelper->note(
-                    [
-                        sprintf(
-                            'Branch "%s" does not exist in "%s/%s", but it does exist locally.',
-                            $branch,
-                            $org,
-                            $repo
-                        ),
-                        'You can push the branch now, but make sure you have push access and that your SSH agent is active.'
-                    ]
-                );
-
-                if ($styleHelper->confirm('Do you want to push the branch now?', true)) {
-                    $gitHelper->pushToRemote($org, $branch, true);
-
-                    $styleHelper->success(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
-
-                    return;
-                }
-            }
+            return ;
         }
 
         throw new UserException(

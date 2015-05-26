@@ -207,7 +207,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         $this->assertEquals('issue-145', $pr['head']['ref']);
     }
 
-    public function testOpenPullRequestAutoAskToPushMissingBranch()
+    public function testOpenPullRequestAutoPushMissingBranch()
     {
         $command = new PullRequestCreateCommand();
         $tester = $this->getCommandTester(
@@ -221,53 +221,14 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
 
         // use the default title
-        $this->setExpectedCommandInput($command, "yes\n\nMy description\n");
-
-        $tester->execute(
-            [
-                '--template' => 'default',
-                '--source-org' => 'someone',
-            ]
-        );
-
-        $display = $tester->getDisplay();
-
-        $this->assertCommandOutputMatches(
-            [
-                'This pull-request will be opened on "gushphp/gush".',
-                'The source branch is "issue-145" on "someone".',
-                'Branch "issue-145" does not exist in "someone/gush", but it does exist locally.',
-                'Branch "issue-145" was pushed to "someone".',
-                'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
-            ],
-            $display
-        );
-
-        $pr = $command->getAdapter()->getPullRequest(TestAdapter::PULL_REQUEST_NUMBER);
-
-        $this->assertEquals('some good title', $pr['title']);
-        $this->assertContains('My description', $pr['body']);
-    }
-
-    public function testOpenPullRequestAutoToPushMissingBranchWhenNonInteractive()
-    {
-        $command = new PullRequestCreateCommand();
-        $tester = $this->getCommandTester(
-            $command,
-            null,
-            null,
-            function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('someone')->reveal());
-                $helperSet->set($this->getGitConfigHelper(true, 'someone')->reveal());
-            }
-        );
+        $this->setExpectedCommandInput($command, "\nMy description\n");
 
         $tester->execute(
             [
                 '--template' => 'default',
                 '--source-org' => 'someone',
             ],
-            ['interactive' => false]
+            ['interactive' => true]
         );
 
         $display = $tester->getDisplay();
@@ -312,8 +273,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
                 '--template' => 'default',
                 '--source-org' => 'someone',
                 '--source-branch' => 'not-my-branch',
-            ],
-            ['interactive' => false]
+            ]
         );
     }
 
