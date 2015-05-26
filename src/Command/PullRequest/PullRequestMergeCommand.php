@@ -18,6 +18,7 @@ use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -129,6 +130,8 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
 
         $sourceRemote = $pr['head']['user'];
         $sourceRepository = $pr['head']['repo'];
@@ -140,6 +143,20 @@ EOF
 
         $gitConfigHelper->ensureRemoteExists($targetRemote, $targetRepository);
         $gitConfigHelper->ensureRemoteExists($sourceRemote, $sourceRepository);
+
+        $styleHelper->title(sprintf('Merging pull-request #%d - %s', $prNumber, $pr['title']));
+        $styleHelper->text(
+            [
+                sprintf('Source: %s/%s', $sourceRemote, $sourceBranch),
+                sprintf('Target: %s/%s', $targetRemote, $targetBranch),
+            ]
+        );
+
+        if ($squash) {
+            $styleHelper->note('This pull-request will be squashed before merging.');
+        }
+
+        $styleHelper->writeln('');
 
         try {
             $prType = $this->getPrType($prType, $input);
@@ -187,11 +204,11 @@ EOF
                 $adapter->closePullRequest($prNumber);
             }
 
-            $this->getHelper('gush_style')->success($mergeNote);
+            $styleHelper->success([$mergeNote, $pr['url']]);
 
             return self::COMMAND_SUCCESS;
         } catch (CannotSquashMultipleAuthors $e) {
-            $this->getHelper('gush_style')->error(
+            $styleHelper->error(
                 [
                     'Unable to squash commits when there are multiple authors.',
                     'Use --force-squash to continue or ask the author to squash commits manually.'
