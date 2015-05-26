@@ -183,6 +183,29 @@ OET;
         $this->assertCommandOutputMatches(self::COMMAND_DISPLAY, $display);
     }
 
+    public function testMergePullRequestTypeIsAsked()
+    {
+        $command = new PullRequestMergeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'feature', 10))->reveal());
+            }
+        );
+
+        $this->setExpectedCommandInput($command, "feature\n");
+
+        $tester->execute(
+            ['pr_number' => 10],
+            ['interactive' => true]
+        );
+
+        $display = $tester->getDisplay();
+        $this->assertCommandOutputMatches(self::COMMAND_DISPLAY, $display);
+    }
+
     public function testMergePullRequestWithSquashOption()
     {
         $command = new PullRequestMergeCommand();

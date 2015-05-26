@@ -142,7 +142,7 @@ EOF
         $gitConfigHelper->ensureRemoteExists($sourceRemote, $sourceRepository);
 
         try {
-            $prType = $this->getPrType($prType);
+            $prType = $this->getPrType($prType, $input);
             $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
             $commits = $adapter->getPullRequestCommits($prNumber);
             $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
@@ -303,25 +303,34 @@ EOF
         return $commitsString;
     }
 
-    private function getPrType($prType)
+    private function getPrType($prType, InputInterface $input)
     {
         $config = $this->getConfig();
-
-        if (!$config->has('pr_type')) {
-            if (null === $prType) {
-                $prType = 'merge';
-            }
-
-            return $prType;
-        }
-
         $types = $config->get('pr_type');
 
         if (null === $prType) {
-            return $this->getHelper('gush_style')->choice('Choose the type of the pull request', $types);
+            if (!$input->isInteractive()) {
+                $prType = 'merge';
+            } elseif (null !== $types) {
+                $prType = $this->getHelper('gush_style')->choice('Type of the pull request', $types);
+            } else {
+                $prType = $this->getHelper('gush_style')->ask(
+                    'Type of the pull request',
+                    'merge',
+                    function ($value) {
+                        $value = trim($value);
+
+                        if (false !== strpos($value, ' ')) {
+                            throw new \InvalidArgumentException('Value cannot contain spaces.');
+                        }
+
+                        return $value;
+                    }
+                );
+            }
         }
 
-        if (!in_array($prType, $types, true)) {
+        if (null !== $types && !in_array($prType, $types, true)) {
             throw new UserException(
                 sprintf(
                     "Pull-request type '%s' is not accepted, choose of one of: %s.",
