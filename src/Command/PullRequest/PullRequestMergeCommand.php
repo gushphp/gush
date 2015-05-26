@@ -18,6 +18,7 @@ use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -129,6 +130,8 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
 
         $sourceRemote = $pr['head']['user'];
         $sourceRepository = $pr['head']['repo'];
@@ -141,8 +144,22 @@ EOF
         $gitConfigHelper->ensureRemoteExists($targetRemote, $targetRepository);
         $gitConfigHelper->ensureRemoteExists($sourceRemote, $sourceRepository);
 
+        $styleHelper->title(sprintf('Merging pull-request #%d - %s', $prNumber, $pr['title']));
+        $styleHelper->text(
+            [
+                sprintf('Source: %s/%s', $sourceRemote, $sourceBranch),
+                sprintf('Target: %s/%s', $targetRemote, $targetBranch),
+            ]
+        );
+
+        if ($squash) {
+            $styleHelper->note('This pull-request will be squashed before merging.');
+        }
+
+        $styleHelper->writeln('');
+
         try {
-            $prType = $this->getPrType($prType);
+            $prType = $this->getPrType($prType, $input);
             $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
             $commits = $adapter->getPullRequestCommits($prNumber);
             $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
@@ -187,11 +204,11 @@ EOF
                 $adapter->closePullRequest($prNumber);
             }
 
-            $this->getHelper('gush_style')->success($mergeNote);
+            $styleHelper->success([$mergeNote, $pr['url']]);
 
             return self::COMMAND_SUCCESS;
         } catch (CannotSquashMultipleAuthors $e) {
-            $this->getHelper('gush_style')->error(
+            $styleHelper->error(
                 [
                     'Unable to squash commits when there are multiple authors.',
                     'Use --force-squash to continue or ask the author to squash commits manually.'
@@ -303,25 +320,34 @@ EOF
         return $commitsString;
     }
 
-    private function getPrType($prType)
+    private function getPrType($prType, InputInterface $input)
     {
         $config = $this->getConfig();
-
-        if (!$config->has('pr_type')) {
-            if (null === $prType) {
-                $prType = 'merge';
-            }
-
-            return $prType;
-        }
-
         $types = $config->get('pr_type');
 
         if (null === $prType) {
-            return $this->getHelper('gush_style')->choice('Choose the type of the pull request', $types);
+            if (!$input->isInteractive()) {
+                $prType = 'merge';
+            } elseif (null !== $types) {
+                $prType = $this->getHelper('gush_style')->choice('Type of the pull request', $types);
+            } else {
+                $prType = $this->getHelper('gush_style')->ask(
+                    'Type of the pull request',
+                    'merge',
+                    function ($value) {
+                        $value = trim($value);
+
+                        if (false !== strpos($value, ' ')) {
+                            throw new \InvalidArgumentException('Value cannot contain spaces.');
+                        }
+
+                        return $value;
+                    }
+                );
+            }
         }
 
-        if (!in_array($prType, $types, true)) {
+        if (null !== $types && !in_array($prType, $types, true)) {
             throw new UserException(
                 sprintf(
                     "Pull-request type '%s' is not accepted, choose of one of: %s.",
