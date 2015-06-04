@@ -44,7 +44,7 @@
         },
         {
             "name": "hiddeninput.exe",
-            "in": "vendor/symfony/console/Symfony/Component/Console/Resources/bin"
+            "in": "vendor/symfony/console/Resources/bin"
         }
     ],
     "git-version": "package_version",
