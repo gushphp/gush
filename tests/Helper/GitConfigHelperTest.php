@@ -75,6 +75,10 @@ final class GitConfigHelperTest extends \PHPUnit_Framework_TestCase
                 ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
             ],
             [
+                'git://github.com/gushphp/gush.git',
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+            ],
+            [
                 'git@bitbucket.com:gushphp/gush.git',
                 ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush']
             ],
