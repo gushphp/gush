@@ -213,6 +213,9 @@ class GitConfigHelper extends Helper
         } elseif (preg_match('%^(?:(?:git|ssh)://)?[^@]+@(?P<host>[^:]+):(?P<path>[^$]+)$%', $output, $match)) {
             $info['host'] = $match['host'];
             $info['path'] = $match['path'];
+        } elseif (preg_match('%^(?:(?:git|ssh)://)?([^@]+@)?(?P<host>[^/]+)/(?P<path>[^$]+)$%', $output, $match)) {
+            $info['host'] = $match['host'];
+            $info['path'] = $match['path'];
         }
 
         if (isset($info['path'])) {
