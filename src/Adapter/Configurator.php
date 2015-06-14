@@ -37,4 +37,25 @@ interface Configurator
      * @throws \Exception When any of the validators returns an error
      */
     public function interact(InputInterface $input, OutputInterface $output);
+
+    /**
+     * Get the base adapter name.
+     *
+     * @return string
+     */
+    public function getBaseAdapterName();
+
+    /**
+     * Set the base adapter name.
+     *
+     * @return string
+     */
+    public function setBaseAdapterName($name);
+
+    /**
+     * Get the unique name for a configured adapter.
+     *
+     * @return mixed
+     */
+    public function getAdapterName($config);
 }

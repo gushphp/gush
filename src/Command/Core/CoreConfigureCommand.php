@@ -169,6 +169,7 @@ EOF
 
         if ($isAuthenticated) {
             $rawConfig = $this->getConfig()->toArray(Config::CONFIG_SYSTEM);
+            $adapterName = $configurator->getAdapterName($config);
             $rawConfig['adapters'][$adapterName] = $config;
 
             $styleHelper->success(sprintf('The "%s" adapter was successfully authenticated.', $adapter['label']));

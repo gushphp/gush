@@ -67,11 +67,13 @@ class AdapterFactory
      */
     public function supports($name, $supports)
     {
-        if (!isset($this->adapters[$name])) {
+        $baseAdapter = $this->getBaseAdapter($name);
+
+        if (!isset($this->adapters[$baseAdapter])) {
             return false;
         }
 
-        return $this->adapters[$name][$supports];
+        return $this->adapters[$baseAdapter][$supports];
     }
 
     /**
@@ -115,7 +117,10 @@ class AdapterFactory
             throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $name));
         }
 
-        return $this->adapters[$name];
+        $adapter = $this->adapters[$name];
+        $adapter->setBaseAdapterName($name);
+
+        return $adapter;
     }
 
     /**
@@ -186,17 +191,19 @@ class AdapterFactory
      */
     private function getFactoryObject($name)
     {
-        if (!isset($this->adapters[$name])) {
-            throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $name));
+        $baseAdapter = $this->getBaseAdapter($name);
+
+        if (!isset($this->adapters[$baseAdapter])) {
+            throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $baseAdapter));
         }
 
-        if (!is_object($this->adapters[$name]['factory'])) {
-            $factory = $this->adapters[$name]['factory'];
+        if (!is_object($this->adapters[$baseAdapter]['factory'])) {
+            $factory = $this->adapters[$baseAdapter]['factory'];
 
-            $this->adapters[$name]['factory'] = new $factory();
+            $this->adapters[$baseAdapter]['factory'] = new $factory();
         }
 
-        return $this->adapters[$name]['factory'];
+        return $this->adapters[$baseAdapter]['factory'];
     }
 
     private function guardFactoryClassImplementation($adapterFactory, $label)
@@ -224,4 +231,10 @@ class AdapterFactory
             self::SUPPORT_ISSUE_TRACKER => $issueTracker,
         ];
     }
+
+    private  function getBaseAdapter($name) {
+      $array = explode(':', $name);
+      return $array[0];
+    }
+
 }

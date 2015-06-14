@@ -48,6 +48,11 @@ class DefaultConfigurator implements Configurator
     protected $authenticationOptions = [];
 
     /**
+     * @var string
+     */
+    protected $baseAdapterName;
+
+    /**
      * Constructor.
      *
      * @param QuestionHelper $questionHelper        QuestionHelper instance
@@ -184,5 +189,35 @@ class DefaultConfigurator implements Configurator
         }
 
         return $url;
+    }
+
+    /**
+     * Get the base adapter name.
+     *
+     * @return string
+     */
+    public function getBaseAdapterName()
+    {
+        return $this->baseAdapterName;
+    }
+
+    /**
+     * Set the base adapter name.
+     *
+     * @return string
+     */
+    public function setBaseAdapterName($name)
+    {
+        $this->baseAdapterName = $name;
+    }
+
+    /**
+     * Get the unique name of a configured adapter.
+     *
+     * @return string
+     */
+    public function getAdapterName($config)
+    {
+        $this->getBaseAdapterName();
     }
 }
