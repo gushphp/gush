@@ -685,7 +685,7 @@ class GitHelper extends Helper
         }
     }
 
-    private function guardWorkingTreeReady()
+    public function guardWorkingTreeReady()
     {
         if (!$this->isWorkingTreeReady()) {
             throw new WorkingTreeIsNotReady();
