@@ -15,6 +15,9 @@ php:
     - 7.0
 
 matrix:
+    include:
+        - php: 5.6
+          env: GUSH_USE_FS=true
     allow_failures:
         - php: 7.0
     fast_finish: true
@@ -25,13 +28,13 @@ cache:
     directories:
         - $HOME/.composer/cache
 
-env:
-    - GUSH_USE_FS=true
-    - GUSH_USE_FS=false
-
 before_install:
     - composer self-update
     #- curl -sS http://bldr.io/installer | php
 
+install:
+    - travis_retry composer install
+
 script:
-    - php ./bldr.phar run travis
+    #- php ./bldr.phar run travis
+    - phpunit --configuration phpunit.xml.dist --verbose
