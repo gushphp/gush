@@ -9,7 +9,7 @@
     "require": {
         "php": ">=5.4",
         "ext-curl": "*",
-        "symfony/console": "~2.7.0@dev",
+        "symfony/console": "~2.7.0",
         "symfony/process": "~2.6.0",
         "symfony/filesystem": "~2.6.0",
         "symfony/finder": "~2.6.0",
