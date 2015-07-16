@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2015-07-13 15:40
+
+you have permissions to my fork @sstok i just rebased and reopened your PR here
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-07-14 10:23
+
+Rebase on master and it should be good.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-07-14 12:35
+
+so this is good to merge? what about the problem?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-07-14 12:36
+
+@sstok did you see this https://github.com/symfony/symfony/issues/15032#issuecomment-121189915 ? is this related?
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-07-14 12:38
+
+Its fixed in the master ;) lock symfony/console at 2.7.1
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-07-14 12:39
+
+pending the merge of this one https://github.com/symfony/symfony/pull/15271
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-07-16 13:35
+
+:shipit:
