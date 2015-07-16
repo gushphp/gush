@@ -28,7 +28,7 @@ class CommandTestCase extends BaseTestCase
 
     protected function assertCommandOutputMatches($expectedLines, $output, $regex = false)
     {
-        $output = trim($output);
+        $output = preg_replace('/\s!\s/', ' ', trim($output));
         $expectedLines = (array) $expectedLines;
 
         foreach ($expectedLines as $matchLine) {
