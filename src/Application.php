@@ -322,6 +322,7 @@ LOGO;
             new Cmd\PullRequest\PullRequestLabelListCommand(),
             new Cmd\PullRequest\PullRequestMilestoneListCommand(),
             new Cmd\PullRequest\PullRequestFixerCommand(),
+            new Cmd\PullRequest\PullRequestCheckoutCommand(),
             new Cmd\Util\DocumentationCommand(),
             new Cmd\Util\FabbotIoCommand(),
             new Cmd\Util\MetaHeaderCommand(),
