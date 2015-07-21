@@ -123,6 +123,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $org = $input->getOption('org');
+        $repo = $input->getOption('repo');
         $template = $input->getOption('template');
 
         $sourceOrg = $input->getOption('source-org');
@@ -146,11 +147,12 @@ EOF
 
         /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
+        $this->guardRemoteUpdated($org, $repo);
 
-        $styleHelper->title(sprintf('Open request on %s/%s', $org, $input->getOption('repo')));
+        $styleHelper->title(sprintf('Open request on %s/%s', $org, $repo));
         $styleHelper->text(
             [
-                sprintf('This pull-request will be opened on "%s/%s".', $org, $input->getOption('repo')),
+                sprintf('This pull-request will be opened on "%s/%s".', $org, $repo),
                 sprintf('The source branch is "%s" on "%s".', $sourceBranch, $sourceOrg),
             ]
         );
@@ -211,9 +213,7 @@ EOF
         }
 
         if ($gitHelper->branchExists($branch)) {
-            $gitConfigHelper->ensureRemoteExists($org, $repo);
-
-            $gitHelper->remoteUpdate($org);
+            $this->guardRemoteUpdated($org, $repo);
             $gitHelper->pushToRemote($org, $branch, true);
 
             $styleHelper->note(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
@@ -224,5 +224,20 @@ EOF
         throw new UserException(
             sprintf('Cannot open pull-request, remote branch "%s" does not exist in "%s/%s".', $branch, $org, $repo)
         );
+    }
+
+    /**
+     * @param string $org
+     * @param string $repo
+     */
+    private function guardRemoteUpdated($org, $repo)
+    {
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+
+        $gitConfigHelper->ensureRemoteExists($org, $repo);
+        $gitHelper->remoteUpdate($org);
     }
 }
