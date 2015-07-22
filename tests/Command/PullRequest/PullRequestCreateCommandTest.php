@@ -109,7 +109,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
             null,
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getLocalGitHelper('sstok', 'gush', 'feat-adapters')->reveal());
-                $helperSet->set($this->getGitConfigHelper(true, 'sstok')->reveal());
+                $helperSet->set($this->getGitConfigHelper('sstok')->reveal());
             }
         );
 
@@ -216,7 +216,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
             null,
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getLocalGitHelper('someone')->reveal());
-                $helperSet->set($this->getGitConfigHelper(true, 'someone')->reveal());
+                $helperSet->set($this->getGitConfigHelper('someone')->reveal());
             }
         );
 
@@ -259,7 +259,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
             null,
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getLocalGitHelper('someone')->reveal());
-                $helperSet->set($this->getGitConfigHelper(true, 'someone')->reveal());
+                $helperSet->set($this->getGitConfigHelper('someone')->reveal());
             }
         );
 
@@ -286,6 +286,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
         $helper->remoteBranchExists('git@github.com:cordoval/gush.git', $branch)->willReturn(true);
+        $helper->remoteUpdate('gushphp')->shouldBeCalled();
 
         $helper->branchExists(Argument::any())->willReturn(false);
         $helper->branchExists($branch)->will(
@@ -300,17 +301,13 @@ class PullRequestCreateCommandTest extends CommandTestCase
         return $helper;
     }
 
-    protected function getGitConfigHelper($remoteExists = true, $sourceOrg = 'cordoval', $sourceRepo = 'gush')
+    protected function getGitConfigHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush')
     {
         $helper = parent::getGitConfigHelper();
+        $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled();
 
-        if ($remoteExists) {
-            $helper->remoteExists($sourceOrg, $sourceRepo)->willReturn();
-            $helper->ensureRemoteExists($sourceOrg, $sourceRepo)->willReturn();
-        } else {
-            $helper->remoteExists($sourceOrg, $sourceRepo)->shouldNotBeCalled();
-            $helper->ensureRemoteExists($sourceOrg, $sourceRepo)->shouldNotBeCalled();
-        }
+        $helper->remoteExists($sourceOrg, $sourceRepo)->willReturn();
+        $helper->ensureRemoteExists($sourceOrg, $sourceRepo)->willReturn();
 
         return $helper;
     }

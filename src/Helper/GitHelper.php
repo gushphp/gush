@@ -294,26 +294,31 @@ class GitHelper extends Helper
      * @param string $sourceBranch The source branch name
      *
      * @return string The title of the first commit on sourceBranch off of base
+     *                or an empty string in the case of an error
      */
     public function getFirstCommitTitle($base, $sourceBranch)
     {
-        $forkPoint = $this->processHelper->runCommand(
-            sprintf(
-                'git merge-base --fork-point %s %s',
-                $base,
-                $sourceBranch
-            )
-        );
+        try {
+            $forkPoint = $this->processHelper->runCommand(
+                sprintf(
+                    'git merge-base --fork-point %s %s',
+                    $base,
+                    $sourceBranch
+                )
+            );
 
-        $lines = $this->processHelper->runCommand(
-            sprintf(
-                'git rev-list %s..%s --reverse --oneline',
-                $forkPoint,
-                $sourceBranch
-            )
-        );
+            $lines = $this->processHelper->runCommand(
+                sprintf(
+                    'git rev-list %s..%s --reverse --oneline',
+                    $forkPoint,
+                    $sourceBranch
+                )
+            );
 
-        return substr(strtok($lines, "\n"), 8);
+            return substr(strtok($lines, "\n"), 8);
+        } catch (\RuntimeException $e) {
+            return '';
+        }
     }
 
     public function createTempBranch($originalBranch)
