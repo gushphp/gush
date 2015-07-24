@@ -22,7 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    public function testNoErrorWhenInGitFolder()
+    /**
+     * @test
+     */
+    public function fire_no_error_when_in_git_folder()
     {
         $command = new GitFolderCommand();
 

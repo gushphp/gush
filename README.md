@@ -19,10 +19,10 @@ curl -sS http://gushphp.org/installer | php
 > Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
 > Jacob, and his wrath rose against Israel, for they did not believe in God or trust in his deliverance.
 
-There first thread of blood and the following are water gushing out of a rock, connecting the Old Testament
+The first thread is of blood and the following threads are water gushing out of the rock, connecting the Old Testament
 prophecy fulfillment in the New Testament at the cross when Jesus was opened on his side and gushed out
 water and blood.
 
-Logo by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
+Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
 Documentation at http://gushphp.org

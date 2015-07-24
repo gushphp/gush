@@ -30,11 +30,9 @@ cache:
 
 before_install:
     - composer self-update
-    #- curl -sS http://bldr.io/installer | php
 
 install:
     - travis_retry composer install
 
 script:
-    #- php ./bldr.phar run travis
     - phpunit --configuration phpunit.xml.dist --verbose
