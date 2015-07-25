@@ -43,7 +43,10 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($helper->isGitFolder());
     }
 
-    public function testNoErrorWhenNotAGitFeaturedCommand()
+    /**
+     * @test
+     */
+    public function fire_no_error_when_not_a_git_featured_command()
     {
         $command = new GitRepoCommand();
 
@@ -61,7 +64,10 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($helper->isGitFolder());
     }
 
-    public function testThrowsUserExceptionWhenNotInGitFolder()
+    /**
+     * @test
+     */
+    public function throws_user_exception_when_not_in_git_folder()
     {
         $command = new GitFolderCommand();
 
