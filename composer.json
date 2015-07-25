@@ -7,7 +7,7 @@
     "license": "MIT",
     "authors": [{ "name": "makers", "homepage": "https://github.com/gushphp/gush/graphs/contributors" }],
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "ext-curl": "*",
         "symfony/console": "2.7.1",
         "symfony/process": "~2.7.0",
@@ -26,7 +26,6 @@
         "gushphp/gush-jira-adapter": "~1.1.6"
     },
     "require-dev": {
-        "raulfraile/ladybug": "~1.0.8",
         "mikey179/vfsStream": "~1.5.0"
     },
     "autoload": {
