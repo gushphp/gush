@@ -39,23 +39,9 @@ interface Configurator
     public function interact(InputInterface $input, OutputInterface $output);
 
     /**
-     * Get the base adapter name.
-     *
-     * @return string
-     */
-    public function getBaseAdapterName();
-
-    /**
-     * Set the base adapter name.
-     *
-     * @return string
-     */
-    public function setBaseAdapterName($name);
-
-    /**
      * Get the unique name for a configured adapter.
      *
      * @return mixed
      */
-    public function getAdapterName($config);
+    public function getConfigurationIdentifier($adapter, $config);
 }

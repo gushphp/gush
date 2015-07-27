@@ -77,4 +77,5 @@ final class LegacyAdapterFactory implements RepositoryManagerFactory, IssueTrack
     {
         return $this->className;
     }
+
 }

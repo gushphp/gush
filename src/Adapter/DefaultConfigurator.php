@@ -11,6 +11,7 @@
 
 namespace Gush\Adapter;
 
+use Gush\Util\ConfigUtil;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,11 +47,6 @@ class DefaultConfigurator implements Configurator
      * @var string[]
      */
     protected $authenticationOptions = [];
-
-    /**
-     * @var string
-     */
-    protected $baseAdapterName;
 
     /**
      * Constructor.
@@ -192,32 +188,12 @@ class DefaultConfigurator implements Configurator
     }
 
     /**
-     * Get the base adapter name.
-     *
-     * @return string
-     */
-    public function getBaseAdapterName()
-    {
-        return $this->baseAdapterName;
-    }
-
-    /**
-     * Set the base adapter name.
-     *
-     * @return string
-     */
-    public function setBaseAdapterName($name)
-    {
-        $this->baseAdapterName = $name;
-    }
-
-    /**
      * Get the unique name of a configured adapter.
      *
      * @return string
      */
-    public function getAdapterName($config)
+    public function getConfigurationIdentifier($adapter, $config)
     {
-        $this->getBaseAdapterName();
+        return ConfigUtil::generateConfigurationIdentifier($adapter, $config);
     }
 }
