@@ -21,7 +21,10 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class GitRepoSubscriberTest extends BaseTestCase
 {
-    public function testAddsOptionsForGitRepoFeaturedCommand()
+    /**
+     * @test
+     */
+    public function adds_options_for_git_repo_featured_command()
     {
         $command = new GitRepoCommand();
         $commandDef = $command->getDefinition();
@@ -37,7 +40,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertTrue($commandDef->hasOption('issue-project'));
     }
 
-    public function testDetectsAndInformsMissingAdapterInformation()
+    /**
+     * @test
+     */
+    public function detects_and_informs_missing_adapter_information()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest($command);
@@ -60,7 +66,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('gush', $command->getIssueTracker()->getRepository());
     }
 
-    public function testDoesNotInformWhenAdapterIsProvided()
+    /**
+     * @test
+     */
+    public function does_not_inform_when_adapter_is_provided()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest($command, ['--repo-adapter' => 'github']);
@@ -76,7 +85,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('github', $command->getAdapter()->getAdapterName());
     }
 
-    public function testDoesNotInformWhenAdapterIsConfigured()
+    /**
+     * @test
+     */
+    public function does_not_inform_when_adapter_is_configured()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest($command, [], ['repo_adapter' => 'github']);
@@ -92,7 +104,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('github', $command->getAdapter()->getAdapterName());
     }
 
-    public function testDoesNotInformRepoInfoIsProvided()
+    /**
+     * @test
+     */
+    public function does_not_inform_repo_info_is_provided()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest(
@@ -116,7 +131,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('gush', $command->getIssueTracker()->getRepository());
     }
 
-    public function testDoesNotInformRepoInfoIsConfigured()
+    /**
+     * @test
+     */
+    public function does_not_inform_repo_info_is_configured()
     {
         $command = new GitRepoCommand();
 
@@ -138,7 +156,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('gush', $command->getIssueTracker()->getRepository());
     }
 
-    public function testAllowsToOverwriteConfiguredAdapter()
+    /**
+     * @test
+     */
+    public function allows_to_overwrite_configured_adapter()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest(
@@ -155,7 +176,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('github_enterprise', $command->getAdapter()->getAdapterName());
     }
 
-    public function testAllowsToOverwriteConfiguredOrgAndRepo()
+    /**
+     * @test
+     */
+    public function allows_to_overwrite_configured_org_and_repo()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest(
@@ -180,7 +204,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('gush', $command->getIssueTracker()->getRepository());
     }
 
-    public function testAllowsToOverwriteConfiguredOrgAndRepoForIssue()
+    /**
+     * @test
+     */
+    public function allows_to_overwrite_configured_org_and_repo_for_issue()
     {
         $command = new GitRepoCommand();
         $commandTest = $this->runCommandTest(
@@ -203,7 +230,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->assertEquals('gush-sandbox', $command->getIssueTracker()->getRepository());
     }
 
-    public function testThrowsErrorOnInvalidRepoAdapter()
+    /**
+     * @test
+     */
+    public function throws_error_on_invalid_repo_adapter()
     {
         $this->setExpectedException(
             UserException::class,
@@ -218,7 +248,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         );
     }
 
-    public function testThrowsErrorOnInvalidIssueAdapter()
+    /**
+     * @test
+     */
+    public function throws_error_on_invalid_issue_adapter()
     {
         $this->setExpectedException(
             UserException::class,
@@ -233,7 +266,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         );
     }
 
-    public function testThrowsErrorWhenNotConfiguredAndNoRemoteIsSetForAutoDetection()
+    /**
+     * @test
+     */
+    public function throws_error_when_not_configured_and_no_remote_is_set_for_auto_detection()
     {
         $this->setExpectedException(
             UserException::class,
@@ -251,7 +287,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         );
     }
 
-    public function testThrowsErrorWhenNoOptionsGivenAndNotInGitDir()
+    /**
+     * @test
+     */
+    public function throws_error_when_no_options_given_and_not_in_git_dir()
     {
         $this->setExpectedException(
             UserException::class,
@@ -269,7 +308,10 @@ class GitRepoSubscriberTest extends BaseTestCase
         );
     }
 
-    public function testThrowsErrorWhenAdapterIsSupportedButNotConfigured()
+    /**
+     * @test
+     */
+    public function throws_error_when_adapter_is_supported_but_not_configured()
     {
         $this->setExpectedException(
             UserException::class,
