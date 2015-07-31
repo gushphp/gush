@@ -127,7 +127,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
                 'iac',
                 InputOption::VALUE_REQUIRED,
                 'Config of the issue-tracker',
-                $this->application->getConfig()->get('issue_tracker_config', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER)
+                $this->application->getConfig()->get('issue_adapter_config', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER)
             )
             ->addOption(
                 'issue-org',
