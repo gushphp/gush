@@ -279,11 +279,11 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
             return;
         }
 
-        $hash = ConfigUtil::generateConfigurationIdentifier($adapter, $adapterConfig);
+        $identifier = ConfigUtil::generateConfigurationIdentifier($adapter, $adapterConfig);
         $config = $this->application->getConfig();
 
-        if (!$config->has(['adapters', $hash], Config::CONFIG_SYSTEM)) {
-            $errors[] = sprintf('Adapter "%s" (for %s) is not configured yet.', $hash, $typeLabel);
+        if (!$config->has(['adapters', $identifier], Config::CONFIG_SYSTEM)) {
+            $errors[] = sprintf('Adapter "%s" (for %s) is not configured yet.', $identifier, $typeLabel);
         }
     }
 
