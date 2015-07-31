@@ -186,19 +186,17 @@ class AdapterFactory
      */
     private function getFactoryObject($name)
     {
-        $baseAdapter = $name;
-
-        if (!isset($this->adapters[$baseAdapter])) {
-            throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $baseAdapter));
+        if (!isset($this->adapters[$name])) {
+            throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $name));
         }
 
-        if (!is_object($this->adapters[$baseAdapter]['factory'])) {
-            $factory = $this->adapters[$baseAdapter]['factory'];
+        if (!is_object($this->adapters[$name]['factory'])) {
+            $factory = $this->adapters[$name]['factory'];
 
-            $this->adapters[$baseAdapter]['factory'] = new $factory();
+            $this->adapters[$name]['factory'] = new $factory();
         }
 
-        return $this->adapters[$baseAdapter]['factory'];
+        return $this->adapters[$name]['factory'];
     }
 
     private function guardFactoryClassImplementation($name, $label, $adapterFactory)
