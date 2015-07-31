@@ -41,7 +41,7 @@ interface Configurator
     /**
      * Get the unique name for a configured adapter.
      *
-     * @return mixed
+     * @return string
      */
     public function getConfigurationIdentifier($adapter, $config);
 }
