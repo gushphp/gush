@@ -147,7 +147,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
 
         if (null === $org || null === $repo) {
             list($org, $repo) = $this->getRepositoryReference(
-                $this->getAdapter($input->getOption('repo-adapter')),
+                $this->getAdapter($input->getOption('repo-adapter'), $input->getOption('repo-adapter-config')),
                 $org,
                 $repo
             );
