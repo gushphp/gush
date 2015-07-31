@@ -67,13 +67,11 @@ class AdapterFactory
      */
     public function supports($name, $supports)
     {
-        $baseAdapter = $this->getBaseAdapter($name);
-
-        if (!isset($this->adapters[$baseAdapter])) {
+        if (!isset($this->adapters[$name])) {
             return false;
         }
 
-        return $this->adapters[$baseAdapter][$supports];
+        return $this->adapters[$name][$supports];
     }
 
     /**
@@ -229,11 +227,6 @@ class AdapterFactory
             self::SUPPORT_REPOSITORY_MANAGER => $repositoryManager,
             self::SUPPORT_ISSUE_TRACKER => $issueTracker,
         ];
-    }
-
-    private  function getBaseAdapter($name) {
-      $array = explode(':', $name);
-      return $array[0];
     }
 
 }
