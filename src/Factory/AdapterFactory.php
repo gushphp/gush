@@ -115,8 +115,7 @@ class AdapterFactory
             throw new \InvalidArgumentException(sprintf('No Adapter with name "%s" is registered.', $name));
         }
 
-        $adapter = $this->adapters[$name];
-        return $adapter;
+        return $this->adapters[$name];
     }
 
     /**
