@@ -54,9 +54,9 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
      */
     protected function getAdapter($adapterName, $config)
     {
-        $hash = ConfigUtil::generateConfigurationIdentifier($adapterName, $config);
+        $identifier = ConfigUtil::generateConfigurationIdentifier($adapterName, $config);
 
-        $config = $this->application->getConfig()->get(['adapters', $hash], Config::CONFIG_SYSTEM);
+        $config = $this->application->getConfig()->get(['adapters', $identifier], Config::CONFIG_SYSTEM);
         $adapter = $this->application->getAdapterFactory()->createRepositoryManager(
             $adapterName,
             $config,

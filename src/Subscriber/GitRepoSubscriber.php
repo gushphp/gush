@@ -305,8 +305,8 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
         $input->setOption('issue-project', $issueRepo);
         $input->setOption('issue-adapter', $issueAdapterName);
 
-        $hash = ConfigUtil::generateConfigurationIdentifier($issueAdapterName, $input->getOption('issue-adapter-config'));
-        $config = $this->application->getConfig()->get(['adapters', $hash], Config::CONFIG_SYSTEM);
+        $identifier = ConfigUtil::generateConfigurationIdentifier($issueAdapterName, $input->getOption('issue-adapter-config'));
+        $config = $this->application->getConfig()->get(['adapters', $identifier], Config::CONFIG_SYSTEM);
 
         $issueTracker = $this->application->getAdapterFactory()->createIssueTracker(
             $issueAdapterName,
