@@ -155,6 +155,7 @@ LOGO;
         );
         $helperSet->set(new Helpers\TemplateHelper($helperSet->get('gush_style'), $this));
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
+        $helperSet->set(new Helpers\DownloadHelper($helperSet->get('filesystem')));
         $helperSet->set(new Helpers\AutocompleteHelper());
         $helperSet->set(new UpdateHelper());
 
@@ -325,6 +326,7 @@ LOGO;
             new Cmd\PullRequest\PullRequestCheckoutCommand(),
             new Cmd\Util\DocumentationCommand(),
             new Cmd\Util\FabbotIoCommand(),
+            new Cmd\Util\StyleCIPatchCommand(),
             new Cmd\Util\MetaHeaderCommand(),
             new Cmd\Util\MetaConfigureCommand(),
             new Cmd\Release\ReleaseCreateCommand(),

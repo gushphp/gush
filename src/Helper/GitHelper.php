@@ -13,6 +13,7 @@ namespace Gush\Helper;
 
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Exception\WorkingTreeIsNotReady;
+use Gush\Operation\RemotePatchOperation;
 use Gush\Operation\RemoteMergeOperation;
 use Gush\Util\StringUtil;
 use Symfony\Component\Console\Helper\Helper;
@@ -342,6 +343,14 @@ class GitHelper extends Helper
     public function createRemoteMergeOperation()
     {
         return new RemoteMergeOperation($this, $this->filesystemHelper);
+    }
+
+    /**
+     * @return RemotePatchOperation
+     */
+    public function createRemotePatchOperation()
+    {
+        return new RemotePatchOperation($this, $this->processHelper);
     }
 
     /**
