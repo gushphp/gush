@@ -5,6 +5,7 @@
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/gushphp/gush/badges/quality-score.png?s=127d28d94969ef366d3bc78808cc89b8eeba51e2)](https://scrutinizer-ci.com/g/gushphp/gush/)
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush) [![Total Downloads](https://poser.pugx.org/gushphp/gush/downloads.png)](https://packagist.org/packages/gushphp/gush) [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush)
 [![Dependency Status](https://www.versioneye.com/php/gushphp:gush/badge.svg)](https://www.versioneye.com/php/gushphp:gush/)
+[![StyleCI](https://styleci.io/repos/16789051/shield)](https://styleci.io/repos/16789051)
 
 It automates common maintainer and contributor tasks and has
 backend support for GitHub, Enterprise Github, and more! See [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
