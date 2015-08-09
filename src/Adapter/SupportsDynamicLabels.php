@@ -12,7 +12,7 @@
 namespace Gush\Adapter;
 
 /**
- * The SupportsDynamicLabels interface marks that the adapter supports dynamic-labeling.
+ * Shows the adapter implementing this interface supports dynamic-labeling.
  */
 interface SupportsDynamicLabels
 {

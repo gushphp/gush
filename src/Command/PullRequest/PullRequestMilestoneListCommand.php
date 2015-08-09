@@ -58,7 +58,7 @@ EOF
         /** @var \Gush\Helper\TableHelper $table */
         $table = $this->getHelper('table');
         $table->formatRows($milestones, $this->getRowBuilderCallback());
-        $table->render($output, $table);
+        $table->render($output);
 
         return $milestones;
     }
