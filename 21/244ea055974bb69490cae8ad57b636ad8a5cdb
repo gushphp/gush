@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-09 14:34
+
+(PR squashed)
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-08-09 14:35
+
+All failures are header comment related now.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-09 14:35
+
+Hmm, it seems the pull-request:squash command is a bit broken :|
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-09 14:36
+
+Ah the `pull-request:squash` command uses the local branch! Thats something I need to fix.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-08-09 14:37
+
+did you fix the squash command?
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-09 14:40
+
+> did you fix the squash command?
+
+It's a bit more complex to fix, I will make a new issue with some notes on how to fix this.
