@@ -32,9 +32,9 @@ interface Configurator
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return array Validated and normalized configuration as associative array
-     *
      * @throws \Exception When any of the validators returns an error
+     *
+     * @return array Validated and normalized configuration as associative array
      */
     public function interact(InputInterface $input, OutputInterface $output);
 }

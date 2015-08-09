@@ -181,7 +181,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
         $remote = $this->findRemoteName();
 
         if (null === $remote) {
-            return null;
+            return;
         }
 
         $remoteUrl = $this->gitConfigHelper->getGitConfig('remote.'.$remote.'.url');
@@ -199,6 +199,6 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
             };
         }
 
-        return null;
+        return;
     }
 }

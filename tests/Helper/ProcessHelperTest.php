@@ -33,8 +33,8 @@ class ProcessHelperTest extends \PHPUnit_Framework_TestCase
             [
                 [
                     'line' => 'echo "hello"',
-                    'allow_failures' => true
-                ]
+                    'allow_failures' => true,
+                ],
             ]
         );
     }

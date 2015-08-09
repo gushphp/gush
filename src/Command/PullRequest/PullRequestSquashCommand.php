@@ -122,7 +122,7 @@ EOF
                     'Make sure you have push access to the "%s/%s" repository before you continue.',
                     $pr['head']['user'],
                     $pr['head']['repo']
-                )
+                ),
             ]
         );
 

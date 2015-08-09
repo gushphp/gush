@@ -56,7 +56,7 @@ class IssueCopyCommandTest extends CommandTestCase
                 'target_username' => 'dantleech',
                 'target_repository' => 'gushphp',
                 '--prefix' => '[SomePrefix] ',
-                '--close' => true
+                '--close' => true,
             ]
         );
 
@@ -83,7 +83,7 @@ class IssueCopyCommandTest extends CommandTestCase
                 'issue_number' => TestAdapter::ISSUE_NUMBER,
                 'target_username' => 'dantleech',
                 'target_repository' => 'gushphp',
-                '--close' => true
+                '--close' => true,
             ]
         );
 

@@ -18,7 +18,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
- * Helper for launching shell commands
+ * Helper for launching shell commands.
  */
 class ProcessHelper extends Helper implements OutputAwareInterface
 {
@@ -49,17 +49,17 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     }
 
     /**
-     * Run a command through the ProcessBuilder
+     * Run a command through the ProcessBuilder.
      *
      * @param string|array $command
      * @param bool         $allowFailures
      * @param \Closure     $callback           Callback for Process (e.g. for logging output in realtime)
      * @param bool         $cacheMultipleCalls Call multiple calls with this command (to speed-up execution)
      *
-     * @return string
-     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
+     *
+     * @return string
      */
     public function runCommand($command, $allowFailures = false, $callback = null, $cacheMultipleCalls = false)
     {
@@ -124,7 +124,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     }
 
     /**
-     * Run a series of shell command through a Process
+     * Run a series of shell command through a Process.
      *
      * @param array $commands
      * @param bool  $cacheMultipleCalls
@@ -147,9 +147,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     }
 
     /**
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     public function probePhpCsFixer()
     {
@@ -185,9 +185,9 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     /**
      * @param string $command
      *
-     * @return string[]
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return string[]
      */
     protected function parseProcessArguments($command)
     {

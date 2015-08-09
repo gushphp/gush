@@ -39,7 +39,7 @@ class TemplateTestCommand extends BaseCommand implements TableFeature
     }
 
     /**
-     * Return the default table layout to use
+     * Return the default table layout to use.
      *
      * @return string
      */

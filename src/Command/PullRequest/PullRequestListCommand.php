@@ -63,14 +63,14 @@ EOF
         $adapter = $this->getAdapter();
         $validStates = $adapter->getPullRequestStates();
 
-        if (!empty($state) && !in_array($state, $validStates)) {
+        if (!empty($state) && !in_array($state, $validStates, true)) {
             throw new InvalidStateException($state, $validStates);
         }
 
         $adapter = $this->getAdapter();
         $validStates = $adapter->getPullRequestStates();
 
-        if (!empty($state) && !in_array($state, $validStates)) {
+        if (!empty($state) && !in_array($state, $validStates, true)) {
             throw new InvalidStateException($state, $validStates);
         }
 

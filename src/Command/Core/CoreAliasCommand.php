@@ -25,7 +25,7 @@ class CoreAliasCommand extends BaseCommand
     {
         $this->setName('core:alias')
             ->setDescription('Outputs help and alias snippet for wrapping gush on git')
-            ->addOption('s', '-s', InputOption::VALUE_NONE, "Outputs only snippet")
+            ->addOption('s', '-s', InputOption::VALUE_NONE, 'Outputs only snippet')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> outputs an alias snippet to wrap Gush on git:

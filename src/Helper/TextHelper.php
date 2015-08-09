@@ -24,7 +24,7 @@ class TextHelper extends Helper
     }
 
     /**
-     * Truncates a string
+     * Truncates a string.
      *
      * @param string $string
      * @param int    $length
@@ -32,6 +32,7 @@ class TextHelper extends Helper
      * @param string $delimString - string to use to mark the truncation
      *
      * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public function truncate($string, $length, $alignment = null, $delimString = null)
@@ -40,7 +41,7 @@ class TextHelper extends Helper
         $delimString = $delimString === null ? '...' : $delimString;
         $delimLen = strlen($delimString);
 
-        if (!in_array($alignment, ['left', 'right'])) {
+        if (!in_array($alignment, ['left', 'right'], true)) {
             throw new \InvalidArgumentException(
                 'Alignment must either be "left" or "right"'
             );
@@ -82,7 +83,7 @@ class TextHelper extends Helper
     }
 
     /**
-     * Slugify a string
+     * Slugify a string.
      *
      * @param string $string
      *

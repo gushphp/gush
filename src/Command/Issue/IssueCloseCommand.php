@@ -46,7 +46,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $issueNumber    = $input->getArgument('issue_number');
+        $issueNumber = $input->getArgument('issue_number');
         $closingComment = $input->getOption('message');
 
         $tracker = $this->getIssueTracker();

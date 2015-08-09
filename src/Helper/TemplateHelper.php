@@ -70,7 +70,7 @@ class TemplateHelper extends Helper implements InputAwareInterface
             return 'custom';
         }
 
-        return null;
+        return;
     }
 
     /**

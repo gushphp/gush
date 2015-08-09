@@ -186,7 +186,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
                     'You did not set or provided an organization and/or repository name.',
                     'Gush automatically detected the missing information.',
                     sprintf('Org: "%s" / repo: "%s"', $org, $repo),
-                    'But for future reference and better performance it is advised to run "core:init".'
+                    'But for future reference and better performance it is advised to run "core:init".',
                 ]
             );
         }
@@ -291,7 +291,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         $issueTracker->authenticate();
 
-        /** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
+        /* @var \Gush\Adapter\BaseIssueTracker $issueTracker */
         $issueTracker
             ->setRepository($issueRepo)
             ->setUsername($issueOrg)
@@ -332,7 +332,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
                             $remote,
                             $adapterName
                         ),
-                        'But for future reference and better performance it is advised to run "core:init".'
+                        'But for future reference and better performance it is advised to run "core:init".',
                     ]
                 );
 

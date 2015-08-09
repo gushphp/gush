@@ -70,7 +70,7 @@ class TemplateSubscriber implements EventSubscriberInterface
                     $command->getTemplateDomain()
                 );
 
-                if (!in_array($template, $validTemplates)) {
+                if (!in_array($template, $validTemplates, true)) {
                     throw new \InvalidArgumentException(
                         sprintf(
                             'The specified template "%s" does not exist, try one of: '.PHP_EOL.' - %s',

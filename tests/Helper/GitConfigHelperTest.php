@@ -56,87 +56,87 @@ final class GitConfigHelperTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 'https://github.com/gushphp/gush',
-                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://github.com/gushphp/gush.git',
-                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://github.com/gushphp/gush-gitlab.git',
-                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush-gitlab']
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush-gitlab'],
             ],
             [
                 'git@github.com:gushphp/gush.git',
-                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'ssh://git@github.com:gushphp/gush.git',
-                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'git://github.com/gushphp/gush.git',
-                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'git@bitbucket.com:gushphp/gush.git',
-                ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://bitbucket.com/gushphp/gush.git',
-                ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://bitbucket.com/gushphp/gush',
-                ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'bitbucket.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'git@gitlab.com:gushphp/gush.git',
-                ['host' => 'gitlab.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'gitlab.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://gitlab.com/gushphp/gush.git',
-                ['host' => 'gitlab.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'gitlab.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://gitlab.com/gushphp/gush',
-                ['host' => 'gitlab.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'gitlab.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'git@enterprise.github.com:gushphp/gush.git',
-                ['host' => 'enterprise.github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'enterprise.github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://enterprise.github.com/gushphp/gush.git',
-                ['host' => 'enterprise.github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'enterprise.github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://enterprise.github.com/gushphp/gush',
-                ['host' => 'enterprise.github.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'enterprise.github.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://private.org.com/git/gushphp/gush',
-                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://user@private.org.com/git/gushphp/gush',
-                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://user@private.org.com:8080/git/gushphp/gush',
-                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'https://user:pass@private.org.com:8080/git/gushphp/gush',
-                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'user@private.org.com:some-dir/gushphp/gush.git',
-                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush']
+                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush'],
             ],
             [
                 'user@private.org.com:some-dir/gushphp/gush.gitlab.git',
-                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush.gitlab']
+                ['host' => 'private.org.com', 'vendor' => 'gushphp', 'repo' => 'gush.gitlab'],
             ],
         ];
     }

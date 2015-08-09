@@ -17,7 +17,7 @@ use Symfony\Component\Console\Helper\HelperSet;
 
 class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 {
-    const TEMPLATE_STRING = "Good catch @weaverryan, thanks for the patch.";
+    const TEMPLATE_STRING = 'Good catch @weaverryan, thanks for the patch.';
 
     public function testPatContributorOfPullRequestOnTheBack()
     {

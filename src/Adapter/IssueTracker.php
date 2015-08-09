@@ -51,9 +51,9 @@ interface IssueTracker
      * @param string $body    Body/message of the issue
      * @param array  $options Extra options for the issue
      *
-     * @return int issue-id
-     *
      * @throws AdapterException when opening of an issue failed (eg. disabled or not authorized)
+     *
+     * @return int issue-id
      */
     public function openIssue($subject, $body, array $options = []);
 
@@ -79,10 +79,10 @@ interface IssueTracker
      *
      * @param int $id
      *
-     * @return array
-     *
      * @throws AdapterException when issues are disabled for the repository
      *                          or if the issue does not exist (anymore)
+     *
+     * @return array
      */
     public function getIssue($id);
 
@@ -91,10 +91,10 @@ interface IssueTracker
      *
      * @param int $id
      *
-     * @return string ex. "https://github.com/octocat/Hello-World/issues/1347"
-     *
      * @throws AdapterException when issues are disabled for the repository
      *                          or if the issue does not exist (anymore)
+     *
+     * @return string ex. "https://github.com/octocat/Hello-World/issues/1347"
      */
     public function getIssueUrl($id);
 
@@ -105,9 +105,9 @@ interface IssueTracker
      * @param int   $page
      * @param int   $perPage
      *
-     * @return array[] An array where each entry has the same structure as described in getIssue()
-     *
      * @throws AdapterException when issues are disabled for the repository
+     *
+     * @return array[] An array where each entry has the same structure as described in getIssue()
      */
     public function getIssues(array $parameters = [], $page = 1, $perPage = 30);
 
@@ -117,8 +117,6 @@ interface IssueTracker
      * @param int   $id
      * @param array $parameters
      *
-     * @return void
-     *
      * @throws AdapterException when updating of the issue failed (eg. disabled or not authorized)
      */
     public function updateIssue($id, array $parameters);
@@ -127,8 +125,6 @@ interface IssueTracker
      * Closes an issue by id.
      *
      * @param int $id
-     *
-     * @return void
      *
      * @throws AdapterException when closing of the issue failed (eg. disabled or not authorized)
      */
@@ -140,9 +136,9 @@ interface IssueTracker
      * @param int    $id
      * @param string $message
      *
-     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/issues/1347#issuecomment-1
-     *
      * @throws AdapterException when creating of command failed (eg. disabled or not authorized)
+     *
+     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/issues/1347#issuecomment-1
      */
     public function createComment($id, $message);
 

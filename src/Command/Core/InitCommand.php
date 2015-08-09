@@ -155,7 +155,7 @@ EOF
                 $styleHelper->note(
                     [
                         'You cannot use the selected repository-manager and/or issue-tracker until its configured.',
-                        'Run the "core:configure" command to configure the adapters.'
+                        'Run the "core:configure" command to configure the adapters.',
                     ]
                 );
             }

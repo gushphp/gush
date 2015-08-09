@@ -99,7 +99,8 @@ class DefaultConfigurator implements Configurator
                         $authenticationLabels[0]
                     )
                 ),
-                $authenticationLabels
+                $authenticationLabels,
+                true
             );
         } else {
             $authenticationType = 0;

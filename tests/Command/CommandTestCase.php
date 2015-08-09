@@ -76,8 +76,7 @@ class CommandTestCase extends BaseTestCase
     }
 
     /**
-     * @param Command $command
-     *
+     * @param Command       $command
      * @param array|null    $systemConfig
      * @param array|null    $localConfig
      * @param \Closure|null $helperSetManipulator
@@ -97,9 +96,9 @@ class CommandTestCase extends BaseTestCase
                         'authentication' => [
                             'username' => 'cordoval',
                             'password' => 'very-un-secret',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
         }
 

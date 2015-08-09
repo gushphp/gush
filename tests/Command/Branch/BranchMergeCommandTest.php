@@ -57,7 +57,7 @@ class BranchMergeCommandTest extends CommandTestCase
             array_merge(
                 self::$localConfig,
                 [
-                    'merge_workflow' => ['validation' => ['preset' => 'git-flow']]
+                    'merge_workflow' => ['validation' => ['preset' => 'git-flow']],
                 ]
             ),
             function (HelperSet $helperSet) {

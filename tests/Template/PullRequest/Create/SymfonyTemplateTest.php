@@ -72,7 +72,7 @@ EOF
 
 This is a description
 EOF
-            ]
+            ],
         ];
     }
 

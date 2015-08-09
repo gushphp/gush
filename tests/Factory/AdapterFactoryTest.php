@@ -96,7 +96,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
                     'label' => 'Testing2',
                     AdapterFactory::SUPPORT_REPOSITORY_MANAGER => false,
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => true,
-                ]
+                ],
             ],
             $this->adapterFactory->all()
         );

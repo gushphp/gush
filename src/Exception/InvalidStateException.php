@@ -12,7 +12,7 @@
 namespace Gush\Exception;
 
 /**
- * Exception for an invalid state
+ * Exception for an invalid state.
  */
 class InvalidStateException extends \RuntimeException
 {

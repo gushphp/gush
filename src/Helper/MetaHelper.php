@@ -80,8 +80,9 @@ class MetaHelper extends Helper
     /**
      * @param string $type
      *
-     * @return Meta
      * @throws UnsupportedTypeException
+     *
+     * @return Meta
      */
     public function getMetaClass($type)
     {
@@ -174,7 +175,7 @@ class MetaHelper extends Helper
                 $line = $lines[$lineNum];
                 unset($lines[$lineNum]);
 
-                $lineNum++;
+                ++$lineNum;
             }
 
             $fileContent = implode("\n", $lines);

@@ -52,7 +52,7 @@ class Application extends BaseApplication
 LOGO;
 
     /**
-     * @var Config $config The configuration file
+     * @var Config The configuration file
      */
     protected $config;
 
@@ -173,9 +173,9 @@ LOGO;
     /**
      * Get the Repository adapter.
      *
-     * @return Adapter
-     *
      * @throws \RuntimeException
+     *
+     * @return Adapter
      */
     public function getAdapter()
     {
@@ -191,9 +191,9 @@ LOGO;
     /**
      * Get the IssueTracker adapter.
      *
-     * @return IssueTracker
-     *
      * @throws \RuntimeException
+     *
+     * @return IssueTracker
      */
     public function getIssueTracker()
     {
@@ -361,9 +361,9 @@ LOGO;
     public function getSupportedMetaFiles()
     {
         return [
-            'php'  => new Meta\Base(),
-            'js'   => new Meta\Text(),
-            'css'  => new Meta\Text(),
+            'php' => new Meta\Base(),
+            'js' => new Meta\Text(),
+            'css' => new Meta\Text(),
             'twig' => new Meta\Twig(),
         ];
     }

@@ -37,7 +37,7 @@ class TestIssueTracker implements IssueTracker
      */
     public function getTokenGenerationUrl()
     {
-        return null;
+        return;
     }
 
     /**
@@ -144,13 +144,13 @@ class TestIssueTracker implements IssueTracker
     {
         return [
             [
-                "id" => 1,
-                "url" => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
-                "body" => "Seems good to me",
-                "user" => "sstok",
-                "created_at" => new \DateTime('1969-12-31T10:00:00+0100'),
-                "updated_at" => new \DateTime('1969-12-31T10:00:00+0100'),
-            ]
+                'id' => 1,
+                'url' => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
+                'body' => 'Seems good to me',
+                'user' => 'sstok',
+                'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+                'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+            ],
         ];
     }
 

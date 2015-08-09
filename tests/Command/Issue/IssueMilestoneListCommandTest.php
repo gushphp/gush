@@ -21,6 +21,6 @@ class IssueMilestoneListCommandTest extends CommandTestCase
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());
         $tester->execute();
 
-        $this->assertCommandOutputMatches("version 1.0", $tester->getDisplay());
+        $this->assertCommandOutputMatches('version 1.0', $tester->getDisplay());
     }
 }

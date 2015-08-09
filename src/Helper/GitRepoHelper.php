@@ -53,7 +53,7 @@ class GitRepoHelper extends Helper
     }
 
     /**
-     * Validate the given enum fields in the given Input
+     * Validate the given enum fields in the given Input.
      *
      * @param InputInterface $input  - Input which contains the options to be validated
      * @param string         $domain - Domain of the enum e.g. issue
@@ -94,7 +94,7 @@ class GitRepoHelper extends Helper
     }
 
     /**
-     * Check if a given value is a valid enum
+     * Check if a given value is a valid enum.
      *
      * @param string $domain - Domain of the enum e.g. issue
      * @param string $type   - Type to validate (e.g. filter ,state, etc)
@@ -106,7 +106,7 @@ class GitRepoHelper extends Helper
     {
         self::validateEnumDomainAndType($domain, $type);
 
-        if (!in_array($value, self::$enum[$domain][$type]['values'])) {
+        if (!in_array($value, self::$enum[$domain][$type]['values'], true)) {
             throw new \InvalidArgumentException(
                 sprintf('Unknown value "%s" for "%s"', $value, $type)
             );

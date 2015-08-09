@@ -14,7 +14,7 @@ namespace Gush\Template;
 interface TemplateInterface
 {
     /**
-     * Renders the template using the given parameters
+     * Renders the template using the given parameters.
      *
      * @return string
      */
@@ -36,7 +36,7 @@ interface TemplateInterface
     public function getRequirements();
 
     /**
-     * Returns the name of this template
+     * Returns the name of this template.
      *
      * @return string
      */

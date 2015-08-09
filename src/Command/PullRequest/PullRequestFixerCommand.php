@@ -50,10 +50,11 @@ EOF
     {
         $fixerLine = $input->getArgument('fixer_line');
 
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
-        $processHelper = $this->getHelper('process');
+        $gitHelper = $this->getHelper('git');
+
         /** @var ProcessHelper $processHelper */
+        $processHelper = $this->getHelper('process');
 
         if ($fixerLine === self::DEFAULT_FIXER_LINE) {
             $fixerLine = $processHelper->probePhpCsFixer().substr(self::DEFAULT_FIXER_LINE, 12);
@@ -73,7 +74,7 @@ EOF
 
         $gitHelper->add('.');
 
-        if (!$gitHelper->isWorkingTreeReady(true)) {
+        if (!$gitHelper->isWorkingTreeReady()) {
             $gitHelper->commit('cs-fixer', ['a']);
         }
 

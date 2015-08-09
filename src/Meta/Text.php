@@ -42,6 +42,6 @@ class Text implements Meta
      */
     public function getStartTokenRegex()
     {
-        return null;
+        return;
     }
 }

@@ -70,6 +70,7 @@ class TableHelper extends Helper implements InputAwareInterface
      * @param int $layout self::LAYOUT_*
      *
      * @throws \InvalidArgumentException
+     *
      * @return TableHelper
      */
     public function setLayout($layout)
@@ -144,7 +145,7 @@ class TableHelper extends Helper implements InputAwareInterface
         if (null !== $this->input) {
             $layout = $this->input->getOption('table-layout');
 
-            if (!in_array($layout, $this->validLayouts)) {
+            if (!in_array($layout, $this->validLayouts, true)) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         'Table layout "%s" is not valid, must be one of: %s',

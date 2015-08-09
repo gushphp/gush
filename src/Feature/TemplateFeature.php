@@ -13,21 +13,21 @@ namespace Gush\Feature;
 
 /**
  * The TemplateSubscriber will act on classes implementing
- * this interface
+ * this interface.
  */
 interface TemplateFeature
 {
     /**
      * Returns the domain for the template, e.g. pull-request-create.
      * This domain should correspond to the first part of the
-     * template name, e.g. "pull-request-create/symfony-doc"
+     * template name, e.g. "pull-request-create/symfony-doc".
      *
      * @return string
      */
     public function getTemplateDomain();
 
     /**
-     * Returns the default template name
+     * Returns the default template name.
      *
      * @return string
      */

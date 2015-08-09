@@ -121,7 +121,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
                 '--template' => 'default',
                 '--source-org' => 'user',
                 '--source-branch' => 'feat-adapters',
-                '--title' => 'Refactored adapter support'
+                '--title' => 'Refactored adapter support',
             ]
         );
 
@@ -161,7 +161,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
                 'table-pr' => [
                     'marco' => ['Marco?', ''],
                     'myq' => ['My question', 'y'],
-                ]
+                ],
             ],
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getLocalGitHelper()->reveal());

@@ -77,7 +77,7 @@ class MetaHelperTest extends \PHPUnit_Framework_TestCase
                     '{^tests/.+}', // regex
                     'src/bootstrap.php', // glob
                     'bootstrap.inc', // glob
-                    '*.js' // glob
+                    '*.js', // glob
                 ]
             )
         );

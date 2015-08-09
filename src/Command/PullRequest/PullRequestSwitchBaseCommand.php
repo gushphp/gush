@@ -124,7 +124,7 @@ EOF
             $this->getHelper('gush_style')->success(
                 [
                     'Pull-request base-branch could not be switched, a new pull-request has been opened instead: ',
-                    $switchPr['html_url']
+                    $switchPr['html_url'],
                 ]
             );
         }

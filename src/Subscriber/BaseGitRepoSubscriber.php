@@ -47,9 +47,9 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
     /**
      * @param string $adapterName
      *
-     * @return \Gush\Adapter\BaseAdapter
-     *
      * @throws UserException
+     *
+     * @return \Gush\Adapter\BaseAdapter
      */
     protected function getAdapter($adapterName)
     {
@@ -70,9 +70,9 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
      * @param string|null $org
      * @param string|null $repo
      *
-     * @return array [org, repo]
-     *
      * @throws UserException
+     *
+     * @return array [org, repo]
      */
     protected function getRepositoryReference(Adapter $adapter, $org, $repo)
     {
@@ -100,9 +100,9 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
     /**
      * @param bool $allowFailure
      *
-     * @return null|string
-     *
      * @throws UserException
+     *
+     * @return null|string
      */
     protected function findRemoteName($allowFailure = true)
     {

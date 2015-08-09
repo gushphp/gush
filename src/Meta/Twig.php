@@ -42,6 +42,6 @@ class Twig implements Meta
      */
     public function getStartTokenRegex()
     {
-        return null;
+        return;
     }
 }

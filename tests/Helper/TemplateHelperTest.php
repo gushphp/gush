@@ -149,7 +149,7 @@ class TemplateHelperTest extends BaseTestCase
             ['pull-request-create', 'default'],
             ['pull-request-create', 'symfony'],
             ['pull-request-create', 'symfony-doc'],
-            ['pats', 'general']
+            ['pats', 'general'],
         ];
     }
 
@@ -179,8 +179,8 @@ class TemplateHelperTest extends BaseTestCase
         return [
             [
                 ['foo' => ['This is foo', 'default-bar']],
-                ['foo' => 'foo', 'test-option' => 'test-option']
-            ]
+                ['foo' => 'foo', 'test-option' => 'test-option'],
+            ],
         ];
     }
 

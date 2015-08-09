@@ -368,15 +368,15 @@ class GitRepoSubscriberTest extends BaseTestCase
                         'authentication' => [
                             'username' => 'cordoval',
                             'password' => 'very-un-secret',
-                        ]
+                        ],
                     ],
                     'github_enterprise' => [
                         'authentication' => [
                             'username' => 'admins',
                             'password' => 'very-un-secretly',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             '/data/repo-dir',
             $localConfig

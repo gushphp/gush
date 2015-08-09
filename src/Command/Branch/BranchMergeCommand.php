@@ -262,7 +262,7 @@ EOF
             $this->getHelper('gush_style')->error(
                 [
                     'Unable to squash commits when there are multiple authors.',
-                    'Use --force-squash to continue or ask the author to squash commits manually.'
+                    'Use --force-squash to continue or ask the author to squash commits manually.',
                 ]
             );
 
@@ -284,7 +284,7 @@ EOF
             [
                 'preset' => 'semver',
                 'branches' => [],
-                'unknown_branch_policy' => MergeWorkflowValidator::BRANCH_POLICY_ALLOW
+                'unknown_branch_policy' => MergeWorkflowValidator::BRANCH_POLICY_ALLOW,
             ],
             $this->getConfig()->get(['merge_workflow', 'validation'], Config::CONFIG_LOCAL, [])
         );

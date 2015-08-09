@@ -23,7 +23,7 @@ class EditorHelperTest extends \PHPUnit_Framework_TestCase
     {
         $helperSet = new HelperSet(
             [
-                new ProcessHelper()
+                new ProcessHelper(),
             ]
         );
 

@@ -214,9 +214,9 @@ OET;
     private function getMetaHelper()
     {
         $metasSupported = [
-            'php'  => new Meta\Base(),
-            'js'   => new Meta\Text(),
-            'css'  => new Meta\Text(),
+            'php' => new Meta\Base(),
+            'js' => new Meta\Text(),
+            'css' => new Meta\Text(),
             'twig' => new Meta\Twig(),
         ];
 

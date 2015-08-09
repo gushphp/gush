@@ -259,7 +259,7 @@ class CoreInitCommandTest extends CommandTestCase
                 '--repo' => 'MyRepo',
                 '--issue-adapter' => 'jira',
                 '--issue-org' => 'IOrg',
-                '--issue-project' => 'IRepo'
+                '--issue-project' => 'IRepo',
             ],
             ['interactive' => false]
         );

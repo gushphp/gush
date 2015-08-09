@@ -13,12 +13,12 @@ namespace Gush\Feature;
 
 /**
  * The TableSubscriber will act on classes implementing
- * this interface
+ * this interface.
  */
 interface TableFeature
 {
     /**
-     * Return the default table layout to use
+     * Return the default table layout to use.
      *
      * @return string
      */

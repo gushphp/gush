@@ -33,7 +33,7 @@ class TextHelperTest extends \PHPUnit_Framework_TestCase
                 5,
                 null,
                 null,
-                'th...'
+                'th...',
             ],
             [
                 'this is some text',

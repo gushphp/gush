@@ -12,7 +12,7 @@
 namespace Gush\Exception;
 
 /**
- * Exception thrown by adapters when they do not support an operation
+ * Exception thrown by adapters when they do not support an operation.
  */
 class UnsupportedOperationException extends AdapterException
 {

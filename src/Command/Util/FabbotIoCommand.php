@@ -64,8 +64,8 @@ EOF
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
 
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
 
         if (!$gitHelper->isWorkingTreeReady()) {
             throw new WorkingTreeIsNotReady();

@@ -63,7 +63,7 @@ EOF
 
 This is a description
 EOF
-            ]
+            ],
         ];
     }
 
@@ -162,7 +162,7 @@ EOF
             '/temp/gush',
             [],
             '/data/repo-dir',
-            ['table-pr' => $requirements ]
+            ['table-pr' => $requirements]
         );
 
         return new PullRequestCustomTemplate($this->getApplication($config));

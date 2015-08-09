@@ -51,8 +51,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $gitHelper = $this->getHelper('git');
         /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+
 
         $remote = $input->getArgument('remote');
         $branchName = $input->getArgument('branch_name');

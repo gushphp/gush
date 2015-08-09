@@ -36,11 +36,11 @@ class AutocompleteHelperTest extends \PHPUnit_Framework_TestCase
                 'name' => 'test:command',
                 'definition' => [
                     'options' => [
-                        'stable' => ['name' => "--stable"],
-                        'org' => ['name' => "--org"]
-                    ]
-                ]
-            ]
+                        'stable' => ['name' => '--stable'],
+                        'org' => ['name' => '--org'],
+                    ],
+                ],
+            ],
         ];
 
         $string = implode(

@@ -67,7 +67,7 @@ class PullRequestFixerCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches(
             [
                 'Your working tree has uncommitted changes, committing changes with "WIP" as message.',
-                'CS fixes committed!'
+                'CS fixes committed!',
             ],
             $tester->getDisplay()
         );

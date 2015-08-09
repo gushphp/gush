@@ -37,7 +37,7 @@ class BaseCommand extends Command
     }
 
     /**
-     * Gets the current adapter
+     * Gets the current adapter.
      *
      * @return Adapter
      */
@@ -47,7 +47,7 @@ class BaseCommand extends Command
     }
 
     /**
-     * Gets the current adapter
+     * Gets the current adapter.
      *
      * @return IssueTracker
      */
@@ -67,7 +67,7 @@ class BaseCommand extends Command
     }
 
     /**
-     * Gets a specific parameter
+     * Gets a specific parameter.
      *
      * @param InputInterface $input
      * @param string         $key

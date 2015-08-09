@@ -15,7 +15,7 @@ use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Helper for launching external editor
+ * Helper for launching external editor.
  */
 class EditorHelper extends Helper
 {
@@ -26,6 +26,7 @@ class EditorHelper extends Helper
      * @param string $string
      *
      * @throws \RuntimeException
+     *
      * @return string
      */
     public function fromString($string)

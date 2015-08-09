@@ -96,7 +96,7 @@ EOF
             }
 
             $output->writeln(
-                sprintf("%s: %s   <info>%s</info>", $idLabel, $issue['title'], $issue['url'])
+                sprintf('%s: %s   <info>%s</info>', $idLabel, $issue['title'], $issue['url'])
             );
         }
 

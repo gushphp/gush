@@ -61,7 +61,7 @@ final class MergeWorkflowValidator
             throw new \InvalidArgumentException(
                 [
                     'Merge workflow preset is not valid.',
-                    'Supported workflow presets are: semver, git-flow or none.'
+                    'Supported workflow presets are: semver, git-flow or none.',
                 ]
             );
         }
@@ -70,7 +70,7 @@ final class MergeWorkflowValidator
             throw new \InvalidArgumentException(
                 [
                     'Merge workflow-policy is not valid.',
-                    'Supported workflow policies are: allow-merge or deny-merge.'
+                    'Supported workflow policies are: allow-merge or deny-merge.',
                 ]
             );
         }
@@ -124,7 +124,7 @@ final class MergeWorkflowValidator
                         'Semver: major version of source "%s" is higher then major version of target "%s".',
                         $source,
                         $target
-                    )
+                    ),
                 ]
             );
         }
@@ -141,7 +141,7 @@ final class MergeWorkflowValidator
                         'Semver: minor version of source "%s" is higher then minor version of target "%s".',
                         $source,
                         $target
-                    )
+                    ),
                 ]
             );
         }
@@ -161,7 +161,7 @@ final class MergeWorkflowValidator
         throw new MergeWorkflowException(
             [
                 sprintf('Workflow violation: Cannot merge "%s" into "%s".', $source, $target),
-                'Git-flow: Only "develop", "hotfix-" or "release-" branches are allowed to be merged into master.'
+                'Git-flow: Only "develop", "hotfix-" or "release-" branches are allowed to be merged into master.',
             ]
         );
     }

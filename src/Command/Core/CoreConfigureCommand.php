@@ -80,7 +80,7 @@ EOF
             [
                 'Gush uses adapters for repository-management and issue-tracking.',
                 'Adapters displayed with a "<info>*</info>" are already configured.',
-                'You are recommended to not skip this step if you configure Gush for the first time.'
+                'You are recommended to not skip this step if you configure Gush for the first time.',
             ]
         );
         $styleHelper->newLine();
@@ -132,8 +132,9 @@ EOF
 
     private function configureAdapter(InputInterface $input, OutputInterface $output, $adapterName, array $adapter)
     {
-        $application = $this->getApplication();
         /** @var \Gush\Application $application */
+        $application = $this->getApplication();
+
         $isAuthenticated = false;
         $authenticationAttempts = 0;
         $config = [];
@@ -164,7 +165,7 @@ EOF
                 $styleHelper->error($e->getMessage());
             }
 
-            $authenticationAttempts++;
+            ++$authenticationAttempts;
         }
 
         if ($isAuthenticated) {

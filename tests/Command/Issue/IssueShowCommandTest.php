@@ -29,7 +29,7 @@ class IssueShowCommandTest extends CommandTestCase
                 'Labels: actionable, easy pick',
                 'Title: Write a behat test to launch strategy',
                 'Link: https://github.com/gushphp/gush/issues/60',
-                'Help me conquer the world. Teach them to use Gush.'
+                'Help me conquer the world. Teach them to use Gush.',
             ],
             $tester->getDisplay()
         );
@@ -56,7 +56,7 @@ class IssueShowCommandTest extends CommandTestCase
                 'Labels: actionable, easy pick',
                 'Title: Write a behat test to launch strategy',
                 'Link: https://github.com/gushphp/gush/issues/60',
-                'Help me conquer the world. Teach them to use Gush.'
+                'Help me conquer the world. Teach them to use Gush.',
             ],
             $tester->getDisplay()
         );

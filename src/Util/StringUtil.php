@@ -36,7 +36,7 @@ final class StringUtil
      */
     public static function concatWords($word)
     {
-        return str_replace(" ", "", ucwords(strtr($word, "_-", "  ")));
+        return str_replace(' ', '', ucwords(strtr($word, '_-', '  ')));
     }
 
     /**

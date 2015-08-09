@@ -97,7 +97,7 @@ SWITCHCASE;
 
             $switchContent .= str_replace(
                 ['%%COMMAND%%', '%%COMMAND_OPTIONS%%'],
-                [$command, join(' ', $options)],
+                [$command, implode(' ', $options)],
                 $switchCase
             );
         }

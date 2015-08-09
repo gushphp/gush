@@ -16,7 +16,8 @@ use Gush\Exception\NotImplementedException;
 
 /**
  * Provides a base class for adapting Gush to use different providers.
- * E.g. Github, GitLab, Bitbucket
+ *
+ * E.g. Github, GitLab, Bitbucket.
  */
 abstract class BaseAdapter implements Adapter
 {

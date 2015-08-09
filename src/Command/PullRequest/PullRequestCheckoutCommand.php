@@ -76,7 +76,7 @@ EOF
                             $sourceBranch,
                             $sourceOrg
                         ),
-                        'Rename the local branch to resolve this conflict.'
+                        'Rename the local branch to resolve this conflict.',
                     ]
                 );
             }

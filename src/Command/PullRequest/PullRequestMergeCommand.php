@@ -210,7 +210,7 @@ EOF
             $styleHelper->error(
                 [
                     'Unable to squash commits when there are multiple authors.',
-                    'Use --force-squash to continue or ask the author to squash commits manually.'
+                    'Use --force-squash to continue or ask the author to squash commits manually.',
                 ]
             );
 

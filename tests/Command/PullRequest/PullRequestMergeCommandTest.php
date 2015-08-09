@@ -92,13 +92,13 @@ OET;
             'sha' => '32fe234332fe234332fe234332fe234332fe2343',
             'author' => 'Me <me@exm.com>',
             'subject' => 'added merge pull request feature',
-            'message' => "added merge pull request feature\n.\nAnd some other cool stuff"
+            'message' => "added merge pull request feature\n.\nAnd some other cool stuff",
         ],
         [
             'sha' => 'ab34567812345678123456781234567812345678',
             'author' => 'Me <me@exm.com>',
             'subject' => 'added final touches',
-            'message' => "added final touches"
+            'message' => 'added final touches',
         ],
     ];
 
@@ -107,7 +107,7 @@ OET;
             'sha' => '32fe234332fe2343f2fea34332fe234332fe2343',
             'author' => 'Me <me@exm.com>',
             'subject' => 'added merge pull request feature',
-            'message' => "added merge pull request feature\n.\nAnd some other cool stuff"
+            'message' => "added merge pull request feature\n.\nAnd some other cool stuff",
         ],
     ];
 
