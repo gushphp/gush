@@ -69,7 +69,7 @@ EOF
             throw new WorkingTreeIsNotReady();
         }
 
-        $status = $this->getStatus($adapter->getCommitStatuses($org, $repo, $pr['head']['ref']));
+        $status = $this->getStatus($adapter->getCommitStatuses($org, $repo, $pr['head']['sha']));
 
         if ('success' === $status['status']) {
             $this->getHelper('gush_style')->error('Nothing to update.');
@@ -97,7 +97,7 @@ EOF
             if (false !== stripos($status['context'], 'StyleCI')) {
                 return [
                     'status' => $status['state'],
-                    'patch_url' => $status['target_url'].'/diff'
+                    'patch_url' => $status['target_url'].'/diff',
                 ];
             }
         }
