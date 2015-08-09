@@ -283,6 +283,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         $config = $this->application->getConfig()->get(['adapters', $issueAdapterName], Config::CONFIG_SYSTEM);
 
+        /** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
         $issueTracker = $this->application->getAdapterFactory()->createIssueTracker(
             $issueAdapterName,
             $config,
@@ -291,7 +292,6 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         $issueTracker->authenticate();
 
-        /* @var \Gush\Adapter\BaseIssueTracker $issueTracker */
         $issueTracker
             ->setRepository($issueRepo)
             ->setUsername($issueOrg)
