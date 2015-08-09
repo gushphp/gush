@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -13,8 +13,8 @@ namespace Gush\Helper;
 
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Exception\WorkingTreeIsNotReady;
-use Gush\Operation\RemotePatchOperation;
 use Gush\Operation\RemoteMergeOperation;
+use Gush\Operation\RemotePatchOperation;
 use Gush\Util\StringUtil;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -359,9 +359,9 @@ class GitHelper extends Helper
      * @param string $commitMessage Commit message to use for the merge-commit
      * @param bool   $fastForward   Perform merge using fast-forward (default false)
      *
-     * @return null|string The merge-commit hash or null when fast-forward was used
-     *
      * @throws WorkingTreeIsNotReady
+     *
+     * @return null|string The merge-commit hash or null when fast-forward was used
      */
     public function mergeBranch($base, $sourceBranch, $commitMessage, $fastForward = false)
     {
@@ -373,7 +373,7 @@ class GitHelper extends Helper
         if ($fastForward) {
             $this->processHelper->runCommand(['git', 'merge', '--ff', $sourceBranch]);
 
-            return null;
+            return;
         }
 
         $tmpName = $this->filesystemHelper->newTempFilename();
@@ -404,9 +404,9 @@ class GitHelper extends Helper
      * @param string $sourceBranchLabel Actual branch (to use as replacement for the log)
      *                                  Else the temp-branch name is used.
      *
-     * @return string The merge-commit hash
-     *
      * @throws WorkingTreeIsNotReady
+     *
+     * @return string The merge-commit hash
      */
     public function mergeBranchWithLog($base, $sourceBranch, $commitMessage, $sourceBranchLabel = null)
     {

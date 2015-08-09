@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -210,7 +210,7 @@ EOF
             $styleHelper->error(
                 [
                     'Unable to squash commits when there are multiple authors.',
-                    'Use --force-squash to continue or ask the author to squash commits manually.'
+                    'Use --force-squash to continue or ask the author to squash commits manually.',
                 ]
             );
 

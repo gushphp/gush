@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -91,14 +91,14 @@ class BranchChangelogCommandTest extends CommandTestCase
                         'sha' => '68bfa1d00',
                         'author' => 'Anonymous <someone@example.com>',
                         'subject' => ' Another hack which fixes #123',
-                        'message' => ' Another hack which fixes #123'
+                        'message' => ' Another hack which fixes #123',
                     ],
                     [
                         'sha' => '68bfa1d05',
                         'author' => 'Anonymous <someone@example.com>',
                         'subject' => ' Another hack which fixes GITHUB-500',
-                        'message' => ' Another hack which fixes GITHUB-500'
-                    ]
+                        'message' => ' Another hack which fixes GITHUB-500',
+                    ],
                 ]
             );
         } else {

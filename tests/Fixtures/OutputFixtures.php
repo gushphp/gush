@@ -12,12 +12,10 @@
 namespace Gush\Tests\Fixtures;
 
 /**
- * Please do not auto-edit this file thereby removing intentional white spaces
+ * Please do not auto-edit this file thereby removing intentional white spaces.
  */
 class OutputFixtures
 {
-
-
     const HEADER_LICENSE_TWIG = <<<EOT
 {#
  # This file is part of Your Package package.

@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -149,7 +149,7 @@ class TemplateHelperTest extends BaseTestCase
             ['pull-request-create', 'default'],
             ['pull-request-create', 'symfony'],
             ['pull-request-create', 'symfony-doc'],
-            ['pats', 'general']
+            ['pats', 'general'],
         ];
     }
 
@@ -179,8 +179,8 @@ class TemplateHelperTest extends BaseTestCase
         return [
             [
                 ['foo' => ['This is foo', 'default-bar']],
-                ['foo' => 'foo', 'test-option' => 'test-option']
-            ]
+                ['foo' => 'foo', 'test-option' => 'test-option'],
+            ],
         ];
     }
 

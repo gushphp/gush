@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -121,7 +121,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
                 '--template' => 'default',
                 '--source-org' => 'user',
                 '--source-branch' => 'feat-adapters',
-                '--title' => 'Refactored adapter support'
+                '--title' => 'Refactored adapter support',
             ]
         );
 
@@ -161,7 +161,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
                 'table-pr' => [
                     'marco' => ['Marco?', ''],
                     'myq' => ['My question', 'y'],
-                ]
+                ],
             ],
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getLocalGitHelper()->reveal());

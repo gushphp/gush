@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -25,7 +25,7 @@ class CoreAliasCommand extends BaseCommand
     {
         $this->setName('core:alias')
             ->setDescription('Outputs help and alias snippet for wrapping gush on git')
-            ->addOption('s', '-s', InputOption::VALUE_NONE, "Outputs only snippet")
+            ->addOption('s', '-s', InputOption::VALUE_NONE, 'Outputs only snippet')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> outputs an alias snippet to wrap Gush on git:

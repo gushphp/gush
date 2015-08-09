@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -125,10 +125,10 @@ class AdapterFactory
      * @param array  $adapterConfig
      * @param Config $globalConfig
      *
-     * @return Adapter
-     *
      * @throws \InvalidArgumentException
      * @throws \LogicException
+     *
+     * @return Adapter
      */
     public function createRepositoryManager($name, array $adapterConfig, Config $globalConfig)
     {
@@ -148,10 +148,10 @@ class AdapterFactory
      * @param array  $adapterConfig
      * @param Config $globalConfig
      *
-     * @return IssueTracker
-     *
      * @throws \InvalidArgumentException
      * @throws \LogicException
+     *
+     * @return IssueTracker
      */
     public function createIssueTracker($name, array $adapterConfig, Config $globalConfig)
     {
@@ -180,9 +180,9 @@ class AdapterFactory
     /**
      * @param string $name
      *
-     * @return IssueTrackerFactory|RepositoryManagerFactory
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return IssueTrackerFactory|RepositoryManagerFactory
      */
     private function getFactoryObject($name)
     {

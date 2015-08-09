@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -64,7 +64,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getTokenGenerationUrl()
     {
-        return null;
+        return;
     }
 
     /**
@@ -94,7 +94,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'fork_origin' => [
                     'org' => 'gushphp',
                     'repository' => 'gush',
-                ]
+                ],
             ];
         } else {
             return [
@@ -259,13 +259,13 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                "id" => 1,
-                "url" => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
-                "body" => "Seems good to me",
-                "user" => "sstok",
-                "created_at" => new \DateTime('1969-12-31T10:00:00+0100'),
-                "updated_at" => new \DateTime('1969-12-31T10:00:00+0100'),
-            ]
+                'id' => 1,
+                'url' => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
+                'body' => 'Seems good to me',
+                'user' => 'sstok',
+                'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+                'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+            ],
         ];
     }
 
@@ -394,12 +394,12 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             [
                 'sha' => '32fe234332fe234332fe234332fe234332fe2343',
                 'message' => 'added merge pull request feature',
-                'user' => 'cordoval'
+                'user' => 'cordoval',
             ],
             [
                 'sha' => 'ab34567812345678123456781234567812345678',
                 'message' => 'added final touches',
-                'user' => 'cordoval'
+                'user' => 'cordoval',
             ],
         ];
     }
@@ -474,7 +474,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                     'sha' => '6dcb09b5b57875f334f61acmes695e2e4193db5e',
                     'repo' => 'gush',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -505,16 +505,16 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                "url" => "https://github.com/octocat/Hello-World/releases/v1.0.0",
-                "id" => 1,
-                "name" => "v1.0.0",
-                "tag_name" => "v1.0.0",
-                "body" => "Description of the release",
-                "draft" => false,
-                "prerelease" => false,
-                "created_at" => new \DateTime('2014-01-05T10:00:12+0100'),
-                "published_at" => new \DateTime('2014-01-05T10:00:12+0100'),
-                "user" => "username",
+                'url' => 'https://github.com/octocat/Hello-World/releases/v1.0.0',
+                'id' => 1,
+                'name' => 'v1.0.0',
+                'tag_name' => 'v1.0.0',
+                'body' => 'Description of the release',
+                'draft' => false,
+                'prerelease' => false,
+                'created_at' => new \DateTime('2014-01-05T10:00:12+0100'),
+                'published_at' => new \DateTime('2014-01-05T10:00:12+0100'),
+                'user' => 'username',
             ],
         ];
     }
@@ -551,7 +551,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'created_at' => new \DateTime('2014-01-05T10:00:12+0100'),
                 'updated_at' => new \DateTime('2014-01-05T10:00:12+0100'),
                 'uploader' => 'username',
-            ]
+            ],
         ];
     }
 }

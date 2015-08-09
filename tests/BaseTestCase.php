@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -21,12 +21,12 @@ use Gush\Helper\OutputAwareInterface;
 use Gush\Helper\ProcessHelper;
 use Gush\Tests\Fixtures\Adapter\TestAdapterFactory;
 use Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory;
+use org\bovigo\vfs\vfsStream;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\InputAwareInterface;
-use org\bovigo\vfs\vfsStream;
 
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {

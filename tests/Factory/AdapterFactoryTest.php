@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -96,7 +96,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
                     'label' => 'Testing2',
                     AdapterFactory::SUPPORT_REPOSITORY_MANAGER => false,
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => true,
-                ]
+                ],
             ],
             $this->adapterFactory->all()
         );

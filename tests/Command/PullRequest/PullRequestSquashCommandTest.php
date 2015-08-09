@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -70,9 +70,9 @@ class PullRequestSquashCommandTest extends CommandTestCase
                         'authentication' => [
                             'username' => 'someone',
                             'password' => 'very-un-secret',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             null,
             function (HelperSet $helperSet) {
@@ -89,7 +89,7 @@ class PullRequestSquashCommandTest extends CommandTestCase
                 'Pull-request has been squashed!',
                 'You are not the owner of the repository pull-requests\'s source-branch.',
                 'Make sure you have push access to the "cordoval/gush" repository before you continue.',
-                'Do you want to squash the pull-request and push?'
+                'Do you want to squash the pull-request and push?',
             ],
             $tester->getDisplay()
         );
@@ -106,9 +106,9 @@ class PullRequestSquashCommandTest extends CommandTestCase
                         'authentication' => [
                             'username' => 'someone',
                             'password' => 'very-un-secret',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             null,
             function (HelperSet $helperSet) {

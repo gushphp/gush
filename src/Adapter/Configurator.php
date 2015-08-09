@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -32,9 +32,9 @@ interface Configurator
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return array Validated and normalized configuration as associative array
-     *
      * @throws \Exception When any of the validators returns an error
+     *
+     * @return array Validated and normalized configuration as associative array
      */
     public function interact(InputInterface $input, OutputInterface $output);
 }

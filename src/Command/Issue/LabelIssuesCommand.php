@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -118,7 +118,7 @@ EOF
         $styleHelper->caution(
             [
                 'If you "update" the labels of an issue/pull-request only those labels will be used!',
-                'Any labels that were already assigned but are not selected when updating will be removed.'
+                'Any labels that were already assigned but are not selected when updating will be removed.',
             ]
         );
 
@@ -193,7 +193,7 @@ EOF
             $style->writeln(' N/A');
             $style->newLine();
 
-            return ;
+            return;
         }
 
         $style->listing($labels);

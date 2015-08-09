@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -36,11 +36,11 @@ class AutocompleteHelperTest extends \PHPUnit_Framework_TestCase
                 'name' => 'test:command',
                 'definition' => [
                     'options' => [
-                        'stable' => ['name' => "--stable"],
-                        'org' => ['name' => "--org"]
-                    ]
-                ]
-            ]
+                        'stable' => ['name' => '--stable'],
+                        'org' => ['name' => '--org'],
+                    ],
+                ],
+            ],
         ];
 
         $string = implode(

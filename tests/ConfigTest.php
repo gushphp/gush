@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -61,7 +61,7 @@ class ConfigTest extends BaseTestCase
         $this->assertEquals(
             [
                 'adapters' => [
-                    'github' => ['base_url' => 'url']
+                    'github' => ['base_url' => 'url'],
                 ],
                 'home' => $this->homedir.'/gush',
                 'home_config' => $this->homedir.'/gush/.gush.yml',
@@ -91,14 +91,14 @@ class ConfigTest extends BaseTestCase
                 ],
             ],
             [
-                'repo_adapter' => ['name' => 'github']
+                'repo_adapter' => ['name' => 'github'],
             ]
         );
 
         $this->assertEquals(
             [
                 'adapters' => [
-                    'github' => ['base_url' => 'url']
+                    'github' => ['base_url' => 'url'],
                 ],
                 'home' => $this->homedir.'/gush',
                 'home_config' => $this->homedir.'/gush/.gush.yml',
@@ -121,7 +121,7 @@ class ConfigTest extends BaseTestCase
 
         $this->assertEquals(
             [
-                'repo_adapter' => ['name' => 'github']
+                'repo_adapter' => ['name' => 'github'],
             ],
             $config->toArray(Config::CONFIG_LOCAL)
         );

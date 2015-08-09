@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -55,13 +55,13 @@ interface Adapter
 
     /**
      * Creates a fork from upstream and returns an array
-     * with the forked url e.g. 'git@github.com:cordoval/repoName.git'
+     * with the forked url.
      *
      * @param string $org Organisation name
      *
-     * @return array An array the with following keys: git_url, html_url
-     *
      * @throws AdapterException when creating a fork failed, eg. not authorized or limit reached
+     *
+     * @return array An array the with following keys: git_url, html_url
      */
     public function createFork($org);
 
@@ -93,17 +93,18 @@ interface Adapter
     public function getRepositoryInfo($org, $repository);
 
     /**
-     * @param $name
-     * @param $description
-     * @param $homepage
-     * @param  bool  $public
-     * @param  null  $organization
-     * @param  bool  $hasIssues
-     * @param  bool  $hasWiki
-     * @param  bool  $hasDownloads
-     * @param  int   $teamId
-     * @param  bool  $autoInit
-     * @return mixed
+     * @param string $name
+     * @param string $description
+     * @param string $homepage
+     * @param bool   $public
+     * @param null   $organization
+     * @param bool   $hasIssues
+     * @param bool   $hasWiki
+     * @param bool   $hasDownloads
+     * @param int    $teamId
+     * @param bool   $autoInit
+     *
+     * @return array
      */
     public function createRepo(
         $name,
@@ -124,9 +125,9 @@ interface Adapter
      * @param int    $id
      * @param string $message
      *
-     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/pull/1347#issuecomment-1
-     *
      * @throws AdapterException when creating of command failed (eg. disabled or not authorized)
+     *
+     * @return string|null URL to the comment ex. "https://github.com/octocat/Hello-World/pull/1347#issuecomment-1
      */
     public function createComment($id, $message);
 
@@ -177,9 +178,9 @@ interface Adapter
      * @param string $body
      * @param array  $parameters
      *
-     * @return array An array the with following keys: html_url, number
-     *
      * @throws AdapterException when the pull request are disabled for the repository
+     *
+     * @return array An array the with following keys: html_url, number
      */
     public function openPullRequest($base, $head, $subject, $body, array $parameters = []);
 
@@ -219,10 +220,10 @@ interface Adapter
      *
      * @param int $id
      *
-     * @return array
-     *
      * @throws AdapterException when pull request are disabled for the repository,
      *                          or if the pull request does not exist (anymore)
+     *
+     * @return array
      */
     public function getPullRequest($id);
 
@@ -238,10 +239,10 @@ interface Adapter
      *
      * @param int $id
      *
-     * @return array[] [['sha1' => 'dcb09b5b57875f334f61aebed695e2e4193db5e', ...]]
-     *
      * @throws AdapterException when pull request are disabled for the repository,
      *                          or if the pull request does not exist (anymore)
+     *
+     * @return array[] [['sha1' => 'dcb09b5b57875f334f61aebed695e2e4193db5e', ...]]
      */
     public function getPullRequestCommits($id);
 
@@ -251,9 +252,9 @@ interface Adapter
      * @param int    $id
      * @param string $message
      *
-     * @return string sha1 of the merge commit
-     *
      * @throws AdapterException when merging failed
+     *
+     * @return string sha1 of the merge commit
      */
     public function mergePullRequest($id, $message);
 
@@ -262,8 +263,6 @@ interface Adapter
      *
      * @param int   $id
      * @param array $parameters
-     *
-     * @return void
      *
      * @throws AdapterException when updating of the pull-request failed (eg. disabled or not authorized)
      */
@@ -300,9 +299,9 @@ interface Adapter
      * @param int    $page
      * @param int    $perPage
      *
-     * @return array[] An array where each entry has the same structure as described in getPullRequest()
-     *
      * @throws AdapterException when state is unsupported
+     *
+     * @return array[] An array where each entry has the same structure as described in getPullRequest()
      */
     public function getPullRequests($state = null, $page = 1, $perPage = 30);
 
@@ -392,8 +391,6 @@ interface Adapter
      * Deletes a release.
      *
      * @param int $id
-     *
-     * @return void
      *
      * @throws AdapterException when deleting of release failed
      */

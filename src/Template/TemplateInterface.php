@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -14,7 +14,7 @@ namespace Gush\Template;
 interface TemplateInterface
 {
     /**
-     * Renders the template using the given parameters
+     * Renders the template using the given parameters.
      *
      * @return string
      */
@@ -36,7 +36,7 @@ interface TemplateInterface
     public function getRequirements();
 
     /**
-     * Returns the name of this template
+     * Returns the name of this template.
      *
      * @return string
      */

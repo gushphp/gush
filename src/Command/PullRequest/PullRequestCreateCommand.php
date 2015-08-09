@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -127,7 +127,7 @@ EOF
         $template = $input->getOption('template');
 
         $sourceOrg = $input->getOption('source-org');
-        $sourceRepo = $input->getOption('source-repo') ?: $input->getOption('repo') ;
+        $sourceRepo = $input->getOption('source-repo') ?: $input->getOption('repo');
         $sourceBranch = $input->getOption('source-branch');
         $base = $input->getOption('base');
 
@@ -218,7 +218,7 @@ EOF
 
             $styleHelper->note(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
 
-            return ;
+            return;
         }
 
         throw new UserException(

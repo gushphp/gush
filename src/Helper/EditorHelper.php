@@ -3,7 +3,7 @@
 /*
  * This file is part of Gush package.
  *
- * (c) 2013-2015 Luis Cordova <cordoval@gmail.com>
+ * (c) Luis Cordova <cordoval@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Helper for launching external editor
+ * Helper for launching external editor.
  */
 class EditorHelper extends Helper
 {
@@ -26,6 +26,7 @@ class EditorHelper extends Helper
      * @param string $string
      *
      * @throws \RuntimeException
+     *
      * @return string
      */
     public function fromString($string)
