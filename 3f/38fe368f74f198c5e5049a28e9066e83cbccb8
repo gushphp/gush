@@ -1,0 +1,20 @@
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-08 14:15
+
+Whoops :) I need to push my GitHub Adapter changes as well.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-09 07:53
+
+Btw, @cordoval can you enable https://styleci.io/ for the Gush repositories?
+Note that the .php_cs file is not used, you can configure these using the web interface or a `.styleci.yml` file.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-08-09 10:18
+
+> Note that the .php_cs file is not used
+
+Yeh, because we'd have to actually execute that file to return a config object, and we can't do that for obvious security reasons. :)
