@@ -27,7 +27,7 @@ class RepositoryCreateCommand extends BaseCommand implements GitRepoFeature
     {
         $this
             ->setName('repo:create')
-            ->setDescription('Quickly spins a repository')
+            ->setDescription('Creates a new repository')
             ->addArgument('name', InputArgument::REQUIRED, 'Name of the new repository')
             ->addArgument('description', InputArgument::OPTIONAL, 'Repository description')
             ->addArgument('homepage', InputArgument::OPTIONAL, 'Repository homepage')
@@ -51,10 +51,28 @@ class RepositoryCreateCommand extends BaseCommand implements GitRepoFeature
             )
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command spins a repository:
+The <info>%command.name%</info> command creates a new repository:
 
     <info>$ gush %command.name% my-package</info>
 
+By default the repository will be created in your "personal" organization (your username)
+to create the repository in a specific organization use the <comment>--target-org</> option.
+
+    <info>$ gush %command.name% --target-org=my-org my-package</info>
+
+If you want to create a private repository (non open-source) use the <comment>--private</> option:
+
+    <info>$ gush %command.name% --private my-package</info>
+
+Note: Private repositories may not be supported by the used adapter or only in paid/higher plans.
+
+Last, if you don't want to initialize the repository (with an initial commit) use
+the <comment>--no-init</> option:
+
+    <info>$ gush %command.name% --no-init my-package</info>
+
+This will leave the repository empty, you need to push at least one commit
+before any pull requests can be opened.
 EOF
             )
         ;
