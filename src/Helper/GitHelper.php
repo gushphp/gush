@@ -473,15 +473,9 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($command);
     }
 
-    public function pullRemote($remote, $ref = null, $setUpstream = false)
+    public function pullRemote($remote, $ref = null)
     {
-        $command = ['git', 'pull'];
-
-        if ($setUpstream) {
-            $command[] = '-u';
-        }
-
-        $command[] = $remote;
+        $command = ['git', 'pull', $remote];
 
         if ($ref) {
             $command[] = $ref;
