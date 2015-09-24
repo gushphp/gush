@@ -104,8 +104,13 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
         ;
     }
 
-    // use this for detecting the org and repo ;)
-    // add the options to decorateDefinition
+    /** 
+     * Use this for detecting the org and repo.
+     *
+     * Add the options to decorateDefinition.
+     *
+     * @param ConsoleEvent $event
+     */
     public function initialize(ConsoleEvent $event)
     {
         $command = $event->getCommand();
