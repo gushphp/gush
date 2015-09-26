@@ -44,16 +44,6 @@ interface Adapter
     public function isAuthenticated();
 
     /**
-     * Returns the URL for generating a token.
-     *
-     * If the adapter doesn't support tokens,
-     * this will return null instead.
-     *
-     * @return null|string
-     */
-    public function getTokenGenerationUrl();
-
-    /**
      * Creates a fork from upstream and returns an array
      * with the forked url.
      *
@@ -201,7 +191,6 @@ interface Adapter
      * "updated_at":    "DateTime Object"
      * "user":          "username"
      * "assignee":      "username"
-     * "merge_commit":  "e5bd3914e2e596debea16f433f57875b5b90bcd6"
      * "merged":        false
      * "merged_by":     "username"
      * "head": [
@@ -245,18 +234,6 @@ interface Adapter
      * @return array[] [['sha1' => 'dcb09b5b57875f334f61aebed695e2e4193db5e', ...]]
      */
     public function getPullRequestCommits($id);
-
-    /**
-     * Merges a pull-request by id.
-     *
-     * @param int    $id
-     * @param string $message
-     *
-     * @throws AdapterException when merging failed
-     *
-     * @return string sha1 of the merge commit
-     */
-    public function mergePullRequest($id, $message);
 
     /**
      * Updates the state of a pull-request by id.

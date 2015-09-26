@@ -199,16 +199,6 @@ class GitLabRepoAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function mergePullRequest($id, $message)
-    {
-        $mr = $this->client->api('merge_requests')->show($this->getCurrentProject()->id, $id);
-        $mr = MergeRequest::fromArray($this->client, $this->getCurrentProject(), $mr);
-        $mr->merge($message);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getPullRequests($state = null, $page = 1, $perPage = 30)
     {
         $mergeRequests = $this->client->api('merge_requests')->all($this->getCurrentProject()->id);

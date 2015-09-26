@@ -134,14 +134,6 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     /**
      * {@inheritdoc}
      */
-    public function getTokenGenerationUrl()
-    {
-        return sprintf('%s/settings/applications', $this->url);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createFork($org)
     {
         $api = $this->client->api('repo');
@@ -495,27 +487,6 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     /**
      * {@inheritdoc}
      */
-    public function mergePullRequest($id, $message)
-    {
-        $api = $this->client->api('pull_request');
-
-        $result = $api->merge(
-            $this->getUsername(),
-            $this->getRepository(),
-            $id,
-            $message
-        );
-
-        if (false === $result['merged']) {
-            throw new AdapterException('Merge failed: '.$result['message']);
-        }
-
-        return $result['sha'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function updatePullRequest($id, array $parameters)
     {
         $api = $this->client->api('pull_request');
@@ -694,7 +665,6 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
             'updated_at' => !empty($pr['updated_at']) ? new \DateTime($pr['updated_at']) : null,
             'user' => $pr['user']['login'],
             'assignee' => null,
-            'merge_commit' => null, // empty as GitHub doesn't provide this yet, merge_commit_sha is deprecated and not meant for this
             'merged' => isset($pr['merged_by']) && isset($pr['merged_by']['login']),
             'merged_by' => isset($pr['merged_by']) && isset($pr['merged_by']['login']) ? $pr['merged_by']['login'] : '',
             'head' => [

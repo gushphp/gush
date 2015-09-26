@@ -35,16 +35,6 @@ interface IssueTracker
     public function isAuthenticated();
 
     /**
-     * Returns the URL for generating a token.
-     *
-     * If the tracker doesn't support tokens,
-     * this will return null instead.
-     *
-     * @return null|string
-     */
-    public function getTokenGenerationUrl();
-
-    /**
      * Opens a new issue on the issue tracker.
      *
      * @param string $subject Subject of the issue

@@ -105,14 +105,6 @@ trait GitLabAdapter
         return is_array($this->client->api('projects')->owned());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTokenGenerationUrl()
-    {
-        return sprintf('%/profile/account', $this->configuration['repo_domain_url']);
-    }
-
     protected static function getPagination(Response $response)
     {
         $header = $response->getHeader('Link');

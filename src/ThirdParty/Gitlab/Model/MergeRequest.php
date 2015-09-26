@@ -44,7 +44,6 @@ class MergeRequest extends Model\MergeRequest
             'updated_at' => null,
             'user' => null,
             'assignee' => null,
-            'merge_commit' => null,
             'merged' => false,
             'merged_by' => null,
             'head' => [
