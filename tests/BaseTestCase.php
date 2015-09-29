@@ -93,6 +93,9 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             // Fake all system helpers to prevent actual execution
             $helperSet->set(new FilesystemHelper($this->getNewTmpFolder('tmp')));
 
+            // Set maximum attempt to prevent inf loop.
+            $helperSet->get('gush_question')->setMaxAttempts(2);
+
             // Use a temp HelperSet to prevent double registering the prophecies (with other parameters)
             // causing failed expectations.
             $tmpHelperSet = new HelperSet();

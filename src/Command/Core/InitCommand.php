@@ -72,20 +72,26 @@ EOF
             'org',
             $styleHelper->ask(
                 'Specify the repository organization name',
-                GitHelper::undefinedToDefault($input->getOption('org'))
+                GitHelper::undefinedToDefault($input->getOption('org')),
+                ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
 
         $input->setOption(
             'repo',
-            $styleHelper->ask('Specify the repository name', GitHelper::undefinedToDefault($input->getOption('repo')))
+            $styleHelper->ask(
+                'Specify the repository name',
+                GitHelper::undefinedToDefault($input->getOption('repo')),
+                ['\Gush\Util\CliValidator', 'notEmpty']
+            )
         );
 
         $input->setOption(
             'issue-org',
             $styleHelper->ask(
                 'Specify the issue-tracker organization name',
-                GitHelper::undefinedToDefault($input->getOption('issue-org'), $input->getOption('org'))
+                GitHelper::undefinedToDefault($input->getOption('issue-org'), $input->getOption('org')),
+                ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
 
@@ -93,7 +99,8 @@ EOF
             'issue-project',
             $styleHelper->ask(
                 'Specify the issue-tracker repository/project name',
-                GitHelper::undefinedToDefault($input->getOption('issue-project'), $input->getOption('repo'))
+                GitHelper::undefinedToDefault($input->getOption('issue-project'), $input->getOption('repo')),
+                ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
     }

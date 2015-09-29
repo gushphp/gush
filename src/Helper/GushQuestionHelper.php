@@ -20,10 +20,31 @@ use Symfony\Component\Console\Question\Question;
 class GushQuestionHelper extends SymfonyQuestionHelper
 {
     /**
+     * @var int
+     */
+    private $attempts;
+
+    /**
+     * Set the maximum attempts when none is set.
+     *
+     * This should only be used for testing.
+     *
+     * @param int $attempts
+     */
+    public function setMaxAttempts($attempts)
+    {
+        $this->attempts = $attempts;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function ask(InputInterface $input, OutputInterface $output, Question $question)
     {
+        if (null !== $this->attempts && null === $question->getMaxAttempts()) {
+            $question->setMaxAttempts($this->attempts);
+        }
+
         return QuestionHelper::ask($input, $output, $question);
     }
 
