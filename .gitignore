@@ -8,3 +8,4 @@ phpunit.xml
 /.bldr/vendor
 *.lock
 .bldr
+.php_cs.cache
