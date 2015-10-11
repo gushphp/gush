@@ -154,6 +154,73 @@ class CoreInitCommandTest extends CommandTestCase
         $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
     }
 
+    /**
+     * @dataProvider provideEmptyValues
+     *
+     * @param $expected
+     * @param $input
+     */
+    public function testRunCommandWithEmptyValuesAreProhibited($expected, $input)
+    {
+        $command = new InitCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            [
+                'adapters' => [
+                    'github' => [
+                        'authentication' => [
+                            'http-auth-type' => TestConfigurator::AUTH_HTTP_TOKEN,
+                            'username' => TestConfigurator::USERNAME,
+                            'token' => TestConfigurator::PASSWORD,
+                        ],
+                        'base_url' => 'https://api.github.com/',
+                        'repo_domain_url' => 'https://github.com',
+                    ],
+                ],
+            ],
+            [],
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitConfigHelper(false)->reveal());
+            }
+        );
+
+        $this->assertFileNotExists($command->getConfig()->get('local_config'));
+
+        // adapter, issue-tracker, [input]
+        $this->setExpectedCommandInput($command, "0\n0\n".$input);
+
+        $tester->execute();
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'Choose repository-manager',
+                '[0] GitHub',
+                '[1] GitHub Enterprise',
+                'Choose issue-tracker',
+                '[2] Jira',
+                $expected,
+                'Value cannot be empty.',
+            ],
+            $display
+        );
+    }
+
+    public function provideEmptyValues()
+    {
+        // org, repo, issue-org, issue-project
+        // "MyOrg\nMyRepo\nIOrg\nIRepo\n"
+
+        return [
+            ['Specify the repository organization name', "\nMyOrg\nMyRepo\nIOrg\nIRepo\n"],
+            ['Specify the repository name', "MyOrg\n\nMyRepo\nIOrg\nIRepo\n"],
+
+            // Not tested as these values are provided as defaults, keep this comment for clarity.
+            //['Specify the issue-tracker organization name', "MyOrg\nMyRepo\n\nIOrg\nIRepo\n"],
+            //['Specify the issue-tracker repository/project name', "MyOrg\nMyRepo\nIOrg\n\nIRepo\n"],
+        ];
+    }
+
     public function testRunCommandWithNoConfiguredAdapter()
     {
         $command = new InitCommand();
