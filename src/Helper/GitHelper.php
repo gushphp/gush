@@ -420,7 +420,7 @@ class GitHelper extends Helper
         }
 
         $this->processHelper->runCommand(
-            ['git', 'merge', '--no-ff', '--log' , '--no-commit', $sourceBranch]
+            ['git', 'merge', '--no-ff', '--log', '--no-commit', $sourceBranch]
         );
 
         // Extract commits log

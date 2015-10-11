@@ -1,0 +1,10 @@
+preset: symfony
+
+enabled:
+  - ordered_use
+  - short_array_syntax
+
+finder:
+  not-name:
+    - OutputFixtures.php
+    - phar-stub.php
