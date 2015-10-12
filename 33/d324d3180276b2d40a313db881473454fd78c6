@@ -1,0 +1,77 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 01:11
+
+@GrahamCampbell StyleCI has a bug. The headers were duplicated because they are different.
+Please let me know, if not i can run the gush command to format the headers since i remember it does it correctly. Also i had to download by hand the patch and apply it, i remember we have a fabpot command to do the apply patch automatically. Maybe you want to send a command to do that with SyleCI, i did not see easily how to send a PR.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 01:25
+
+@sstok not sure why scrutinizer crashes. Any hint?
+
+Other than this we can merge this :+1:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 01:29
+
+also since i believe it is a waste of time to maintain the other repos let's remove them from gush main organization and also deprecate them on packagist. I think that is all that is left. Tests and further refactoring can wait for follow up PRs.
+
+---------------------------------------------------------------------------
+
+by pierredup at 2015-10-12 05:37
+
+IMO the `ThirdParty` namespace doesn't really make sense, since the adapters is not part of a 3rd party, but part of Gush core and now just lives in the main repo.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-10-12 11:32
+
+I agree with @pierredup on the namespace part.
+
+But we can't delete repositories just yet as some still use Gush with Composer (global).
+We should keep them for about a year and then remove them.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 11:36
+
+we can change to any other name you want without problems. This is more so that we get the repos in.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 11:38
+
+I think there was a ticket in which we discouraged the global composer for gush. Recommended ways are clone and symlink AND phar. Global is totally discouraged.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-10-12 11:53
+
+hmm :) what is the common name used in other situations?
+
+We can use the `Adapter` sub namespace and change it once we have better name.
+Just make sure they are marked `@internal` so we can easily change them (if anyone would use Gush as a library ;) )
+
+> I think there was a ticket in which we discouraged the global composer for gush.
+Hmm, OK :)
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 12:07
+
+Adapter conflicts with Adapter folder already existing. That is why I choose the non nice Third Party.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 12:08
+
+we can definitely not put the generic Adapter classes together with the third party adapters implementations.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-12 12:48
+
+looks like scrutinizer passed
