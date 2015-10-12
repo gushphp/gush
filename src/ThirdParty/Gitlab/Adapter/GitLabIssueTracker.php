@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Gitlab\Adapter;
 
-use Gitlab\Client;
+use Gush\Adapter\BaseIssueTracker;
 use Gush\Exception\UnsupportedOperationException;
-use Gush\Model\Issue;
+use Gush\ThirdParty\Gitlab\Model\Issue;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>

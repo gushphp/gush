@@ -9,9 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Gitlab\Adapter;
 
 use Gitlab\Client;
+use Gush\Adapter\Configurator;
 use Gush\Config;
 use Symfony\Component\Console\Helper\HelperSet;
 

@@ -9,8 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Bitbucket;
 
+use Gush\Adapter\BaseAdapter;
 use Gush\Exception\AdapterException;
 use Herrera\Version\Parser;
 use Herrera\Version\Validator as VersionValidator;

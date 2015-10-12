@@ -9,8 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Bitbucket;
 
+use Gush\Adapter\DefaultConfigurator;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

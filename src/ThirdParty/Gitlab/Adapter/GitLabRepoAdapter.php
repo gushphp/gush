@@ -9,12 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Gitlab\Adapter;
 
+use Gush\Adapter\BaseAdapter;
 use Gush\Exception\UnsupportedOperationException;
-use Gush\Model\Issue;
-use Gush\Model\MergeRequest;
-use Gush\Model\Project;
+use Gush\ThirdParty\Gitlab\Model\Issue;
+use Gush\ThirdParty\Gitlab\Model\MergeRequest;
+use Gush\ThirdParty\Gitlab\Model\Project;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>

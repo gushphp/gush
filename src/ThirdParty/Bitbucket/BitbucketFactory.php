@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Bitbucket;
 
 use Symfony\Component\Console\Helper\HelperSet;
 

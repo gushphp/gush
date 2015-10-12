@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter\Listener;
+namespace Gush\ThirdParty\Bitbucket\Listener;
 
 use Bitbucket\API\Http\Listener\ListenerInterface;
 use Buzz\Message\MessageInterface;

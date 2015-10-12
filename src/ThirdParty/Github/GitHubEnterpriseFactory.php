@@ -9,8 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Github;
 
+use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
 use Symfony\Component\Console\Helper\HelperSet;
 

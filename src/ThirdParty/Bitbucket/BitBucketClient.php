@@ -9,15 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Bitbucket;
 
 use Bitbucket\API;
 use Bitbucket\API\Http\Client;
 use Bitbucket\API\Http\Listener\BasicAuthListener;
 use Bitbucket\API\Http\Listener\OAuthListener;
 use Bitbucket\API\User;
-use Gush\Adapter\Listener\ErrorListener;
-use Gush\Adapter\Listener\ResultPagerListener;
+use Gush\ThirdParty\Bitbucket\Listener\ErrorListener;
+use Gush\ThirdParty\Bitbucket\Listener\ResultPagerListener;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

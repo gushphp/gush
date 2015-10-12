@@ -9,11 +9,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Gitlab\Adapter;
 
 use Buzz\Message\Response;
 use Gitlab\Client;
 use Gitlab\Model;
+use Gush\Adapter\Configurator;
 use Gush\Exception\AdapterException;
 
 /**

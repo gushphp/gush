@@ -9,12 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Github;
 
 use Github\Client;
 use Github\Exception\ValidationFailedException;
 use Github\HttpClient\CachedHttpClient;
 use Github\ResultPager;
+use Gush\Adapter\BaseAdapter;
+use Gush\Adapter\IssueTracker;
+use Gush\Adapter\SupportsDynamicLabels;
 use Gush\Config;
 use Gush\Exception\AdapterException;
 use Gush\Util\ArrayUtil;

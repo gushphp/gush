@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Bitbucket;
 
 use Bitbucket\API\Http\ClientInterface;
 use Buzz\Message\Request;
-use Gush\Adapter\Listener\ResultPagerListener;
+use Gush\ThirdParty\Bitbucket\Listener\ResultPagerListener;
 
 /**
  * Pager class for supporting pagination in BitBucket.

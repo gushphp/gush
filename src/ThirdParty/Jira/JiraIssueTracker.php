@@ -9,8 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\Adapter;
+namespace Gush\ThirdParty\Jira;
 
+use Gush\Adapter\BaseIssueTracker;
 use Gush\Config;
 use JiraApi\Clients\IssueClient;
 use JiraApi\Clients\ProjectClient;
