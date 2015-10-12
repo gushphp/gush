@@ -1,0 +1,33 @@
+{
+    "name": "gushphp/gush-bitbucket-adapter",
+    "description": "Bitbucket adapter for Gush",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Raul Rodriguez",
+            "email": "raulrodriguez782@gmail.com"
+        },
+        {
+            "name": "Luis Cordova",
+            "email": "cordoval@gmail.com"
+        },
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        }
+    ],
+    "require": {
+        "gentle/bitbucket-api": "~0.5",
+        "gushphp/gush": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gush\\Adapter\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}

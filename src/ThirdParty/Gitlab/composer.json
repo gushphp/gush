@@ -1,0 +1,28 @@
+{
+    "name": "gushphp/gush-gitlab-adapter",
+    "description": "GitLab adapter for Gush",
+    "require": {
+        "m4tthumphrey/php-gitlab-api": "~7.11.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com"
+        },
+        {
+            "name": "Luis Cordova",
+            "email": "cordoval@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gush\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}

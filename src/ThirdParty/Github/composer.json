@@ -1,0 +1,29 @@
+{
+    "name": "gushphp/gush-github-adapter",
+    "description": "GitHub adapter for Gush",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com"
+        },
+        {
+            "name": "Luis Cordova",
+            "email": "cordoval@gmail.com"
+        },
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gush\\Adapter\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.3-dev"
+        }
+    }
+}
