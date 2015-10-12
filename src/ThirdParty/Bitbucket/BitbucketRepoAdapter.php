@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -65,7 +74,7 @@ class BitbucketRepoAdapter extends BaseAdapter
             $this->getRepository(),
             $name,
             [
-                'is_private' => $response
+                'is_private' => $response,
             ]
         );
 
@@ -107,7 +116,7 @@ class BitbucketRepoAdapter extends BaseAdapter
 
         // Find the head parent by traversing the parents
         while (isset($repo['parent'])) {
-            list($parentOrg, $parentRepository)=explode('/', $repo['parent']['full_name']);
+            list($parentOrg, $parentRepository) = explode('/', $repo['parent']['full_name']);
 
             $response = $this->client->apiRepository()->get($parentOrg, $parentRepository);
             $repo = json_decode($response->getContent(), true);
@@ -237,7 +246,7 @@ class BitbucketRepoAdapter extends BaseAdapter
 
         return [
             'html_url' => $resultArray['links']['html']['href'],
-            'number' => $resultArray['id']
+            'number' => $resultArray['id'],
         ];
     }
 
@@ -410,7 +419,7 @@ class BitbucketRepoAdapter extends BaseAdapter
             $this->getRepository(),
             $this->prepareParameters(
                 [
-                    'state' => $state
+                    'state' => $state,
                 ]
             )
         );
@@ -428,7 +437,7 @@ class BitbucketRepoAdapter extends BaseAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPullRequestStates()
     {
@@ -445,7 +454,7 @@ class BitbucketRepoAdapter extends BaseAdapter
     public function createRelease($name, array $parameters = [])
     {
         // BitBucket doesn't support this yet, use the CommandHelper for executing a `git tag` operation
-        throw new \Exception("Pending implementation");
+        throw new \Exception('Pending implementation');
     }
 
     /**
@@ -494,7 +503,7 @@ class BitbucketRepoAdapter extends BaseAdapter
     public function removeRelease($id)
     {
         // BitBucket doesn't support this yet
-        throw new \Exception("Pending implementation");
+        throw new \Exception('Pending implementation');
     }
 
     /**
@@ -507,8 +516,8 @@ class BitbucketRepoAdapter extends BaseAdapter
 
     protected function adaptPullRequestStructure(array $pr)
     {
-        list($sourceOrg,) = explode('/', $pr['source']['repository']['full_name'], 2);
-        list($targetOrg,) = explode('/', $pr['destination']['repository']['full_name'], 2);
+        list($sourceOrg) = explode('/', $pr['source']['repository']['full_name'], 2);
+        list($targetOrg) = explode('/', $pr['destination']['repository']['full_name'], 2);
 
         return [
             'url' => $pr['links']['html']['href'],

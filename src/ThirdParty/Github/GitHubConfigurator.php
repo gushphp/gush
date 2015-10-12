@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -62,11 +71,11 @@ class GitHubConfigurator extends DefaultConfigurator
                     'public_repo',
                     'repo',
                     'repo:status',
-                    'read:org'
+                    'read:org',
                 ];
 
                 $output->writeln(
-                    sprintf("Two factor authentication of type %s is required: ", trim($e->getType()))
+                    sprintf('Two factor authentication of type %s is required: ', trim($e->getType()))
                 );
 
                 // We already know the password is valid, we just need a valid code
@@ -74,13 +83,13 @@ class GitHubConfigurator extends DefaultConfigurator
                 while (!$isAuthenticated) {
                     // Prevent endless loop with a broken test
                     if ($authenticationAttempts > 500) {
-                        $output->writeln("<error>To many attempts, aborting.</error>");
+                        $output->writeln('<error>To many attempts, aborting.</error>');
 
                         break;
                     }
 
                     if ($authenticationAttempts > 0) {
-                        $output->writeln("<error>Authentication failed please try again.</error>");
+                        $output->writeln('<error>Authentication failed please try again.</error>');
                     }
 
                     try {
@@ -109,7 +118,7 @@ class GitHubConfigurator extends DefaultConfigurator
                         $output->writeln('');
                     }
 
-                    $authenticationAttempts++;
+                    ++$authenticationAttempts;
                 }
 
                 if ($isAuthenticated) {

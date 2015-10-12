@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -30,10 +39,10 @@ class BitBucketConfigurator extends DefaultConfigurator
     /**
      * Constructor.
      *
-     * @param QuestionHelper $questionHelper  QuestionHelper instance
-     * @param string         $label   Label of the Configurator (eg. BitBucket or BitBucket IssueTracker)
-     * @param string         $apiUrl  Default URL to API service (eg. 'https://api.bitbucket.org')
-     * @param string         $repoUrl Default URL to repository (eg. 'https://bitbucket.org')
+     * @param QuestionHelper $questionHelper QuestionHelper instance
+     * @param string         $label          Label of the Configurator (eg. BitBucket or BitBucket IssueTracker)
+     * @param string         $apiUrl         Default URL to API service (eg. 'https://api.bitbucket.org')
+     * @param string         $repoUrl        Default URL to repository (eg. 'https://bitbucket.org')
      */
     public function __construct(QuestionHelper $questionHelper, $label, $apiUrl, $repoUrl)
     {
@@ -44,7 +53,7 @@ class BitBucketConfigurator extends DefaultConfigurator
 
         $authenticationOptions = [
             0 => ['Password', self::AUTH_HTTP_PASSWORD],
-            1 => ['OAuth', self::AUTH_HTTP_TOKEN]
+            1 => ['OAuth', self::AUTH_HTTP_TOKEN],
         ];
 
         $this->authenticationOptions = $authenticationOptions;

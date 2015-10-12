@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of Gush.
+ * This file is part of Gush package.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -31,7 +31,7 @@ class Issue extends Model\Issue
 
     public function toArray()
     {
-        $issue = array();
+        $issue = [];
 
         foreach (static::$properties as $property) {
             switch ($property) {

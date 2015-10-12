@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of Gush.
+ * This file is part of Gush package.
  *
  * (c) Luis Cordova <cordoval@gmail.com>
  *
@@ -153,10 +153,10 @@ class GitLabRepoAdapter extends BaseAdapter
             $body
         );
 
-        return array(
+        return [
             'html_url' => $this->getPullRequestUrl($mr->id),
             'number' => $mr->iid,
-        );
+        ];
     }
 
     /**

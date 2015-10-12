@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -125,7 +134,7 @@ class ResultPager
     }
 
     /**
-     * Fetches all the results, using API version 1.0
+     * Fetches all the results, using API version 1.0.
      *
      * @param array  $result
      * @param string $valuesKey
@@ -166,7 +175,7 @@ class ResultPager
         $count = isset($result['count']) ? $result['count'] : $urlComponents['limit'];
         $pages = ceil($count / $limit);
 
-        for ($page = $this->page + 1; $page <= $pages; $page++) {
+        for ($page = $this->page + 1; $page <= $pages; ++$page) {
             $urlComponents['query']['start'] = abs($page - 1) * $limit;
 
             $response = $this->client->get($url.http_build_query($urlComponents['query'], '', '&'));

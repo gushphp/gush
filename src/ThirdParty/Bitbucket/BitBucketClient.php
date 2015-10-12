@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -35,7 +44,7 @@ class BitBucketClient
     const AUTH_HTTP_TOKEN = 'http_token';
 
     /**
-     * The Buzz instance used to communicate with Gitlab
+     * The Buzz instance used to communicate with Gitlab.
      *
      * @var Client
      */
@@ -64,7 +73,7 @@ class BitBucketClient
     /**
      * Constructor.
      *
-     * @param array           $options
+     * @param array  $options
      * @param Client $httpClient
      */
     public function __construct(array $options = [], Client $httpClient = null)
@@ -147,7 +156,7 @@ class BitBucketClient
             $listener = new OAuthListener(
                 [
                     'oauth_consumer_key' => $credentials['key'],
-                    'oauth_consumer_secret' => $credentials['secret']
+                    'oauth_consumer_secret' => $credentials['secret'],
                 ]
             );
         }

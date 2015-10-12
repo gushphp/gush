@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -27,14 +36,14 @@ class BitbucketIssueTracker extends BaseIssueTracker
         'minor',
         'major',
         'critical',
-        'blocker'
+        'blocker',
     ];
 
     protected static $validKinds = [
         'bug',
         'enhancement',
         'proposal',
-        'task'
+        'task',
     ];
 
     /**
@@ -49,7 +58,7 @@ class BitbucketIssueTracker extends BaseIssueTracker
                 $options,
                 [
                     'title' => $subject,
-                    'content' => $body
+                    'content' => $body,
                 ]
             )
         );
@@ -436,18 +445,18 @@ class BitbucketIssueTracker extends BaseIssueTracker
         }
 
         return [
-            'url'          => $this->getIssueUrl($issue['local_id']),
-            'number'       => $issue['local_id'],
-            'state'        => $issue['status'],
-            'title'        => $issue['title'],
-            'body'         => $issue['content'],
-            'user'         => $issue['reported_by']['username'],
-            'labels'       => $labels,
-            'assignee'     => (isset($issue['responsible']) ? $issue['responsible']['username'] : ''),
-            'milestone'    => (isset($issue['metadata']['milestone']) && !is_null($issue['metadata']['milestone'])) ? $issue['metadata']['milestone'] : null,
-            'created_at'   => new \DateTime($issue['utc_created_on']),
-            'updated_at'   => !empty($issue['utc_last_updated']) ? new \DateTime($issue['utc_last_updated']) : null,
-            'closed_by'    => null,
+            'url' => $this->getIssueUrl($issue['local_id']),
+            'number' => $issue['local_id'],
+            'state' => $issue['status'],
+            'title' => $issue['title'],
+            'body' => $issue['content'],
+            'user' => $issue['reported_by']['username'],
+            'labels' => $labels,
+            'assignee' => (isset($issue['responsible']) ? $issue['responsible']['username'] : ''),
+            'milestone' => (isset($issue['metadata']['milestone']) && !is_null($issue['metadata']['milestone'])) ? $issue['metadata']['milestone'] : null,
+            'created_at' => new \DateTime($issue['utc_created_on']),
+            'updated_at' => !empty($issue['utc_last_updated']) ? new \DateTime($issue['utc_last_updated']) : null,
+            'closed_by' => null,
             'pull_request' => false,
         ];
     }

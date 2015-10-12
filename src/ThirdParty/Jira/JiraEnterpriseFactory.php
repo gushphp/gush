@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -21,7 +30,7 @@ use Symfony\Component\Console\Helper\HelperSet;
 class JiraEnterpriseFactory
 {
     /**
-     * @param array $adapterConfig
+     * @param array  $adapterConfig
      * @param Config $config
      *
      * @return JiraEnterpriseIssueTracker

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -160,7 +169,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
         $result = $api->forks()->create(
             $this->getUsername(),
             $this->getRepository(),
-            $org && $this->config['authentication']['username'] !== $org ? ['organization' => $org]: []
+            $org && $this->config['authentication']['username'] !== $org ? ['organization' => $org] : []
         );
 
         return [
@@ -281,7 +290,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
             [
                 $this->getUsername(),
                 $this->getRepository(),
-                $parameters
+                $parameters,
             ]
         );
 
@@ -524,7 +533,6 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
         return $result['sha'];
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -596,7 +604,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
             array_merge(
                 $parameters,
                 [
-                    'tag_name' => $name
+                    'tag_name' => $name,
                 ]
             )
         );

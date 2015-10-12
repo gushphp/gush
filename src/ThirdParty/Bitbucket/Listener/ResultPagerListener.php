@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -19,7 +28,7 @@ use Buzz\Message\RequestInterface;
 class ResultPagerListener implements ListenerInterface
 {
     /**
-     * @var integer
+     * @var int
      */
     private $perPage = null;
 
@@ -120,10 +129,10 @@ class ResultPagerListener implements ListenerInterface
                 // Use the maximum
                 $limit = 50;
             } elseif ($this->perPage > 50) {
-               // Divide perPage by two, so each page covers exactly two request (no crazy math or truncating).
+                // Divide perPage by two, so each page covers exactly two request (no crazy math or truncating).
                $limit = $this->perPage / 2;
             } else {
-               $limit = $this->perPage;
+                $limit = $this->perPage;
             }
 
             $urlComponents['query']['limit'] = $limit;

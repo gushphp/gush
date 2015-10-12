@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Gush package.
+ *
+ * (c) Luis Cordova <cordoval@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * This file is part of Gush.
  *
@@ -222,21 +231,21 @@ class JiraIssueTracker extends BaseIssueTracker
     public function updateIssue($id, array $parameters)
     {
         foreach ($parameters as $key => $value) {
-            switch($key) {
+            switch ($key) {
                 case 'assignee':
                     $data = [
                         'fields' => [
                             'assignee' => [
-                                'name' => $value
-                            ]
-                        ]
+                                'name' => $value,
+                            ],
+                        ],
                     ];
                     break;
                 case 'labels':
                     $data = [
                         'update' => [
-                            'labels' => ['set' => $value]
-                        ]
+                            'labels' => ['set' => $value],
+                        ],
                     ];
                     break;
             }
@@ -297,9 +306,9 @@ class JiraIssueTracker extends BaseIssueTracker
     }
 
     /**
-     * Turns given structure into adapter issue structure
+     * Turns given structure into adapter issue structure.
      *
-     * @param  array $issue
+     * @param array $issue
      *
      * @return array
      */
@@ -325,9 +334,9 @@ class JiraIssueTracker extends BaseIssueTracker
     }
 
     /**
-     * Converts api comment to gush comment structure
+     * Converts api comment to gush comment structure.
      *
-     * @param  array  $comment
+     * @param array $comment
      *
      * @return array
      */
