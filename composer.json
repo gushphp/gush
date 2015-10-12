@@ -22,8 +22,8 @@
         "herrera-io/version": "~1.1.1",
         "kherge/amend": "~3.0.4",
         "ramsey/array_column": "~1.1.3",
-        "gentle/bitbucket-api": "~0.5.0",
-        "alexkovalevych/jira-api": "~1.0.3"
+        "gentle/bitbucket-api": "~0.5.2",
+        "alexkovalevych/jira-api": "~1.0.7"
     },
     "require-dev": {
         "mikey179/vfsStream": "~1.5.0"
