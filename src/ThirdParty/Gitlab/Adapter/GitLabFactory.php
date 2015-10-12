@@ -11,7 +11,7 @@
 
 namespace Gush\ThirdParty\Gitlab\Adapter;
 
-use Gitlab\Client;
+use Github\Client;
 use Gush\Adapter\Configurator;
 use Gush\Config;
 use Symfony\Component\Console\Helper\HelperSet;

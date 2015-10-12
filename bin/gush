@@ -35,12 +35,12 @@ if (version_compare($version, '1.9.1', 'lt')) {
 $adapterFactory = new Gush\Factory\AdapterFactory();
 
 $adapters = [
-    'github' => [new LegacyAdapterFactory('Gush\Adapter\GitHubFactory'), 'GitHub'],
-    'github_enterprise' => [new LegacyAdapterFactory('Gush\Adapter\GitHubEnterpriseFactory'), 'GitHub Enterprise'],
-    'bitbucket' => [new LegacyAdapterFactory('Gush\Adapter\BitbucketFactory'), 'Bitbucket'],
-    'gitlab' => [new LegacyAdapterFactory('Gush\Adapter\GitLabFactory'), 'GitLab'],
-    'jira' => [new LegacyIssueTrackerFactory('Gush\Adapter\JiraFactory'), 'Jira'],
-    'jira_enterprise' => [new LegacyIssueTrackerFactory('Gush\Adapter\JiraEnterpriseFactory'), 'Jira Enterprise'],
+    'github' => [new LegacyAdapterFactory('Gush\ThirdParty\Github\GitHubFactory'), 'GitHub'],
+    'github_enterprise' => [new LegacyAdapterFactory('Gush\ThirdParty\Github\GitHubEnterpriseFactory'), 'GitHub Enterprise'],
+    'bitbucket' => [new LegacyAdapterFactory('Gush\ThirdParty\Bitbucket\BitbucketFactory'), 'Bitbucket'],
+    'gitlab' => [new LegacyAdapterFactory('Gush\ThirdParty\Gitlab\Adapter\GitLabFactory'), 'GitLab'],
+    'jira' => [new LegacyIssueTrackerFactory('Gush\ThirdParty\Jira\JiraFactory'), 'Jira'],
+    'jira_enterprise' => [new LegacyIssueTrackerFactory('Gush\ThirdParty\Jira\JiraEnterpriseFactory'), 'Jira Enterprise'],
 ];
 
 foreach ($adapters as $adapterName => $adapter) {
