@@ -160,7 +160,9 @@ EOF
 
         $this->guardRemoteBranchExist($sourceOrg, $sourceRepo, $sourceBranch, $styleHelper);
 
-        $defaultTitle = $input->getOption('title') ?: $this->getHelper('git')->getFirstCommitTitle($org.'/'.$base, $sourceBranch);
+        $defaultTitle = $input->getOption('title') ?:
+            ucfirst($this->getHelper('git')->getFirstCommitTitle($org.'/'.$base, $sourceBranch))
+        ;
 
         if ('' === $defaultTitle && !$input->isInteractive()) {
             $styleHelper->error(

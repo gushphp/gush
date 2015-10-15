@@ -197,7 +197,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $pr = $command->getAdapter()->getPullRequest(TestAdapter::PULL_REQUEST_NUMBER);
 
-        $this->assertEquals('some good title', $pr['title']);
+        $this->assertEquals('Some good title', $pr['title']);
         $this->assertContains('My Description', $pr['body']);
         $this->assertRegExp('{\|Marco\?\s*\|polo\\\s*|}', $pr['body']);
         $this->assertRegExp('{\|My question\\\s*|y\s*\|}', $pr['body']);
@@ -247,7 +247,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $pr = $command->getAdapter()->getPullRequest(TestAdapter::PULL_REQUEST_NUMBER);
 
-        $this->assertEquals('some good title', $pr['title']);
+        $this->assertEquals('Some good title', $pr['title']);
     }
 
     public function testCannotOpenPullRequestForNonExistentBranch()
@@ -281,7 +281,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
     {
         $helper = $this->getGitHelper();
 
-        $helper->getFirstCommitTitle('gushphp/master', 'issue-145')->willReturn('some good title');
+        $helper->getFirstCommitTitle('gushphp/master', 'issue-145')->willReturn('Some good title');
         $helper->getActiveBranchName()->willReturn('issue-145');
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
