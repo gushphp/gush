@@ -360,10 +360,14 @@ LOGO;
 
     public function getSupportedMetaFiles()
     {
+        $text = new Meta\Text();
+        
         return [
             'php' => new Meta\Base(),
-            'js' => new Meta\Text(),
-            'css' => new Meta\Text(),
+            'js' => $text,
+            'css' => $text,
+            'less' => $text,
+            'scss' => $text,
             'twig' => new Meta\Twig(),
         ];
     }
