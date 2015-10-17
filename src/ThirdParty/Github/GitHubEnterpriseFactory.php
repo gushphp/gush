@@ -34,7 +34,7 @@ class GitHubEnterpriseFactory implements IssueTrackerFactory, RepositoryManagerF
     public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         return new GitHubConfigurator(
-            $helperSet->get('question'),
+            $helperSet->get('gush_style'),
             'GitHub Enterprise',
             'https://api.github.com/',
             'https://github.com'
