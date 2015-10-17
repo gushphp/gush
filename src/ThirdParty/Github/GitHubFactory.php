@@ -34,7 +34,7 @@ class GitHubFactory implements IssueTrackerFactory, RepositoryManagerFactory
     public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         return new GitHubConfigurator(
-            $helperSet->get('question'),
+            $helperSet->get('gush_style'),
             'GitHub issue tracker',
             'https://api.github.com/',
             'https://github.com'
