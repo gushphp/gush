@@ -264,7 +264,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'Cannot open pull-request, remote branch "not-my-branch" does not exist in "someone/gush".'
         );
 

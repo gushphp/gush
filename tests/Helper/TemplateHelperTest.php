@@ -161,7 +161,7 @@ class TemplateHelperTest extends BaseTestCase
     {
         $res = $this->helper->getTemplate($domain, $name);
 
-        $this->assertInstanceof(TemplateInterface::class, $res);
+        $this->assertInstanceof('Gush\Template\TemplateInterface', $res);
     }
 
     /**

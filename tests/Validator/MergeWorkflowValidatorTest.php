@@ -55,7 +55,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new MergeWorkflowValidator(MergeWorkflowValidator::PRESET_SEMVER);
 
         $this->setExpectedException(
-            MergeWorkflowException::class,
+            'Gush\Exception\MergeWorkflowException',
             sprintf(
                 'Semver: %1$s version of source "%2$s" is higher then %1$s version of target "%3$s".',
                 $invalidPart,
@@ -120,7 +120,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new MergeWorkflowValidator(MergeWorkflowValidator::PRESET_GIT_FLOW);
 
         $this->setExpectedException(
-            MergeWorkflowException::class,
+            'Gush\Exception\MergeWorkflowException',
             'Git-flow: Only "develop", "hotfix-" or "release-" branches are allowed to be merged into master.'
         );
 
@@ -180,7 +180,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new MergeWorkflowValidator(MergeWorkflowValidator::PRESET_NONE, $restrictions);
 
         $this->setExpectedException(
-            MergeWorkflowException::class,
+            'Gush\Exception\MergeWorkflowException',
             sprintf(
                 'Branches: Only branches "%s" are allowed to be merged into "%s".',
                 implode('", "', $restrictions[$source]),
@@ -217,7 +217,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($validator->validate('develop', 'new-feature'));
 
         $this->setExpectedException(
-            MergeWorkflowException::class,
+            'Gush\Exception\MergeWorkflowException',
             'No branch constraint is set for source "new-feature" and policy denies merging unknown branches.'
         );
 

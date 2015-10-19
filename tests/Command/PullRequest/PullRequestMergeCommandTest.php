@@ -346,7 +346,7 @@ OET;
         $this->setExpectedCommandInput($command, "feature\n");
 
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             "Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug."
         );
 
