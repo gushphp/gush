@@ -1,0 +1,65 @@
+---------------------------------------------------------------------------
+
+by pierredup at 2015-10-19 13:15
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by aik099 at 2015-10-22 18:55
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-10-22 18:56
+
+Lots of unused imports now.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-10-22 18:56
+
+See StyleCI's diff.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-10-22 18:57
+
+> Reintroduce compatibility for PHP 5.4
+
+:-1: It's already EOL.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-22 19:15
+
+This was never a good idea :-1:
+
+---------------------------------------------------------------------------
+
+by aik099 at 2015-10-22 19:25
+
+Decision to upgrade the PHP version on it's developer machine is up to each developer individually. Forcing Gush users to install newer PHP version just because is like forcing people to install Windows 8 even though app works on Windows 7 without problems.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-10-22 19:27
+
+> Forcing Gush users to install newer PHP version just because is like forcing people to install Windows 8 even though app works on Windows 7 without problems.
+
+I'm fine with that. :trollface:
+
+---------------------------------------------------------------------------
+
+by pierredup at 2015-10-22 19:35
+
+I haven't used PHP 5.4 in a while (I stopped using it the day 5.5 was released). But not all developers upgrade their development environment frequently (I actually know developers still using PHP 5.3).
+
+But 5.5 doesn't provide any useful functionality that we can use at the moment. This is a small change in order to please a wider range of developers that want to use Gush. Maintaining 5.4 compatibility isn't a hard thing to do, and when we want to start using more of the features in 5.5 (generators etc) then the minimum requirement can be bumped. But until that happens it doesn't make sense to require >= 5.5 just for the class constant and limit the project to a smaller number of users
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-10-22 20:04
+
+i am convinced now it is a simple change. I am reviewing it and will merge after that.
