@@ -236,7 +236,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_on_invalid_repo_adapter()
     {
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'Adapter "noop-noop" (for repository-management) is not supported'
         );
 
@@ -254,7 +254,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_on_invalid_issue_adapter()
     {
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'Adapter "noop-noop" (for issue-tracking) is not supported'
         );
 
@@ -272,7 +272,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_when_not_configured_and_no_remote_is_set_for_auto_detection()
     {
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'Unable to get the repository information, Git remote "origin" should be set for automatic detection'
         );
 
@@ -293,7 +293,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_when_no_options_given_and_not_in_git_dir()
     {
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'Provide the --org and --repo options when your are outside of a Git directory.'
         );
 
@@ -314,7 +314,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_when_adapter_is_supported_but_not_configured()
     {
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'Adapter "jira" (for issue-tracking) is not configured yet.'
         );
 

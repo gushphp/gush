@@ -31,8 +31,8 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
-            $this->getMock(InputInterface::class),
-            $this->getMock(OutputInterface::class)
+            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->getMock('Symfony\Component\Console\Output\OutputInterface')
         );
 
         $helper = $this->getGitHelper();
@@ -52,8 +52,8 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
-            $this->getMock(InputInterface::class),
-            $this->getMock(OutputInterface::class)
+            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->getMock('Symfony\Component\Console\Output\OutputInterface')
         );
 
         $helper = $this->getGitHelper(false);
@@ -73,22 +73,22 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
-            $this->getMock(InputInterface::class),
-            $this->getMock(OutputInterface::class)
+            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->getMock('Symfony\Component\Console\Output\OutputInterface')
         );
 
         $helper = $this->getGitHelper(false);
 
         $subscriber = new GitFolderSubscriber($helper);
 
-        $this->setExpectedException(UserException::class);
+        $this->setExpectedException('Gush\Exception\UserException');
 
         $subscriber->initialize($commandEvent);
     }
 
     private function getGitHelper($isGitFolder = true)
     {
-        $helper = $this->prophesize(GitHelper::class);
+        $helper = $this->prophesize('Gush\Helper\GitHelper');
         $helper->isGitFolder()->willReturn($isGitFolder);
 
         return $helper->reveal();

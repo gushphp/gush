@@ -58,7 +58,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test',
             'Testing',
-            TestIssueTrackerFactory::class
+            'Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory'
         );
 
         $this->assertTrue($this->adapterFactory->has('test'));
@@ -80,7 +80,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test2',
             'Testing2',
-            TestIssueTrackerFactory::class
+            'Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory'
         );
 
         $this->assertEquals(
@@ -92,7 +92,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => false,
                 ],
                 'test2' => [
-                    'factory' => TestIssueTrackerFactory::class,
+                    'factory' => 'Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory',
                     'label' => 'Testing2',
                     AdapterFactory::SUPPORT_REPOSITORY_MANAGER => false,
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => true,
@@ -127,7 +127,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test',
             'Testing',
-            TestAdapterFactory::class
+            'Gush\Tests\Fixtures\Adapter\TestAdapterFactory'
         );
 
         $createdAdapter = $this->adapterFactory->createRepositoryManager(
@@ -136,7 +136,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf(Adapter::class, $createdAdapter);
+        $this->assertInstanceOf('Gush\Adapter\Adapter', $createdAdapter);
     }
 
     public function testCreateConfigurator()
@@ -151,10 +151,10 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
         $createdConfigurator = $this->adapterFactory->createConfigurator(
             'test',
-            $this->prophesize(HelperSet::class)->reveal()
+            $this->prophesize('Symfony\Component\Console\Helper\HelperSet')->reveal()
         );
 
-        $this->assertInstanceOf(Configurator::class, $createdConfigurator);
+        $this->assertInstanceOf('Gush\Adapter\Configurator', $createdConfigurator);
     }
 
     public function testCreateRepositoryManagerAdapter()
@@ -173,7 +173,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf(Adapter::class, $createdAdapter);
+        $this->assertInstanceOf('Gush\Adapter\Adapter', $createdAdapter);
     }
 
     public function testCreateIssueTrackerAdapter()
@@ -192,7 +192,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf(IssueTracker::class, $createdAdapter);
+        $this->assertInstanceOf('Gush\Adapter\IssueTracker', $createdAdapter);
     }
 
     public function testCannotCreateUnregisteredAdapter()

@@ -99,7 +99,7 @@ class BranchDeleteCommandTest extends CommandTestCase
 
         $this->setExpectedCommandInput($command, "\n"); // default is no
 
-        $this->setExpectedException(UserException::class, 'User aborted.');
+        $this->setExpectedException('Gush\Exception\UserException', 'User aborted.');
 
         $tester->execute();
     }

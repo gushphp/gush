@@ -153,7 +153,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getGitHelper($isGitFolder = true)
     {
-        $gitHelper = $this->prophesize(GitHelper::class);
+        $gitHelper = $this->prophesize('Gush\Helper\GitHelper');
         $gitHelper->setHelperSet(Argument::any())->willReturn();
         $gitHelper->clearTempBranches()->willReturn(null);
         $gitHelper->getName()->willReturn('git');
@@ -167,7 +167,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getGitConfigHelper()
     {
-        $helper = $this->prophesize(GitConfigHelper::class);
+        $helper = $this->prophesize('Gush\Helper\GitConfigHelper');
         $helper->setHelperSet(Argument::any())->willReturn();
         $helper->getName()->willReturn('git_config');
 
@@ -179,7 +179,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getProcessHelper()
     {
-        $helper = $this->prophesize(ProcessHelper::class);
+        $helper = $this->prophesize('Gush\Helper\ProcessHelper');
         $helper->setHelperSet(Argument::any())->willReturn();
         $helper->setOutput(Argument::any())->willReturn();
         $helper->getName()->willReturn('process');

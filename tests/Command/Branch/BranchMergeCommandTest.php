@@ -201,7 +201,7 @@ class BranchMergeCommandTest extends CommandTestCase
     {
         $helper = parent::getGitHelper();
 
-        $mergeOperation = $this->prophesize(RemoteMergeOperation::class);
+        $mergeOperation = $this->prophesize('Gush\Operation\RemoteMergeOperation');
         $mergeOperation->setTarget('gushphp', 'master')->shouldBeCalled();
         $mergeOperation->setSource('gushphp', 'develop')->shouldBeCalled();
         $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();

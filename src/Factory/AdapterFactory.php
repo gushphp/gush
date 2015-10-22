@@ -26,7 +26,7 @@ class AdapterFactory
     const SUPPORT_ISSUE_TRACKER = 'supports_issue_tracker';
 
     /**
-     * @var object|string[]
+     * @var string[]
      */
     private $adapters = [];
 

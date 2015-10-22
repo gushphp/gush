@@ -81,7 +81,7 @@ class PullRequestCheckoutCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            UserException::class,
+            'Gush\Exception\UserException',
             'A local branch named "head_ref" already exists but it\'s remote is not "cordoval"'
         );
 
