@@ -12,14 +12,19 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchSyncCommand;
+use Gush\Operation\GitSyncOperation;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class BranchSyncCommandTest extends CommandTestCase
 {
     const TEST_BRANCH_NAME = 'test_branch';
+    const TEST_REMOTE_NAME = 'cordoval';
 
-    public function testSyncCurrentBranchWithRemote()
+    /**
+     * @test
+     */
+    public function it_synchronizes_with_remote_branch()
     {
         $command = new BranchSyncCommand();
         $tester = $this->getCommandTester(
@@ -36,12 +41,15 @@ class BranchSyncCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertCommandOutputMatches(
-            'Branch "'.self::TEST_BRANCH_NAME.'" has been synced with remote "origin".',
+            'Branch "'.self::TEST_BRANCH_NAME.'" has been synchronised with remote "'.self::TEST_REMOTE_NAME.'".',
             $display
         );
     }
 
-    public function testSyncsSpecificRanchWithSpecificRemote()
+    /**
+     * @test
+     */
+    public function it_synchronizes_local_branch_with_specific_remote()
     {
         $command = new BranchSyncCommand();
         $tester = $this->getCommandTester(
@@ -49,25 +57,51 @@ class BranchSyncCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('cordoval', 'development')->reveal());
+                $helperSet->set(
+                    $this->getLocalGitHelper(
+                        self::TEST_REMOTE_NAME,
+                        'development',
+                        GitSyncOperation::SYNC_SMART,
+                        self::TEST_REMOTE_NAME,
+                        'development'
+                    )->reveal()
+                );
             }
         );
 
-        $tester->execute(['remote' => 'cordoval', 'branch_name' => 'development']);
+        $tester->execute(['source_remote' => self::TEST_REMOTE_NAME, 'source_branch' => 'development']);
 
         $display = $tester->getDisplay();
 
         $this->assertCommandOutputMatches(
-            'Branch "development" has been synced with remote "cordoval".',
+            'Branch "development" has been synchronised with remote "cordoval".',
             $display
         );
     }
 
-    private function getLocalGitHelper($remote = 'origin', $branch = self::TEST_BRANCH_NAME)
-    {
+    private function getLocalGitHelper(
+        $remote = self::TEST_REMOTE_NAME,
+        $branchName = self::TEST_BRANCH_NAME,
+        $strategy = GitSyncOperation::SYNC_SMART,
+        $destRemote = self::TEST_REMOTE_NAME,
+        $destBranch = self::TEST_BRANCH_NAME,
+        $options = 0
+    ) {
+        $tester = $this;
+
         $helper = $this->getGitHelper();
-        $helper->getActiveBranchName()->willReturn($branch);
-        $helper->syncWithRemote($remote, $branch)->shouldBeCalled();
+        $helper->getActiveBranchName()->willReturn($branchName);
+        $helper->createSyncOperation()->will(
+            function () use ($tester, $remote, $branchName, $strategy, $destRemote, $destBranch, $options) {
+                $syncer = $tester->prophesize('Gush\Operation\GitSyncOperation');
+                $syncer->setLocalRef($branchName)->shouldBeCalled();
+                $syncer->setRemoteRef($remote, $branchName)->shouldBeCalled();
+                $syncer->setRemoteDestination($destRemote, $destBranch)->shouldBeCalled();
+                $syncer->sync($strategy, $options)->shouldBeCalled();
+
+                return $syncer->reveal();
+            }
+        );
 
         return $helper;
     }

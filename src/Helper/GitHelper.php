@@ -12,7 +12,10 @@
 namespace Gush\Helper;
 
 use Gush\Exception\CannotSquashMultipleAuthors;
+use Gush\Exception\UserException;
 use Gush\Exception\WorkingTreeIsNotReady;
+use Gush\Operation\GitSyncOperation;
+use Gush\Operation\RebaseOperation;
 use Gush\Operation\RemoteMergeOperation;
 use Gush\Operation\RemotePatchOperation;
 use Gush\Util\StringUtil;
@@ -25,6 +28,11 @@ class GitHelper extends Helper
     const UNDEFINED_ORG = "org-autodetected\0";
     const UNDEFINED_REPO = "repo-autodetected\0";
     const UNDEFINED_ADAPTER = "adapter-autodetected\0";
+
+    const STATUS_UP_TO_DATE = 'up-to-date';
+    const STATUS_NEED_PULL = 'need_pull';
+    const STATUS_NEED_PUSH = 'up-to-date';
+    const STATUS_DIVERGED = 'diverged';
 
     /** @var ProcessHelper */
     private $processHelper;
@@ -354,6 +362,66 @@ class GitHelper extends Helper
     }
 
     /**
+     * @param string $base
+     *
+     * @return RebaseOperation
+     */
+    public function createRebaseOperation($base)
+    {
+        $operation = new RebaseOperation($this, $this->processHelper);
+        $operation->setBase($base);
+
+        return $operation;
+    }
+
+    /**
+     * @return GitSyncOperation
+     */
+    public function createSyncOperation()
+    {
+        return new GitSyncOperation($this, $this->processHelper);
+    }
+
+    /**
+     * Gets the diff status of the remote and local.
+     *
+     * @param string $remoteName
+     * @param string $localBranch
+     * @param string $remoteBranch
+     *
+     * @return string Returns the value of one of the following constants:
+     *                GitHelper::STATUS_UP_TO_DATE, GitHelper::STATUS_NEED_PULL
+     *                GitHelper::STATUS_NEED_PUSH, GitHelper::STATUS_DIVERGED.
+     *
+     * @link https://gist.github.com/WebPlatformDocs/437f763b948c926ca7ba
+     * @link https://stackoverflow.com/questions/3258243/git-check-if-pull-needed
+     */
+    public function getRemoteDiffStatus($remoteName, $localBranch, $remoteBranch = null)
+    {
+        if (null === $remoteBranch) {
+            $remoteBranch = $localBranch;
+        }
+
+        $localBranchRef = $this->processHelper->runCommand(['git', 'rev-parse', $localBranch]);
+        $remoteBranchRef = $this->processHelper->runCommand(['git', 'rev-parse', $remoteName.'/'.$remoteBranch]);
+        $baseRef = $this->processHelper->runCommand(['git', 'rev-parse', $localBranchRef, $remoteBranchRef]);
+
+        if ($localBranchRef === $remoteBranchRef) {
+            return self::STATUS_UP_TO_DATE;
+        }
+
+        if ($localBranchRef === $baseRef) {
+            return self::STATUS_NEED_PULL;
+        }
+
+        if ($remoteBranchRef === $baseRef) {
+            return self::STATUS_NEED_PUSH;
+        }
+
+        return self::STATUS_DIVERGED;
+    }
+
+    /**
      * @param string $base          The base branch name
      * @param string $sourceBranch  The source branch name
      * @param string $commitMessage Commit message to use for the merge-commit
@@ -634,31 +702,6 @@ class GitHelper extends Helper
         );
     }
 
-    public function syncWithRemote($remote, $branchName = null)
-    {
-        $this->guardWorkingTreeReady();
-
-        $activeBranchName = $this->getActiveBranchName($branchName);
-        $this->stashBranchName();
-
-        if (null === $branchName) {
-            $branchName = $activeBranchName;
-        }
-
-        $this->remoteUpdate($remote);
-
-        if ($activeBranchName !== $branchName) {
-            $this->checkout($branchName);
-        }
-
-        $this->reset('HEAD~1', 'hard');
-        $this->pullRemote($remote, $branchName, true);
-
-        if ($activeBranchName !== $branchName) {
-            $this->checkout($activeBranchName);
-        }
-    }
-
     public function commit($message, array $options = [])
     {
         $params = '';
@@ -697,6 +740,20 @@ class GitHelper extends Helper
     {
         if (!$this->isWorkingTreeReady()) {
             throw new WorkingTreeIsNotReady();
+        }
+    }
+
+    public function guardBranchExist($branch)
+    {
+        if (!$this->branchExists($branch)) {
+            throw new UserException(sprintf('Branch "%s" does not exist.', $branch));
+        }
+    }
+
+    public function guardRemoteBranchExists($remote, $branchName)
+    {
+        if (!$this->remoteBranchExists($remote, $branchName)) {
+            throw new UserException(sprintf('Branch "%s" does not exist in remote "%s".', $remote, $branchName));
         }
     }
 }
