@@ -11,7 +11,6 @@
 
 namespace Gush\Tests\Validator;
 
-use Gush\Exception\MergeWorkflowException;
 use Gush\Validator\MergeWorkflowValidator;
 
 final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase

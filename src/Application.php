@@ -361,7 +361,7 @@ LOGO;
     public function getSupportedMetaFiles()
     {
         $text = new Meta\Text();
-        
+
         return [
             'php' => new Meta\Base(),
             'js' => $text,

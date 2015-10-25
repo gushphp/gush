@@ -12,7 +12,6 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchMergeCommand;
-use Gush\Operation\RemoteMergeOperation;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 

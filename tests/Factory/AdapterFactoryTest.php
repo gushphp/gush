@@ -12,14 +12,11 @@
 namespace Gush\Tests\Factory;
 
 use Gush\Adapter\Adapter;
-use Gush\Adapter\Configurator;
-use Gush\Adapter\IssueTracker;
 use Gush\Config;
 use Gush\Factory\AdapterFactory;
 use Gush\Tests\Fixtures\Adapter\TestAdapterFactory;
 use Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory;
 use Gush\Tests\Fixtures\Adapter\TestRepoManagerFactory;
-use Symfony\Component\Console\Helper\HelperSet;
 
 class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 {

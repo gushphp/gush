@@ -13,7 +13,6 @@ namespace Gush\Tests\Subscriber;
 
 use Gush\Command\BaseCommand;
 use Gush\Config;
-use Gush\Exception\UserException;
 use Gush\Tests\BaseTestCase;
 use Gush\Tests\Fixtures\Command\GitRepoCommand;
 use Symfony\Component\Console\Helper\HelperSet;

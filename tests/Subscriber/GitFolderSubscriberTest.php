@@ -11,14 +11,10 @@
 
 namespace Gush\Tests\Subscriber;
 
-use Gush\Exception\UserException;
-use Gush\Helper\GitHelper;
 use Gush\Subscriber\GitFolderSubscriber;
 use Gush\Tests\Fixtures\Command\GitFolderCommand;
 use Gush\Tests\Fixtures\Command\GitRepoCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 {

@@ -12,7 +12,6 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchDeleteCommand;
-use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 

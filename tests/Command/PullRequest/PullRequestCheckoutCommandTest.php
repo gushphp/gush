@@ -12,7 +12,6 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCheckoutCommand;
-use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;

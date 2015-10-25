@@ -13,7 +13,6 @@ namespace Gush\Tests\Helper;
 
 use Gush\Helper\StyleHelper;
 use Gush\Helper\TemplateHelper;
-use Gush\Template\TemplateInterface;
 use Gush\Tests\BaseTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;

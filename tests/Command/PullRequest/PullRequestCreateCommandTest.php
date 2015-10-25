@@ -12,7 +12,6 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCreateCommand;
-use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;

@@ -13,7 +13,6 @@ namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
 use Gush\Config;
-use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestConfigurator;
 use Symfony\Component\Console\Helper\HelperSet;
