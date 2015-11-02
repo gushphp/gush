@@ -32,7 +32,7 @@ class StyleCIPatchCommand extends BaseCommand implements GitRepoFeature, GitFold
     {
         $this
             ->setName('pull-request:styleci')
-            ->setDescription('Run StyleCI patches on given PR')
+            ->setDescription('Apply StyleCI patches on given PR')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number')
             ->setHelp(
                 <<<EOF
