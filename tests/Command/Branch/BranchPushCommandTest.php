@@ -63,6 +63,28 @@ class BranchPushCommandTest extends CommandTestCase
         );
     }
 
+    public function testPushesBranchToForkWithForce()
+    {
+        $command = new BranchPushCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper('cordoval', true)->reveal());
+            }
+        );
+
+        $tester->execute(['--set-upstream' => true]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            'Branch pushed to cordoval/'.self::TEST_BRANCH,
+            $display
+        );
+    }
+
     public function testPushesBranchToSpecificFork()
     {
         $command = new BranchPushCommand();
@@ -71,11 +93,11 @@ class BranchPushCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('someone')->reveal());
+                $helperSet->set($this->getLocalGitHelper('someone', false, true)->reveal());
             }
         );
 
-        $tester->execute(['target_organization' => 'someone']);
+        $tester->execute(['target_organization' => 'someone', '--force' => true]);
 
         $display = $tester->getDisplay();
 
@@ -85,11 +107,11 @@ class BranchPushCommandTest extends CommandTestCase
         );
     }
 
-    private function getLocalGitHelper($org = 'cordoval', $upstream = false)
+    private function getLocalGitHelper($org = 'cordoval', $upstream = false, $force = false)
     {
         $gitHelper = $this->getGitHelper();
         $gitHelper->getActiveBranchName()->willReturn(self::TEST_BRANCH);
-        $gitHelper->pushToRemote($org, self::TEST_BRANCH, $upstream)->shouldBeCalled();
+        $gitHelper->pushToRemote($org, self::TEST_BRANCH, $upstream, $force)->shouldBeCalled();
 
         return $gitHelper;
     }

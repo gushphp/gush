@@ -465,7 +465,7 @@ class GitHelper extends Helper
         }
 
         if ($force) {
-            $command[] = '-f';
+            $command[] = '--force';
         }
 
         $command[] = $ref;

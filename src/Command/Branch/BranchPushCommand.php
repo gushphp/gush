@@ -40,6 +40,12 @@ class BranchPushCommand extends BaseCommand implements GitRepoFeature, GitFolder
                 InputOption::VALUE_NONE,
                 'Set the target_organization as the default upstream'
             )
+            ->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NONE,
+                'Push branch to remote ignoring non-update branch state.'
+            )
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command pushes the current local branch into your own fork:
@@ -63,7 +69,12 @@ EOF
             $org = $this->getParameter($input, 'authentication')['username'];
         }
 
-        $this->getHelper('git')->pushToRemote($org, $branchName, (bool) $input->getOption('set-upstream'));
+        $this->getHelper('git')->pushToRemote(
+            $org,
+            $branchName,
+            (bool) $input->getOption('set-upstream'),
+            (bool) $input->getOption('force')
+        );
 
         $this->getHelper('gush_style')->success(
             sprintf('Branch pushed to %s/%s', $org, $branchName)
