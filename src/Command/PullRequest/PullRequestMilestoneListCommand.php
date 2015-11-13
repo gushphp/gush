@@ -17,7 +17,7 @@ use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestMilestoneListCommand extends BaseCommand implements TableFeature, GitRepoFeature
+class PullRequestMilestoneListCommand extends BaseCommand implements GitRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -42,31 +42,19 @@ EOF
     /**
      * {@inheritdoc}
      */
-    public function getTableDefaultLayout()
-    {
-        return 'compact';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adapter = $this->getAdapter();
         $milestones = $adapter->getMilestones();
 
-        /** @var \Gush\Helper\TableHelper $table */
-        $table = $this->getHelper('table');
-        $table->formatRows($milestones, $this->getRowBuilderCallback());
-        $table->render($output);
+        $styleHelper = $this->getHelper('gush_style');
+        $styleHelper->title(
+            sprintf(
+                'Pull request milestones on %s / %s',
+                $input->getOption('org'), $input->getOption('repo')
+            )
+        );
 
-        return $milestones;
-    }
-
-    private function getRowBuilderCallback()
-    {
-        return function ($milestone) {
-            return [$milestone];
-        };
+        $styleHelper->listing($milestones);
     }
 }
