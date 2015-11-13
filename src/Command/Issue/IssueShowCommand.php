@@ -12,7 +12,9 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
+use Gush\Exception\UserException;
 use Gush\Feature\IssueTrackerRepoFeature;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,7 +54,18 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (null === $issueNumber = $input->getArgument('issue')) {
-            $issueNumber = $this->getHelper('git')->getIssueNumber();
+            $segments = explode('-', $this->getHelper('git')->getActiveBranchName(), 2);
+
+            if (!isset($segments[1])) {
+                throw new UserException(
+                    [
+                        'Unable to extract issue-number from the current branch.',
+                        'Please provide an issue number with the command.',
+                    ]
+                );
+            }
+
+            $issueNumber = $segments[0];
         }
 
         $comments = [];
@@ -62,36 +75,31 @@ EOF
             $comments = $tracker->getComments($issueNumber);
         }
 
-        $output->writeln(
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+        $styleHelper->title(
             sprintf(
-                PHP_EOL.'Issue #%s (%s): by %s [%s]',
+                'Issue #%s - %s by %s [<fg='.'%s>%s</>]',
                 $issue['number'],
-                $issue['state'],
+                $issue['title'],
                 $issue['user'],
-                $issue['assignee']
+                'closed' === $issue['state'] ? 'red' : 'green',
+                $issue['state']
             )
         );
 
-        if ($issue['pull_request']) {
-            $output->writeln('Type: Pull Request');
-        } else {
-            $output->writeln('Type: Issue');
-        }
-
-        $output->writeln('Milestone: '.$issue['milestone']);
-
-        if ($issue['labels'] > 0) {
-            $output->writeln('Labels: '.implode(', ', $issue['labels']));
-        }
-
-        $output->writeln(
+        $styleHelper->detailsTable(
             [
-                'Title: '.$issue['title'],
-                'Link: '.$issue['url'],
-                '',
-                wordwrap($issue['body'], 100),
+                ['Org/Repo', $input->getOption('issue-org').' / '.$input->getOption('issue-project')],
+                ['Link', $issue['url']],
+                ['Labels', implode(', ', $issue['labels']) ?: '<comment>None</comment>'],
+                ['Milestone', $issue['milestone'] ?: '<comment>None</comment>'],
+                ['Assignee', $issue['assignee'] ?: '<comment>None</comment>'],
             ]
         );
+
+        $styleHelper->section('Body');
+        $styleHelper->text(explode("\n", $issue['body']));
 
         if (true === $input->getOption('with-comments') && count($comments) > 0) {
             $output->writeln(
@@ -119,6 +127,7 @@ EOF
                 );
             }
         }
+
 
         return self::COMMAND_SUCCESS;
     }
