@@ -11,7 +11,6 @@
 
 namespace Gush\Command\Util;
 
-use Gush\Adapter\GitHubAdapter;
 use Gush\Command\BaseCommand;
 use Gush\Exception\UserException;
 use Gush\Exception\WorkingTreeIsNotReady;
@@ -19,6 +18,7 @@ use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\DownloadHelper;
 use Gush\Helper\GitHelper;
+use Gush\ThirdParty\Github\GitHubAdapter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
