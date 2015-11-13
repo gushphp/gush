@@ -13,7 +13,6 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\IssueTrackerRepoFeature;
-use Gush\Feature\TableFeature;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

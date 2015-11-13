@@ -15,7 +15,6 @@ use Gush\Command\BaseCommand;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Feature\TableFeature;
 use Gush\Helper\GitRepoHelper;
-use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -104,7 +103,7 @@ EOF
             if ($type = $input->getOption('type')) {
                 GitRepoHelper::validateEnum('issue', 'type', $type);
 
-                if (('pr' === $type && false === $isPr) || ('issue' === $type && true === $isPr) ) {
+                if (('pr' === $type && false === $isPr) || ('issue' === $type && true === $isPr)) {
                     unset($issues[$i]);
                 }
             }
