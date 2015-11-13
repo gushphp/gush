@@ -67,7 +67,7 @@ EOF
                 'Your working tree has uncommitted changes, committing changes with "WIP" as message.'
             );
 
-            $gitHelper->commit('wip', ['a']);
+            $gitHelper->commit('wip', GitHelper::COMMIT_ALL);
         }
 
         $processHelper->runCommand($fixerLine, true);
@@ -75,7 +75,7 @@ EOF
         $gitHelper->add('.');
 
         if (!$gitHelper->isWorkingTreeReady()) {
-            $gitHelper->commit('cs-fixer', ['a']);
+            $gitHelper->commit('cs-fixer', GitHelper::COMMIT_ALL);
         }
 
         $this->getHelper('gush_style')->success('CS fixes committed!');

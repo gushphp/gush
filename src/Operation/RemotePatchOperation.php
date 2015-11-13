@@ -71,7 +71,7 @@ final class RemotePatchOperation
         $this->gitHelper->checkout($this->tempBranch, true);
 
         $this->processHelper->runCommand(['patch', '-'.$type, '--input', $patchFile]);
-        $this->gitHelper->commit($message, ['a']);
+        $this->gitHelper->commit($message, GitHelper::COMMIT_ALL);
 
         $this->gitHelper->restoreStashedBranch();
     }

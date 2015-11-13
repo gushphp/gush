@@ -15,8 +15,8 @@ use Gush\Command\BaseCommand;
 use Gush\Config;
 use Gush\ConfigFactory;
 use Gush\Feature\GitDirectoryFeature;
-use Gush\Helper\GitHelper;
 use Gush\Helper\StyleHelper;
+use Gush\Util\AdapterConfigUtil;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,7 +54,7 @@ EOF
             $styleHelper->numberedChoice(
                 'Choose repository-manager',
                 $adapters[0],
-                GitHelper::undefinedToDefault($input->getOption('repo-adapter'))
+                AdapterConfigUtil::undefinedToDefault($input->getOption('repo-adapter'))
             )
         );
 
@@ -63,7 +63,7 @@ EOF
             $styleHelper->numberedChoice(
                 'Choose issue-tracker',
                 $adapters[1],
-                GitHelper::undefinedToDefault($input->getOption('issue-adapter'))
+                AdapterConfigUtil::undefinedToDefault($input->getOption('issue-adapter'))
             )
         );
 
@@ -71,7 +71,7 @@ EOF
             'org',
             $styleHelper->ask(
                 'Specify the repository organization name',
-                GitHelper::undefinedToDefault($input->getOption('org')),
+                AdapterConfigUtil::undefinedToDefault($input->getOption('org')),
                 ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
@@ -80,7 +80,7 @@ EOF
             'repo',
             $styleHelper->ask(
                 'Specify the repository name',
-                GitHelper::undefinedToDefault($input->getOption('repo')),
+                AdapterConfigUtil::undefinedToDefault($input->getOption('repo')),
                 ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
@@ -89,7 +89,7 @@ EOF
             'issue-org',
             $styleHelper->ask(
                 'Specify the issue-tracker organization name',
-                GitHelper::undefinedToDefault($input->getOption('issue-org'), $input->getOption('org')),
+                AdapterConfigUtil::undefinedToDefault($input->getOption('issue-org'), $input->getOption('org')),
                 ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
@@ -98,7 +98,7 @@ EOF
             'issue-project',
             $styleHelper->ask(
                 'Specify the issue-tracker repository/project name',
-                GitHelper::undefinedToDefault($input->getOption('issue-project'), $input->getOption('repo')),
+                AdapterConfigUtil::undefinedToDefault($input->getOption('issue-project'), $input->getOption('repo')),
                 ['\Gush\Util\CliValidator', 'notEmpty']
             )
         );
@@ -121,14 +121,14 @@ EOF
         $repositoryManagers = $adapters[0];
         $issueTrackers = $adapters[1];
 
-        $repositoryManager = GitHelper::undefinedToDefault($input->getOption('repo-adapter'));
-        $issueTracker = GitHelper::undefinedToDefault($input->getOption('issue-adapter'));
+        $repositoryManager = AdapterConfigUtil::undefinedToDefault($input->getOption('repo-adapter'));
+        $issueTracker = AdapterConfigUtil::undefinedToDefault($input->getOption('issue-adapter'));
 
-        $org = GitHelper::undefinedToDefault($input->getOption('org'));
-        $repo = GitHelper::undefinedToDefault($input->getOption('repo'));
+        $org = AdapterConfigUtil::undefinedToDefault($input->getOption('org'));
+        $repo = AdapterConfigUtil::undefinedToDefault($input->getOption('repo'));
 
-        $issueOrg = GitHelper::undefinedToDefault($input->getOption('issue-org'), $org);
-        $issueRepo = GitHelper::undefinedToDefault($input->getOption('issue-project'), $repo);
+        $issueOrg = AdapterConfigUtil::undefinedToDefault($input->getOption('issue-org'), $org);
+        $issueRepo = AdapterConfigUtil::undefinedToDefault($input->getOption('issue-project'), $repo);
 
         $this->validateAdapter($repositoryManager, $repositoryManagers, 'Repository-manager', $valid);
         $this->validateAdapter($issueTracker, $issueTrackers, 'Issue-tracker', $valid);

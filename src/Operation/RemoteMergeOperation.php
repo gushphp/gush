@@ -108,7 +108,7 @@ class RemoteMergeOperation
 
         $tempSourceBranch = $this->createSourceBranch();
 
-        if ($this->withLog) {
+        if ($this->withLog && !$this->fastForward) {
             $mergeHash = $this->gitHelper->mergeBranchWithLog(
                 $this->targetBase,
                 $tempSourceBranch,
@@ -120,7 +120,7 @@ class RemoteMergeOperation
                 $this->targetBase,
                 $tempSourceBranch,
                 $this->message,
-                $this->fastForward
+                $this->fastForward ? GitHelper::MERGE_FF : GitHelper::MERGE_NO_FF
             );
         }
 
@@ -171,7 +171,11 @@ class RemoteMergeOperation
         }
 
         if ($this->squash) {
-            $this->gitHelper->squashCommits($this->targetBase, $sourceBranch, $this->forceSquash);
+            $this->gitHelper->squashCommits(
+                $this->targetBase,
+                $sourceBranch,
+                $this->forceSquash ? GitHelper::IGNORE_MULTIPLE_AUTHORS : 0
+            );
         }
 
         // Allow a callback to allow late commits list composition

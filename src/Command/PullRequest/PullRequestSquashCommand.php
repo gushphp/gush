@@ -38,6 +38,12 @@ class PullRequestSquashCommand extends BaseCommand implements GitRepoFeature, Gi
                 InputOption::VALUE_NONE,
                 'Do not sync the local branch with the squashed version'
             )
+            ->addOption(
+                'force',
+                null,
+                InputOption::VALUE_NONE,
+                'Force squashing the PR, even if there are multiple authors'
+            )
             ->addArgument('pr_number', InputArgument::REQUIRED, 'pull-request number to squash')
             ->setHelp(
                 <<<EOF
@@ -87,8 +93,8 @@ EOF
         $gitHelper->stashBranchName();
         $gitHelper->checkout($sourceBranch);
         $gitHelper->checkout($tmpBranch = $gitHelper->createTempBranch($sourceBranch), true);
-        $gitHelper->squashCommits($baseOrg.'/'.$baseBranch, $tmpBranch);
-        $gitHelper->pushToRemote($sourceOrg, $tmpBranch.':'.$sourceBranch, false, true);
+        $gitHelper->squashCommits($baseOrg.'/'.$baseBranch, $tmpBranch, $input->getOption('force') ? GitHelper::IGNORE_MULTIPLE_AUTHORS : 0);
+        $gitHelper->pushToRemote($sourceOrg, $tmpBranch.':'.$sourceBranch, GitHelper::PUSH_FORCE);
 
         if (!$input->getOption('no-local-sync') && $gitHelper->branchExists($sourceBranch)) {
             $gitHelper->checkout($sourceBranch);

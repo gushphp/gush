@@ -13,6 +13,7 @@ namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchDeleteCommand;
 use Gush\Exception\UserException;
+use Gush\Helper\GitHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -118,9 +119,9 @@ class BranchDeleteCommandTest extends CommandTestCase
         $helper->getActiveBranchName()->willReturn($branchName);
 
         if ($pushed) {
-            $helper->pushToRemote($remote, ':'.$deletedBranch, true)->shouldBeCalled();
+            $helper->pushToRemote($remote, ':'.$deletedBranch, GitHelper::ALLOW_DELETE)->shouldBeCalled();
         } else {
-            $helper->pushToRemote($remote, ':'.$deletedBranch, true)->shouldNotBeCalled();
+            $helper->pushToRemote($remote, ':'.$deletedBranch, GitHelper::ALLOW_DELETE)->shouldNotBeCalled();
         }
 
         return $helper;

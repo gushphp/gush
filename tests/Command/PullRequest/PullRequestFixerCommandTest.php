@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestFixerCommand;
+use Gush\Helper\GitHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -88,20 +89,20 @@ class PullRequestFixerCommandTest extends CommandTestCase
 
         if ($wcReady) {
             $gitHelper->isWorkingTreeReady()->willReturn(true);
-            $gitHelper->commit('wip', ['a'])->shouldNotBeCalled();
+            $gitHelper->commit('wip', GitHelper::COMMIT_ALL)->shouldNotBeCalled();
         } else {
             $gitHelper->isWorkingTreeReady()->willReturn(false);
-            $gitHelper->commit('wip', ['a'])->shouldBeCalled();
+            $gitHelper->commit('wip', GitHelper::COMMIT_ALL)->shouldBeCalled();
         }
 
         $gitHelper->add('.')->shouldBeCalled();
 
         if ($hasChanges) {
             $gitHelper->isWorkingTreeReady(true)->willReturn(false);
-            $gitHelper->commit('cs-fixer', ['a'])->shouldBeCalled();
+            $gitHelper->commit('cs-fixer', GitHelper::COMMIT_ALL)->shouldBeCalled();
         } else {
             $gitHelper->isWorkingTreeReady(true)->willReturn(true);
-            $gitHelper->commit('cs-fixer', ['a'])->shouldNotBeCalled();
+            $gitHelper->commit('cs-fixer', GitHelper::COMMIT_ALL)->shouldNotBeCalled();
         }
 
         return $gitHelper;

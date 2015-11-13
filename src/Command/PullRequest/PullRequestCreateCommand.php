@@ -206,6 +206,8 @@ EOF
     {
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
 
         $gitUrl = $this->getAdapter()->getRepositoryInfo($org, $repo)['push_url'];
 
@@ -215,7 +217,7 @@ EOF
 
         if ($gitHelper->branchExists($branch)) {
             $this->guardRemoteUpdated($org, $repo);
-            $gitHelper->pushToRemote($org, $branch, true);
+            $gitHelper->pushToRemote($org, $branch, GitHelper::SET_UPSTREAM);
 
             $styleHelper->note(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
 

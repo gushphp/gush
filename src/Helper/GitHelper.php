@@ -21,11 +21,22 @@ use Symfony\Component\Console\Helper\Helper;
 
 class GitHelper extends Helper
 {
-    // Use a null character to ensure the name can never a legal name
-    // and help with detecting its undefined
-    const UNDEFINED_ORG = "org-autodetected\0";
-    const UNDEFINED_REPO = "repo-autodetected\0";
-    const UNDEFINED_ADAPTER = "adapter-autodetected\0";
+    // --Bitmask for options
+
+    // Push
+    const SET_UPSTREAM = 1;
+    const PUSH_FORCE = 2;
+    const ALLOW_DELETE = 4;
+
+    // Merge
+    const MERGE_FF = 8;
+    const MERGE_NO_FF = 16;
+
+    // Squash
+    const IGNORE_MULTIPLE_AUTHORS = 32;
+
+    // Various
+    const COMMIT_ALL = 64;
 
     /** @var ProcessHelper */
     private $processHelper;
@@ -65,21 +76,6 @@ class GitHelper extends Helper
     public function getName()
     {
         return 'git';
-    }
-
-    /**
-     * @param string      $value
-     * @param string|null $default
-     *
-     * @return null|string
-     */
-    public static function undefinedToDefault($value, $default = null)
-    {
-        if (false !== strpos($value, "\0")) {
-            return $default;
-        }
-
-        return $value;
     }
 
     /**
@@ -370,20 +366,20 @@ class GitHelper extends Helper
      * @param string $base          The base branch name
      * @param string $sourceBranch  The source branch name
      * @param string $commitMessage Commit message to use for the merge-commit
-     * @param bool   $fastForward   Perform merge using fast-forward (default false)
+     * @param int    $options       Bitmask options (self::MERGE_FF or self::MERGE_NO_FF)
      *
      * @throws WorkingTreeIsNotReady
      *
      * @return null|string The merge-commit hash or null when fast-forward was used
      */
-    public function mergeBranch($base, $sourceBranch, $commitMessage, $fastForward = false)
+    public function mergeBranch($base, $sourceBranch, $commitMessage, $options = self::MERGE_NO_FF)
     {
         $this->guardWorkingTreeReady();
         $this->stashBranchName();
 
         $this->checkout($base);
 
-        if ($fastForward) {
+        if ($options & self::MERGE_FF) {
             $this->processHelper->runCommand(['git', 'merge', '--ff', $sourceBranch]);
 
             return trim($this->processHelper->runCommand('git rev-parse HEAD'));
@@ -469,15 +465,24 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($commands, true);
     }
 
-    public function pushToRemote($remote, $ref, $setUpstream = false, $force = false)
+    public function pushToRemote($remote, $ref, $options = 0)
     {
+        if (!($options & self::ALLOW_DELETE) && ':' === $ref[0]) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Push target "%s" does not include a local branch and deletion is not enabled, please report this bug!',
+                    $ref
+                )
+            );
+        }
+
         $command = ['git', 'push', $remote];
 
-        if ($setUpstream) {
+        if ($options & self::SET_UPSTREAM) {
             $command[] = '-u';
         }
 
-        if ($force) {
+        if ($options & self::PUSH_FORCE) {
             $command[] = '--force';
         }
 
@@ -569,12 +574,12 @@ class GitHelper extends Helper
     /**
      * @param string $base
      * @param string $branchName
-     * @param bool   $ignoreMultipleAuthors Ignore there are multiple authors (ake force)
+     * @param int    $options
      *
      * @throws WorkingTreeIsNotReady
      * @throws CannotSquashMultipleAuthors
      */
-    public function squashCommits($base, $branchName, $ignoreMultipleAuthors = false)
+    public function squashCommits($base, $branchName, $options = 0)
     {
         $this->guardWorkingTreeReady();
         $this->stashBranchName();
@@ -583,7 +588,7 @@ class GitHelper extends Helper
 
         // Check if there are multiple authors, we only use the e-mail address
         // As the name could have changed (eg. typo's and accents)
-        if (!$ignoreMultipleAuthors) {
+        if (!($options & self::IGNORE_MULTIPLE_AUTHORS)) {
             $authors = array_unique(
                 StringUtil::splitLines(
                     $this->processHelper->runCommand(
@@ -645,10 +650,8 @@ class GitHelper extends Helper
         $this->reset($base);
         $this->commit(
             $message,
-            [
-                'a',
-                '-author' => $author,
-            ]
+            self::COMMIT_ALL,
+            $author
         );
     }
 
@@ -670,24 +673,28 @@ class GitHelper extends Helper
         }
 
         $this->reset('HEAD~1', 'hard');
-        $this->pullRemote($remote, $branchName, true);
+        $this->pullRemote($remote, $branchName);
 
         if ($activeBranchName !== $branchName) {
             $this->checkout($activeBranchName);
         }
     }
 
-    public function commit($message, array $options = [])
+    public function commit($message, $options = 0, $author = null)
     {
-        $params = '';
+        if (!is_int($options)) {
+            throw new \InvalidArgumentException('Options must be a bitmask as integer.');
+        }
 
-        foreach ($options as $option => $value) {
-            if (is_int($option)) {
-                $params[] = '-'.$value;
-            } else {
-                $params[] = '-'.$option;
-                $params[] = $value;
-            }
+        $params = [];
+
+        if ($options & self::COMMIT_ALL) {
+            $params[] = '--all';
+        }
+
+        if ($author) {
+            $params[] = '--author';
+            $params[] = $author;
         }
 
         $tmpName = $this->filesystemHelper->newTempFilename();

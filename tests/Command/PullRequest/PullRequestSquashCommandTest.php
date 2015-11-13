@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestSquashCommand;
+use Gush\Helper\GitHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -148,8 +149,8 @@ class PullRequestSquashCommandTest extends CommandTestCase
         $helper->createTempBranch('head_ref')->willReturn('temp--head_ref');
         $helper->checkout('temp--head_ref', true)->shouldBeCalled();
 
-        $helper->squashCommits('gushphp/base_ref', 'temp--head_ref')->shouldBeCalled();
-        $helper->pushToRemote('cordoval', 'temp--head_ref:head_ref', false, true)->shouldBeCalled();
+        $helper->squashCommits('gushphp/base_ref', 'temp--head_ref', 0)->shouldBeCalled();
+        $helper->pushToRemote('cordoval', 'temp--head_ref:head_ref', GitHelper::PUSH_FORCE)->shouldBeCalled();
 
         $helper->branchExists('head_ref')->willReturn($branchExists);
 

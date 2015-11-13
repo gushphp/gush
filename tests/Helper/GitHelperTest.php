@@ -209,7 +209,37 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $processHelper->runCommand(['git', 'merge', '--ff', 'amazing-feature'])->shouldBeCalled();
         $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
 
-        $this->assertSame($hash, $this->unitGit->mergeBranch($base, $sourceBranch, null, true));
+        $this->assertNull($this->unitGit->mergeBranch($base, $sourceBranch, null, true));
+    }
+
+    /**
+     * @test
+     */
+    public function it_blocks_deletion_of_a_remote_branch()
+    {
+        $this->setExpectedException(
+            'RuntimeException',
+            'Push target ":master" does not include a local branch and deletion is not enabled, please report this bug!'
+        );
+
+        $this->unitGit->pushToRemote('my-org', ':master');
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_deletion_of_a_remote_branch_when_enabled()
+    {
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper->runCommand(['git', 'push', 'my-org', ':master'])->shouldBeCalled();
+
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $this->unitGit->pushToRemote('my-org', ':master', GitHelper::ALLOW_DELETE);
     }
 
     public function testBranchExists()

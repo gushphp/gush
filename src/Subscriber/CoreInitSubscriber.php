@@ -17,6 +17,7 @@ use Gush\Event\GushEvents;
 use Gush\Exception\UserException;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper\GitHelper;
+use Gush\Util\AdapterConfigUtil;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,8 +40,8 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
             return;
         }
 
-        $adapterName = $this->application->getConfig()->get('repo_adapter', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER);
-        $issueTracker = $this->application->getConfig()->get('issue_tracker', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER);
+        $adapterName = $this->application->getConfig()->get('repo_adapter', Config::CONFIG_LOCAL, AdapterConfigUtil::UNDEFINED_ADAPTER);
+        $issueTracker = $this->application->getConfig()->get('issue_tracker', Config::CONFIG_LOCAL, AdapterConfigUtil::UNDEFINED_ADAPTER);
 
         $command
             ->addOption(
@@ -69,14 +70,14 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'Name of the Git organization',
-                $this->application->getConfig()->get('repo_org', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ORG)
+                $this->application->getConfig()->get('repo_org', Config::CONFIG_LOCAL, AdapterConfigUtil::UNDEFINED_ORG)
             )
             ->addOption(
                 'repo',
                 'r',
                 InputOption::VALUE_REQUIRED,
                 'Name of the Git repository',
-                $this->application->getConfig()->get('repo_name', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_REPO)
+                $this->application->getConfig()->get('repo_name', Config::CONFIG_LOCAL,AdapterConfigUtil::UNDEFINED_REPO)
             )
 
             ->addOption(
@@ -87,7 +88,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
                 $this->application->getConfig()->getFirstNotNull(
                     ['issue_project_org', 'repo_org'],
                     Config::CONFIG_LOCAL,
-                    GitHelper::UNDEFINED_ORG
+                    AdapterConfigUtil::UNDEFINED_ORG
                 )
             )
             ->addOption(
@@ -98,7 +99,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
                 $this->application->getConfig()->getFirstNotNull(
                     ['issue_project', 'repo_name'],
                     Config::CONFIG_LOCAL,
-                    GitHelper::UNDEFINED_REPO
+                    AdapterConfigUtil::UNDEFINED_REPO
                 )
             )
         ;
@@ -132,12 +133,12 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
 
         $input->setOption(
             'repo-adapter',
-            GitHelper::undefinedToDefault($input->getOption('repo-adapter'), $this->detectAdapterName())
+            AdapterConfigUtil::undefinedToDefault($input->getOption('repo-adapter'), $this->detectAdapterName())
         );
 
         $input->setOption(
             'issue-adapter',
-            GitHelper::undefinedToDefault(
+            AdapterConfigUtil::undefinedToDefault(
                 $input->getOption('issue-adapter'),
                 $input->getOption('repo-adapter')
             )
@@ -147,8 +148,8 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
             return;
         }
 
-        $org = GitHelper::undefinedToDefault($input->getOption('org'));
-        $repo = GitHelper::undefinedToDefault($input->getOption('repo'));
+        $org = AdapterConfigUtil::undefinedToDefault($input->getOption('org'));
+        $repo = AdapterConfigUtil::undefinedToDefault($input->getOption('repo'));
 
         if (null === $org || null === $repo) {
             list($org, $repo) = $this->getRepositoryReference(
@@ -171,8 +172,10 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
             $input->setOption('repo', $repo);
         }
 
-        $input->setOption('issue-org', GitHelper::undefinedToDefault($input->getOption('issue-org'), $org));
-        $input->setOption('issue-project', GitHelper::undefinedToDefault($input->getOption('issue-project'), $repo));
+        $input->setOption('issue-org', AdapterConfigUtil::undefinedToDefault($input->getOption('issue-org'), $org));
+        $input->setOption('issue-project',
+            AdapterConfigUtil::undefinedToDefault($input->getOption('issue-project'), $repo)
+        );
     }
 
     /**
@@ -203,7 +206,5 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
                 return $adapterName;
             };
         }
-
-        return;
     }
 }

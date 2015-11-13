@@ -14,6 +14,7 @@ namespace Gush\Command\Branch;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitDirectoryFeature;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -69,12 +70,17 @@ EOF
             $org = $this->getParameter($input, 'authentication')['username'];
         }
 
-        $this->getHelper('git')->pushToRemote(
-            $org,
-            $branchName,
-            (bool) $input->getOption('set-upstream'),
-            (bool) $input->getOption('force')
-        );
+        $options = 0;
+
+        if ($input->getOption('set-upstream')) {
+            $options |= GitHelper::SET_UPSTREAM;
+        }
+
+        if ($input->getOption('force')) {
+            $options |= GitHelper::PUSH_FORCE;
+        }
+
+        $this->getHelper('git')->pushToRemote($org, $branchName, $options);
 
         $this->getHelper('gush_style')->success(
             sprintf('Branch pushed to %s/%s', $org, $branchName)

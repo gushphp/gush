@@ -15,6 +15,7 @@ use Gush\Command\BaseCommand;
 use Gush\Exception\UserException;
 use Gush\Feature\GitDirectoryFeature;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -101,7 +102,7 @@ EOF
 
         $this->guardProtectedBranches($input, $branchName);
 
-        $this->getHelper('git')->pushToRemote($org, ':'.$branchName, true);
+        $this->getHelper('git')->pushToRemote($org, ':'.$branchName, GitHelper::ALLOW_DELETE);
 
         $this->getHelper('gush_style')->success(
             sprintf('Branch %s/%s has been deleted!', $org, $branchName)

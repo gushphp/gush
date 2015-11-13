@@ -13,6 +13,7 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCreateCommand;
 use Gush\Exception\UserException;
+use Gush\Helper\GitHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
@@ -369,7 +370,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         $helper->branchExists($branch)->will(
             function () use ($helper, $sourceOrg, $sourceRepo, $branch) {
                 $helper->remoteUpdate($sourceOrg)->shouldBeCalled();
-                $helper->pushToRemote($sourceOrg, $branch, true)->shouldBeCalled();
+                $helper->pushToRemote($sourceOrg, $branch, GitHelper::SET_UPSTREAM)->shouldBeCalled();
 
                 return true;
             }
