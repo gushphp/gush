@@ -76,10 +76,18 @@ EOF
 
         $pullRequests = $adapter->getPullRequests($state);
 
+        $styleHelper = $this->getHelper('gush_style');
+        $styleHelper->title(
+            sprintf(
+                'Pull request on %s / %s',
+                $input->getOption('org'), $input->getOption('repo')
+            )
+        );
+
         $table = $this->getHelper('table');
         $table->setHeaders(['ID', 'Title', 'State', 'Created', 'User', 'Link']);
         $table->formatRows($pullRequests, $this->getRowBuilderCallback());
-        $table->setFooter(sprintf('%s pull request(s)', count($pullRequests)));
+        $table->setFooter(sprintf('<info>%s pull request(s)</info>', count($pullRequests)));
         $table->render($output, $table);
 
         return self::COMMAND_SUCCESS;
