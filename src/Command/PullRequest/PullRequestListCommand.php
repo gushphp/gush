@@ -79,7 +79,7 @@ EOF
         $styleHelper = $this->getHelper('gush_style');
         $styleHelper->title(
             sprintf(
-                'Pull request on %s / %s',
+                'Pull requests on %s / %s',
                 $input->getOption('org'), $input->getOption('repo')
             )
         );

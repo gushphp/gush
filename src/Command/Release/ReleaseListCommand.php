@@ -54,8 +54,16 @@ EOF
         $adapter = $this->getAdapter();
         $releases = $adapter->getReleases();
 
+        $styleHelper = $this->getHelper('gush_style');
+        $styleHelper->title(
+            sprintf(
+                'Releases on %s / %s',
+                $input->getOption('org'), $input->getOption('repo')
+            )
+        );
+
         $table = $this->getHelper('table');
-        $table->setHeaders(['ID', 'Name', 'Tag', 'Draft', 'Prerelease', 'Created', 'Published']);
+        $table->setHeaders(['ID', 'Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published']);
         $table->formatRows($releases, $this->getRowBuilderCallback());
         $table->setFooter(sprintf('%s release(s)', count($releases)));
         $table->render($output, $table);

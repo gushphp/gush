@@ -24,7 +24,7 @@ class ReleaseListCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertTableOutputMatches(
-            ['ID', 'Name', 'Tag', 'Draft', 'Prerelease', 'Created', 'Published'],
+            ['ID', 'Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published'],
             [
                 ['1', 'v1.0.0', 'v1.0.0', 'no', 'no', '2014-01-05 10:00', '2014-01-05 10:00'],
             ],
