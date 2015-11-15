@@ -144,7 +144,8 @@ EOF
 
         $configurator = $application->getAdapterFactory()->createConfigurator(
             $adapterName,
-            $application->getHelperSet()
+            $application->getHelperSet(),
+            $application->getConfig()
         );
 
         while (!$isAuthenticated) {

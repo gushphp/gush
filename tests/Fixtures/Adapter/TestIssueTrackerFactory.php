@@ -17,7 +17,7 @@ use Symfony\Component\Console\Helper\HelperSet;
 
 final class TestIssueTrackerFactory implements IssueTrackerFactory
 {
-    public function createConfigurator(HelperSet $helperSet)
+    public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         return new TestConfigurator(
             'GitHub',

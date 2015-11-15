@@ -148,7 +148,8 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
         $createdConfigurator = $this->adapterFactory->createConfigurator(
             'test',
-            $this->prophesize('Symfony\Component\Console\Helper\HelperSet')->reveal()
+            $this->prophesize('Symfony\Component\Console\Helper\HelperSet')->reveal(),
+            $this->config
         );
 
         $this->assertInstanceOf('Gush\Adapter\Configurator', $createdConfigurator);

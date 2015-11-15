@@ -11,46 +11,33 @@
 
 namespace Gush\ThirdParty\Github;
 
-use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
+use Gush\Factory\IssueTrackerFactory;
+use Gush\Factory\RepositoryManagerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class GitHubEnterpriseFactory
+class GitHubEnterpriseFactory implements IssueTrackerFactory, RepositoryManagerFactory
 {
-    public static function createAdapter($adapterConfig, Config $config)
+    public function createRepositoryManager(array $adapterConfig, Config $config)
     {
         return new GitHubEnterpriseAdapter($adapterConfig, $config);
     }
 
-    public static function createAdapterConfigurator(HelperSet $helperSet)
+    public function createIssueTracker(array $adapterConfig, Config $config)
     {
-        $configurator = new DefaultConfigurator(
+        return new GitHubEnterpriseAdapter($adapterConfig, $config);
+    }
+
+    public function createConfigurator(HelperSet $helperSet, Config $config)
+    {
+        return new GitHubConfigurator(
             $helperSet->get('question'),
             'GitHub Enterprise',
             'https://api.github.com/',
             'https://github.com'
         );
-
-        return $configurator;
-    }
-
-    public static function createIssueTracker($adapterConfig, Config $config)
-    {
-        return new GitHubEnterpriseAdapter($adapterConfig, $config);
-    }
-
-    public static function createIssueTrackerConfigurator(HelperSet $helperSet)
-    {
-        $configurator = new DefaultConfigurator(
-            $helperSet->get('question'),
-            'GitHub Enterprise Issue Tracker',
-            '',
-            ''
-        );
-
-        return $configurator;
     }
 }

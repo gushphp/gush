@@ -13,36 +13,26 @@ namespace Gush\ThirdParty\Jira;
 
 use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
+use Gush\Factory\IssueTrackerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class JiraFactory
+class JiraFactory implements IssueTrackerFactory
 {
-    /**
-     * @param array  $adapterConfig
-     * @param Config $config
-     *
-     * @return JiraIssueTracker
-     */
-    public static function createIssueTracker(array $adapterConfig, Config $config)
+    public function createIssueTracker(array $adapterConfig, Config $config)
     {
         return new JiraIssueTracker($adapterConfig, $config);
     }
 
-    /**
-     * @param HelperSet $helperSet
-     *
-     * @return DefaultConfigurator
-     */
-    public static function createIssueTrackerConfigurator(HelperSet $helperSet)
+    public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         return new DefaultConfigurator(
             $helperSet->get('question'),
             'Jira issue tracker',
-            'http://jira.atlassian.com/rest/api/2/',
-            'http://jira.atlassian.com/',
+            'https://jira.atlassian.com/rest/api/2/',
+            'https://jira.atlassian.com/',
             [['Password', DefaultConfigurator::AUTH_HTTP_PASSWORD]]
         );
     }

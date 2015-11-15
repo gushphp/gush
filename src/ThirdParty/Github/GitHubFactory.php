@@ -12,44 +12,32 @@
 namespace Gush\ThirdParty\Github;
 
 use Gush\Config;
+use Gush\Factory\IssueTrackerFactory;
+use Gush\Factory\RepositoryManagerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class GitHubFactory
+class GitHubFactory implements IssueTrackerFactory, RepositoryManagerFactory
 {
-    public static function createAdapter($adapterConfig, Config $config)
+    public function createRepositoryManager(array $adapterConfig, Config $config)
     {
         return new GitHubAdapter($adapterConfig, $config);
     }
 
-    public static function createAdapterConfigurator(HelperSet $helperSet)
-    {
-        $configurator = new GitHubConfigurator(
-            $helperSet->get('question'),
-            'GitHub',
-            'https://api.github.com/',
-            'https://github.com'
-        );
-
-        return $configurator;
-    }
-
-    public static function createIssueTracker($adapterConfig, Config $config)
+    public function createIssueTracker(array $adapterConfig, Config $config)
     {
         return new GitHubAdapter($adapterConfig, $config);
     }
 
-    public static function createIssueTrackerConfigurator(HelperSet $helperSet)
+    public function createConfigurator(HelperSet $helperSet, Config $config)
     {
-        $configurator = new GitHubConfigurator(
+        return new GitHubConfigurator(
             $helperSet->get('question'),
             'GitHub issue tracker',
             'https://api.github.com/',
             'https://github.com'
         );
-
-        return $configurator;
     }
 }

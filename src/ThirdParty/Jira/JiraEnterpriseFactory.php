@@ -13,36 +13,26 @@ namespace Gush\ThirdParty\Jira;
 
 use Gush\Adapter\DefaultConfigurator;
 use Gush\Config;
+use Gush\Factory\IssueTrackerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
  */
-class JiraEnterpriseFactory
+class JiraEnterpriseFactory implements IssueTrackerFactory
 {
-    /**
-     * @param array  $adapterConfig
-     * @param Config $config
-     *
-     * @return JiraEnterpriseIssueTracker
-     */
-    public static function createIssueTracker(array $adapterConfig, Config $config)
+    public function createIssueTracker(array $adapterConfig, Config $config)
     {
         return new JiraEnterpriseIssueTracker($adapterConfig, $config);
     }
 
-    /**
-     * @param HelperSet $helperSet
-     *
-     * @return DefaultConfigurator
-     */
-    public static function createIssueTrackerConfigurator(HelperSet $helperSet)
+    public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         return new DefaultConfigurator(
             $helperSet->get('question'),
             'Jira Enterprise issue tracker',
-            'http://jira.domain.net:8081/rest/api/2/',
-            'http://jira.domain.net:8081/'
+            'https://jira.domain.net:8081/rest/api/2/',
+            'https://jira.domain.net:8081/'
         );
     }
 }

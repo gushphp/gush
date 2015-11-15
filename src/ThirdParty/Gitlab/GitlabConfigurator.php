@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Gush\ThirdParty\Gitlab\Adapter;
+namespace Gush\ThirdParty\Gitlab;
 
 use Gush\Adapter\DefaultConfigurator;
 use Symfony\Component\Console\Input\InputInterface;
