@@ -51,6 +51,7 @@ class GitLabIssueTracker extends BaseIssueTracker
                 'description' => $body,
                 'assignee_id' => isset($assigneeId) ? $assigneeId : null,
                 'milestone_id' => isset($milestoneId) ? $milestoneId : null,
+                'labels' => isset($options['labels']) ? implode(',', $options['labels']) : '',
             ]
         );
 
