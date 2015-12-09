@@ -12,8 +12,8 @@
 namespace Gush\ThirdParty\Gitlab\Adapter;
 
 use Gush\Adapter\BaseIssueTracker;
-use Gush\Exception\UnsupportedOperationException;
 use Gush\ThirdParty\Gitlab\Model\Issue;
+use Gush\Util\ArrayUtil;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
@@ -197,7 +197,10 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function getLabels()
     {
-        throw new UnsupportedOperationException('Labels are not supported by Gitlab');
+        return ArrayUtil::getValuesFromNestedArray(
+            $this->client->api('projects')->labels($this->getCurrentProject()->id),
+            'name'
+        );
     }
 
     /**
