@@ -33,6 +33,7 @@ class GitLabIssueTracker extends BaseIssueTracker
             $subject,
             [
                 'description' => $body,
+                'labels' => isset($options['labels']) ? implode(',', $options['labels']) : '',
             ]
         );
 
