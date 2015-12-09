@@ -34,6 +34,12 @@ class IssueCopyCommand extends BaseCommand implements IssueTrackerRepoFeature
             ->addArgument('issue_number', InputArgument::REQUIRED, 'Issue number to move')
             ->addArgument('target_username', InputArgument::REQUIRED, 'Target username or organization')
             ->addArgument('target_repository', InputArgument::REQUIRED, 'Target repository')
+            ->addOption(
+                'target-adapter',
+                'ta',
+                InputOption::VALUE_OPTIONAL,
+                'Adapter-name of the target issue-manager'
+            )
             ->addOption('prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for the issue title')
             ->addOption('close', null, InputOption::VALUE_NONE, 'Close original issue')
             ->setHelp(
@@ -57,6 +63,13 @@ EOF
         $close = $input->getOption('close');
 
         $adapter = $this->getIssueTracker();
+        if ($input->getOption('target-adapter') !== null) {
+            $destAdapter = $this->buildIssueAdapter(
+                $input->getOption('target-adapter')
+            );
+        } else {
+            $destAdapter = $adapter;
+        }
 
         $srcIssue = $adapter->getIssue($issueNumber);
         $srcTitle = $prefix.$srcIssue['title'];
@@ -64,11 +77,11 @@ EOF
         $srcUsername = $adapter->getUsername();
         $srcRepository = $adapter->getRepository();
 
-        $adapter->setUsername($targetUsername);
-        $adapter->setRepository($targetRepository);
+        $destAdapter->setUsername($targetUsername);
+        $destAdapter->setRepository($targetRepository);
 
-        $issueUrl = $adapter->getIssueUrl(
-            $adapter->openIssue(
+        $issueUrl = $destAdapter->getIssueUrl(
+            $destAdapter->openIssue(
                 $srcTitle,
                 $srcIssue['body'],
                 $srcIssue
@@ -103,5 +116,30 @@ EOF
         }
 
         return self::COMMAND_SUCCESS;
+    }
+
+    /**
+     * Build a valid IssueTracker instance.
+     *
+     * @param string $name Adapter name to build
+     *
+     * @return Gush\Adapter\IssueTracker
+     */
+    protected function buildIssueAdapter($name)
+    {
+        $issueAdapter = $this
+            ->getApplication()
+            ->getAdapterFactory()
+            ->createIssueTracker(
+                $name,
+                $this->getConfig()->get(
+                    ['adapters', $name],
+                    \Gush\Config::CONFIG_SYSTEM
+                ),
+                $this->getConfig()
+            );
+        $issueAdapter->authenticate();
+
+        return $issueAdapter;
     }
 }
