@@ -39,6 +39,10 @@ class Issue extends Model\Issue
                     $issue['number'] = $this->$property;
                     break;
 
+                case 'labels':
+                    $issue['labels'] = $this->$property;
+                    break;
+
                 case 'author':
                     $issue['user'] = $this->$property->username;
                     break;
