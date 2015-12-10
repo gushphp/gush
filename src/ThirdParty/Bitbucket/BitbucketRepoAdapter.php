@@ -529,7 +529,7 @@ class BitbucketRepoAdapter extends BaseAdapter
                 'ref' => $pr['source']['branch']['name'],
                 'sha' => $pr['source']['commit']['hash'],
                 'user' => $sourceOrg,
-                'repo' => $pr['source']['branch']['name'],
+                'repo' => $pr['source']['repository']['name'],
             ],
             'base' => [
                 'ref' => $pr['destination']['branch']['name'],
