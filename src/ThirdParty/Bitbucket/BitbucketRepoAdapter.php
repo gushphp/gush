@@ -513,7 +513,7 @@ class BitbucketRepoAdapter extends BaseAdapter
         return [
             'url' => $pr['links']['html']['href'],
             'number' => $pr['id'],
-            'state' => $pr['state'],
+            'state' => strtoloer($pr['state']),
             'title' => $pr['title'],
             'body' => $pr['description'],
             'labels' => [], // unsupported
