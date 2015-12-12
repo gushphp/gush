@@ -16,6 +16,7 @@ use Gush\Exception\UnsupportedOperationException;
 use Gush\ThirdParty\Gitlab\Model\Issue;
 use Gush\ThirdParty\Gitlab\Model\MergeRequest;
 use Gush\ThirdParty\Gitlab\Model\Project;
+use Gush\Util\ArrayUtil;
 
 /**
  * @author Luis Cordova <cordoval@gmail.com>
@@ -93,7 +94,10 @@ class GitLabRepoAdapter extends BaseAdapter
      */
     public function getLabels()
     {
-        throw new UnsupportedOperationException('Labels are not supported by Gitlab');
+        return ArrayUtil::getValuesFromNestedArray(
+            $this->client->api('projects')->labels($this->getCurrentProject()->id),
+            'name'
+        );
     }
 
     /**
