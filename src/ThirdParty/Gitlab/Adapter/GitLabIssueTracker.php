@@ -29,10 +29,28 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function openIssue($subject, $body, array $options = [])
     {
+        if (isset($options['assignee'])) {
+            $assignee = $this->client->api('users')->search($options['assignee']);
+            if (count($assignee) > 0) {
+                $assigneeId = current($assignee)['id'];
+            }
+        }
+        if (isset($options['milestone'])) {
+            $milestones = $this->client->api('milestones')->all($this->getCurrentProject()->id);
+            foreach ($milestones as $milestone) {
+                if ($milestone['title'] === $options['milestone']) {
+                    $milestoneId = $milestone['id'];
+                    break;
+                }
+            }
+        }
+
         $issue = $this->getCurrentProject()->createIssue(
             $subject,
             [
                 'description' => $body,
+                'assignee_id' => isset($assigneeId) ? $assigneeId : null,
+                'milestone_id' => isset($milestoneId) ? $milestoneId : null,
             ]
         );
 
