@@ -9,7 +9,6 @@
         {
             "name": "*.php",
             "exclude": [
-                "bldr.phar",
                 "tests",
                 "behat",
                 "phpunit",
