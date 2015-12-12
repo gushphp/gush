@@ -25,7 +25,7 @@ final class TestAdapterFactory implements RepositoryManagerFactory, IssueTracker
         $this->name = $name;
     }
 
-    public function createConfigurator(HelperSet $helperSet)
+    public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         return new TestConfigurator(
             'GitHub',

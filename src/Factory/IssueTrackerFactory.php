@@ -23,7 +23,7 @@ interface IssueTrackerFactory
      *
      * @return Configurator
      */
-    public function createConfigurator(HelperSet $helperSet);
+    public function createConfigurator(HelperSet $helperSet, Config $config);
 
     /**
      * @param array  $adapterConfig

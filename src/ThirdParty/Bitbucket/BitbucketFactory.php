@@ -11,24 +11,27 @@
 
 namespace Gush\ThirdParty\Bitbucket;
 
+use Gush\Config;
+use Gush\Factory\IssueTrackerFactory;
+use Gush\Factory\RepositoryManagerFactory;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class BitbucketFactory
+class BitbucketFactory implements IssueTrackerFactory, RepositoryManagerFactory
 {
     /**
      * @var BitBucketClient|null
      */
-    protected static $client;
+    private static $client;
 
-    public static function createAdapter(array $adapterConfig)
+    public function createRepositoryManager(array $adapterConfig, Config $config)
     {
         return new BitbucketRepoAdapter($adapterConfig, static::getBitBucketClient($adapterConfig));
     }
 
-    public static function createAdapterConfigurator(HelperSet $helperSet)
+    public function createConfigurator(HelperSet $helperSet, Config $config)
     {
         $configurator = new BitBucketConfigurator(
             $helperSet->get('question'),
@@ -40,14 +43,9 @@ class BitbucketFactory
         return $configurator;
     }
 
-    public static function createIssueTracker(array $adapterConfig)
+    public function createIssueTracker(array $adapterConfig, Config $config)
     {
         return new BitbucketIssueTracker($adapterConfig, static::getBitBucketClient($adapterConfig));
-    }
-
-    public static function createIssueTrackerConfigurator(HelperSet $helperSet)
-    {
-        return static::createAdapterConfigurator($helperSet);
     }
 
     /**

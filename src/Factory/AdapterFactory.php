@@ -172,9 +172,9 @@ class AdapterFactory
      *
      * @return Configurator
      */
-    public function createConfigurator($name, HelperSet $helperSet)
+    public function createConfigurator($name, HelperSet $helperSet, Config $globalConfig)
     {
-        return $this->getFactoryObject($name)->createConfigurator($helperSet);
+        return $this->getFactoryObject($name)->createConfigurator($helperSet, $globalConfig);
     }
 
     /**
