@@ -14,8 +14,6 @@ require __DIR__.'/../src/bootstrap.php';
 
 use Gush\Adapter;
 use Gush\ConfigFactory;
-use Gush\Factory\LegacyAdapterFactory;
-use Gush\Factory\LegacyIssueTrackerFactory;
 
 error_reporting(-1);
 ini_set('display_errors', 1);

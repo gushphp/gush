@@ -1,10 +1,6 @@
 /bin/*
 !/bin/gush
 /vendor
-/build
-/web
 *.phar
 phpunit.xml
-/.bldr/vendor
 *.lock
-.bldr

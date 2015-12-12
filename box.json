@@ -9,9 +9,7 @@
         {
             "name": "*.php",
             "exclude": [
-                "bldr.phar",
                 "tests",
-                "behat",
                 "phpunit",
                 "raulfraile",
                 "*Test.php",
