@@ -63,11 +63,17 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function getIssue($id)
     {
-        return Issue::fromArray(
+        $issue = Issue::fromArray(
             $this->client,
             $this->getCurrentProject(),
             $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
-        )->toArray();
+        );
+        $url = $this->getIssueUrl($issue);
+
+        $issue = $issue->toArray();
+        $issue['url'] = $url;
+
+        return $issue;
     }
 
     /**
@@ -80,7 +86,7 @@ class GitLabIssueTracker extends BaseIssueTracker
             $this->configuration['repo_domain_url'],
             $this->getUsername(),
             $this->getRepository(),
-            $this->getIssue($id)['iid']
+            ($id instanceof Issue)?$id->iid:$this->getIssue($id)['iid']
         );
     }
 
