@@ -63,7 +63,14 @@ class Issue extends Model\Issue
                 case 'updated_at':
                     $issue[$property] = new \DateTime($this->$property);
                     break;
-
+                case 'milestone':
+                    if (null !== $this->$property) {
+                        $tmp = $this->$property;
+                        $issue['milestone'] = $tmp['title'];
+                    } else {
+                        $issue['milestone'] = null;
+                    }
+                    break;
                 default:
                     $issue[$property] = $this->$property;
             }
