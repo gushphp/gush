@@ -42,6 +42,7 @@ class IssueCopyCommand extends BaseCommand implements IssueTrackerRepoFeature
             )
             ->addOption('prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for the issue title')
             ->addOption('close', null, InputOption::VALUE_NONE, 'Close original issue')
+            ->addOption('with-comments', null, InputOption::VALUE_NONE, 'Also copy comments')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command moves an issue from one repository to another
@@ -73,24 +74,50 @@ EOF
 
         $srcIssue = $adapter->getIssue($issueNumber);
         $srcTitle = $prefix.$srcIssue['title'];
-
         $srcUsername = $adapter->getUsername();
         $srcRepository = $adapter->getRepository();
 
         $destAdapter->setUsername($targetUsername);
         $destAdapter->setRepository($targetRepository);
-
-        $issueUrl = $destAdapter->getIssueUrl(
-            $destAdapter->openIssue(
-                $srcTitle,
-                $srcIssue['body'],
-                $srcIssue
-            )
+        $destIssueNumber = $destAdapter->openIssue(
+            $srcTitle,
+            $srcIssue['body'],
+            $srcIssue
         );
+        $issueUrl = $destAdapter->getIssueUrl($destIssueNumber);
 
         $this->getHelper('gush_style')->success(
             sprintf('Opened issue: %s', $issueUrl)
         );
+
+        if (true === $input->getOption('with-comments')) {
+            $comments = $adapter->getComments($issueNumber);
+            uasort($comments, function ($a, $b) {
+                if ($a['created_at'] == $b['created_at']) {
+                    return 0;
+                }
+
+                return ($a['created_at'] < $b['created_at']) ? -1 : 1;
+            });
+
+            $messages = [];
+            foreach ($comments as $comment) {
+                $commentUrl = $destAdapter->createComment(
+                    $destIssueNumber,
+                    sprintf(
+                        "%s\n\nby **%s** on **%s**",
+                        $comment['body'],
+                        $comment['user']['login'],
+                        $comment['created_at']->format('r')
+                    )
+                );
+                $messages[] = sprintf(
+                    'Comment added: %s',
+                    is_array($commentUrl) ? implode(',', $commentUrl) : $commentUrl
+                );
+            }
+            $this->getHelper('gush_style')->listing($messages);
+        }
 
         $adapter->setUsername($srcUsername);
         $adapter->setRepository($srcRepository);
