@@ -15,6 +15,7 @@ use Gush\Command\BaseCommand;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class IssueShowCommand extends BaseCommand implements IssueTrackerRepoFeature
@@ -28,6 +29,7 @@ class IssueShowCommand extends BaseCommand implements IssueTrackerRepoFeature
             ->setName('issue:show')
             ->setDescription('Shows given issue')
             ->addArgument('issue', InputArgument::OPTIONAL, 'Issue number')
+            ->addOption('with-comments', null, InputOption::VALUE_NONE, 'Display comments from this issue')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command shows issue details for either the current or the given organization
@@ -53,8 +55,12 @@ EOF
             $issueNumber = $this->getHelper('git')->getIssueNumber();
         }
 
+        $comments = [];
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
+        if (true === $input->getOption('with-comments')) {
+            $comments = $tracker->getComments($issueNumber);
+        }
 
         $output->writeln(
             sprintf(
@@ -83,9 +89,36 @@ EOF
                 'Title: '.$issue['title'],
                 'Link: '.$issue['url'],
                 '',
-                $issue['body'],
+                wordwrap($issue['body'], 100),
             ]
         );
+
+        if (true === $input->getOption('with-comments') && count($comments) > 0) {
+            $output->writeln(
+                [
+                    '',
+                    str_pad('Comments ', 100, '-'),
+                    '',
+                ]
+            );
+
+            foreach ($comments as $comment) {
+                $output->writeln(
+                    [
+                        sprintf(
+                            'Comment #%s by %s on %s',
+                            $comment['id'],
+                            $comment['user']['login'],
+                            $comment['created_at']->format('r')
+                        ),
+                        'Link: '.$comment['url'],
+                        '',
+                        wordwrap($comment['body'], 100),
+                        str_pad('', 10, '-'),
+                    ]
+                );
+            }
+        }
 
         return self::COMMAND_SUCCESS;
     }
