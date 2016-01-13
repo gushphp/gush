@@ -196,7 +196,17 @@ class GitLabIssueTracker extends BaseIssueTracker
             $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
         );
 
-        return $issue->showComments();
+        $comments = [];
+        array_map(function($comment) use (&$comments) {
+            $comments[] = [
+                'id' => $comment->id,
+                'user' => ['login' => $comment->author->username],
+                'body' => $comment->body,
+                'created_at' => new \DateTime($comment->created_at),
+            ];
+        }, $issue->showComments());
+
+        return $comments;
     }
 
     /**
