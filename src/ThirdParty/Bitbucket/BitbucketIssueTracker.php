@@ -323,7 +323,7 @@ class BitbucketIssueTracker extends BaseIssueTracker
      */
     public function getComments($id)
     {
-        $response = $this->client->apiIssues()->all(
+        $response = $this->client->apiIssues()->comments()->all(
             $this->getUsername(),
             $this->getRepository(),
             $id
