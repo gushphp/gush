@@ -64,7 +64,7 @@ EOF
         $close = $input->getOption('close');
 
         $adapter = $this->getIssueTracker();
-        if ($input->getOption('target-adapter') !== null) {
+        if ($input->getOption('target-adapter') !== null && $input->getOption('target-adapter') !== $input->getOption('issue-adapter')) {
             $destAdapter = $this->buildIssueAdapter(
                 $input->getOption('target-adapter')
             );
