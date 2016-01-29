@@ -29,14 +29,14 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function openIssue($subject, $body, array $options = [])
     {
-        if (isset($options['assignee'])) {
+        if (!empty($options['assignee'])) {
             $assignee = $this->client->api('users')->search($options['assignee']);
             if (count($assignee) > 0) {
                 $assigneeId = current($assignee)['id'];
             }
         }
-        if (isset($options['milestone'])) {
-            $milestones = $this->client->api('milestones')->all($this->getCurrentProject()->id);
+        if (!empty($options['milestone'])) {
+            $milestones = $this->client->api('milestones')->all($this->getCurrentProject()->id, 1, 200);
             foreach ($milestones as $milestone) {
                 if ($milestone['title'] === $options['milestone']) {
                     $milestoneId = $milestone['id'];
@@ -49,7 +49,7 @@ class GitLabIssueTracker extends BaseIssueTracker
             $subject,
             [
                 'description' => $body,
-                'assignee_id' => isset($assigneeId) ? $assigneeId : null,
+                'assignee_id' => isset($assigneeId) ? $assigneeId : '',
                 'milestone_id' => isset($milestoneId) ? $milestoneId : null,
                 'labels' => isset($options['labels']) ? implode(',', $options['labels']) : '',
             ]
@@ -63,11 +63,17 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function getIssue($id)
     {
-        return Issue::fromArray(
+        $issue = Issue::fromArray(
             $this->client,
             $this->getCurrentProject(),
             $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
-        )->toArray();
+        );
+        $url = $this->getIssueUrl($issue);
+
+        $issue = $issue->toArray();
+        $issue['url'] = $url;
+
+        return $issue;
     }
 
     /**
@@ -80,7 +86,7 @@ class GitLabIssueTracker extends BaseIssueTracker
             $this->configuration['repo_domain_url'],
             $this->getUsername(),
             $this->getRepository(),
-            $this->getIssue($id)['iid']
+            ($id instanceof Issue) ? $id->iid : $this->getIssue($id)['iid']
         );
     }
 
@@ -190,7 +196,17 @@ class GitLabIssueTracker extends BaseIssueTracker
             $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
         );
 
-        return $issue->showComments();
+        $comments = [];
+        array_map(function($comment) use (&$comments) {
+            $comments[] = [
+                'id' => $comment->id,
+                'user' => ['login' => $comment->author->username],
+                'body' => $comment->body,
+                'created_at' => new \DateTime($comment->created_at),
+            ];
+        }, $issue->showComments());
+
+        return $comments;
     }
 
     /**
