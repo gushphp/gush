@@ -82,10 +82,8 @@ class GitLabIssueTracker extends BaseIssueTracker
     public function getIssueUrl($id)
     {
         return sprintf(
-            '%s/%s/%s/issues/%d',
-            $this->configuration['repo_domain_url'],
-            $this->getUsername(),
-            $this->getRepository(),
+            '%s/issues/%d',
+            $this->getCurrentProject()->web_url,
             ($id instanceof Issue) ? $id->iid : $this->getIssue($id)['iid']
         );
     }
@@ -197,7 +195,7 @@ class GitLabIssueTracker extends BaseIssueTracker
         );
 
         $comments = [];
-        array_map(function($comment) use (&$comments) {
+        array_map(function ($comment) use (&$comments) {
             $comments[] = [
                 'id' => $comment->id,
                 'url' => sprintf(
