@@ -56,7 +56,7 @@ trait GitLabAdapter
     {
         static $currentProject;
 
-        if (null === $currentProject) {
+        if (null === $currentProject || $currentProject->name !== $this->getRepository() || $currentProject->owner !== $this->getUsername()) {
             $currentProject = $this->findProject($this->getUsername(), $this->getRepository());
         }
 
