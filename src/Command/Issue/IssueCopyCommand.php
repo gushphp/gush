@@ -69,7 +69,7 @@ EOF
                 $input->getOption('target-adapter')
             );
         } else {
-            $destAdapter = $adapter;
+            $destAdapter = clone $adapter;
         }
 
         $srcIssue = $adapter->getIssue($issueNumber);
