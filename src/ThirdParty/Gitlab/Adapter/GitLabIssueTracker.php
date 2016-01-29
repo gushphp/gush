@@ -200,6 +200,12 @@ class GitLabIssueTracker extends BaseIssueTracker
         array_map(function($comment) use (&$comments) {
             $comments[] = [
                 'id' => $comment->id,
+                'url' => sprintf(
+                    '%s/issues/%d/#note_%d',
+                    $this->getCurrentProject()->web_url,
+                    $comment->parent->iid,
+                    $comment->id
+                ),
                 'user' => ['login' => $comment->author->username],
                 'body' => $comment->body,
                 'created_at' => new \DateTime($comment->created_at),
