@@ -8,9 +8,7 @@
 It automates common maintainer and contributor tasks and has
 backend support for GitHub, Enterprise Github, and more! See [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
 
-```bash
-curl -sS http://gushphp.org/installer | php
-```
+Install by cloning it, building it and symlinking the entry point bin/gush.
 
 *Logo explanation is best presented from this passage in Psalms 78*:
 
