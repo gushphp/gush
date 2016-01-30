@@ -3,7 +3,6 @@
     "type": "library",
     "description": "Project Maintenance & Contributing Automation Tool",
     "keywords": ["workflow", "issue", "tracker", "adapter", "pull request"],
-    "homepage": "http://gushphp.org",
     "license": "MIT",
     "authors": [{ "name": "makers", "homepage": "https://github.com/gushphp/gush/graphs/contributors" }],
     "require": {
