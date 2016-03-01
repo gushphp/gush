@@ -143,11 +143,17 @@ EOF
         $gitConfigHelper->ensureRemoteExists($targetRemote, $targetRepository);
         $gitConfigHelper->ensureRemoteExists($sourceRemote, $sourceRepository);
 
+        if ($input->getOption('switch')) {
+            $targetLabel = sprintf('New-target: %s/%s (was "%s")', $targetRemote, $input->getOption('switch'), $targetBranch);
+        } else {
+            $targetLabel = sprintf('Target: %s/%s', $targetRemote, $targetBranch);
+        }
+
         $styleHelper->title(sprintf('Merging pull-request #%d - %s', $prNumber, $pr['title']));
         $styleHelper->text(
             [
                 sprintf('Source: %s/%s', $sourceRemote, $sourceBranch),
-                sprintf('Target: %s/%s', $targetRemote, $targetBranch),
+                $targetLabel,
             ]
         );
 
