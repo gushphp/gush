@@ -74,6 +74,10 @@ OET;
 This PR was merged into the base_ref branch.
 OET;
 
+    const COMMAND_DISPLAY_TARGET = <<<OET
+Target: gushphp/base_ref
+OET;
+
     const FAILURE_TYPE_DISPLAY = <<<OET
 Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug.
 OET;
@@ -84,6 +88,10 @@ OET;
 
     const COMMAND_SWITCH_BASE = <<<OET
 This PR was submitted for the base_ref branch but it was merged into the %s branch instead (closes #10).
+OET;
+
+    const COMMAND_SWITCH_BASE_TARGET = <<<OET
+New-target: %s/%s (was "%s")
 OET;
 
     private $commits = [
@@ -128,7 +136,8 @@ OET;
         );
 
         $display = $tester->getDisplay();
-        $this->assertCommandOutputMatches(self::COMMAND_DISPLAY, $display);
+
+        $this->assertCommandOutputMatches([self::COMMAND_DISPLAY, self::COMMAND_DISPLAY_TARGET], $display);
     }
 
     public function testMergePullRequestWithNoComments()
@@ -276,7 +285,14 @@ OET;
         );
 
         $display = $tester->getDisplay();
-        $this->assertCommandOutputMatches(sprintf(self::COMMAND_SWITCH_BASE, 'develop'), $display);
+
+        $this->assertCommandOutputMatches(
+            [
+                sprintf(self::COMMAND_SWITCH_BASE_TARGET, 'gushphp', 'develop', 'base_ref'),
+                sprintf(self::COMMAND_SWITCH_BASE, 'develop')
+            ],
+            $display
+        );
     }
 
     public function testMergePullRequestWithFastForward()
