@@ -44,18 +44,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tracker = $this->getIssueTracker();
-        $milestones = $tracker->getMilestones();
-
         /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
-        $styleHelper->title(
-            sprintf(
-                'Issue milestones on %s / %s',
-                $input->getOption('issue-org'), $input->getOption('issue-project')
-            )
-        );
-
-        $styleHelper->listing($milestones);
+        $styleHelper->title(sprintf('Issue milestones on %s/%s', $input->getOption('issue-org'), $input->getOption('issue-project')));
+        $styleHelper->listing($this->getIssueTracker()->getMilestones());
     }
 }
