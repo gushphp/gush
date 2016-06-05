@@ -50,7 +50,7 @@ class IssueShowCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('60-something-something')->reveal());
+                $helperSet->set($this->getLocalGitHelper()->reveal());
             }
         );
 
@@ -81,7 +81,7 @@ class IssueShowCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('something')->reveal());
+                $helperSet->set($this->getLocalGitHelper()->reveal());
             }
         );
 
@@ -93,10 +93,10 @@ class IssueShowCommandTest extends CommandTestCase
         $tester->execute();
     }
 
-    private function getLocalGitHelper($branch = 'test_branch')
+    private function getLocalGitHelper()
     {
-        $helper = $this->getGitHelper();
-        $helper->getActiveBranchName()->willReturn($branch);
+        $helper = $this->getGitHelper(true);
+        $helper->getIssueNumber()->willReturn(60);
 
         return $helper;
     }
