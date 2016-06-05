@@ -21,6 +21,9 @@ class IssueMilestoneListCommandTest extends CommandTestCase
         $tester = $this->getCommandTester(new IssueMilestoneListCommand());
         $tester->execute();
 
-        $this->assertCommandOutputMatches('version 1.0', $tester->getDisplay());
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches('Issue milestones on gushphp/gush', $display);
+        $this->assertCommandOutputMatches('version 1.0', $display);
     }
 }

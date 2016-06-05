@@ -46,7 +46,6 @@ EOF
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
         $adapters = $this->getAdapters();
 
@@ -116,7 +115,6 @@ EOF
         $config = $application->getConfig();
         $valid = true;
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
         $adapters = $this->getAdapters();

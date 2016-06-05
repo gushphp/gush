@@ -12,6 +12,7 @@
 namespace Gush\Helper;
 
 use Gush\Exception\CannotSquashMultipleAuthors;
+use Gush\Exception\UserException;
 use Gush\Exception\WorkingTreeIsNotReady;
 use Gush\Operation\RemoteMergeOperation;
 use Gush\Operation\RemotePatchOperation;
@@ -280,14 +281,18 @@ class GitHelper extends Helper
 
     public function getIssueNumber()
     {
-        try {
-            $segments = explode('-', $this->getActiveBranchName());
-            $issueNumber = $segments[0];
-        } catch (\Exception $e) {
-            throw new \RuntimeException('Invalid branch name, couldn\'t detect issue number.');
+        $segments = explode('-', $this->getActiveBranchName(), 2);
+
+        if (!isset($segments[1])) {
+            throw new UserException(
+                [
+                    'Unable to extract issue-number from the current branch name.',
+                    'Please provide an issue number with the command.',
+                ]
+            );
         }
 
-        return $issueNumber;
+        return $segments[0];
     }
 
     /**
