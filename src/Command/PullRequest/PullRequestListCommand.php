@@ -77,12 +77,7 @@ EOF
         $pullRequests = $adapter->getPullRequests($state);
 
         $styleHelper = $this->getHelper('gush_style');
-        $styleHelper->title(
-            sprintf(
-                'Pull requests on %s / %s',
-                $input->getOption('org'), $input->getOption('repo')
-            )
-        );
+        $styleHelper->title(sprintf('Pull requests on %s/%s', $input->getOption('org'), $input->getOption('repo')));
 
         $table = $this->getHelper('table');
         $table->setHeaders(['ID', 'Title', 'State', 'Created', 'User', 'Link']);

@@ -47,13 +47,7 @@ EOF
         $milestones = $adapter->getMilestones();
 
         $styleHelper = $this->getHelper('gush_style');
-        $styleHelper->title(
-            sprintf(
-                'Pull request milestones on %s / %s',
-                $input->getOption('org'), $input->getOption('repo')
-            )
-        );
-
+        $styleHelper->title(sprintf('Pull request milestones on %s/%s', $input->getOption('org'), $input->getOption('repo')));
         $styleHelper->listing($milestones);
     }
 }
