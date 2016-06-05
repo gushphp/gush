@@ -91,29 +91,19 @@ EOF
         $styleHelper->text(explode("\n", $issue['body']));
 
         if (true === $input->getOption('with-comments') && count($comments) > 0) {
-            $output->writeln(
-                [
-                    '',
-                    str_pad('Comments ', 100, '-'),
-                    '',
-                ]
-            );
-
+            $styleHelper->section('Comments');
             foreach ($comments as $comment) {
-                $output->writeln(
-                    [
-                        sprintf(
-                            'Comment #%s by %s on %s',
-                            $comment['id'],
-                            $comment['user']['login'],
-                            $comment['created_at']->format('r')
-                        ),
-                        'Link: '.$comment['url'],
-                        '',
-                        wordwrap($comment['body'], 100),
-                        str_pad('', 10, '-'),
-                    ]
-                );
+                $styleHelper->listing([
+                    sprintf(
+                        'Comment #%s by %s on %s',
+                        $comment['id'],
+                        $comment['user'],
+                        $comment['created_at']->format('r')
+                    ),
+                    'Link: '.$comment['url'],
+                    '',
+                    wordwrap($comment['body'], 100),
+                ]);
             }
         }
 
