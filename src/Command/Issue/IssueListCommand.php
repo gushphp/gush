@@ -15,6 +15,7 @@ use Gush\Command\BaseCommand;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Feature\TableFeature;
 use Gush\Helper\GitRepoHelper;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -111,8 +112,10 @@ EOF
 
         unset($issue);
 
-        $this->getHelper('gush_style')->title(sprintf('Issues on %s/%s', $input->getOption('issue-org'), $input->getOption('issue-project')));
-        
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+        $styleHelper->title(sprintf('Issues on %s/%s', $input->getOption('issue-org'), $input->getOption('issue-project')));
+
         $table = $this->getHelper('table');
         $table->setHeaders(
             ['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link']
