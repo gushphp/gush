@@ -289,7 +289,7 @@ OET;
         $this->assertCommandOutputMatches(
             [
                 sprintf(self::COMMAND_SWITCH_BASE_TARGET, 'gushphp', 'develop', 'base_ref'),
-                sprintf(self::COMMAND_SWITCH_BASE, 'develop')
+                sprintf(self::COMMAND_SWITCH_BASE, 'develop'),
             ],
             $display
         );
