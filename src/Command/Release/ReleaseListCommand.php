@@ -14,6 +14,7 @@ namespace Gush\Command\Release;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -55,12 +56,7 @@ EOF
         $releases = $adapter->getReleases();
 
         $styleHelper = $this->getHelper('gush_style');
-        $styleHelper->title(
-            sprintf(
-                'Releases on %s / %s',
-                $input->getOption('org'), $input->getOption('repo')
-            )
-        );
+        $styleHelper->title(sprintf('Releases on %s/%s', $input->getOption('org'), $input->getOption('repo')));
 
         $table = $this->getHelper('table');
         $table->setHeaders(['Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published', 'Link']);

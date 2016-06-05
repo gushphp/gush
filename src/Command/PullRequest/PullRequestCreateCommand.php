@@ -145,7 +145,6 @@ EOF
             $sourceBranch = $this->getHelper('git')->getActiveBranchName();
         }
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
         $this->guardRemoteUpdated($org, $repo);
 

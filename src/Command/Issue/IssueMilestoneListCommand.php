@@ -44,7 +44,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
         $styleHelper->title(sprintf('Issue milestones on %s/%s', $input->getOption('issue-org'), $input->getOption('issue-project')));
         $styleHelper->listing($this->getIssueTracker()->getMilestones());

@@ -60,7 +60,6 @@ class TemplateHelperTest extends BaseTestCase
 
         $this->application = $this->getApplication();
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->application->getHelperSet()->get('gush_style');
         $styleHelper->setInput($this->input);
         $styleHelper->setOutput($this->output);

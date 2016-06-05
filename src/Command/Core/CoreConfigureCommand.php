@@ -63,9 +63,7 @@ EOF
         $adapters = $application->getAdapterFactory()->all();
         $labels = $this->getAdapterLabels($adapters);
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
-
         $styleHelper->title('Gush configuration');
         $styleHelper->text(
             [
@@ -139,7 +137,6 @@ EOF
         $authenticationAttempts = 0;
         $config = [];
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
         $configurator = $application->getAdapterFactory()->createConfigurator(

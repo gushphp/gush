@@ -129,7 +129,6 @@ EOF
         $gitHelper = $this->getHelper('git');
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
         $sourceRemote = $pr['head']['user'];

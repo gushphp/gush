@@ -64,7 +64,6 @@ EOF
         $pullRequests = $input->getOption('pull-requests');
         $issues = $input->getOption('issues');
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
         $isOnlyPullRequest = $pullRequests && !$issues;

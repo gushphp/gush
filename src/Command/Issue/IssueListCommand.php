@@ -112,7 +112,6 @@ EOF
 
         unset($issue);
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
         $styleHelper->title(sprintf('Issues on %s/%s', $input->getOption('issue-org'), $input->getOption('issue-project')));
 

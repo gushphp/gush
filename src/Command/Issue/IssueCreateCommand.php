@@ -57,7 +57,6 @@ EOF
             return $string;
         };
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
 
         if ('' === (string) $input->getOption('title')) {

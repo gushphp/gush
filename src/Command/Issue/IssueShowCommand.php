@@ -64,7 +64,6 @@ EOF
             $comments = $tracker->getComments($issueNumber);
         }
 
-        /** @var StyleHelper $styleHelper */
         $styleHelper = $this->getHelper('gush_style');
         $styleHelper->title(
             sprintf(
