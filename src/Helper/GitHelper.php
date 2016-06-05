@@ -278,18 +278,6 @@ class GitHelper extends Helper
         return StringUtil::splitLines($process->getOutput());
     }
 
-    public function getIssueNumber()
-    {
-        try {
-            $segments = explode('-', $this->getActiveBranchName());
-            $issueNumber = $segments[0];
-        } catch (\Exception $e) {
-            throw new \RuntimeException('Invalid branch name, couldn\'t detect issue number.');
-        }
-
-        return $issueNumber;
-    }
-
     /**
      * @param string $base         The base branch name
      * @param string $sourceBranch The source branch name

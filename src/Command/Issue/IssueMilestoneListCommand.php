@@ -13,11 +13,11 @@ namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\IssueTrackerRepoFeature;
-use Gush\Feature\TableFeature;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class IssueMilestoneListCommand extends BaseCommand implements TableFeature, IssueTrackerRepoFeature
+class IssueMilestoneListCommand extends BaseCommand implements IssueTrackerRepoFeature
 {
     /**
      * {@inheritdoc}
@@ -42,30 +42,20 @@ EOF
     /**
      * {@inheritdoc}
      */
-    public function getTableDefaultLayout()
-    {
-        return 'compact';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getIssueTracker();
         $milestones = $tracker->getMilestones();
 
-        $table = $this->getHelper('table');
-        $table->formatRows($milestones, $this->getRowBuilderCallback());
-        $table->render($output, $table);
+        /** @var StyleHelper $styleHelper */
+        $styleHelper = $this->getHelper('gush_style');
+        $styleHelper->title(
+            sprintf(
+                'Issue milestones on %s / %s',
+                $input->getOption('issue-org'), $input->getOption('issue-project')
+            )
+        );
 
-        return $milestones;
-    }
-
-    private function getRowBuilderCallback()
-    {
-        return function ($milestone) {
-            return [$milestone];
-        };
+        $styleHelper->listing($milestones);
     }
 }

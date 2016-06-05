@@ -21,13 +21,15 @@ class PullRequestListCommandTest extends CommandTestCase
         $tester = $this->getCommandTester(new PullRequestListCommand());
         $tester->execute();
 
-        $this->assertCommandOutputMatches('1 pull request(s)', $tester->getDisplay());
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(['Pull requests on gushphp / gush', '1 pull request(s)'], $display);
         $this->assertTableOutputMatches(
             ['ID', 'Title', 'State', 'Created', 'User', 'Link'],
             [
                 ['17', 'New feature added', 'Open', '2014-04-14 17:24', 'pierredup', 'https://github.com/gushphp/gush/pull/17'],
             ],
-            $tester->getDisplay()
+            $display
         );
     }
 }

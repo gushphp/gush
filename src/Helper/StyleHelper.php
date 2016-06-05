@@ -13,6 +13,7 @@ namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -194,6 +195,14 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
     /**
      * {@inheritdoc}
      */
+    public function comment($message)
+    {
+        $this->getStyle()->comment($message);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function success($message)
     {
         $this->getStyle()->success($message);
@@ -237,6 +246,35 @@ class StyleHelper extends Helper implements OutputAwareInterface, InputAwareInte
     public function table(array $headers, array $rows)
     {
         $this->getStyle()->table($headers, $rows);
+    }
+
+    public function detailsTable(array $rows)
+    {
+        $rows = array_map(
+            function ($row) {
+                $row[0] = sprintf('<info>%s:</>', $row[0]);
+
+                return $row;
+            },
+            $rows
+        );
+
+        $table = new Table($this->output);
+        $table->getStyle()
+            ->setPaddingChar(' ')
+            ->setHorizontalBorderChar('')
+            ->setVerticalBorderChar(' ')
+            ->setCrossingChar('')
+            ->setCellHeaderFormat('%s')
+            ->setCellRowFormat('%s')
+            ->setCellRowContentFormat('%s')
+            ->setBorderFormat('%s')
+            ->setPadType(STR_PAD_RIGHT)
+        ;
+        $table->setRows($rows);
+
+        $table->render();
+        $this->newLine();
     }
 
     /**
