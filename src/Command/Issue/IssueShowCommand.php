@@ -54,18 +54,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (null === $issueNumber = $input->getArgument('issue')) {
-            $segments = explode('-', $this->getHelper('git')->getActiveBranchName(), 2);
-
-            if (!isset($segments[1])) {
-                throw new UserException(
-                    [
-                        'Unable to extract issue-number from the current branch.',
-                        'Please provide an issue number with the command.',
-                    ]
-                );
-            }
-
-            $issueNumber = $segments[0];
+            $issueNumber = $this->getHelper('git')->getIssueNumber();
         }
 
         $comments = [];
@@ -127,7 +116,6 @@ EOF
                 );
             }
         }
-
 
         return self::COMMAND_SUCCESS;
     }
