@@ -79,7 +79,7 @@ EOF
 
         $styleHelper->detailsTable(
             [
-                ['Org/Repo', $input->getOption('issue-org').' / '.$input->getOption('issue-project')],
+                ['Org/Repo', $input->getOption('issue-org').'/'.$input->getOption('issue-project')],
                 ['Link', $issue['url']],
                 ['Labels', implode(', ', $issue['labels']) ?: '<comment>None</comment>'],
                 ['Milestone', $issue['milestone'] ?: '<comment>None</comment>'],
