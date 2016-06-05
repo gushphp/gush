@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by shulard at 2016-01-29 19:23
+
+Just a little problem with the tests here due to the `clone` in fbfb339
+I'll check that quickly...
+
+---------------------------------------------------------------------------
+
+by shulard at 2016-01-29 20:15
+
+@gushphp/contributor, I've a problem on that PR which come from that line : https://github.com/gushphp/gush/blob/master/tests/Command/Issue/IssueCopyCommandTest.php#L38
+
+With my update around the target adapter, the issue tracker linked to the running command is not the same as the one which is linked to the copied issue.
+
+Also that test case seems strange to me :
+
+* The line 38 allow to retrieve the created issue in the target repo
+* The lines 46/47 validate that the username/repository configured on the adapter are the source ones
+
+How is it possible to use source project details to retrieve target issue ? Maybe I misunderstand something here... Maybe the target adapter must be stored in a property and retrieved with a method for the tests...
+
+Thanks for your help !
+
+---------------------------------------------------------------------------
+
+by shulard at 2016-03-21 16:11
+
+Hello @gushphp/contributor,
+
+Can someone help me with a little review here ?
+
+Thanks :smile:
+
+---------------------------------------------------------------------------
+
+by sstok at 2016-03-22 10:31
+
+The implementation looks good to me :+1: but the tests are failing (this seems like a hard fix as there is a new adapter created :hamster: and we can't access that one for the verification).
+
+Disable those tests for now if you can confirm (manually) that is works :+1:
+*This requires a special adapter that stores information statically, but I actually noticed an inconsistency with the TestAdapter and TestIssueTracker (these should actually be separated for proper testing).*
+
+---------------------------------------------------------------------------
+
+by shulard at 2016-03-23 11:41
+
+Thanks @sstok for the review :smile:
+I've updated the test case with a `markTestSkipped` call.
