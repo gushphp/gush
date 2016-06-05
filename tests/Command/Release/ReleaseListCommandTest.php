@@ -24,9 +24,9 @@ class ReleaseListCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertTableOutputMatches(
-            ['ID', 'Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published'],
+            ['Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published', 'Link'],
             [
-                ['1', 'v1.0.0', 'v1.0.0', 'no', 'no', '2014-01-05 10:00', '2014-01-05 10:00'],
+                ['v1.0.0', 'v1.0.0', 'no', 'no', '2014-01-05 10:00', '2014-01-05 10:00', 'https://github.com/octocat/Hello-World/releases/v1.0.0'],
             ],
             $display
         );
