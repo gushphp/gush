@@ -23,7 +23,7 @@ class PullRequestMilestoneListCommandTest extends CommandTestCase
 
         $display = $tester->getDisplay();
 
-        $this->assertCommandOutputMatches('Pull request milestones on gushphp / gush', $display);
+        $this->assertCommandOutputMatches('Pull request milestones on gushphp/gush', $display);
         $this->assertCommandOutputMatches('version 1.0', $display);
     }
 }

@@ -37,7 +37,7 @@ class IssueListCommandTest extends CommandTestCase
             ];
         }
 
-        $this->assertCommandOutputMatches('Issues on gushphp / gush', $display);
+        $this->assertCommandOutputMatches('Issues on gushphp/gush', $display);
         $this->assertTableOutputMatches(
             ['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link'],
             $rows,

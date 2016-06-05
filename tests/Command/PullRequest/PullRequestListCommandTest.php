@@ -23,7 +23,7 @@ class PullRequestListCommandTest extends CommandTestCase
 
         $display = $tester->getDisplay();
 
-        $this->assertCommandOutputMatches(['Pull requests on gushphp / gush', '1 pull request(s)'], $display);
+        $this->assertCommandOutputMatches(['Pull requests on gushphp/gush', '1 pull request(s)'], $display);
         $this->assertTableOutputMatches(
             ['ID', 'Title', 'State', 'Created', 'User', 'Link'],
             [
