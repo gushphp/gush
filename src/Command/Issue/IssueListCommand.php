@@ -111,14 +111,8 @@ EOF
 
         unset($issue);
 
-        $styleHelper = $this->getHelper('gush_style');
-        $styleHelper->title(
-            sprintf(
-                'Issues on %s / %s',
-                $input->getOption('issue-org'), $input->getOption('issue-project')
-            )
-        );
-
+        $this->getHelper('gush_style')->title(sprintf('Issues on %s/%s', $input->getOption('issue-org'), $input->getOption('issue-project')));
+        
         $table = $this->getHelper('table');
         $table->setHeaders(
             ['#', 'State', 'PR?', 'Title', 'User', 'Assignee', 'Milestone', 'Labels', 'Created', 'Link']
