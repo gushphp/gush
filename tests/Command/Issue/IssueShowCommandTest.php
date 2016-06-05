@@ -59,7 +59,7 @@ class IssueShowCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches(
             [
                 'Issue #60 - Write a behat test to launch strategy by weaverryan [open]',
-                'Org/Repo: gushphp / gush',
+                'Org/Repo: gushphp/gush',
                 'Link: https://github.com/gushphp/gush/issues/60',
                 'Labels: actionable, easy pick',
                 'Milestone: v1.0',
