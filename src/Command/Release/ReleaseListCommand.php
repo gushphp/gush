@@ -63,7 +63,7 @@ EOF
         );
 
         $table = $this->getHelper('table');
-        $table->setHeaders(['ID', 'Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published']);
+        $table->setHeaders(['Name', 'Tag', 'Draft', 'Pre-release', 'Created', 'Published', 'Link']);
         $table->formatRows($releases, $this->getRowBuilderCallback());
         $table->setFooter(sprintf('%s release(s)', count($releases)));
         $table->render($output, $table);
@@ -75,13 +75,13 @@ EOF
     {
         return function ($release) {
             return [
-                $release['id'],
                 $release['name'] ?: 'not set',
                 $release['tag_name'],
                 $release['draft'] ? 'yes' : 'no',
                 $release['prerelease'] ? 'yes' : 'no',
                 $release['created_at']->format('Y-m-d H:i'),
                 null !== $release['published_at'] ? $release['published_at']->format('Y-m-d H:i') : '',
+                $release['url']
             ];
         };
     }
