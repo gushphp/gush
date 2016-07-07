@@ -36,9 +36,7 @@ $adapters = [
     'github' => ['Gush\ThirdParty\Github\GitHubFactory', 'GitHub'],
     'github_enterprise' => ['Gush\ThirdParty\Github\GitHubEnterpriseFactory', 'GitHub Enterprise'],
     'bitbucket' => ['Gush\ThirdParty\Bitbucket\BitbucketFactory', 'Bitbucket'],
-    'gitlab' => ['Gush\ThirdParty\Gitlab\GitLabFactory', 'GitLab'],
-    'jira' => ['Gush\ThirdParty\Jira\JiraFactory', 'Jira'],
-    'jira_enterprise' => ['Gush\ThirdParty\Jira\JiraEnterpriseFactory', 'Jira Enterprise'],
+    'gitlab' => ['Gush\ThirdParty\Gitlab\GitLabFactory', 'GitLab']
 ];
 
 foreach ($adapters as $adapterName => $adapter) {

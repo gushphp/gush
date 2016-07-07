@@ -84,7 +84,6 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $adapterFactory = new AdapterFactory();
         $adapterFactory->register('github', 'GitHub', new TestAdapterFactory('github'));
         $adapterFactory->register('github_enterprise', 'GitHub Enterprise', new TestAdapterFactory('github_enterprise'));
-        $adapterFactory->register('jira', 'Jira', new TestIssueTrackerFactory());
 
         $helperSetClosure = function (HelperSet $helperSet) use ($helperSetManipulator) {
             // Fake all system helpers to prevent actual execution
