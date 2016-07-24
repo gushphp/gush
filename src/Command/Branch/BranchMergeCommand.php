@@ -50,7 +50,7 @@ class BranchMergeCommand extends BaseCommand implements GitRepoFeature, GitFolde
             )
             ->addOption(
                 'fast-forward',
-                'ff',
+                null,
                 InputOption::VALUE_NONE,
                 'Merge branch using fast forward (no merge commit will be created)'
             )
