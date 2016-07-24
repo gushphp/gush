@@ -48,7 +48,7 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature, Git
             )
             ->addOption(
                 'fast-forward',
-                'ff',
+                null,
                 InputOption::VALUE_NONE,
                 'Merge pull-request using fast forward (no merge commit will be created)'
             )
