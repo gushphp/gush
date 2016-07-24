@@ -19,12 +19,12 @@ class EnterpriseTemplate extends AbstractSymfonyTemplate
     public function getRequirements()
     {
         return [
-            'bug_fix' => ['Bug Fix?', 'no'],
-            'new_feature' => ['New Feature?', 'no'],
-            'bc_breaks' => ['BC Breaks?', 'no'],
+            'bug_fix' => ['Bug fix?', 'no'],
+            'new_feature' => ['New feature?', 'no'],
+            'bc_breaks' => ['BC breaks?', 'no'],
             'deprecations' => ['Deprecations?', 'no'],
-            'tests_pass' => ['Tests Pass?', 'yes'],
-            'fixed_tickets' => ['Fixed Tickets', ''],
+            'tests_pass' => ['Tests pass?', 'yes'],
+            'fixed_tickets' => ['Fixed tickets', ''],
             'license' => ['License', 'Proprietary'],
             'doc_pr' => ['Doc PR', ''],
             'description' => ['Description', ''],

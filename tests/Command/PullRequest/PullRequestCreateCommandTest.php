@@ -64,7 +64,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         $pr = $command->getAdapter()->getPullRequest(TestAdapter::PULL_REQUEST_NUMBER);
 
         $this->assertEquals('My amazing feature', $pr['title']);
-        $this->assertContains('|Bug Fix?', $pr['body']);
+        $this->assertContains('|Bug fix?', $pr['body']);
         $this->assertContains('My Description', $pr['body']);
 
         $this->assertEquals('master', $pr['base']['ref']);

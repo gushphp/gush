@@ -32,12 +32,12 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
 
 |Q            |A  |
 |---          |---|
-|Bug Fix?     |n  |
-|New Feature? |n  |
-|BC Breaks?   |n  |
+|Bug fix?     |n  |
+|New feature? |n  |
+|BC breaks?   |n  |
 |Deprecations?|n  |
-|Tests Pass?  |n  |
-|Fixed Tickets|   |
+|Tests pass?  |n  |
+|Fixed tickets|   |
 |License      |MIT|
 |Doc PR       |   |
 
@@ -60,12 +60,12 @@ EOF
 
 |Q            |A     |
 |---          |---   |
-|Bug Fix?     |y     |
-|New Feature? |yes   |
-|BC Breaks?   |yes   |
+|Bug fix?     |y     |
+|New feature? |yes   |
+|BC breaks?   |yes   |
 |Deprecations?|yes   |
-|Tests Pass?  |yes   |
-|Fixed Tickets|none  |
+|Tests pass?  |yes   |
+|Fixed tickets|none  |
 |License      |Apache|
 |Doc PR       |none  |
 

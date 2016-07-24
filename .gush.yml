@@ -10,7 +10,7 @@ pr_type:
     - documentation
     - security
 table-pr:
-    fixed_tickets: ['Fixed Tickets', '']
+    fixed_tickets: ['Fixed tickets', '']
     license: [License, MIT]
 base: master
 repo_adapter: github
