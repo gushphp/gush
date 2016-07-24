@@ -19,12 +19,12 @@ class ZendFrameworkTemplate extends AbstractSymfonyTemplate
     public function getRequirements()
     {
         return [
-            'bug_fix' => ['Bug Fix?', 'n'],
-            'new_feature' => ['New Feature?', 'n'],
-            'bc_breaks' => ['BC Breaks?', 'n'],
+            'bug_fix' => ['Bug fix?', 'n'],
+            'new_feature' => ['New feature?', 'n'],
+            'bc_breaks' => ['BC breaks?', 'n'],
             'deprecations' => ['Deprecations?', 'n'],
-            'tests_pass' => ['Tests Pass?', 'n'],
-            'fixed_tickets' => ['Fixed Tickets', ''],
+            'tests_pass' => ['Tests pass?', 'n'],
+            'fixed_tickets' => ['Fixed tickets', ''],
             'license' => ['License', 'New BSD License'],
             'doc_pr' => ['Doc PR', ''],
             'description' => ['Description', ''],
