@@ -30,16 +30,17 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
                 [],
                 <<<EOF
 
-|Q            |A  |
-|---          |---|
-|Bug fix?     |n  |
-|New feature? |n  |
-|BC breaks?   |n  |
-|Deprecations?|n  |
-|Tests pass?  |n  |
-|Fixed tickets|   |
-|License      |MIT|
-|Doc PR       |   |
+|Q            |A     |
+|---          |---   |
+|Branch       |master|
+|Bug fix?     |n     |
+|New feature? |n     |
+|BC breaks?   |n     |
+|Deprecations?|n     |
+|Tests pass?  |n     |
+|Fixed tickets|      |
+|License      |MIT   |
+|Doc PR       |      |
 
 
 This is a description
@@ -47,6 +48,7 @@ EOF
             ],
             [
                 [
+                    'branch' => 'master',
                     'bug_fix' => 'y',
                     'new_feature' => 'yes',
                     'bc_breaks' => 'yes',
@@ -60,6 +62,7 @@ EOF
 
 |Q            |A     |
 |---          |---   |
+|Branch       |master|
 |Bug fix?     |y     |
 |New feature? |yes   |
 |BC breaks?   |yes   |

@@ -19,6 +19,7 @@ class SymfonyTemplate extends AbstractSymfonyTemplate
     public function getRequirements()
     {
         return [
+            'branch' => ['Branch', 'master'],
             'bug_fix' => ['Bug fix?', 'n'],
             'new_feature' => ['New feature?', 'n'],
             'bc_breaks' => ['BC breaks?', 'n'],

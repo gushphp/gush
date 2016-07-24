@@ -19,6 +19,7 @@ class EnterpriseTemplate extends AbstractSymfonyTemplate
     public function getRequirements()
     {
         return [
+            'branch' => ['Branch', 'master'],
             'bug_fix' => ['Bug fix?', 'no'],
             'new_feature' => ['New feature?', 'no'],
             'bc_breaks' => ['BC breaks?', 'no'],
