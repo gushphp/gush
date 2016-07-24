@@ -36,6 +36,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
             $command,
             [
                 'My amazing feature', // title
+                'master', // 'branch'
                 '', // 'bug_fix'
                 'yes', // 'new_feature'
                 'no', // bc_breaks

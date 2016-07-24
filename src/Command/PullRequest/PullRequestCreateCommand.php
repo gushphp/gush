@@ -79,6 +79,7 @@ Note: The "custom" template is only supported when you have configured this in
 your local <comment>.gush.yml</comment> file like:
 <comment>
 table-pr:
+    branch: ['Branch', master]
     bug_fix: ['Bug fix?', no]
     new_feature: ['New feature?', no]
     bc_breaks: ['BC breaks?', no]
