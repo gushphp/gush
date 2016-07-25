@@ -67,7 +67,6 @@ class CoreInitCommandTest extends CommandTestCase
                 '[0] GitHub',
                 '[1] GitHub Enterprise',
                 'Choose issue-tracker',
-                '[2] Jira',
                 'Specify the repository organization name',
                 'Specify the repository name',
                 'Specify the issue-tracker organization name',
@@ -130,7 +129,6 @@ class CoreInitCommandTest extends CommandTestCase
                 '[0] GitHub',
                 '[1] GitHub Enterprise',
                 'Choose issue-tracker',
-                '[2] Jira',
                 'Specify the repository organization name',
                 'Specify the repository name',
                 'Specify the issue-tracker organization name',
@@ -197,7 +195,6 @@ class CoreInitCommandTest extends CommandTestCase
                 '[0] GitHub',
                 '[1] GitHub Enterprise',
                 'Choose issue-tracker',
-                '[2] Jira',
                 $expected,
                 'Value cannot be empty.',
             ],
@@ -243,7 +240,6 @@ class CoreInitCommandTest extends CommandTestCase
                 '[0] GitHub',
                 '[1] GitHub Enterprise',
                 'Choose issue-tracker',
-                '[2] Jira',
                 'Specify the repository organization name',
                 'Specify the repository name',
                 'Specify the issue-tracker organization name',
@@ -323,7 +319,7 @@ class CoreInitCommandTest extends CommandTestCase
                 '--repo-adapter' => 'github',
                 '--org' => 'MyOrg',
                 '--repo' => 'MyRepo',
-                '--issue-adapter' => 'jira',
+                '--issue-adapter' => 'github',
                 '--issue-org' => 'IOrg',
                 '--issue-project' => 'IRepo',
             ],
@@ -335,7 +331,7 @@ class CoreInitCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches(
             [
                 'Repository-manager "GitHub" is not configured yet.',
-                'Issue-tracker "Jira" is not configured yet.',
+                'Issue-tracker "GitHub" is not configured yet.',
                 'Run the "core:configure" command to configure the adapters.',
                 ['\[OK\]\sConfiguration file saved successfully\.$', true],
             ],
@@ -344,7 +340,7 @@ class CoreInitCommandTest extends CommandTestCase
 
         $expected = [
             'repo_adapter' => 'github',
-            'issue_tracker' => 'jira',
+            'issue_tracker' => 'github',
             'repo_org' => 'MyOrg',
             'repo_name' => 'MyRepo',
             'issue_project_org' => 'IOrg',

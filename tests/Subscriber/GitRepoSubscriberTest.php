@@ -314,14 +314,14 @@ class GitRepoSubscriberTest extends BaseTestCase
     {
         $this->setExpectedException(
             'Gush\Exception\UserException',
-            'Adapter "jira" (for issue-tracking) is not configured yet.'
+            'Adapter "gitlab" (for issue-tracking) is not configured yet.'
         );
 
         $command = new GitRepoCommand();
         $this->runCommandTest(
             $command,
             [],
-            ['issue_tracker' => 'jira']
+            ['issue_tracker' => 'gitlab']
         );
     }
 

@@ -187,11 +187,11 @@ class ConfigTest extends BaseTestCase
         $this->assertNull($config->get('repo_adapter'));
 
         $config->set('repo_adapter', 'github', Config::CONFIG_SYSTEM);
-        $config->set('issue_adapter', 'jira', Config::CONFIG_SYSTEM);
+        $config->set('issue_adapter', 'github', Config::CONFIG_SYSTEM);
         $config->set('adapters', ['github' => ['base_url' => 'url']], Config::CONFIG_SYSTEM);
 
         $this->assertEquals('github', $config->get('repo_adapter'));
-        $this->assertEquals('jira', $config->get('issue_adapter'));
+        $this->assertEquals('github', $config->get('issue_adapter'));
         $this->assertEquals(['github' => ['base_url' => 'url']], $config->get('adapters'));
         $this->assertTrue($config->has('issue_adapter', Config::CONFIG_SYSTEM));
 
@@ -275,13 +275,13 @@ class ConfigTest extends BaseTestCase
         $config->merge(
             [
                 'repo_adapter' => 'github',
-                'issue_adapter' => 'jira',
+                'issue_adapter' => 'github',
             ],
             Config::CONFIG_SYSTEM
         );
 
         $this->assertEquals('github', $config->get('repo_adapter'));
-        $this->assertEquals('jira', $config->get('issue_adapter'));
+        $this->assertEquals('github', $config->get('issue_adapter'));
     }
 
     private function createConfig(array $config = [], array $localConfig = [])

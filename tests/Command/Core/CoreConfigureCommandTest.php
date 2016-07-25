@@ -45,7 +45,6 @@ class CoreConfigureCommandTest extends CommandTestCase
                 "Choose adapter:\n[0] Nothing (skip selection)",
                 '[1] GitHub (RepositoryManager, IssueTracker)',
                 'GitHub Enterprise (RepositoryManager, IssueTracker)',
-                'Jira (IssueTracker)',
                 "Do you want to configure other adapters? (yes/no) [no]:\n>\n[OK] Configuration file saved successfully.",
                 ['\[OK\]\sConfiguration file saved successfully\.$', true], // ensure saving message is the last line
             ],
@@ -93,7 +92,6 @@ class CoreConfigureCommandTest extends CommandTestCase
                 "Choose adapter:\n[0] Nothing (skip selection)",
                 '[1] GitHub (RepositoryManager, IssueTracker)',
                 'GitHub Enterprise (RepositoryManager, IssueTracker)',
-                'Jira (IssueTracker)',
                 ['\[OK\]\sConfiguration file saved successfully\.$', true],
             ],
             $display
@@ -142,7 +140,6 @@ class CoreConfigureCommandTest extends CommandTestCase
                 "Choose adapter:\n[0] Nothing (skip selection)",
                 '[1] * GitHub (RepositoryManager, IssueTracker)',
                 'GitHub Enterprise (RepositoryManager, IssueTracker)',
-                'Jira (IssueTracker)',
                 "Do you want to configure other adapters? (yes/no) [no]:\n>\n[OK] Configuration file saved successfully.",
                 ['\[OK\]\sConfiguration file saved successfully\.$', true],
             ],
@@ -199,7 +196,6 @@ class CoreConfigureCommandTest extends CommandTestCase
                 "Choose adapter:\n[0] Nothing (skip selection)",
                 '[1] GitHub (RepositoryManager, IssueTracker)',
                 'GitHub Enterprise (RepositoryManager, IssueTracker)',
-                'Jira (IssueTracker)',
                 // ask twice
                 "Do you want to configure other adapters? (yes/no) [no]:\n>\nChoose adapter:",
                 ['\[OK\]\sConfiguration file saved successfully\.$', true], // ensure saving message is the last line

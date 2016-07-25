@@ -15,7 +15,7 @@ use Gush\Config;
 
 /**
  * Provides a base class for adapting Gush to use different providers.
- * E.g. Github, GitLab, Bitbucket, Jira, etc.
+ * E.g. Github, GitLab, Bitbucket, etc.
  */
 abstract class BaseIssueTracker implements IssueTracker
 {
