@@ -20,7 +20,12 @@ class Project extends Model\Project
 {
     public static function castFrom(Model\Project $project)
     {
-        return static::fromArray($project->getClient(), $project->getData());
+        $data = $project->getData();
+        if (isset($project->getData()['owner']) && is_object($project->getData()['owner'])) {
+            $data['owner'] = $project->getData()['owner']->getData();
+        }
+
+        return static::fromArray($project->getClient(), $data);
     }
 
     public function toArray()
