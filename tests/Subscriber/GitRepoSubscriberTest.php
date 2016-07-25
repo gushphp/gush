@@ -321,7 +321,7 @@ class GitRepoSubscriberTest extends BaseTestCase
         $this->runCommandTest(
             $command,
             [],
-            ['issue_tracker' => 'github']
+            ['issue_tracker' => 'gitlab']
         );
     }
 

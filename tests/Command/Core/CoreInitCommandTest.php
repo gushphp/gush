@@ -331,7 +331,7 @@ class CoreInitCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches(
             [
                 'Repository-manager "GitHub" is not configured yet.',
-                'Issue-tracker "Github" is not configured yet.',
+                'Issue-tracker "GitHub" is not configured yet.',
                 'Run the "core:configure" command to configure the adapters.',
                 ['\[OK\]\sConfiguration file saved successfully\.$', true],
             ],
