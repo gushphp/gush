@@ -10,7 +10,7 @@
  * with this source code in the file LICENSE.
  */
 
-require __DIR__.'/../src/bootstrap.php';
+require __DIR__.'/src/bootstrap.php';
 
 use Gush\ConfigFactory;
 
