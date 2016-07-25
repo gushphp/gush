@@ -12,7 +12,6 @@
 
 require __DIR__.'/../src/bootstrap.php';
 
-use Gush\Adapter;
 use Gush\ConfigFactory;
 
 error_reporting(-1);
