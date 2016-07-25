@@ -500,6 +500,11 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($command);
     }
 
+    public function areThereCommitsBetweenSourceAndTarget($org, $branch, $sourceBranch)
+    {
+        return '' !== trim($this->processHelper->runCommand(['git', 'diff', sprintf('%s/%s', $org, $branch), $sourceBranch, '--name-only']));
+    }
+
     public function isWorkingTreeReady()
     {
         return '' === trim($this->processHelper->runCommand('git status --porcelain --untracked-files=no'));
