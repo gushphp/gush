@@ -148,6 +148,7 @@ EOF
 
         $styleHelper = $this->getHelper('gush_style');
         $this->guardRemoteUpdated($org, $repo);
+        $this->guardCommitsBetweenLocalBranchAndRemoteBaseBranch($org, $repo, $base, $sourceBranch);
 
         $styleHelper->title(sprintf('Open request on %s/%s', $org, $repo));
         $styleHelper->text(
@@ -205,8 +206,6 @@ EOF
     {
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
-        /** @var GitConfigHelper $gitConfigHelper */
-        $gitConfigHelper = $this->getHelper('git_config');
 
         $gitUrl = $this->getAdapter()->getRepositoryInfo($org, $repo)['push_url'];
 
@@ -241,5 +240,25 @@ EOF
 
         $gitConfigHelper->ensureRemoteExists($org, $repo);
         $gitHelper->remoteUpdate($org);
+    }
+
+    /**
+     * @param string $org
+     * @param string $repo
+     * @param string $branch
+     * @param string $sourceBranch
+     *
+     * @throws UserException
+     */
+    private function guardCommitsBetweenLocalBranchAndRemoteBaseBranch($org, $repo, $branch, $sourceBranch)
+    {
+        /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+
+        if (!$gitHelper->areThereCommitsBetweenSourceAndTarget($org, $branch, $sourceBranch)) {
+            throw new UserException(
+                sprintf('Cannot open pull-request, there are no commits between current branch ("%s") and "%s/%s:%s".', $sourceBranch, $org, $repo, $branch)
+            );
+        }
     }
 }
