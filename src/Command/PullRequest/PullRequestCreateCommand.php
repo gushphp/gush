@@ -154,7 +154,7 @@ EOF
 
         $styleHelper->text(
             [
-                sprintf('%1$s (You) want to merge %2$u %7$s into <comment>%3$s/%4$s:%5$s</comment> from <comment>%1$s:%6$s</comment>.', $sourceOrg, $commitCount, $org, $repo, $base, $sourceBranch, $commitCount > 1 ? 'commits' : 'commit'),
+                sprintf('%1$s wants to merge %2$u %7$s into <comment>%3$s/%4$s:%5$s</comment> from <comment>%1$s:%6$s</comment>.', $sourceOrg, $commitCount, $org, $repo, $base, $sourceBranch, $commitCount > 1 ? 'commits' : 'commit'),
             ]
         );
         $styleHelper->newLine();
