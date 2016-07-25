@@ -55,8 +55,8 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush".',
-                'The source branch is "issue-145" on "cordoval".',
+                'This pull-request will be opened on "gushphp/gush:master".',
+                'The source branch is "cordoval:issue-145".',
                 'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
             $display
@@ -92,8 +92,8 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush".',
-                'The source branch is "issue-145" on "cordoval".',
+                'This pull-request will be opened on "gushphp/gush:master".',
+                'The source branch is "cordoval:issue-145".',
                 'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
             $display
@@ -129,8 +129,8 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush".',
-                'The source branch is "feat-adapters" on "user".',
+                'This pull-request will be opened on "gushphp/gush:master".',
+                'The source branch is "user:feat-adapters".',
             'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
             $display
@@ -185,8 +185,8 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush".',
-                'The source branch is "issue-145" on "cordoval".',
+                'This pull-request will be opened on "gushphp/gush:master".',
+                'The source branch is "cordoval:issue-145".',
                 'Marco?',
                 'My question',
                 'Description (enter "e" to open editor)',
@@ -235,8 +235,8 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush".',
-                'The source branch is "issue-145" on "someone".',
+                'This pull-request will be opened on "gushphp/gush:master".',
+                'The source branch is "someone:issue-145".',
                 'Branch "issue-145" was pushed to "someone".',
                 'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
