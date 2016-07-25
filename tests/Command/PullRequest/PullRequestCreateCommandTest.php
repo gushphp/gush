@@ -272,14 +272,41 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
     }
 
-    private function getLocalGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145')
+    public function testCannotOpenPullRequestWithNoCommits()
+    {
+        $command = new PullRequestCreateCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper('someone', 'gush', 'issue-145', 0)->reveal());
+                $helperSet->set($this->getGitConfigHelper('someone')->reveal());
+            }
+        );
+
+        $this->setExpectedException(
+            'Gush\Exception\UserException',
+            'Cannot open pull-request because there are no commits between current branch ("not-my-branch") and "gushphp/gush:master".'
+        );
+
+        $tester->execute(
+            [
+                '--template' => 'default',
+                '--source-org' => 'someone',
+                '--source-branch' => 'not-my-branch',
+            ]
+        );
+    }
+
+    private function getLocalGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145', $commitCount = 1)
     {
         $helper = $this->getGitHelper();
 
         $helper->getFirstCommitTitle('gushphp/master', 'issue-145')->willReturn('Some good title');
         $helper->getActiveBranchName()->willReturn('issue-145');
 
-        $helper->getCommitCountBetweenLocalAndBase(Argument::any(), 'master', Argument::any())->willReturn(1);
+        $helper->getCommitCountBetweenLocalAndBase(Argument::any(), 'master', Argument::any())->willReturn($commitCount);
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
         $helper->remoteBranchExists('git@github.com:cordoval/gush.git', $branch)->willReturn(true);
