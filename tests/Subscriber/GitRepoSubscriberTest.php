@@ -314,14 +314,14 @@ class GitRepoSubscriberTest extends BaseTestCase
     {
         $this->setExpectedException(
             'Gush\Exception\UserException',
-            'Adapter "github" (for issue-tracking) is not configured yet.'
+            'Adapter "github_enterprise" (for issue-tracking) is not configured yet.'
         );
 
         $command = new GitRepoCommand();
         $this->runCommandTest(
             $command,
             [],
-            ['issue_tracker' => 'gitlab']
+            ['issue_tracker' => 'github_enterprise']
         );
     }
 
