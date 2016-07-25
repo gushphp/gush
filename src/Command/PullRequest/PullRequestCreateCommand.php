@@ -148,13 +148,13 @@ EOF
 
         $styleHelper = $this->getHelper('gush_style');
         $this->guardRemoteUpdated($org, $repo);
-        $this->guardCommitsBetweenLocalBranchAndRemoteBaseBranch($org, $repo, $base, $sourceBranch);
+        $commitCount = $this->guardCommitsBetweenLocalBranchAndRemoteBaseBranch($org, $repo, $base, $sourceBranch);
 
         $styleHelper->title(sprintf('Open request on %s/%s', $org, $repo));
+
         $styleHelper->text(
             [
-                sprintf('This pull-request will be opened on "%s/%s:%s".', $org, $repo, $base),
-                sprintf('The source branch is "%s:%s".', $sourceOrg, $sourceBranch),
+                sprintf('%1$s (You) want to merge %2$u %7$s into <comment>%3$s/%4$s:%5$s</comment> from <comment>%1$s:%6$s</comment>.', $sourceOrg, $commitCount, $org, $repo, $base, $sourceBranch, $commitCount > 1 ? 'commits' : 'commit'),
             ]
         );
         $styleHelper->newLine();
@@ -243,22 +243,29 @@ EOF
     }
 
     /**
+     * Gets the number of commits between local and base branch, failing if there
+     * isn't any.
+     *
      * @param string $org
      * @param string $repo
      * @param string $branch
      * @param string $sourceBranch
      *
-     * @throws UserException
+     * @throws UserException If there aren't commits between local and base branch
+     *
+     * @return int The number of commits between local and base branch
      */
     private function guardCommitsBetweenLocalBranchAndRemoteBaseBranch($org, $repo, $branch, $sourceBranch)
     {
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
 
-        if (!$gitHelper->areThereCommitsBetweenSourceAndTarget($org, $branch, $sourceBranch)) {
+        if (!$commitCount = $gitHelper->getCommitCountBetweenLocalAndBase($org, $branch, $sourceBranch)) {
             throw new UserException(
-                sprintf('Cannot open pull-request, there are no commits between current branch ("%s") and "%s/%s:%s".', $sourceBranch, $org, $repo, $branch)
+                sprintf('Cannot open pull-request because there are no commits between current branch ("%s") and "%s/%s:%s".', $sourceBranch, $org, $repo, $branch)
             );
         }
+
+        return $commitCount;
     }
 }

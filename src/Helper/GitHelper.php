@@ -500,9 +500,9 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($command);
     }
 
-    public function areThereCommitsBetweenSourceAndTarget($org, $branch, $sourceBranch)
+    public function getCommitCountBetweenLocalAndBase($org, $branch, $sourceBranch)
     {
-        return '' !== trim($this->processHelper->runCommand(['git', 'diff', sprintf('%s/%s', $org, $branch), $sourceBranch, '--name-only']));
+        return count(explode("\n", trim($this->processHelper->runCommand(['git', 'log', sprintf('%s/%s..%s', $org, $branch, $sourceBranch), '--oneline']))));
     }
 
     public function isWorkingTreeReady()
