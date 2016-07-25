@@ -205,9 +205,6 @@ EOF
     {
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
-        /** @var GitConfigHelper $gitConfigHelper */
-        $gitConfigHelper = $this->getHelper('git_config');
-
         $gitUrl = $this->getAdapter()->getRepositoryInfo($org, $repo)['push_url'];
 
         if ($gitHelper->remoteBranchExists($gitUrl, $branch)) {
@@ -215,8 +212,8 @@ EOF
         }
 
         if ($gitHelper->branchExists($branch)) {
-            $this->guardRemoteUpdated($org, $repo);
-            $gitHelper->pushToRemote($org, $branch, true);
+            $remote = $this->guardRemoteUpdated($org, $repo);
+            $gitHelper->pushToRemote($remote, $branch, true);
 
             $styleHelper->note(sprintf('Branch "%s" was pushed to "%s".', $branch, $org));
 
@@ -231,6 +228,8 @@ EOF
     /**
      * @param string $org
      * @param string $repo
+     *
+     * @return string The resolved remote name
      */
     private function guardRemoteUpdated($org, $repo)
     {
@@ -239,7 +238,9 @@ EOF
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
 
-        $gitConfigHelper->ensureRemoteExists($org, $repo);
-        $gitHelper->remoteUpdate($org);
+        $remote = $gitConfigHelper->ensureRemoteExists($org, $repo);
+        $gitHelper->remoteUpdate($remote);
+
+        return $remote;
     }
 }

@@ -76,14 +76,7 @@ class BaseCommand extends Command
      */
     public function getParameter(InputInterface $input, $key)
     {
-        $config = $this->getConfig();
-        $adapter = $input->getOption('repo-adapter');
-
-        if ($value = $config->get(['adapters', $adapter, $key])) {
-            return $value;
-        }
-
-        return $config->get($key);
+        return $this->getApplication()->getParameter($input, $key);
     }
 
     /**

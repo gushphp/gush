@@ -79,10 +79,12 @@ EOF
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->setRemote($targetOrg, $fork['git_url']);
+        $remote = $gitConfigHelper->ensureRemoteExists($targetOrg, $repo);
+
+        $gitConfigHelper->setRemote($remote, $fork['git_url']);
 
         $this->getHelper('gush_style')->success(
-            sprintf('Added remote "%s" with "%s".', $targetOrg, $fork['git_url'])
+            sprintf('Added remote "%s" with "%s".', $remote, $fork['git_url'])
         );
 
         return self::COMMAND_SUCCESS;

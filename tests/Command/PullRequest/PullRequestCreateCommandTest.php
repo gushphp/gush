@@ -286,13 +286,14 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
         $helper->remoteBranchExists('git@github.com:cordoval/gush.git', $branch)->willReturn(true);
-        $helper->remoteUpdate('gushphp')->shouldBeCalled();
+        $helper->remoteUpdate('gushphp_gush')->shouldBeCalled();
+        $helper->remoteUpdate(Argument::containingString('_'.$sourceRepo))->shouldBeCalled();
 
         $helper->branchExists(Argument::any())->willReturn(false);
         $helper->branchExists($branch)->will(
             function () use ($helper, $sourceOrg, $sourceRepo, $branch) {
-                $helper->remoteUpdate($sourceOrg)->shouldBeCalled();
-                $helper->pushToRemote($sourceOrg, $branch, true)->shouldBeCalled();
+                $helper->remoteUpdate($sourceOrg.'_gush')->shouldBeCalled();
+                $helper->pushToRemote($sourceOrg.'_gush', $branch, true)->shouldBeCalled();
 
                 return true;
             }
@@ -304,10 +305,10 @@ class PullRequestCreateCommandTest extends CommandTestCase
     protected function getGitConfigHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush')
     {
         $helper = parent::getGitConfigHelper();
-        $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled();
+        $helper->ensureRemoteExists('gushphp', 'gush')->willReturn('gushphp_gush');
 
         $helper->remoteExists($sourceOrg, $sourceRepo)->willReturn();
-        $helper->ensureRemoteExists($sourceOrg, $sourceRepo)->willReturn();
+        $helper->ensureRemoteExists($sourceOrg, $sourceRepo)->willReturn($sourceOrg.'_'.$sourceRepo);
 
         return $helper;
     }

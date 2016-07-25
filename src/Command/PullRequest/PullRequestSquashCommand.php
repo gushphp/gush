@@ -76,19 +76,19 @@ EOF
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->ensureRemoteExists($baseOrg, $pr['base']['repo']);
-        $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
+        $baseRemote = $gitConfigHelper->ensureRemoteExists($baseOrg, $pr['base']['repo']);
+        $sourceRemote = $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
 
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
-        $gitHelper->remoteUpdate($baseOrg);
-        $gitHelper->remoteUpdate($sourceOrg);
+        $gitHelper->remoteUpdate($baseRemote);
+        $gitHelper->remoteUpdate($sourceRemote);
 
         $gitHelper->stashBranchName();
         $gitHelper->checkout($sourceBranch);
         $gitHelper->checkout($tmpBranch = $gitHelper->createTempBranch($sourceBranch), true);
-        $gitHelper->squashCommits($baseOrg.'/'.$baseBranch, $tmpBranch);
-        $gitHelper->pushToRemote($sourceOrg, $tmpBranch.':'.$sourceBranch, false, true);
+        $gitHelper->squashCommits($baseRemote.'/'.$baseBranch, $tmpBranch);
+        $gitHelper->pushToRemote($sourceRemote, $tmpBranch.':'.$sourceBranch, false, true);
 
         if (!$input->getOption('no-local-sync') && $gitHelper->branchExists($sourceBranch)) {
             $gitHelper->checkout($sourceBranch);

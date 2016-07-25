@@ -64,17 +64,17 @@ EOF
         $sourceRepo = $pullRequest['head']['repo'];
         $sourceBranch = $pullRequest['head']['ref'];
 
-        $gitConfig->ensureRemoteExists($sourceOrg, $sourceRepo);
-        $gitHelper->remoteUpdate($sourceOrg);
+        $sourceRemote = $gitConfig->ensureRemoteExists($sourceOrg, $sourceRepo);
+        $gitHelper->remoteUpdate($sourceRemote);
 
         if ($gitHelper->branchExists($sourceBranch)) {
-            if ($gitConfig->getGitConfig('branch.'.$sourceBranch.'.remote') !== $sourceOrg) {
+            if ($gitConfig->getGitConfig('branch.'.$sourceBranch.'.remote') !== $sourceRemote) {
                 throw new UserException(
                     [
                         sprintf(
                             'A local branch named "%s" already exists but it\'s remote is not "%s".',
                             $sourceBranch,
-                            $sourceOrg
+                            $sourceRemote
                         ),
                         'Rename the local branch to resolve this conflict.',
                     ]
@@ -82,12 +82,12 @@ EOF
             }
 
             $gitHelper->checkout($sourceBranch);
-            $gitHelper->pullRemote($sourceOrg, $sourceBranch);
+            $gitHelper->pullRemote($sourceRemote, $sourceBranch);
         } else {
-            $gitHelper->checkout($sourceOrg.'/'.$sourceBranch);
+            $gitHelper->checkout($sourceRemote.'/'.$sourceBranch);
             $gitHelper->checkout($sourceBranch, true);
 
-            $gitConfig->setGitConfig('branch.'.$sourceBranch.'.remote', $sourceOrg, true);
+            $gitConfig->setGitConfig('branch.'.$sourceBranch.'.remote', $sourceRemote, true);
         }
 
         $this->getHelper('gush_style')->success("Successfully checked-out pull-request {$pullRequest['url']} in '{$sourceBranch}'");

@@ -130,8 +130,8 @@ class PullRequestSquashCommandTest extends CommandTestCase
     protected function getGitConfigHelper()
     {
         $helper = parent::getGitConfigHelper();
-        $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled();
-        $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled();
+        $helper->ensureRemoteExists('gushphp', 'gush')->willReturn('gushphp_gush');
+        $helper->ensureRemoteExists('cordoval', 'gush')->willReturn('cordoval_gush');
 
         return $helper;
     }
@@ -139,8 +139,8 @@ class PullRequestSquashCommandTest extends CommandTestCase
     protected function getGitHelper($isGitFolder = true, $branchExists = true, $localSync = true)
     {
         $helper = parent::getGitHelper($isGitFolder);
-        $helper->remoteUpdate('gushphp')->shouldBeCalled();
-        $helper->remoteUpdate('cordoval')->shouldBeCalled();
+        $helper->remoteUpdate('gushphp_gush')->shouldBeCalled();
+        $helper->remoteUpdate('cordoval_gush')->shouldBeCalled();
 
         $helper->stashBranchName()->shouldBeCalled();
         $helper->checkout('head_ref')->shouldBeCalled();
@@ -148,8 +148,8 @@ class PullRequestSquashCommandTest extends CommandTestCase
         $helper->createTempBranch('head_ref')->willReturn('temp--head_ref');
         $helper->checkout('temp--head_ref', true)->shouldBeCalled();
 
-        $helper->squashCommits('gushphp/base_ref', 'temp--head_ref')->shouldBeCalled();
-        $helper->pushToRemote('cordoval', 'temp--head_ref:head_ref', false, true)->shouldBeCalled();
+        $helper->squashCommits('gushphp_gush/base_ref', 'temp--head_ref')->shouldBeCalled();
+        $helper->pushToRemote('cordoval_gush', 'temp--head_ref:head_ref', false, true)->shouldBeCalled();
 
         $helper->branchExists('head_ref')->willReturn($branchExists);
 

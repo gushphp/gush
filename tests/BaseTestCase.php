@@ -166,6 +166,8 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     {
         $helper = $this->prophesize('Gush\Helper\GitConfigHelper');
         $helper->setHelperSet(Argument::any())->willReturn();
+        $helper->ensureRemoteExists(Argument::cetera())->will(function ($args) { return implode('_', $args); });
+        $helper->setInput(Argument::any())->willReturn();
         $helper->getName()->willReturn('git_config');
 
         return $helper;

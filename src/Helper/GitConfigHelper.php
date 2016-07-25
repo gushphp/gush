@@ -12,10 +12,11 @@
 namespace Gush\Helper;
 
 use Gush\Application;
+use Gush\RemoteName;
 use Gush\Util\StringUtil;
-use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\InputAwareHelper;
 
-class GitConfigHelper extends Helper
+class GitConfigHelper extends InputAwareHelper
 {
     /**
      * @var \Gush\Helper\ProcessHelper
@@ -153,19 +154,26 @@ class GitConfigHelper extends Helper
      *
      * @param string $org
      * @param string $repo
+     *
+     * @return string
      */
     public function ensureRemoteExists($org, $repo)
     {
+        $host = $this->application->getParameter($this->input, 'repo_domain_url');
+        $remoteName = new RemoteName($org, $repo, $host);
+
         $adapter = $this->application->getAdapter();
         $pushUrl = $adapter->getRepositoryInfo($org, $repo)['push_url'];
 
-        if (!$this->remoteExists($org, $pushUrl)) {
+        if (!$this->remoteExists($remoteName, $pushUrl)) {
             $this->getHelperSet()->get('gush_style')->note(
-                sprintf('Adding remote "%s" with "%s".', $org, $pushUrl)
+                sprintf('Adding remote "%s" with "%s".', $remoteName, $pushUrl)
             );
 
-            $this->setRemote($org, $pushUrl, $pushUrl);
+            $this->setRemote($remoteName, $pushUrl, $pushUrl);
         }
+
+        return (string) $remoteName;
     }
 
     /**
@@ -191,11 +199,11 @@ class GitConfigHelper extends Helper
     }
 
     /**
-     * @param string $name
+     * @param string $remote
      *
      * @return array [host, vendor, repo]
      */
-    public function getRemoteInfo($name)
+    public function getRemoteInfo($remote)
     {
         $info = [
             'host' => '',
@@ -203,7 +211,7 @@ class GitConfigHelper extends Helper
             'repo' => '',
         ];
 
-        $output = $this->getGitConfig('remote.'.$name.'.url');
+        $output = $this->getGitConfig('remote.'.$remote.'.url');
 
         if (0 === stripos($output, 'http://') || 0 === stripos($output, 'https://')) {
             $url = parse_url($output);

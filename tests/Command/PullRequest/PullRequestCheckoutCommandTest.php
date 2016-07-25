@@ -81,7 +81,7 @@ class PullRequestCheckoutCommandTest extends CommandTestCase
 
         $this->setExpectedException(
             'Gush\Exception\UserException',
-            'A local branch named "head_ref" already exists but it\'s remote is not "cordoval"'
+            'A local branch named "head_ref" already exists but it\'s remote is not "cordoval_gush"'
         );
 
         $tester->execute(['pr_number' => self::PULL_REQUEST_NUMBER]);
@@ -92,7 +92,7 @@ class PullRequestCheckoutCommandTest extends CommandTestCase
         $helper = $this->getGitHelper();
 
         $helper->guardWorkingTreeReady()->willReturn();
-        $helper->remoteUpdate('cordoval')->shouldBeCalled();
+        $helper->remoteUpdate('cordoval_gush')->shouldBeCalled();
         $helper->branchExists(Argument::any())->willReturn(false);
 
         if ($localBranchExists) {
@@ -100,11 +100,11 @@ class PullRequestCheckoutCommandTest extends CommandTestCase
 
             if ($remoteMatches) {
                 $helper->checkout('head_ref')->shouldBeCalled();
-                $helper->pullRemote('cordoval', 'head_ref')->shouldBeCalled();
+                $helper->pullRemote('cordoval_gush', 'head_ref')->shouldBeCalled();
             }
         } else {
             $helper->branchExists(Argument::any())->willReturn(false);
-            $helper->checkout('cordoval/head_ref')->shouldBeCalled();
+            $helper->checkout('cordoval_gush/head_ref')->shouldBeCalled();
             $helper->checkout('head_ref', true)->shouldBeCalled();
         }
 
@@ -115,12 +115,12 @@ class PullRequestCheckoutCommandTest extends CommandTestCase
     {
         $helper = parent::getGitConfigHelper();
 
-        $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled();
+        $helper->ensureRemoteExists('cordoval', 'gush')->willReturn('cordoval_gush');
 
         if (!$localBranchExists) {
-            $helper->setGitConfig('branch.head_ref.remote', 'cordoval', true)->shouldBeCalled();
+            $helper->setGitConfig('branch.head_ref.remote', 'cordoval_gush', true)->shouldBeCalled();
         } else {
-            $helper->getGitConfig('branch.head_ref.remote')->willReturn($remoteMatches ? 'cordoval' : 'someone');
+            $helper->getGitConfig('branch.head_ref.remote')->willReturn($remoteMatches ? 'cordoval_gush' : 'someone_gush');
         }
 
         return $helper;

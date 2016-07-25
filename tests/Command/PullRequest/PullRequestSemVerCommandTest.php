@@ -58,7 +58,7 @@ class PullRequestSemVerCommandTest extends CommandTestCase
     protected function getGitConfigHelper()
     {
         $helper = parent::getGitConfigHelper();
-        $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled();
+        $helper->ensureRemoteExists('cordoval', 'gush')->willReturn('cordoval_gush');
 
         return $helper;
     }
@@ -66,8 +66,8 @@ class PullRequestSemVerCommandTest extends CommandTestCase
     protected function getGitHelper($isGitFolder = true, $tag = 'v1.0.0')
     {
         $helper = parent::getGitHelper($isGitFolder);
-        $helper->remoteUpdate('cordoval')->shouldBeCalled();
-        $helper->getLastTagOnBranch('cordoval/head_ref')->willReturn($tag);
+        $helper->remoteUpdate('cordoval_gush')->shouldBeCalled();
+        $helper->getLastTagOnBranch('cordoval_gush/head_ref')->willReturn($tag);
 
         return $helper;
     }

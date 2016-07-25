@@ -60,13 +60,13 @@ EOF
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
+        $remote = $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
 
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
-        $gitHelper->remoteUpdate($sourceOrg);
+        $gitHelper->remoteUpdate($remote);
 
-        $lastTag = $gitHelper->getLastTagOnBranch($sourceOrg.'/'.$branchName);
+        $lastTag = $gitHelper->getLastTagOnBranch($remote.'/'.$branchName);
 
         if (empty($lastTag)) {
             $lastTag = '0.0.0';

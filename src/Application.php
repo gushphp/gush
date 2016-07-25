@@ -253,6 +253,26 @@ LOGO;
     }
 
     /**
+     * Gets a specific parameter.
+     *
+     * @param InputInterface $input
+     * @param string         $key
+     *
+     * @return mixed
+     */
+    public function getParameter(InputInterface $input, $key)
+    {
+        $config = $this->getConfig();
+        $adapter = $input->getOption('repo-adapter');
+
+        if ($value = $config->get(['adapters', $adapter, $key])) {
+            return $value;
+        }
+
+        return $config->get($key);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)

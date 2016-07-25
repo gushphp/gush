@@ -76,7 +76,7 @@ EOF
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->ensureRemoteExists($org, $repo);
+        $remote = $gitConfigHelper->ensureRemoteExists($org, $repo);
 
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
@@ -85,8 +85,8 @@ EOF
 
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
-        $gitHelper->remoteUpdate($org);
-        $gitHelper->checkout($org.'/'.$baseBranch);
+        $gitHelper->remoteUpdate($remote);
+        $gitHelper->checkout($remote.'/'.$baseBranch);
         $gitHelper->checkout($slugTitle, true);
 
         $url = $tracker->getIssueUrl($issueNumber);

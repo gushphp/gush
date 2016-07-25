@@ -375,11 +375,11 @@ OET;
     {
         $helper = parent::getGitConfigHelper();
 
-        $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled(); // base
-        $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled(); // source
+        $helper->ensureRemoteExists('gushphp', 'gush')->willReturn('gushphp_gush'); // base
+        $helper->ensureRemoteExists('cordoval', 'gush')->willReturn('cordoval_gush'); // source
 
         if ($notes) {
-            $helper->ensureNotesFetching('gushphp')->shouldBeCalled();
+            $helper->ensureNotesFetching('gushphp_gush')->shouldBeCalled();
         }
 
         return $helper;
@@ -390,15 +390,15 @@ OET;
         $helper = parent::getGitHelper();
 
         if ($withComments) {
-            $helper->remoteUpdate('gushphp')->shouldBeCalled();
+            $helper->remoteUpdate('gushphp_gush')->shouldBeCalled();
             $helper->addNotes(Argument::any(), self::MERGE_HASH, 'github-comments')->shouldBeCalled();
-            $helper->pushToRemote('gushphp', 'refs/notes/github-comments')->shouldBeCalled();
+            $helper->pushToRemote('gushphp_gush', 'refs/notes/github-comments')->shouldBeCalled();
         }
 
         if (null !== $message) {
             $mergeOperation = $this->prophesize('Gush\Operation\RemoteMergeOperation');
-            $mergeOperation->setTarget('gushphp', 'base_ref')->shouldBeCalled();
-            $mergeOperation->setSource('cordoval', 'head_ref')->shouldBeCalled();
+            $mergeOperation->setTarget('gushphp_gush', 'base_ref')->shouldBeCalled();
+            $mergeOperation->setSource('cordoval_gush', 'head_ref')->shouldBeCalled();
             $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();
             $mergeOperation->switchBase($switch)->shouldBeCalled();
             $mergeOperation->useFastForward($fastForward)->shouldBeCalled();
