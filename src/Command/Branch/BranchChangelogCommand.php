@@ -51,9 +51,9 @@ This command will search all the commits in the given branch (that were made aft
 and will try to extract the issue numbers from the message. To only match a precise pattern, use the
 <comment>--search</comment> option to specify one or multiple regex-patterns (with delimiters and flags).
 
-For example, if your issues are prefixed with "JIRA-" or "DC-", use the following:
+For example, if your issues are prefixed with "DC-", use the following:
 
-    <info>$ gush %command.name% --search="{JIRA-(?P<id>[0-9]+)}i" --search="{DC-(?P<id>[0-9]+)}i"</info>
+    <info>$ gush %command.name% --search="{DC-(?P<id>[0-9]+)}i"</info>
 
 Note: It's important the regex has a "named capturing group" like <comment>(?P<id>[0-9]+)</comment>.
 This named group must (only) match the issue number and nothing else.
