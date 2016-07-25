@@ -36,7 +36,7 @@ class BranchForkCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches(
             [
                 'Forked repository gushphp/gush into cordoval/gush',
-                'Added remote "cordoval" with "git@github.com:cordoval/gush.git".',
+                'Added remote "cordoval_gush" with "git@github.com:cordoval/gush.git".',
             ],
             $display
         );
@@ -50,7 +50,7 @@ class BranchForkCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getGitConfigHelper('someone')->reveal());
+                $helperSet->set($this->getGitConfigHelper('someone_gush')->reveal());
             }
         );
 
@@ -61,13 +61,13 @@ class BranchForkCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches(
             [
                 'Forked repository gushphp/gush into someone/gush',
-                'Added remote "someone" with "git@github.com:cordoval/gush.git".',
+                'Added remote "someone_gush" with "git@github.com:cordoval/gush.git".',
             ],
             $display
         );
     }
 
-    protected function getGitConfigHelper($remoteName = 'cordoval')
+    protected function getGitConfigHelper($remoteName = 'cordoval_gush')
     {
         $gitHelper = parent::getGitConfigHelper();
         $gitHelper->setRemote($remoteName, 'git@github.com:cordoval/gush.git')->shouldBeCalled();

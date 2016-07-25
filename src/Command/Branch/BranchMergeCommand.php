@@ -214,8 +214,8 @@ EOF
             $sourceRepo = $targetRepo;
         }
 
-        $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepo);
-        $gitConfigHelper->ensureRemoteExists($targetOrg, $targetRepo);
+        $sourceRemote = $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepo);
+        $targetRemote = $gitConfigHelper->ensureRemoteExists($targetOrg, $targetRepo);
 
         $squash = $input->getOption('squash') || $input->getOption('force-squash');
 
@@ -240,8 +240,8 @@ EOF
 
         try {
             $mergeOperation = $gitHelper->createRemoteMergeOperation();
-            $mergeOperation->setSource($sourceOrg, $sourceBranch);
-            $mergeOperation->setTarget($targetOrg, $targetBranch);
+            $mergeOperation->setSource($sourceRemote, $sourceBranch);
+            $mergeOperation->setTarget($targetRemote, $targetBranch);
             $mergeOperation->squashCommits($squash, $input->getOption('force-squash'));
             $mergeOperation->setMergeMessage($message, !$input->getOption('no-log'));
             $mergeOperation->useFastForward($input->getOption('fast-forward'));

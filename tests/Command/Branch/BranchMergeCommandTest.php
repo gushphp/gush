@@ -191,7 +191,7 @@ class BranchMergeCommandTest extends CommandTestCase
     {
         $helper = parent::getGitConfigHelper();
 
-        $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled();
+        $helper->ensureRemoteExists('gushphp', 'gush')->willReturn('gushphp_gush');
 
         return $helper;
     }
@@ -201,8 +201,8 @@ class BranchMergeCommandTest extends CommandTestCase
         $helper = parent::getGitHelper();
 
         $mergeOperation = $this->prophesize('Gush\Operation\RemoteMergeOperation');
-        $mergeOperation->setTarget('gushphp', 'master')->shouldBeCalled();
-        $mergeOperation->setSource('gushphp', 'develop')->shouldBeCalled();
+        $mergeOperation->setTarget('gushphp_gush', 'master')->shouldBeCalled();
+        $mergeOperation->setSource('gushphp_gush', 'develop')->shouldBeCalled();
         $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();
         $mergeOperation->useFastForward($fastForward)->shouldBeCalled();
         $mergeOperation->setMergeMessage($message, true)->shouldBeCalled();

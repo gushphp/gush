@@ -89,27 +89,27 @@ EOF
 
         /** @var GitConfigHelper $gitConfigHelper */
         $gitConfigHelper = $this->getHelper('git_config');
-        $gitConfigHelper->ensureRemoteExists($pr['base']['user'], $pr['base']['repo']);
-        $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
+        $baseRemote = $gitConfigHelper->ensureRemoteExists($pr['base']['user'], $pr['base']['repo']);
+        $sourceRemote = $gitConfigHelper->ensureRemoteExists($sourceOrg, $pr['head']['repo']);
 
         /** @var GitHelper $gitHelper */
         $gitHelper = $this->getHelper('git');
-        $gitHelper->remoteUpdate($sourceOrg);
-        $gitHelper->remoteUpdate($pr['base']['user']);
+        $gitHelper->remoteUpdate($sourceRemote);
+        $gitHelper->remoteUpdate($baseRemote);
         $gitHelper->switchBranchBase(
             $branchName,
-            $pr['base']['user'].'/'.$currentBase,
-            $pr['base']['user'].'/'.$baseBranch,
+            $baseRemote.'/'.$currentBase,
+            $baseRemote.'/'.$baseBranch,
             $branchName.'-switched'
         );
 
-        $gitHelper->pushToRemote($sourceOrg, $branchName.'-switched', true);
-        $gitHelper->pushToRemote($sourceOrg, ':'.$branchName);
+        $gitHelper->pushToRemote($sourceRemote, $branchName.'-switched', true);
+        $gitHelper->pushToRemote($sourceRemote, ':'.$branchName);
 
         $switchPr = $adapter->switchPullRequestBase(
             $prNumber,
             $baseBranch,
-            $sourceOrg.':'.$branchName.'-switched',
+            $sourceRemote.':'.$branchName.'-switched',
             $input->getOption('force-new-pr')
         );
 

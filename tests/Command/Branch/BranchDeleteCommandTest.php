@@ -47,7 +47,7 @@ class BranchDeleteCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('test_branch', 'foo', true, 'cordoval-forks')->reveal());
+                $helperSet->set($this->getLocalGitHelper('test_branch', 'foo', true, 'cordoval-forks_gush')->reveal());
             }
         );
 
@@ -107,7 +107,7 @@ class BranchDeleteCommandTest extends CommandTestCase
         $branchName = 'branch-name',
         $deletedBranch = null,
         $pushed = true,
-        $remote = 'cordoval'
+        $remote = 'cordoval_gush'
     ) {
         if (!$deletedBranch) {
             $deletedBranch = $branchName;

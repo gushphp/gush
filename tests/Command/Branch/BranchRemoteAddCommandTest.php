@@ -34,7 +34,7 @@ class BranchRemoteAddCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertCommandOutputMatches(
-            'Added remote "cordoval"',
+            'Added remote "cordoval_gush"',
             $display
         );
     }
@@ -47,7 +47,7 @@ class BranchRemoteAddCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getGitConfigHelper('gushphp', 'git@github.com:gushphp/gush.git')->reveal());
+                $helperSet->set($this->getGitConfigHelper('gushphp_gush', 'git@github.com:gushphp/gush.git')->reveal());
             }
         );
 
@@ -56,7 +56,7 @@ class BranchRemoteAddCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertCommandOutputMatches(
-            'Added remote "gushphp"',
+            'Added remote "gushphp_gush"',
             $display
         );
     }
@@ -69,7 +69,7 @@ class BranchRemoteAddCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getGitConfigHelper('gushphp', 'git@github.com:gushphp/gush.git')->reveal());
+                $helperSet->set($this->getGitConfigHelper('gushphp_gushphp', 'git@github.com:gushphp/gush.git')->reveal());
             }
         );
 
@@ -78,7 +78,7 @@ class BranchRemoteAddCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertCommandOutputMatches(
-            'Added remote "gushphp"',
+            'Added remote "gushphp_gushphp"',
             $display
         );
     }
@@ -105,7 +105,7 @@ class BranchRemoteAddCommandTest extends CommandTestCase
         );
     }
 
-    protected function getGitConfigHelper($remoteName = 'cordoval', $url = 'git@github.com:cordoval/gush.git')
+    protected function getGitConfigHelper($remoteName = 'cordoval_gush', $url = 'git@github.com:cordoval/gush.git')
     {
         $gitHelper = parent::getGitConfigHelper();
         $gitHelper->setRemote($remoteName, $url)->shouldBeCalled();

@@ -131,27 +131,27 @@ EOF
         $gitConfigHelper = $this->getHelper('git_config');
         $styleHelper = $this->getHelper('gush_style');
 
-        $sourceRemote = $pr['head']['user'];
+        $sourceOrg = $pr['head']['user'];
         $sourceRepository = $pr['head']['repo'];
         $sourceBranch = $pr['head']['ref'];
 
-        $targetRemote = $pr['base']['user'];
+        $targetOrg = $pr['base']['user'];
         $targetRepository = $pr['base']['repo'];
         $targetBranch = $pr['base']['ref'];
 
-        $gitConfigHelper->ensureRemoteExists($targetRemote, $targetRepository);
-        $gitConfigHelper->ensureRemoteExists($sourceRemote, $sourceRepository);
+        $targetRemote = $gitConfigHelper->ensureRemoteExists($targetOrg, $targetRepository);
+        $sourceRemote = $gitConfigHelper->ensureRemoteExists($sourceOrg, $sourceRepository);
 
         if ($input->getOption('switch')) {
-            $targetLabel = sprintf('New-target: %s/%s (was "%s")', $targetRemote, $input->getOption('switch'), $targetBranch);
+            $targetLabel = sprintf('New-target: %s/%s (was "%s")', $targetOrg, $input->getOption('switch'), $targetBranch);
         } else {
-            $targetLabel = sprintf('Target: %s/%s', $targetRemote, $targetBranch);
+            $targetLabel = sprintf('Target: %s/%s', $targetOrg, $targetBranch);
         }
 
         $styleHelper->title(sprintf('Merging pull-request #%d - %s', $prNumber, $pr['title']));
         $styleHelper->text(
             [
-                sprintf('Source: %s/%s', $sourceRemote, $sourceBranch),
+                sprintf('Source: %s/%s', $sourceOrg, $sourceBranch),
                 $targetLabel,
             ]
         );

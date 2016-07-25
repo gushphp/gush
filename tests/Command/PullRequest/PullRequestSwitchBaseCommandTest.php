@@ -101,17 +101,17 @@ class PullRequestSwitchBaseCommandTest extends CommandTestCase
         $helper = $this->getGitHelper();
 
         if ('base_ref' !== $baseBranch) {
-            $helper->remoteUpdate('cordoval')->shouldBeCalled();
-            $helper->remoteUpdate('gushphp')->shouldBeCalled();
+            $helper->remoteUpdate('cordoval_gush')->shouldBeCalled();
+            $helper->remoteUpdate('gushphp_gush')->shouldBeCalled();
             $helper->switchBranchBase(
                 'head_ref',
-                'gushphp/base_ref',
-                'gushphp/'.$baseBranch,
+                'gushphp_gush/base_ref',
+                'gushphp_gush/'.$baseBranch,
                 'head_ref-switched'
             )->shouldBeCalled();
 
-            $helper->pushToRemote('cordoval', 'head_ref-switched', true)->shouldBeCalled();
-            $helper->pushToRemote('cordoval', ':head_ref')->shouldBeCalled();
+            $helper->pushToRemote('cordoval_gush', 'head_ref-switched', true)->shouldBeCalled();
+            $helper->pushToRemote('cordoval_gush', ':head_ref')->shouldBeCalled();
         }
 
         return $helper;
@@ -122,8 +122,8 @@ class PullRequestSwitchBaseCommandTest extends CommandTestCase
         $helper = parent::getGitConfigHelper();
 
         if ($expected) {
-            $helper->ensureRemoteExists('cordoval', 'gush')->shouldBeCalled();
-            $helper->ensureRemoteExists('gushphp', 'gush')->shouldBeCalled();
+            $helper->ensureRemoteExists('cordoval', 'gush')->willReturn('cordoval_gush');
+            $helper->ensureRemoteExists('gushphp', 'gush')->willReturn('gushphp_gush');
         }
 
         return $helper;

@@ -17,6 +17,7 @@ use Gush\Exception\WorkingTreeIsNotReady;
 use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\DownloadHelper;
+use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Gush\ThirdParty\Github\GitHubAdapter;
 use Symfony\Component\Console\Input\InputArgument;
@@ -89,8 +90,12 @@ EOF
             )
         );
 
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        $remote = $gitConfigHelper->ensureRemoteExists($pr['head']['user'], $repo);
+
         $patchOperation = $gitHelper->createRemotePatchOperation();
-        $patchOperation->setRemote($pr['head']['user'], $pr['head']['ref']);
+        $patchOperation->setRemote($remote, $pr['head']['ref']);
         $patchOperation->applyPatch($patchFile, 'apply fabbot.io patch', 'p0');
         $patchOperation->pushToRemote();
 

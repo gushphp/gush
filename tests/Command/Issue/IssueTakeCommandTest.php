@@ -56,7 +56,7 @@ class IssueTakeCommandTest extends CommandTestCase
             function (HelperSet $helperSet) {
                 $helperSet->set($this->expectTextHelper()->reveal());
                 $helperSet->set($this->getGitConfigHelper()->reveal());
-                $helperSet->set($this->getLocalGitHelper('gushphp', 'gushphp/development')->reveal());
+                $helperSet->set($this->getLocalGitHelper('gushphp_gush', 'gushphp_gush/development')->reveal());
             }
         );
 
@@ -80,7 +80,7 @@ class IssueTakeCommandTest extends CommandTestCase
             function (HelperSet $helperSet) {
                 $helperSet->set($this->expectTextHelper()->reveal());
                 $helperSet->set($this->getGitConfigHelper()->reveal());
-                $helperSet->set($this->getLocalGitHelper('gushphp', 'gushphp/development')->reveal());
+                $helperSet->set($this->getLocalGitHelper('gushphp_gush', 'gushphp_gush/development')->reveal());
             }
         );
 
@@ -104,7 +104,7 @@ class IssueTakeCommandTest extends CommandTestCase
             function (HelperSet $helperSet) {
                 $helperSet->set($this->expectTextHelper()->reveal());
                 $helperSet->set($this->getGitConfigHelper('gushphp-fork', 'gush-source')->reveal());
-                $helperSet->set($this->getLocalGitHelper('gushphp-fork', 'gushphp-fork/master')->reveal());
+                $helperSet->set($this->getLocalGitHelper('gushphp-fork_gush-source', 'gushphp-fork_gush-source/master')->reveal());
             }
         );
 
@@ -139,7 +139,7 @@ class IssueTakeCommandTest extends CommandTestCase
         return $text;
     }
 
-    private function getLocalGitHelper($remote = 'gushphp', $baseBranch = 'gushphp/master')
+    private function getLocalGitHelper($remote = 'gushphp_gush', $baseBranch = 'gushphp_gush/master')
     {
         $gitHelper = $this->getGitHelper();
         $gitHelper->remoteUpdate($remote)->shouldBeCalled();
@@ -152,7 +152,7 @@ class IssueTakeCommandTest extends CommandTestCase
     protected function getGitConfigHelper($org = 'gushphp', $repo = 'gush')
     {
         $helper = parent::getGitConfigHelper();
-        $helper->ensureRemoteExists($org, $repo)->shouldBeCalled();
+        $helper->ensureRemoteExists($org, $repo)->willReturn($org.'_'.$repo);
 
         return $helper;
     }

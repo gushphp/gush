@@ -14,6 +14,7 @@ namespace Gush\Command\Branch;
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
+use Gush\Helper\GitConfigHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -69,8 +70,12 @@ EOF
             $org = $this->getParameter($input, 'authentication')['username'];
         }
 
+        /** @var GitConfigHelper $gitConfigHelper */
+        $gitConfigHelper = $this->getHelper('git_config');
+        $remote = $gitConfigHelper->ensureRemoteExists($org, $input->getOption('repo'));
+
         $this->getHelper('git')->pushToRemote(
-            $org,
+            $remote,
             $branchName,
             (bool) $input->getOption('set-upstream'),
             (bool) $input->getOption('force')

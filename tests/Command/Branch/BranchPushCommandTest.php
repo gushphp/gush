@@ -49,7 +49,7 @@ class BranchPushCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('cordoval', true)->reveal());
+                $helperSet->set($this->getLocalGitHelper('cordoval_gush', true)->reveal());
             }
         );
 
@@ -71,7 +71,7 @@ class BranchPushCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('cordoval', true)->reveal());
+                $helperSet->set($this->getLocalGitHelper('cordoval_gush', true)->reveal());
             }
         );
 
@@ -93,7 +93,7 @@ class BranchPushCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper('someone', false, true)->reveal());
+                $helperSet->set($this->getLocalGitHelper('someone_gush', false, true)->reveal());
             }
         );
 
@@ -107,11 +107,11 @@ class BranchPushCommandTest extends CommandTestCase
         );
     }
 
-    private function getLocalGitHelper($org = 'cordoval', $upstream = false, $force = false)
+    private function getLocalGitHelper($remote = 'cordoval_gush', $upstream = false, $force = false)
     {
         $gitHelper = $this->getGitHelper();
         $gitHelper->getActiveBranchName()->willReturn(self::TEST_BRANCH);
-        $gitHelper->pushToRemote($org, self::TEST_BRANCH, $upstream, $force)->shouldBeCalled();
+        $gitHelper->pushToRemote($remote, self::TEST_BRANCH, $upstream, $force)->shouldBeCalled();
 
         return $gitHelper;
     }
