@@ -513,7 +513,7 @@ class BitbucketRepoAdapter extends BaseAdapter
         return [
             'url' => $pr['links']['html']['href'],
             'number' => $pr['id'],
-            'state' => $pr['state'],
+            'state' => strtolower($pr['state']),
             'title' => $pr['title'],
             'body' => $pr['description'],
             'labels' => [], // unsupported
@@ -529,7 +529,7 @@ class BitbucketRepoAdapter extends BaseAdapter
                 'ref' => $pr['source']['branch']['name'],
                 'sha' => $pr['source']['commit']['hash'],
                 'user' => $sourceOrg,
-                'repo' => $pr['source']['branch']['name'],
+                'repo' => $pr['source']['repository']['name'],
             ],
             'base' => [
                 'ref' => $pr['destination']['branch']['name'],
