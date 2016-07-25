@@ -152,8 +152,8 @@ EOF
         $styleHelper->title(sprintf('Open request on %s/%s', $org, $repo));
         $styleHelper->text(
             [
-                sprintf('This pull-request will be opened on "%s/%s".', $org, $repo),
-                sprintf('The source branch is "%s" on "%s".', $sourceBranch, $sourceOrg),
+                sprintf('This pull-request will be opened on "%s/%s:%s".', $org, $repo, $base),
+                sprintf('The source branch is "%s:%s".', $sourceOrg, $sourceBranch),
             ]
         );
         $styleHelper->newLine();
