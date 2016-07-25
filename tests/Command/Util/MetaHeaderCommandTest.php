@@ -24,7 +24,7 @@ class MetaHeaderCommandTest extends CommandTestCase
     const META_HEADER = <<<OET
 This file is part of Your Package package.
 
-(c) 2009-2015 You <you@yourdomain.com>
+(c) 2009-2016 You <you@yourdomain.com>
 
 This source file is subject to the MIT license that is bundled
 with this source code in the file LICENSE.
