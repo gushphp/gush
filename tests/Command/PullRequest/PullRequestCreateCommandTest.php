@@ -29,7 +29,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getLocalGitHelper()->reveal());
                 $helperSet->set($this->getGitConfigHelper()->reveal());
-    }
+            }
         );
 
         $this->setExpectedCommandInput(
@@ -299,14 +299,66 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
     }
 
-    private function getLocalGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145', $commitCount = 1)
+    public function testOpenPullRequestUsingBaseAsDefaultBranch()
+    {
+        $command = new PullRequestCreateCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper('cordoval', 'gush', 'issue-145', 1, 'development')->reveal());
+                $helperSet->set($this->getGitConfigHelper()->reveal());
+            }
+        );
+
+        $this->setExpectedCommandInput(
+            $command,
+            [
+                'My amazing feature', // title
+                null, // 'branch'
+                'no', // 'bug_fix'
+                'yes', // 'new_feature'
+                'no', // bc_breaks
+                'no', // deprecations
+                'yes', // tests_pass
+                'n/a', // fixed_tickets
+                'MIT', // license
+                'n/a', // doc_pr
+                'My Description', // description
+            ]
+        );
+
+        $tester->execute(['--template' => 'symfony', '--base' => 'development']);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                'cordoval wants to merge 1 commit into gushphp/gush:development from cordoval:issue-145.',
+                'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
+            ],
+            $display
+        );
+
+        $pr = $command->getAdapter()->getPullRequest(TestAdapter::PULL_REQUEST_NUMBER);
+
+        $this->assertEquals('My amazing feature', $pr['title']);
+        $this->assertContains('|development', $pr['body']);
+
+        $this->assertEquals('development', $pr['base']['ref']);
+        $this->assertEquals('cordoval', $pr['head']['user']);
+        $this->assertEquals('issue-145', $pr['head']['ref']);
+    }
+
+    private function getLocalGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145', $commitCount = 1, $baseBranch = 'master')
     {
         $helper = $this->getGitHelper();
 
-        $helper->getFirstCommitTitle('gushphp/master', 'issue-145')->willReturn('Some good title');
+        $helper->getFirstCommitTitle(sprintf('gushphp/%s', $baseBranch), 'issue-145')->willReturn('Some good title');
         $helper->getActiveBranchName()->willReturn('issue-145');
 
-        $helper->getCommitCountBetweenLocalAndBase(Argument::any(), 'master', Argument::any())->willReturn($commitCount);
+        $helper->getCommitCountBetweenLocalAndBase(Argument::any(), $baseBranch, Argument::any())->willReturn($commitCount);
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
         $helper->remoteBranchExists('git@github.com:cordoval/gush.git', $branch)->willReturn(true);
