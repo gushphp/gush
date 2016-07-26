@@ -55,8 +55,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush:master".',
-                'The source branch is "cordoval:issue-145".',
+                'cordoval wants to merge 1 commit into gushphp/gush:master from cordoval:issue-145',
                 'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
             $display
@@ -92,8 +91,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush:master".',
-                'The source branch is "cordoval:issue-145".',
+                'cordoval wants to merge 1 commit into gushphp/gush:master from cordoval:issue-145',
                 'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
             $display
@@ -129,9 +127,8 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush:master".',
-                'The source branch is "user:feat-adapters".',
-            'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
+                'user wants to merge 1 commit into gushphp/gush:master from user:feat-adapters',
+                'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
             $display
         );
@@ -185,8 +182,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush:master".',
-                'The source branch is "cordoval:issue-145".',
+                'cordoval wants to merge 1 commit into gushphp/gush:master from cordoval:issue-145',
                 'Marco?',
                 'My question',
                 'Description (enter "e" to open editor)',
@@ -235,8 +231,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                'This pull-request will be opened on "gushphp/gush:master".',
-                'The source branch is "someone:issue-145".',
+                'someone wants to merge 1 commit into gushphp/gush:master from someone:issue-145',
                 'Branch "issue-145" was pushed to "someone".',
                 'Opened pull request https://github.com/gushphp/gush/pull/'.TestAdapter::PULL_REQUEST_NUMBER,
             ],
@@ -277,12 +272,41 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
     }
 
-    private function getLocalGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145')
+    public function testCannotOpenPullRequestWithNoCommits()
+    {
+        $command = new PullRequestCreateCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper('someone', 'gush', 'issue-145', 0)->reveal());
+                $helperSet->set($this->getGitConfigHelper('someone')->reveal());
+            }
+        );
+
+        $this->setExpectedException(
+            'Gush\Exception\UserException',
+            'Cannot open pull-request because there are no commits between current branch ("not-my-branch") and "gushphp/gush:master".'
+        );
+
+        $tester->execute(
+            [
+                '--template' => 'default',
+                '--source-org' => 'someone',
+                '--source-branch' => 'not-my-branch',
+            ]
+        );
+    }
+
+    private function getLocalGitHelper($sourceOrg = 'cordoval', $sourceRepo = 'gush', $branch = 'issue-145', $commitCount = 1)
     {
         $helper = $this->getGitHelper();
 
         $helper->getFirstCommitTitle('gushphp/master', 'issue-145')->willReturn('Some good title');
         $helper->getActiveBranchName()->willReturn('issue-145');
+
+        $helper->getCommitCountBetweenLocalAndBase(Argument::any(), 'master', Argument::any())->willReturn($commitCount);
 
         $helper->remoteBranchExists(Argument::any(), Argument::any())->willReturn(false);
         $helper->remoteBranchExists('git@github.com:cordoval/gush.git', $branch)->willReturn(true);

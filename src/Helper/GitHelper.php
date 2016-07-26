@@ -500,6 +500,15 @@ class GitHelper extends Helper
         $this->processHelper->runCommand($command);
     }
 
+    public function getCommitCountBetweenLocalAndBase($org, $branch, $sourceBranch)
+    {
+        if ($commandResponse = trim($this->processHelper->runCommand(['git', 'log', sprintf('%s/%s..%s', $org, $branch, $sourceBranch), '--oneline']))) {
+            return substr_count($commandResponse, "\n");
+        }
+
+        return 0;
+    }
+
     public function isWorkingTreeReady()
     {
         return '' === trim($this->processHelper->runCommand('git status --porcelain --untracked-files=no'));
