@@ -54,6 +54,18 @@ EOT;
 This PR was submitted for the {{ originalBaseBranch }} branch but it was squashed and merged into the {{ targetBaseBranch }} branch instead (closes #{{ prNumber }}).
 EOT;
 
+    const MERGE_NOTE_SWITCHED_BASE_AND_CLOSED = <<<EOT
+This PR was submitted for the `{{ originalBaseBranch }}` branch but it was merged into the `{{ targetBaseBranch }}` branch instead at @{{ mergeCommit }}.
+EOT;
+
+    const MERGE_NOTE_SQUASHED_AND_CLOSED = <<<EOT
+This PR was squashed before being merged into the `{{ originalBaseBranch }}` branch at @{{ mergeCommit }}.
+EOT;
+
+    const MERGE_NOTE_SWITCHED_BASE_AND_SQUASHED_AND_CLOSED = <<<EOT
+This PR was submitted for the `{{ originalBaseBranch }}` branch but it was squashed and merged into the `{{ targetBaseBranch }}` branch instead at @{{ mergeCommit }}.
+EOT;
+
     /**
      * @param string $name
      *

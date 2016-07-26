@@ -378,7 +378,7 @@ class GitHelper extends Helper
         if ($fastForward) {
             $this->processHelper->runCommand(['git', 'merge', '--ff', $sourceBranch]);
 
-            return;
+            return trim($this->processHelper->runCommand('git rev-parse HEAD'));
         }
 
         $tmpName = $this->filesystemHelper->newTempFilename();
