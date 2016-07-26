@@ -37,7 +37,7 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
 |New feature? |no    |
 |BC breaks?   |no    |
 |Deprecations?|no    |
-|Tests pass?  |no    |
+|Tests pass?  |yes   |
 |Fixed tickets|      |
 |License      |MIT   |
 |Doc PR       |      |

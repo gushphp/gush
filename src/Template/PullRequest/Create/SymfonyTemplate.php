@@ -24,7 +24,7 @@ class SymfonyTemplate extends AbstractSymfonyTemplate
             'new_feature' => ['New feature?', 'no'],
             'bc_breaks' => ['BC breaks?', 'no'],
             'deprecations' => ['Deprecations?', 'no'],
-            'tests_pass' => ['Tests pass?', 'no'],
+            'tests_pass' => ['Tests pass?', 'yes'],
             'fixed_tickets' => ['Fixed tickets', ''],
             'license' => ['License', 'MIT'],
             'doc_pr' => ['Doc PR', ''],
