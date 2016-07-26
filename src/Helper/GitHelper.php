@@ -503,7 +503,7 @@ class GitHelper extends Helper
     public function getCommitCountBetweenLocalAndBase($org, $branch, $sourceBranch)
     {
         if ($commandResponse = trim($this->processHelper->runCommand(['git', 'log', sprintf('%s/%s..%s', $org, $branch, $sourceBranch), '--oneline']))) {
-            return count(explode("\n", $commandResponse));
+            return substr_count($commandResponse, "\n");
         }
 
         return 0;
