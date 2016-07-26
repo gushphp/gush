@@ -196,7 +196,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         $this->assertEquals('Some good title', $pr['title']);
         $this->assertContains('My Description', $pr['body']);
         $this->assertRegExp('{\|Marco\?\s*\|polo\\\s*|}', $pr['body']);
-        $this->assertRegExp('{\|My question\\\s*|y\s*\|}', $pr['body']);
+        $this->assertRegExp('{\|My question\\\s*|yes\s*\|}', $pr['body']);
 
         $this->assertEquals('master', $pr['base']['ref']);
         $this->assertEquals('cordoval', $pr['head']['user']);

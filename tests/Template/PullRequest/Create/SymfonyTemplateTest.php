@@ -33,11 +33,11 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
 |Q            |A     |
 |---          |---   |
 |Branch       |master|
-|Bug fix?     |n     |
-|New feature? |n     |
-|BC breaks?   |n     |
-|Deprecations?|n     |
-|Tests pass?  |n     |
+|Bug fix?     |no    |
+|New feature? |no    |
+|BC breaks?   |no    |
+|Deprecations?|no    |
+|Tests pass?  |no    |
 |Fixed tickets|      |
 |License      |MIT   |
 |Doc PR       |      |
@@ -53,7 +53,7 @@ EOF
                     'new_feature' => 'yes',
                     'bc_breaks' => 'yes',
                     'deprecations' => 'yes',
-                    'tests_pass' => 'yes',
+                    'tests_pass' => 'n',
                     'fixed_tickets' => 'none',
                     'license' => 'Apache',
                     'doc_pr' => 'none',
@@ -63,13 +63,43 @@ EOF
 |Q            |A     |
 |---          |---   |
 |Branch       |master|
-|Bug fix?     |y     |
+|Bug fix?     |yes   |
 |New feature? |yes   |
 |BC breaks?   |yes   |
 |Deprecations?|yes   |
-|Tests pass?  |yes   |
+|Tests pass?  |no    |
 |Fixed tickets|none  |
 |License      |Apache|
+|Doc PR       |none  |
+
+
+This is a description
+EOF
+            ],
+            [
+                [
+                    'branch' => 'master',
+                    'bug_fix' => 'y',
+                    'new_feature' => 'y',
+                    'bc_breaks' => 'y',
+                    'deprecations' => 'n',
+                    'tests_pass' => 'n',
+                    'fixed_tickets' => 'none',
+                    'license' => 'MIT',
+                    'doc_pr' => 'none',
+                ],
+                <<<EOF
+
+|Q            |A     |
+|---          |---   |
+|Branch       |master|
+|Bug fix?     |yes   |
+|New feature? |yes   |
+|BC breaks?   |yes   |
+|Deprecations?|no    |
+|Tests pass?  |no    |
+|Fixed tickets|none  |
+|License      |MIT   |
 |Doc PR       |none  |
 
 
@@ -85,12 +115,26 @@ EOF
      */
     public function runs_template_command_with_symfony_template($params, $expected)
     {
+        $validYesNoResponses = ['yes', 'y', 'no', 'n'];
+        $yesNoValidator = function ($response) {
+            if ('y' === $response) {
+                return 'yes';
+            }
+            if ('n' === $response) {
+                return 'no';
+            }
+
+            return $response;
+        };
         $requirements = $this->template->getRequirements();
 
         foreach ($requirements as $key => $requirement) {
             list($prompt, $default) = $requirement;
             if (!isset($params[$key])) {
                 $params[$key] = $default;
+            }
+            if (in_array($params[$key], $validYesNoResponses, true)) {
+                $params[$key] = $yesNoValidator($params[$key]);
             }
         }
 

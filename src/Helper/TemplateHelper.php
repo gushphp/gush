@@ -12,6 +12,7 @@
 namespace Gush\Helper;
 
 use Gush\Application;
+use Gush\Exception\UserException;
 use Gush\Template\Meta\Header as TemplateHeader;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create as PRCreate;
@@ -150,6 +151,20 @@ class TemplateHelper extends Helper implements InputAwareInterface
     public function parameterize(TemplateInterface $template)
     {
         $params = [];
+        $validYesNoResponses = ['yes', 'y', 'no', 'n'];
+        $yesNoValidator = function ($response) use ($validYesNoResponses) {
+            if (!in_array($response, $validYesNoResponses, true)) {
+                throw new UserException(sprintf('Invalid response "%s", it must be any of "%s".', $response, implode('", "', $validYesNoResponses)));
+            }
+            if ('y' === $response) {
+                return 'yes';
+            }
+            if ('n' === $response) {
+                return 'no';
+            }
+
+            return $response;
+        };
 
         foreach ($template->getRequirements() as $key => $requirement) {
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
@@ -166,7 +181,11 @@ class TemplateHelper extends Helper implements InputAwareInterface
                     if ('branch' === $key && $this->input->hasOption('base') && $this->input->getOption('base')) {
                         $default = $this->input->getOption('base');
                     }
-                    $v = $this->style->ask($prompt.' ', $default);
+                    $validator = null;
+                    if (in_array($default, $validYesNoResponses, true)) {
+                        $validator = $yesNoValidator;
+                    }
+                    $v = $this->style->ask($prompt.' ', $default, $validator);
                 }
             } else {
                 $v = $this->input->getOption($key);
