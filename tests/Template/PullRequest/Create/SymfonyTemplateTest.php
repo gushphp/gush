@@ -33,11 +33,11 @@ class SymfonyTemplateTest extends \PHPUnit_Framework_TestCase
 |Q            |A     |
 |---          |---   |
 |Branch       |master|
-|Bug fix?     |n     |
-|New feature? |n     |
-|BC breaks?   |n     |
-|Deprecations?|n     |
-|Tests pass?  |n     |
+|Bug fix?     |no    |
+|New feature? |no    |
+|BC breaks?   |no    |
+|Deprecations?|no    |
+|Tests pass?  |yes   |
 |Fixed tickets|      |
 |License      |MIT   |
 |Doc PR       |      |
@@ -49,11 +49,11 @@ EOF
             [
                 [
                     'branch' => 'master',
-                    'bug_fix' => 'y',
+                    'bug_fix' => 'yes',
                     'new_feature' => 'yes',
                     'bc_breaks' => 'yes',
                     'deprecations' => 'yes',
-                    'tests_pass' => 'yes',
+                    'tests_pass' => 'no',
                     'fixed_tickets' => 'none',
                     'license' => 'Apache',
                     'doc_pr' => 'none',
@@ -63,13 +63,43 @@ EOF
 |Q            |A     |
 |---          |---   |
 |Branch       |master|
-|Bug fix?     |y     |
+|Bug fix?     |yes   |
 |New feature? |yes   |
 |BC breaks?   |yes   |
 |Deprecations?|yes   |
-|Tests pass?  |yes   |
+|Tests pass?  |no    |
 |Fixed tickets|none  |
 |License      |Apache|
+|Doc PR       |none  |
+
+
+This is a description
+EOF
+            ],
+            [
+                [
+                    'branch' => 'master',
+                    'bug_fix' => 'yes|no',
+                    'new_feature' => 'yes|no',
+                    'bc_breaks' => 'kinda|yes|no',
+                    'deprecations' => 'yes|no',
+                    'tests_pass' => 'no|yes|maybe',
+                    'fixed_tickets' => 'none|some',
+                    'license' => 'BSD',
+                    'doc_pr' => 'none',
+                ],
+                <<<EOF
+
+|Q            |A     |
+|---          |---   |
+|Branch       |master|
+|Bug fix?     |yes   |
+|New feature? |yes   |
+|BC breaks?   |kinda |
+|Deprecations?|yes   |
+|Tests pass?  |no    |
+|Fixed tickets|none  |
+|License      |BSD   |
 |Doc PR       |none  |
 
 
@@ -90,6 +120,9 @@ EOF
         foreach ($requirements as $key => $requirement) {
             list($prompt, $default) = $requirement;
             if (!isset($params[$key])) {
+                if (1 < count($choices = explode('|', $default))) {
+                    $default = $choices[0];
+                }
                 $params[$key] = $default;
             }
         }

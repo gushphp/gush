@@ -166,7 +166,11 @@ class TemplateHelper extends Helper implements InputAwareInterface
                     if ('branch' === $key && $this->input->hasOption('base') && $this->input->getOption('base')) {
                         $default = $this->input->getOption('base');
                     }
-                    $v = $this->style->ask($prompt.' ', $default);
+                    if (1 < count($choices = explode('|', $default))) {
+                        $v = $this->style->choice($prompt.' ', $choices, $choices[0]);
+                    } else {
+                        $v = $this->style->ask($prompt.' ', $default);
+                    }
                 }
             } else {
                 $v = $this->input->getOption($key);

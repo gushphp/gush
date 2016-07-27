@@ -36,6 +36,9 @@ abstract class AbstractSymfonyTemplate extends AbstractTemplate
 
         foreach ($this->parameters as $key => $value) {
             $label = $requirements[$key][0];
+            if (1 < count($choices = explode('|', $value))) {
+                $value = $choices[0];
+            }
             $table->addRow([$label, $value]);
         }
 
