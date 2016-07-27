@@ -20,11 +20,11 @@ class SymfonyTemplate extends AbstractSymfonyTemplate
     {
         return [
             'branch' => ['Branch', 'master'],
-            'bug_fix' => ['Bug fix?', 'no'],
-            'new_feature' => ['New feature?', 'no'],
-            'bc_breaks' => ['BC breaks?', 'no'],
-            'deprecations' => ['Deprecations?', 'no'],
-            'tests_pass' => ['Tests pass?', 'yes'],
+            'bug_fix' => ['Bug fix?', 'no|yes'],
+            'new_feature' => ['New feature?', 'no|yes'],
+            'bc_breaks' => ['BC breaks?', 'no|yes'],
+            'deprecations' => ['Deprecations?', 'no|yes'],
+            'tests_pass' => ['Tests pass?', 'yes|no'],
             'fixed_tickets' => ['Fixed tickets', ''],
             'license' => ['License', 'MIT'],
             'doc_pr' => ['Doc PR', ''],

@@ -151,20 +151,6 @@ class TemplateHelper extends Helper implements InputAwareInterface
     public function parameterize(TemplateInterface $template)
     {
         $params = [];
-        $validYesNoResponses = ['yes', 'y', 'no', 'n'];
-        $yesNoValidator = function ($response) use ($validYesNoResponses) {
-            if (!in_array($response, $validYesNoResponses, true)) {
-                throw new UserException(sprintf('Invalid response "%s", it must be any of "%s".', $response, implode('", "', $validYesNoResponses)));
-            }
-            if ('y' === $response) {
-                return 'yes';
-            }
-            if ('n' === $response) {
-                return 'no';
-            }
-
-            return $response;
-        };
 
         foreach ($template->getRequirements() as $key => $requirement) {
             if (!$this->input->hasOption($key) || !$this->input->getOption($key)) {
@@ -181,11 +167,11 @@ class TemplateHelper extends Helper implements InputAwareInterface
                     if ('branch' === $key && $this->input->hasOption('base') && $this->input->getOption('base')) {
                         $default = $this->input->getOption('base');
                     }
-                    $validator = null;
-                    if (in_array($default, $validYesNoResponses, true)) {
-                        $validator = $yesNoValidator;
+                    if (1 < count($choices = explode('|', $default))) {
+                        $v = $this->style->choice($prompt.' ', $choices, $choices[0]);
+                    } else {
+                        $v = $this->style->ask($prompt.' ', $default);
                     }
-                    $v = $this->style->ask($prompt.' ', $default, $validator);
                 }
             } else {
                 $v = $this->input->getOption($key);

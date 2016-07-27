@@ -49,11 +49,11 @@ EOF
             [
                 [
                     'branch' => 'master',
-                    'bug_fix' => 'y',
+                    'bug_fix' => 'yes',
                     'new_feature' => 'yes',
                     'bc_breaks' => 'yes',
                     'deprecations' => 'yes',
-                    'tests_pass' => 'n',
+                    'tests_pass' => 'no',
                     'fixed_tickets' => 'none',
                     'license' => 'Apache',
                     'doc_pr' => 'none',
@@ -79,13 +79,13 @@ EOF
             [
                 [
                     'branch' => 'master',
-                    'bug_fix' => 'y',
-                    'new_feature' => 'y',
-                    'bc_breaks' => 'y',
-                    'deprecations' => 'n',
-                    'tests_pass' => 'n',
-                    'fixed_tickets' => 'none',
-                    'license' => 'MIT',
+                    'bug_fix' => 'yes|no',
+                    'new_feature' => 'yes|no',
+                    'bc_breaks' => 'kinda|yes|no',
+                    'deprecations' => 'yes|no',
+                    'tests_pass' => 'no|yes|maybe',
+                    'fixed_tickets' => 'none|some',
+                    'license' => 'BSD',
                     'doc_pr' => 'none',
                 ],
                 <<<EOF
@@ -95,11 +95,11 @@ EOF
 |Branch       |master|
 |Bug fix?     |yes   |
 |New feature? |yes   |
-|BC breaks?   |yes   |
-|Deprecations?|no    |
+|BC breaks?   |kinda |
+|Deprecations?|yes   |
 |Tests pass?  |no    |
 |Fixed tickets|none  |
-|License      |MIT   |
+|License      |BSD   |
 |Doc PR       |none  |
 
 
@@ -115,26 +115,15 @@ EOF
      */
     public function runs_template_command_with_symfony_template($params, $expected)
     {
-        $validYesNoResponses = ['yes', 'y', 'no', 'n'];
-        $yesNoValidator = function ($response) {
-            if ('y' === $response) {
-                return 'yes';
-            }
-            if ('n' === $response) {
-                return 'no';
-            }
-
-            return $response;
-        };
         $requirements = $this->template->getRequirements();
 
         foreach ($requirements as $key => $requirement) {
             list($prompt, $default) = $requirement;
             if (!isset($params[$key])) {
+                if (1 < count($choices = explode('|', $default))) {
+                    $default = $choices[0];
+                }
                 $params[$key] = $default;
-            }
-            if (in_array($params[$key], $validYesNoResponses, true)) {
-                $params[$key] = $yesNoValidator($params[$key]);
             }
         }
 
