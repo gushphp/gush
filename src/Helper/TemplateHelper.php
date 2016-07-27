@@ -12,7 +12,6 @@
 namespace Gush\Helper;
 
 use Gush\Application;
-use Gush\Exception\UserException;
 use Gush\Template\Meta\Header as TemplateHeader;
 use Gush\Template\Pats\PatTemplate;
 use Gush\Template\PullRequest\Create as PRCreate;
