@@ -365,16 +365,6 @@ EOF
         return $prType;
     }
 
-    /**
-     * Adds a note on the closed PR pointing to the merge commit.
-     *
-     * @param array $pr
-     * @param string $mergeCommit
-     * @param string $squash
-     * @param string $newBase
-     *
-     * @throws \InvalidArgumentException
-     */
     private function addClosedPullRequestNote(array $pr, $mergeCommit, $squash = false, $newBase = null)
     {
         $template = 'merge_note_';
