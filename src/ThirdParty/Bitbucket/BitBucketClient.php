@@ -61,12 +61,6 @@ class BitBucketClient
      */
     protected $options;
 
-    /**
-     * Constructor.
-     *
-     * @param array  $options
-     * @param Client $httpClient
-     */
     public function __construct(array $options = [], Client $httpClient = null)
     {
         $this->errorListener = new ErrorListener();

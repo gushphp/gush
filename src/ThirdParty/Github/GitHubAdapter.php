@@ -20,6 +20,7 @@ use Gush\Adapter\IssueTracker;
 use Gush\Adapter\SupportsDynamicLabels;
 use Gush\Config;
 use Gush\Exception\AdapterException;
+use Gush\Exception\UserException;
 use Gush\Util\ArrayUtil;
 use Guzzle\Plugin\Log\LogPlugin;
 
@@ -45,26 +46,35 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     protected $client;
 
     /**
-     * @var string
-     */
-    protected $authenticationType = Client::AUTH_HTTP_PASSWORD;
-
-    /**
      * @var array
      */
     protected $config;
 
     /**
-     * @var \Gush\Config
+     * @var Config
      */
     protected $globalConfig;
 
-    /**
-     * @param array  $config
-     * @param Config $globalConfig
-     */
     public function __construct(array $config, Config $globalConfig)
     {
+        if (!isset($config['base_url'], $config['repo_domain_url'])) {
+            throw new UserException(
+                'Your GitHub adapter configuration is invalid. Please run "core:configure".'
+            );
+        }
+
+        if (!isset($config['authentication']['token'])) {
+            throw new UserException(
+                [
+                    'Your GitHub adapter configuration seems to be outdated.',
+                    'For better security Gush will now always generate an personal access-token '.
+                    'instead of storing your password.',
+                    'Please run "core:configure" to update your configuration, then remove any old '.
+                    'access tokens (starting with "Gush") from your account.',
+                ]
+            );
+        }
+
         $this->config = $config;
         $this->globalConfig = $globalConfig;
         $this->client = $this->buildGitHubClient();
@@ -110,22 +120,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
      */
     public function authenticate()
     {
-        $credentials = $this->config['authentication'];
-
-        if (Client::AUTH_HTTP_PASSWORD === $credentials['http-auth-type']) {
-            $this->client->authenticate(
-                $credentials['username'],
-                $credentials['password-or-token'],
-                $credentials['http-auth-type']
-            );
-        } else {
-            $this->client->authenticate(
-                $credentials['password-or-token'],
-                $credentials['http-auth-type']
-            );
-        }
-
-        $this->authenticationType = $credentials['http-auth-type'];
+        $this->client->authenticate($this->config['authentication']['token'], null, Client::AUTH_HTTP_TOKEN);
     }
 
     /**
@@ -133,12 +128,6 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
      */
     public function isAuthenticated()
     {
-        if (Client::AUTH_HTTP_PASSWORD === $this->authenticationType) {
-            return is_array(
-                $this->client->api('authorizations')->all()
-            );
-        }
-
         return is_array($this->client->api('me')->show());
     }
 

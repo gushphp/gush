@@ -46,15 +46,6 @@ final class MergeWorkflowValidator
      */
     private $policy;
 
-    /**
-     * Constructor.
-     *
-     * @param string   $preset
-     * @param string[] $branches
-     * @param string   $unknownBranchPolicy
-     *
-     * @throws UserException
-     */
     public function __construct($preset, array $branches = [], $unknownBranchPolicy = self::BRANCH_POLICY_ALLOW)
     {
         if (!in_array($preset, [self::PRESET_SEMVER, self::PRESET_GIT_FLOW, self::PRESET_NONE], true)) {

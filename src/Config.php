@@ -74,15 +74,6 @@ final class Config
         self::CONFIG_LOCAL => [],
     ];
 
-    /**
-     * Constructor.
-     *
-     * @param string      $homedir
-     * @param string      $cacheDir
-     * @param array       $config
-     * @param string|null $localHome
-     * @param array       $localConfig
-     */
     public function __construct($homedir, $cacheDir, array $config = [], $localHome = null, array $localConfig = [])
     {
         $this->config[self::CONFIG_SYSTEM] = array_merge(static::$defaultConfig, $config);

@@ -47,16 +47,6 @@ class DefaultConfigurator implements Configurator
      */
     protected $authenticationOptions = [];
 
-    /**
-     * Constructor.
-     *
-     * @param QuestionHelper $questionHelper        QuestionHelper instance
-     * @param string         $label                 Label of the Configurator (eg. GitHub or GitHub IssueTracker)
-     * @param string         $apiUrl                Default URL to API service (eg. 'https://api.github.com/')
-     * @param string         $repoUrl               Default URL to repository (eg. 'https://github.com')
-     * @param string[]       $authenticationOptions Associative array with supported authentication options
-     *                                              [auth-type => [label]
-     */
     public function __construct(QuestionHelper $questionHelper, $label, $apiUrl, $repoUrl, $authenticationOptions = [])
     {
         $this->questionHelper = $questionHelper;

@@ -14,111 +14,186 @@ namespace Gush\ThirdParty\Github;
 use Github\Client;
 use Github\Exception\TwoFactorAuthenticationRequiredException;
 use Gush\Adapter\DefaultConfigurator;
+use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class GitHubConfigurator extends DefaultConfigurator
 {
+    /**
+     * @var StyleHelper
+     */
+    private $styleHelper;
+
+    public function __construct(StyleHelper $styleHelper, $label, $apiUrl, $repoUrl)
+    {
+        $this->styleHelper = $styleHelper;
+        $this->label = $label;
+        $this->apiUrl = $apiUrl;
+        $this->repoUrl = $repoUrl;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function interact(InputInterface $input, OutputInterface $output)
     {
-        $config = parent::interact($input, $output);
+        $oAuthToken = null;
 
-        // Do authentication now so we can detect 2fa
-        if (self::AUTH_HTTP_PASSWORD === $config['authentication']['http-auth-type']) {
-            $client = new Client();
+        $client = new Client();
+
+        $authenticationAttempts = 0;
+        $authentication = [
+            'username' => null,
+            'password' => null,
+            'base_url' => $this->apiUrl,
+            'repo_domain_url' => $this->repoUrl,
+        ];
+
+        while (null === $oAuthToken) {
+            if ($authenticationAttempts > 0) {
+                $this->styleHelper->error('Authentication failed please try again.');
+            }
+
+            $authentication['base_url'] = $this->styleHelper->ask(
+                sprintf('%s API url', $this->label),
+                $authentication['base_url'],
+                [$this, 'validateUrl']
+            );
+
+            $authentication['repo_domain_url'] = $this->styleHelper->ask(
+                sprintf('%s web url', $this->label),
+                $authentication['repo_domain_url'],
+                [$this, 'validateUrl']
+            );
+
+            $this->styleHelper->note(
+                [
+                    'For security reasons an authentication token will be stored instead of your password.',
+                    sprintf(
+                        'To revoke access of this token you can visit %s/settings/tokens',
+                        $authentication['repo_domain_url']
+                    ),
+                ]
+            );
+
+            $authentication['username'] = $this->styleHelper->ask(
+                'Username',
+                $authentication['username'],
+                [$this, 'validateNoneEmpty']
+            );
+
+            $authentication['password'] = $this->styleHelper->askHidden(
+                'Password',
+                [$this, 'validateNoneEmpty']
+            );
 
             try {
                 $client->authenticate(
-                    $config['authentication']['username'],
-                    $config['authentication']['password-or-token']
+                    $authentication['username'],
+                    $authentication['password']
                 );
 
-                try {
-                    // Make a call to test authentication
-                    $client->api('authorizations')->all();
-                } catch (TwoFactorAuthenticationRequiredException $e) {
-                    // Create a random authorization to make GitHub send the code
-                    // We expect an exception, which gets cached by the next catch-block
-                    // Note. This authorization is not actually created
-                    $client->api('authorizations')->create(
-                        [
-                            'note' => 'Gush on '.gethostname().mt_rand(),
-                            'scopes' => ['public_repo'],
-                        ]
-                    );
-                }
+                $oAuthToken = $this->createAuthorization($client)['token'];
             } catch (TwoFactorAuthenticationRequiredException $e) {
-                $isAuthenticated = false;
-                $authenticationAttempts = 0;
-                $authorization = [];
-
-                $scopes = [
-                    'user',
-                    'user:email',
-                    'public_repo',
-                    'repo',
-                    'repo:status',
-                    'read:org',
-                ];
-
-                $output->writeln(
-                    sprintf('Two factor authentication of type %s is required: ', trim($e->getType()))
-                );
-
-                // We already know the password is valid, we just need a valid code
-                // Don't want fill in everything again when you know its valid ;)
-                while (!$isAuthenticated) {
-                    // Prevent endless loop with a broken test
-                    if ($authenticationAttempts > 500) {
-                        $output->writeln('<error>To many attempts, aborting.</error>');
-
-                        break;
-                    }
-
-                    if ($authenticationAttempts > 0) {
-                        $output->writeln('<error>Authentication failed please try again.</error>');
-                    }
-
-                    try {
-                        $code = $this->questionHelper->ask(
-                            $input,
-                            $output,
-                            (new Question('Authentication code: '))->setValidator([$this, 'validateNoneEmpty'])
-                        );
-
-                        // Use a date with time to make sure its unique
-                        // Its not possible get existing authorizations, only a new one
-                        $time = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d\TH:i:s');
-                        $authorization = $client->api('authorizations')->create(
-                            [
-                                'note' => sprintf('Gush on %s at %s', gethostname(), $time),
-                                'scopes' => $scopes,
-                            ],
-                            $code
-                        );
-
-                        $isAuthenticated = isset($authorization['token']);
-                    } catch (TwoFactorAuthenticationRequiredException $e) {
-                        // Noop, continue the loop, try again
-                    } catch (\Exception $e) {
-                        $output->writeln("<error>{$e->getMessage()}</error>");
-                        $output->writeln('');
-                    }
-
-                    ++$authenticationAttempts;
-                }
-
-                if ($isAuthenticated) {
-                    $config['authentication']['http-auth-type'] = self::AUTH_HTTP_TOKEN;
-                    $config['authentication']['password-or-token'] = $authorization['token'];
-                }
+                $oAuthToken = $this->handle2fa($client, $e)['token'];
             }
         }
 
+        return $this->getConfigStructure(
+            $authentication['username'],
+            $oAuthToken,
+            $authentication['base_url'],
+            $authentication['repo_domain_url']
+        );
+    }
+
+    private function getConfigStructure($username, $token, $apiUrl, $repoUrl)
+    {
+        $config = [
+            'base_url' => $apiUrl,
+            'repo_domain_url' => $repoUrl,
+        ];
+
+        $config['authentication'] = [
+            'username' => $username,
+            'token' => $token,
+        ];
+
         return $config;
+    }
+
+    private function handle2fa(Client $client, TwoFactorAuthenticationRequiredException $e)
+    {
+        $authenticationAttempts = 0;
+        $authorization = [];
+        $type = trim($e->getType()); // Stupid API gives text with spaces
+
+        $message = [
+            'Username and password were correct.',
+            'Two factor authentication is required to continue authentication.',
+        ];
+
+        if ('app' === $type) {
+            $message[] = 'Open the two-factor authentication app on your device to view your authentication code and verify your identity.';
+        } elseif ('sms' === $type) {
+            $message[] = 'You have been sent an SMS message with an authentication code to verify your identity.';
+        }
+
+        $this->styleHelper->note($message);
+
+        // We already know the password is valid, we just need a valid code
+        // Don't want to fill in everything again when you know it's valid ;)
+        while (!isset($authorization['token'])) {
+            if ($authenticationAttempts > 0) {
+                $this->styleHelper->error('Two factor authentication code was invalid, please try again.');
+            }
+
+            try {
+                $code = $this->styleHelper->ask('Two factor authentication code', null, [$this, 'validateNoneEmpty']);
+
+                $authorization = $this->createAuthorization($client, $code);
+            } catch (TwoFactorAuthenticationRequiredException $e) {
+                // No-op, continue the loop, try again
+            } catch (\Exception $e) {
+                $this->styleHelper->error($e->getMessage());
+                $this->styleHelper->newLine();
+            }
+
+            ++$authenticationAttempts;
+        }
+
+        return $authorization;
+    }
+
+    private function createAuthorization(Client $client, $code = null)
+    {
+        $scopes = [
+            'user:email',
+            'repo',
+            'repo:status',
+            'read:org',
+        ];
+
+        // Use a date with time to make sure the name is unique.
+        // It's not possible to get existing authorizations, only to create new ones.
+        $time = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d\TH:i:s \U\T\C');
+
+        $authorization = $client->api('authorizations')->create(
+            [
+                'note' => sprintf('Gush on %s at %s', gethostname(), $time),
+                'scopes' => $scopes,
+            ],
+            $code
+        );
+
+        // NB. This message will be only shown when eg. fa2 is disabled or the 2fa code was correct.
+        // Else the create() in authorizations will throw an exception.
+        $this->styleHelper->success('Successfully authenticated, token note: '.$authorization['note']);
+
+        return $authorization;
     }
 }

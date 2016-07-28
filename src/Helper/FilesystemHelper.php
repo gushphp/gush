@@ -31,11 +31,6 @@ class FilesystemHelper extends Helper
      */
     private $tempdir;
 
-    /**
-     * Constructor.
-     *
-     * @param string|null $directory
-     */
     public function __construct($directory = null)
     {
         $this->tempdir = $directory ?: sys_get_temp_dir();

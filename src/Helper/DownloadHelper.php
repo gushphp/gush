@@ -36,11 +36,6 @@ class DownloadHelper extends Helper implements OutputAwareInterface
      */
     private $filesystemHelper;
 
-    /**
-     * Constructor.
-     *
-     * @param string|null $directory
-     */
     public function __construct(FilesystemHelper $filesystemHelper)
     {
         $this->fs = new Filesystem();

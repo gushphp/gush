@@ -27,14 +27,6 @@ use Symfony\Component\Console\Question\Question;
  */
 class BitBucketConfigurator extends DefaultConfigurator
 {
-    /**
-     * Constructor.
-     *
-     * @param QuestionHelper $questionHelper QuestionHelper instance
-     * @param string         $label          Label of the Configurator (eg. BitBucket or BitBucket IssueTracker)
-     * @param string         $apiUrl         Default URL to API service (eg. 'https://api.bitbucket.org')
-     * @param string         $repoUrl        Default URL to repository (eg. 'https://bitbucket.org')
-     */
     public function __construct(QuestionHelper $questionHelper, $label, $apiUrl, $repoUrl)
     {
         $this->questionHelper = $questionHelper;
