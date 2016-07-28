@@ -55,12 +55,6 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
      */
     protected $globalConfig;
 
-    /**
-     * @param array  $config
-     * @param Config $globalConfig
-     *
-     * @throws UserException
-     */
     public function __construct(array $config, Config $globalConfig)
     {
         if (!isset($config['base_url'], $config['repo_domain_url'])) {

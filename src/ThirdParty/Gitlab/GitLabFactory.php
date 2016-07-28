@@ -39,8 +39,8 @@ class GitLabFactory implements IssueTrackerFactory, RepositoryManagerFactory
         return new GitlabConfigurator(
             $helperSet->get('question'),
             'GitLab',
-            'http://gitlab-host/api/v3',
-            'http://gitlab-host',
+            'https://gitlab.com/api/v3',
+            'https://gitlab.com',
             [['Token', Configurator::AUTH_HTTP_TOKEN]]
         );
     }
