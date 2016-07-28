@@ -50,7 +50,7 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
         $template->expects($this->once())
             ->method('bindAndRender')
-            ->with(['author' => 'weaverryan'], 'pats', 'general')
+            ->with(['author' => 'weaverryan', 'pat' => 'good_job'], 'pats', 'general')
             ->will($this->returnValue(self::TEMPLATE_STRING))
         ;
 

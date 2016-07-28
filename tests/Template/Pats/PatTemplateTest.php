@@ -30,7 +30,7 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
      */
     public function renders_string_with_placeholders_filled()
     {
-        $this->template->bind(['author' => self::TEST_AUTHOR]);
+        $this->template->bind(['author' => self::TEST_AUTHOR, 'pat' => 'thank_you']);
 
         $this->assertContains(
             self::TEST_AUTHOR,

@@ -22,6 +22,7 @@ class PatTemplate extends AbstractTemplate
     {
         return [
             'author' => 'author_place_holder',
+            'pat' => 'pat_name',
         ];
     }
 
@@ -35,13 +36,16 @@ class PatTemplate extends AbstractTemplate
         if (empty($this->parameters)) {
             throw new \RuntimeException('Template has not been bound');
         }
+        $pat = $this->parameters['pat'];
+        $placeholders = $this->parameters;
+        unset($placeholders['pat']);
 
-        return $this->renderRandomPat($this->parameters);
+        return $this->renderPat($placeholders, $pat);
     }
 
-    private function renderRandomPat(array $placeHolders)
+    private function renderPat(array $placeHolders, $pat)
     {
-        $resultString = Pats::getRandom();
+        $resultString = Pats::get($pat);
         foreach ($placeHolders as $placeholder => $value) {
             $resultString = str_replace('{{ '.$placeholder.' }}', $value, $resultString);
         }
