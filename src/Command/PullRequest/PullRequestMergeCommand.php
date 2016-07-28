@@ -18,7 +18,6 @@ use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
-use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -206,6 +205,7 @@ EOF
             // This prevents getting an 'ugly' closed when there was an actual merge
             if ($squash || $input->getOption('switch')) {
                 $adapter->closePullRequest($prNumber);
+                $this->addClosedPullRequestNote($pr, $mergeCommit, $squash, $input->getOption('switch'));
             }
 
             $styleHelper->success([$mergeNote, $pr['url']]);
@@ -363,5 +363,29 @@ EOF
         }
 
         return $prType;
+    }
+
+    private function addClosedPullRequestNote(array $pr, $mergeCommit, $squash = false, $newBase = null)
+    {
+        $template = 'merge_note_';
+        $params = [
+            'originalBaseBranch' => $pr['base']['ref'],
+            'mergeCommit' => $mergeCommit
+        ];
+        if ($squash && $newBase) {
+            $template .= 'switched_base_and_squashed';
+            $params['targetBaseBranch'] = $newBase;
+        } elseif ($squash) {
+            $template .= 'squashed';
+        } elseif ($newBase) {
+            $template .= 'switched_base';
+            $params['targetBaseBranch'] = $newBase;
+        } else {
+            throw new \InvalidArgumentException('At least one of arguments 3 or 4 must evaluate to `true`');
+        }
+
+        $template .= '_and_closed';
+
+        $this->getAdapter()->createComment($pr['number'], $this->render($template, $params));
     }
 }

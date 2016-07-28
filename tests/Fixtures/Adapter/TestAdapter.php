@@ -22,8 +22,8 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     const RELEASE_ASSET_NUMBER = 1;
 
     private $name;
-    private $pullRequest;
-    private $issue;
+    private $pullRequest = [];
+    private $issue = [];
 
     public function __construct($name)
     {
@@ -249,7 +249,17 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function createComment($id, $message)
     {
-        return 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-1';
+        $url = 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2';
+        $this->pullRequest['comments'][2] = [
+            'id' => 2,
+            'url' => $url,
+            'body' => $message,
+            'user' => 'phansys',
+            'created_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+            'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
+        ];
+
+        return $url;
     }
 
     /**
@@ -257,8 +267,13 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function getComments($id)
     {
-        return [
-            [
+        $prComments = [];
+        if (isset($this->pullRequest['comments'])) {
+            $prComments = $this->pullRequest['comments'];
+        }
+
+        $prComments += [
+            1 => [
                 'id' => 1,
                 'url' => 'https://github.com/gushphp/gush/issues/'.$id.'#issuecomment-2',
                 'body' => 'Seems good to me',
@@ -267,6 +282,12 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
             ],
         ];
+
+        if ($id && isset($prComments[$id])) {
+            return $prComments[$id];
+        }
+
+        return $prComments;
     }
 
     /**
