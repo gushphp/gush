@@ -28,14 +28,6 @@ class GitHubConfigurator extends DefaultConfigurator
      */
     private $styleHelper;
 
-    /**
-     * Constructor.
-     *
-     * @param StyleHelper $styleHelper QuestionHelper instance
-     * @param string      $label       Label of the Configurator (eg. GitHub or GitHub IssueTracker)
-     * @param string      $apiUrl      Default URL to API service (eg. 'https://api.github.com/')
-     * @param string      $repoUrl     Default URL to repository (eg. 'https://github.com')
-     */
     public function __construct(StyleHelper $styleHelper, $label, $apiUrl, $repoUrl)
     {
         $this->styleHelper = $styleHelper;

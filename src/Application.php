@@ -76,13 +76,6 @@ LOGO;
      */
     protected $adapterFactory;
 
-    /**
-     * Constructor.
-     *
-     * @param AdapterFactory $adapterFactory
-     * @param Config         $config
-     * @param string         $version
-     */
     public function __construct(AdapterFactory $adapterFactory, Config $config, $version = '@package_version@')
     {
         if ('@'.'package_version@' !== $version) {
