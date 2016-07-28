@@ -94,6 +94,18 @@ OET;
 New-target: %s/%s (was "%s")
 OET;
 
+    const MERGE_NOTE_SWITCHED_BASE_AND_CLOSED = <<<OET
+This PR was submitted for the `%s` branch but it was merged into the `%s` branch instead at @%s.
+OET;
+
+     const MERGE_NOTE_SQUASHED_AND_CLOSED = <<<OET
+This PR was squashed before being merged into the `%s` branch at @%s.
+OET;
+
+     const MERGE_NOTE_SWITCHED_BASE_AND_SQUASHED_AND_CLOSED = <<<OET
+This PR was submitted for the `%s` branch but it was squashed and merged into the `%s` branch instead at @%s.
+OET;
+
     private $commits = [
         [
             'sha' => '32fe234332fe234332fe234332fe234332fe2343',
@@ -235,6 +247,7 @@ OET;
 
         $display = $tester->getDisplay();
         $this->assertCommandOutputMatches(self::COMMAND_DISPLAY_SQUASHED, $display);
+        $this->assertSame(sprintf(self::MERGE_NOTE_SQUASHED_AND_CLOSED, 'base_ref', self::MERGE_HASH), $command->getAdapter()->getComments(2)['body']);
     }
 
     public function testMergePullRequestWithForceSquashOption()
@@ -258,6 +271,7 @@ OET;
 
         $display = $tester->getDisplay();
         $this->assertCommandOutputMatches(self::COMMAND_DISPLAY_SQUASHED, $display);
+        $this->assertSame(sprintf(self::MERGE_NOTE_SQUASHED_AND_CLOSED, 'base_ref', self::MERGE_HASH), $command->getAdapter()->getComments(2)['body']);
     }
 
     public function testMergePullRequestWithSwitchBase()
@@ -293,6 +307,7 @@ OET;
             ],
             $display
         );
+        $this->assertSame(sprintf(self::MERGE_NOTE_SWITCHED_BASE_AND_CLOSED, 'base_ref', 'develop', self::MERGE_HASH), $command->getAdapter()->getComments(2)['body']);
     }
 
     public function testMergePullRequestWithFastForward()
