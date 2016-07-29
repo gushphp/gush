@@ -508,11 +508,7 @@ class GitHelper extends Helper
 
     public function getCommitCountBetweenLocalAndBase($org, $branch, $sourceBranch)
     {
-        if ($commandResponse = trim($this->processHelper->runCommand(['git', 'log', sprintf('%s/%s..%s', $org, $branch, $sourceBranch), '--oneline']))) {
-            return substr_count($commandResponse, "\n");
-        }
-
-        return 0;
+        return trim($this->processHelper->runCommand(['git', 'rev-list', sprintf('%s/%s..%s', $org, $branch, $sourceBranch), '--count']));
     }
 
     public function isWorkingTreeReady()
