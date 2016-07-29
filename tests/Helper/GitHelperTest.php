@@ -82,6 +82,40 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function returns_this_project_has_git_enabled()
+    {
+        $this->assertTrue($this->git->isGitDir());
+        $this->assertTrue($this->git->isGitDir()); // check again because of internal state
+        $this->assertTrue($this->git->isGitDir(false));
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function returns_false_when_top_git_dir_was_expected()
+    {
+        chdir(__DIR__);
+
+        $this->assertFalse($this->git->isGitDir());
+        $this->assertTrue($this->git->isGitDir(false));
+    }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    public function returns_false_for_non_git_dir()
+    {
+        chdir(sys_get_temp_dir());
+
+        $this->assertFalse($this->git->isGitDir());
+        $this->assertFalse($this->git->isGitDir(false));
+    }
+
+    /**
+     * @test
+     */
     public function gets_current_git_branch_name()
     {
         exec('git rev-parse --abbrev-ref HEAD', $output);

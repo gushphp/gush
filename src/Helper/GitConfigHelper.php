@@ -52,12 +52,12 @@ class GitConfigHelper extends Helper
     {
         $value = trim(
                 $this->processHelper->runCommand(
-                sprintf(
-                    'git config --%s --get %s',
-                    $section,
-                    $config
-                ),
-                true
+                    sprintf(
+                        'git config --%s --get %s',
+                        $section,
+                        $config
+                    ),
+                    true
             )
         );
 

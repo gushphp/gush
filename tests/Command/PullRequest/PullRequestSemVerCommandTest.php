@@ -63,9 +63,9 @@ class PullRequestSemVerCommandTest extends CommandTestCase
         return $helper;
     }
 
-    protected function getGitHelper($isGitFolder = true, $tag = 'v1.0.0')
+    protected function getGitHelper($isGitDir = true, $tag = 'v1.0.0')
     {
-        $helper = parent::getGitHelper($isGitFolder);
+        $helper = parent::getGitHelper($isGitDir);
         $helper->remoteUpdate('cordoval')->shouldBeCalled();
         $helper->getLastTagOnBranch('cordoval/head_ref')->willReturn($tag);
 

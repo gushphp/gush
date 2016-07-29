@@ -44,7 +44,7 @@ class GitFolderSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!$this->gitHelper->isGitFolder()) {
+        if (!$this->gitHelper->isGitDir()) {
             throw new UserException(
                 sprintf(
                     'The "%s" command can only be executed from a the root of a Git repository.',

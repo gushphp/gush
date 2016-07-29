@@ -50,6 +50,8 @@ class GitHelper extends Helper
      */
     private $tempBranches = [];
 
+    private $topDir;
+
     public function __construct(
         ProcessHelper $processHelper,
         GitConfigHelper $gitConfigHelper,
@@ -134,17 +136,17 @@ class GitHelper extends Helper
      * @param bool $requireRoot Require folder is the root of the Git repository,
      *                          default is true.
      *
-     * @return bool Whether we are inside a git folder or not
+     * @return bool
      */
-    public function isGitFolder($requireRoot = true)
+    public function isGitDir($requireRoot = true)
     {
-        try {
-            $topFolder = $this->processHelper->runCommand(['git', 'rev-parse', '--show-toplevel']);
+        $folder = $this->getGitDir();
 
-            if ($requireRoot && str_replace('\\', '/', getcwd()) !== $topFolder) {
-                return false;
-            }
-        } catch (\RuntimeException $e) {
+        if ('' === $folder) {
+            return false;
+        }
+
+        if ($requireRoot && str_replace('\\', '/', getcwd()) !== $folder) {
             return false;
         }
 
@@ -714,5 +716,23 @@ class GitHelper extends Helper
         if (!$this->isWorkingTreeReady()) {
             throw new WorkingTreeIsNotReady();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getGitDir()
+    {
+        if (null !== $this->topDir) {
+            return $this->topDir;
+        }
+
+        try {
+            $this->topDir = $this->processHelper->runCommand(['git', 'rev-parse', '--show-toplevel']);
+        } catch (\RuntimeException $e) {
+            $this->topDir = '';
+        }
+
+        return $this->topDir;
     }
 }

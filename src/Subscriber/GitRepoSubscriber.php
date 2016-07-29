@@ -173,7 +173,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
         // but warn its better to run "core:init" as this autodetection process
         // is much slower!
         if (null === $org || null === $repo) {
-            if (!$this->gitHelper->isGitFolder()) {
+            if (!$this->gitHelper->isGitDir()) {
                 throw new UserException(
                     'Provide the --org and --repo options when your are outside of a Git directory.'
                 );

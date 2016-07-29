@@ -78,9 +78,9 @@ class BranchChangelogCommandTest extends CommandTestCase
         );
     }
 
-    protected function getGitHelper($isGitFolder = true, $hasTag = true)
+    protected function getGitHelper($isGitDir = true, $hasTag = true)
     {
-        $helper = parent::getGitHelper($isGitFolder);
+        $helper = parent::getGitHelper($isGitDir);
         $helper->getActiveBranchName()->willReturn('master');
 
         if ($hasTag) {

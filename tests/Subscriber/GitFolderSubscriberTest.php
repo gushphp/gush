@@ -36,7 +36,7 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
         $subscriber = new GitFolderSubscriber($helper);
         $subscriber->initialize($commandEvent);
 
-        $this->assertTrue($helper->isGitFolder());
+        $this->assertTrue($helper->isGitDir());
     }
 
     /**
@@ -57,7 +57,7 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
         $subscriber = new GitFolderSubscriber($helper);
         $subscriber->initialize($commandEvent);
 
-        $this->assertFalse($helper->isGitFolder());
+        $this->assertFalse($helper->isGitDir());
     }
 
     /**
@@ -82,10 +82,10 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
         $subscriber->initialize($commandEvent);
     }
 
-    private function getGitHelper($isGitFolder = true)
+    private function getGitHelper($isGitDir = true)
     {
         $helper = $this->prophesize('Gush\Helper\GitHelper');
-        $helper->isGitFolder()->willReturn($isGitFolder);
+        $helper->isGitDir()->willReturn($isGitDir);
 
         return $helper->reveal();
     }

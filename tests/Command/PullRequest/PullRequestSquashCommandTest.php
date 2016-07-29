@@ -136,9 +136,9 @@ class PullRequestSquashCommandTest extends CommandTestCase
         return $helper;
     }
 
-    protected function getGitHelper($isGitFolder = true, $branchExists = true, $localSync = true)
+    protected function getGitHelper($isGitDir = true, $branchExists = true, $localSync = true)
     {
-        $helper = parent::getGitHelper($isGitFolder);
+        $helper = parent::getGitHelper($isGitDir);
         $helper->remoteUpdate('gushphp')->shouldBeCalled();
         $helper->remoteUpdate('cordoval')->shouldBeCalled();
 

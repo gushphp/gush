@@ -148,13 +148,13 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     /**
      * @return ObjectProphecy
      */
-    protected function getGitHelper($isGitFolder = true)
+    protected function getGitHelper($isGitDir = true)
     {
         $gitHelper = $this->prophesize('Gush\Helper\GitHelper');
         $gitHelper->setHelperSet(Argument::any())->willReturn();
         $gitHelper->clearTempBranches()->willReturn(null);
         $gitHelper->getName()->willReturn('git');
-        $gitHelper->isGitFolder()->willReturn($isGitFolder);
+        $gitHelper->isGitDir()->willReturn($isGitDir);
 
         return $gitHelper;
     }
