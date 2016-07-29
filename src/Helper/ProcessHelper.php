@@ -161,7 +161,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      *
      * @return string[]
      */
-    protected function parseProcessArguments($command)
+    private function parseProcessArguments($command)
     {
         if (preg_match_all('/((?:"(?:(?:[^"\\\\]|\\\\.)+)")|(?:\'(?:[^\'\\\\]|\\\\.)+\')|[^ ]+)/i', $command, $args)) {
             $normalizeCommandArgument = function ($argument) {

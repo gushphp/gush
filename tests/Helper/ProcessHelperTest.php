@@ -32,10 +32,19 @@ class ProcessHelperTest extends \PHPUnit_Framework_TestCase
         $this->helper->runCommands(
             [
                 [
-                    'line' => 'echo "hello"',
-                    'allow_failures' => true,
+                    'line' => ['echo', '"hello" it\'s me'],
+                    'allow_failures' => false,
                 ],
             ]
         );
+    }
+
+    /**
+     * @test
+     */
+    public function run_commands()
+    {
+        self::assertEquals('"hello" it\'s me', $this->helper->runCommand(['echo', '"hello" it\'s me']));
+        self::assertEquals('"hello" it\'s me', $this->helper->runCommand('echo "\"hello\" it\'s me"'));
     }
 }
