@@ -46,20 +46,13 @@ class EditorHelper extends Helper
             throw new \RuntimeException('No EDITOR environment variable set.');
         }
 
-        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            $processHelper = $this->getHelperSet()->get('process');
-            /** @var ProcessHelper $processHelper */
-            $process = $processHelper->getProcessBuilder($editor.' '.escapeshellarg($tmpName))->getProcess();
-            $callback = $processHelper->wrapCallback($process);
+        $processHelper = $this->getHelperSet()->get('process');
 
-            $process->setTimeout(null);
-            $process->start($callback);
+        /** @var ProcessHelper $processHelper */
+        $process = $processHelper->getProcessBuilder($editor.' '.escapeshellarg($tmpName))->getProcess();
+        $process->setTimeout(null);
 
-            // Wait till editor closes
-            $process->wait();
-        } else {
-            system($editor.' '.$tmpName.' > `tty`');
-        }
+        $processHelper->runCommand($process, true);
 
         $contents = file_get_contents($tmpName);
         $fs->remove($tmpName);

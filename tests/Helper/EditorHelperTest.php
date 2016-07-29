@@ -13,7 +13,9 @@ namespace Gush\Tests\Helper;
 
 use Gush\Helper\EditorHelper;
 use Gush\Helper\ProcessHelper;
+use Symfony\Component\Console\Helper\DebugFormatterHelper;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class EditorHelperTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,9 +23,15 @@ class EditorHelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $output = new BufferedOutput();
+
+        $processHelper = new ProcessHelper();
+        $processHelper->setOutput($output);
+
         $helperSet = new HelperSet(
             [
-                new ProcessHelper(),
+                new DebugFormatterHelper(),
+                $processHelper,
             ]
         );
 

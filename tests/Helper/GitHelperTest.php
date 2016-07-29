@@ -124,7 +124,9 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     {
         chdir(sys_get_temp_dir());
 
-        $this->setExpectedExceptionRegExp('\RuntimeException', '#^fatal: Not a git repository \(or any of the parent directories\): \.git$#', 128);
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage('The command "\'git\' \'rev-parse\' \'--show-toplevel\'" failed', 128);
+
         $this->assertFalse($this->git->isGitDir());
     }
 
