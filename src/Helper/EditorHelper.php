@@ -50,8 +50,10 @@ class EditorHelper extends Helper
             $processHelper = $this->getHelperSet()->get('process');
             /** @var ProcessHelper $processHelper */
             $process = $processHelper->getProcessBuilder($editor.' '.escapeshellarg($tmpName))->getProcess();
+            $callback = $processHelper->wrapCallback($process);
+
             $process->setTimeout(null);
-            $process->start();
+            $process->start($callback);
 
             // Wait till editor closes
             $process->wait();

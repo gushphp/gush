@@ -12,6 +12,8 @@
 namespace Gush\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\ProcessHelper as SfProcessHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -28,11 +30,29 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     protected $output;
 
     /**
+     * @var SfProcessHelper
+     */
+    private $internalProcessHelper;
+
+    /**
      * @param OutputInterface $output
      */
     public function setOutput(OutputInterface $output)
     {
         $this->output = $output;
+    }
+
+    /**
+     * Sets the helper set associated with this helper.
+     *
+     * @param HelperSet $helperSet A HelperSet instance
+     */
+    public function setHelperSet(HelperSet $helperSet = null)
+    {
+        parent::setHelperSet($helperSet);
+
+        $this->internalProcessHelper = new SfProcessHelper();
+        $this->internalProcessHelper->setHelperSet($helperSet);
     }
 
     /**
@@ -46,9 +66,12 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     /**
      * Run a command through the ProcessBuilder.
      *
-     * @param string|array $command
-     * @param bool         $allowFailures
-     * @param \Closure     $callback Callback for Process (e.g. for logging output in realtime)
+     * @param string|array|Process $command  An instance of Process or an array of arguments to escape and run or a command to run
+     * @param bool                 $allowFailures
+     * @param \Closure             $callback Callback for Process (e.g. for logging output in realtime)
+     *
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      *
      * @return string
      */
@@ -58,27 +81,21 @@ class ProcessHelper extends Helper implements OutputAwareInterface
             $command = $this->parseProcessArguments($command);
         }
 
-        $builder = new ProcessBuilder($command);
-        $builder
-            ->setWorkingDirectory(getcwd())
-            ->setTimeout(3600)
-        ;
-        $process = $builder->getProcess();
+        if ($command instanceof Process) {
+            $process = $command;
+        } else {
+            $builder = new ProcessBuilder($command);
+            $builder
+                ->setWorkingDirectory(getcwd())
+                ->setTimeout(3600);
 
-        $remover = function ($untrimmed) {
-            return ltrim(rtrim($untrimmed, "'"), "'");
-        };
-        if ($this->output instanceof OutputInterface) {
-            if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                $commandLine = implode(' ', array_map($remover, explode(' ', $process->getCommandLine())));
-                $this->output->writeln('<question>CMD</question> '.$commandLine);
-            }
+            $process = $builder->getProcess();
         }
 
-        $process->run($callback);
-
-        if (!$process->isSuccessful() && !$allowFailures) {
-            throw new \RuntimeException(trim($process->getErrorOutput()), (int) $process->getExitCode());
+        if ($allowFailures) {
+            $process = $this->internalProcessHelper->run($this->output, $process, null, $callback);
+        } else {
+            $process = $this->internalProcessHelper->mustRun($this->output, $process, null, $callback);
         }
 
         return trim($process->getOutput());
@@ -144,14 +161,26 @@ class ProcessHelper extends Helper implements OutputAwareInterface
             ->setTimeout(3600)
         ;
 
-        $process = $builder->getProcess();
-        $process->run();
+        $process = $this->internalProcessHelper->run($this->output, $builder->getProcess());
 
         if (!$process->isSuccessful()) {
             throw new \RuntimeException('Please install php-cs-fixer');
         }
 
         return $fixer;
+    }
+
+    /**
+     * Wraps a Process callback to add debugging output.
+     *
+     * @param Process       $process  The Process
+     * @param callable|null $callback A PHP callable
+     *
+     * @return callable
+     */
+    public function wrapCallback(Process $process, $callback = null)
+    {
+        return $this->internalProcessHelper->wrapCallback($this->output, $process, $callback);
     }
 
     /**

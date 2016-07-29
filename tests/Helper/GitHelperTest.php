@@ -17,6 +17,9 @@ use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Console\Helper\DebugFormatterHelper;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Output\NullOutput;
 
 class GitHelperTest extends \PHPUnit_Framework_TestCase
 {
@@ -61,14 +64,27 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $this->gitConfigHelper->setHelperSet(Argument::any());
         $this->gitConfigHelper->getName()->willReturn('git_config');
 
-        $this->realFsHelper = new FilesystemHelper();
+        $helperSet = new HelperSet(
+            [new DebugFormatterHelper()]
+        );
 
-        $this->git = new GitHelper(new ProcessHelper(), $this->gitConfigHelper->reveal(), $this->realFsHelper);
+        $this->realFsHelper = new FilesystemHelper();
+        $this->realFsHelper->setHelperSet($helperSet);
+
+        $processHelper = new ProcessHelper();
+        $processHelper->setHelperSet($helperSet);
+        $processHelper->setOutput(new NullOutput());
+
+        $this->git = new GitHelper($processHelper, $this->gitConfigHelper->reveal(), $this->realFsHelper);
+        $this->git->setHelperSet($helperSet);
+
         $this->unitGit = new GitHelper(
             $this->processHelper,
             $this->gitConfigHelper->reveal(),
             $this->filesystemHelper->reveal()
         );
+
+        $this->unitGit->setHelperSet($helperSet);
     }
 
     /**
