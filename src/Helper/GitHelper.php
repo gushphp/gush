@@ -228,8 +228,11 @@ class GitHelper extends Helper
     public function remoteBranchExists($remote, $branch)
     {
         $result = $this->processHelper->runCommand(['git', 'ls-remote', $remote], true);
+        if (1 >= ($exists = preg_match_all('#(?<=\s)'.preg_quote('refs/heads/'.$branch, '#').'(?!\w)$#m', $result))) {
+            return 1 === $exists;
+        }
 
-        return 1 === preg_match('#(?<=\s)'.preg_quote('refs/heads/'.$branch, '#').'(?!\w)#', $result);
+        throw new \RuntimeException(sprintf('Invalid refs found while searching for remote branch at "refs/heads/%s"', $branch));
     }
 
     /**
@@ -240,8 +243,11 @@ class GitHelper extends Helper
     public function branchExists($branch)
     {
         $result = $this->processHelper->runCommand(['git', 'branch', '--list', $branch], true);
+        if (1 >= ($exists = preg_match_all('#(?<=\s)'.preg_quote($branch, '#').'(?!\w)$#m', $result))) {
+            return 1 === $exists;
+        }
 
-        return 1 === preg_match('#'.preg_quote($branch, '#').'(?!\w)#', $result);
+        throw new \RuntimeException(sprintf('Invalid list of local branches found while searching for "%s"', $branch));
     }
 
     /**
