@@ -53,7 +53,7 @@ pats:
     nice_catch: 'Very nice catch, thanks @{{ author }}.'
 </comment>
 
-You can let gush to choose a random path using the <comment>--random</comment>
+You can let gush choose a random path using the <comment>--random</comment>
 option:
 
     <info>$ gush %command.name% 12 --random</info>
