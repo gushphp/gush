@@ -35,7 +35,7 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeatu
             ->addOption('random', null, InputOption::VALUE_NONE, 'Use a random pat')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command gives pat on the back to a PR's author:
+The <info>%command.name%</info> command gives a pat on the back to a PR's author:
 
     <info>$ gush %command.name% 12</info>
 

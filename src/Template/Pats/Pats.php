@@ -79,8 +79,6 @@ EOT;
 
     public static function getRandomPatName()
     {
-        $pats = self::getPats();
-
-        return array_rand($pats);
+        return array_rand(self::getPats());
     }
 }
