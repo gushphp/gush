@@ -17,7 +17,9 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_AUTHOR = 'cslucano';
 
-    /** @var \Gush\Template\Pats\PatTemplate */
+    /**
+     * @var \Gush\Template\Pats\PatTemplate
+     */
     protected $template;
 
     public function setUp()
@@ -36,5 +38,16 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
             self::TEST_AUTHOR,
             $this->template->render()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function testWrongPatName()
+    {
+        $this->template->bind(['author' => self::TEST_AUTHOR, 'pat' => 'nonexistent']);
+
+        $this->setExpectedException('\InvalidArgumentException', 'Pat named "nonexistent" doesn\'t exist');
+        $this->template->render();
     }
 }
