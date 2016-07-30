@@ -305,6 +305,26 @@ class BitbucketRepoAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
+    public function mergePullRequest($id, $message)
+    {
+        $response = $this->client->apiPullRequests()->accept(
+            $this->getUsername(),
+            $this->getRepository(),
+            $id,
+            ['message' => $message]
+        );
+
+        $resultArray = json_decode($response->getContent(), true);
+        if ('MERGED' !== $resultArray['state']) {
+            throw new AdapterException($response->getContent());
+        }
+
+        return $resultArray['merge_commit']['hash'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function updatePullRequest($id, array $parameters)
     {
         // BitBucket requires the existing values to be passed with it

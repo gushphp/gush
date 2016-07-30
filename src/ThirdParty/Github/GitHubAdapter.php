@@ -480,6 +480,27 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     /**
      * {@inheritdoc}
      */
+    public function mergePullRequest($id, $message)
+    {
+        $api = $this->client->api('pull_request');
+
+        $result = $api->merge(
+            $this->getUsername(),
+            $this->getRepository(),
+            $id,
+            $message
+        );
+
+        if (false === $result['merged']) {
+            throw new AdapterException('Merge failed: '.$result['message']);
+        }
+
+        return $result['sha'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function updatePullRequest($id, array $parameters)
     {
         $api = $this->client->api('pull_request');

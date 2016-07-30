@@ -13,6 +13,7 @@ namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestMergeCommand;
 use Gush\Tests\Command\CommandTestCase;
+use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -146,7 +147,7 @@ OET;
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'merge', 10))->reveal());
+                $helperSet->set($this->getLocalGitHelperForApi(sprintf($this->mergeMessage, 'merge', 10))->reveal());
             }
         );
 
@@ -170,11 +171,8 @@ OET;
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getGitConfigHelper(false)->reveal());
                 $helperSet->set(
-                    $this->getLocalGitHelper(
+                    $this->getLocalGitHelperForApi(
                         sprintf($this->mergeMessage, 'merge', 10),
-                        false,
-                        false,
-                        null,
                         false
                     )->reveal()
                 );
@@ -198,7 +196,7 @@ OET;
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'feat', 10))->reveal());
+                $helperSet->set($this->getLocalGitHelperForApi(sprintf($this->mergeMessage, 'feat', 10))->reveal());
             }
         );
 
@@ -219,7 +217,7 @@ OET;
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'feature', 10))->reveal());
+                $helperSet->set($this->getLocalGitHelperForApi(sprintf($this->mergeMessage, 'feature', 10))->reveal());
             }
         );
 
@@ -329,7 +327,7 @@ OET;
                 $helperSet->set($this->getGitConfigHelper(false)->reveal());
                 $helperSet->set(
                     $this->getLocalGitHelper(
-                        sprintf($this->mergeMessage, 'merge', 10, 'develop'),
+                        sprintf($this->mergeMessage, 'merge', 10),
                         false,
                         false,
                         null,
@@ -346,7 +344,7 @@ OET;
         );
 
         $display = $tester->getDisplay();
-        $this->assertCommandOutputMatches(sprintf(self::COMMAND_DISPLAY, 'develop'), $display);
+        $this->assertCommandOutputMatches(sprintf(self::COMMAND_DISPLAY), $display);
     }
 
     public function testMergePullRequestInteractiveTypeAsk()
@@ -357,7 +355,7 @@ OET;
             null,
             array_merge(CommandTestCase::$localConfig, ['pr_type' => ['security', 'feature', 'bug']]),
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'feature', 10))->reveal());
+                $helperSet->set($this->getLocalGitHelperForApi(sprintf($this->mergeMessage, 'feature', 10))->reveal());
             }
         );
 
@@ -377,7 +375,7 @@ OET;
             array_merge(CommandTestCase::$localConfig, ['pr_type' => ['security', 'feature', 'bug']]),
             function (HelperSet $helperSet) {
                 $helperSet->set($this->getGitConfigHelper(false)->reveal());
-                $helperSet->set($this->getLocalGitHelper(null, false, false, null, false)->reveal());
+                $helperSet->set($this->getLocalGitHelperForApi(null, false)->reveal());
             }
         );
 
@@ -488,6 +486,24 @@ OET;
             $helper->getLogBetweenCommits($switch ?: 'base_ref', 'temp--head_ref')->willReturn(
                 $squash ? $this->squashedCommits : $this->commits
             );
+        }
+
+        return $helper;
+    }
+
+    private function getLocalGitHelperForApi($message = null, $withComments = true)
+    {
+        $helper = parent::getGitHelper();
+
+        if ($withComments) {
+            $helper->remoteUpdate('gushphp')->shouldBeCalled();
+            $helper->addNotes(Argument::any(), TestAdapter::MERGE_HASH, 'github-comments')->shouldBeCalled();
+            $helper->pushToRemote('gushphp', 'refs/notes/github-comments')->shouldBeCalled();
+        }
+
+        if (null !== $message) {
+            $helper->createRemoteMergeOperation()->shouldNotBeCalled();
+            $helper->getLogBetweenCommits('base_ref', 'head_ref')->willReturn($this->commits);
         }
 
         return $helper;

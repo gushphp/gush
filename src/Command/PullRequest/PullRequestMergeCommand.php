@@ -19,6 +19,7 @@ use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Gush\Template\Pats\Pats;
+use Gush\ThirdParty\Gitlab\Adapter\GitLabRepoAdapter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -169,16 +170,20 @@ EOF
                 );
             };
 
-            $mergeOperation = $gitHelper->createRemoteMergeOperation();
-            $mergeOperation->setTarget($targetRemote, $targetBranch);
-            $mergeOperation->setSource($sourceRemote, $sourceBranch);
-            $mergeOperation->squashCommits($squash, $input->getOption('force-squash'));
-            $mergeOperation->switchBase($input->getOption('switch'));
-            $mergeOperation->setMergeMessage($messageCallback);
-            $mergeOperation->useFastForward($input->getOption('fast-forward'));
+            if ($this->canUseApi($input)) {
+                $mergeCommit = $adapter->mergePullRequest($prNumber, $messageCallback($targetBranch, $sourceBranch));
+            } else {
+                $mergeOperation = $gitHelper->createRemoteMergeOperation();
+                $mergeOperation->setTarget($targetRemote, $targetBranch);
+                $mergeOperation->setSource($sourceRemote, $sourceBranch);
+                $mergeOperation->squashCommits($squash, $input->getOption('force-squash'));
+                $mergeOperation->switchBase($input->getOption('switch'));
+                $mergeOperation->setMergeMessage($messageCallback);
+                $mergeOperation->useFastForward($input->getOption('fast-forward'));
 
-            $mergeCommit = $mergeOperation->performMerge();
-            $mergeOperation->pushToRemote();
+                $mergeCommit = $mergeOperation->performMerge();
+                $mergeOperation->pushToRemote();
+            }
 
             if (!$input->getOption('no-comments') && !$input->getOption('fast-forward')) {
                 $gitConfigHelper->ensureNotesFetching($targetRemote);
@@ -217,6 +222,38 @@ EOF
 
             return self::COMMAND_FAILURE;
         }
+    }
+
+    private function canUseApi(InputInterface $input)
+    {
+        if ($input->getOption('squash') ||
+            $input->getOption('force-squash') ||
+            $input->getOption('switch') ||
+            $input->getOption('fast-forward')
+        ) {
+            $this->getHelper('gush_style')->note(
+                [
+                    'Extra merge options were provided, falling back to a local merge.',
+                    'A local merge is slower then using the API, please wait till the command is finished.',
+                ]
+            );
+
+            return false;
+        }
+
+        // Ugly hacks, GitLab doesn't provide a merge-hash at the moment.
+        // https://gitlab.com/gitlab-org/gitlab-ce/issues/20456
+        if (!$input->getOption('no-comments') && $this->getAdapter() instanceof GitLabRepoAdapter) {
+            $this->getHelper('gush_style')->note(
+                [
+                    'GitLab (currently) doesn\'t return a merge hash making it impossible to add comments.',
+                    'Use the `--no-comments` option to force usage of the API.',
+                    'And please vote on https://gitlab.com/gitlab-org/gitlab-ce/issues/20456'
+                ]
+            );
+        }
+
+        return true;
     }
 
     private function guardPullRequestMerge(array $pr)

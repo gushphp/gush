@@ -25,6 +25,8 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     private $pullRequest = [];
     private $issue = [];
 
+    const MERGE_HASH = '32fe234332fe234332fe234332fe234332fe2343';
+
     public function __construct($name)
     {
         $this->name = $name;
@@ -403,7 +405,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     {
         return [
             [
-                'sha' => '32fe234332fe234332fe234332fe234332fe2343',
+                'sha' => self::MERGE_HASH,
                 'message' => 'added merge pull request feature',
                 'user' => 'cordoval',
             ],
@@ -420,7 +422,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
      */
     public function mergePullRequest($id, $message)
     {
-        return '32fe234332fe234332fe234332fe234332fe2343';
+        return self::MERGE_HASH;
     }
 
     /**
