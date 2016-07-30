@@ -272,15 +272,12 @@ interface Adapter
     /**
      * Gets the pull-requests.
      *
-     * @param string $state   Only get pull-requests with this state (use getPullRequestStates() supported states)
-     * @param int    $page
-     * @param int    $perPage
-     *
-     * @throws AdapterException when state is unsupported
+     * @param string $state Only get pull-requests with this state (use getPullRequestStates() for supported states)
+     * @param int    $limit
      *
      * @return array[] An array where each entry has the same structure as described in getPullRequest()
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30);
+    public function getPullRequests($state = null, $limit = 30);
 
     /**
      * Gets the supported pull-request states.

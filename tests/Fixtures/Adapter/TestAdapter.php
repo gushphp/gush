@@ -179,7 +179,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30)
+    public function getIssues(array $parameters = [], $limit = 30)
     {
         return [
             [
@@ -456,7 +456,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30)
+    public function getPullRequests($state = null, $limit = 30)
     {
         return [
             [

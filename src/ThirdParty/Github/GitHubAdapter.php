@@ -251,7 +251,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     /**
      * {@inheritdoc}
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30)
+    public function getIssues(array $parameters = [], $limit = 30)
     {
         // FIXME is not respecting the pagination
 
@@ -510,7 +510,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     /**
      * {@inheritdoc}
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30)
+    public function getPullRequests($state = null, $limit = 30)
     {
         // FIXME is not respecting the pagination
 

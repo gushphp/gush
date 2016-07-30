@@ -380,7 +380,7 @@ class BitbucketRepoAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30)
+    public function getPullRequests($state = null, $limit = 30)
     {
         $this->client->getResultPager()->setPerPage(null);
         $this->client->getResultPager()->setPage(1);

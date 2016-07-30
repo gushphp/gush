@@ -91,7 +91,7 @@ class GitLabIssueTracker extends BaseIssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30)
+    public function getIssues(array $parameters = [], $limit = 30)
     {
         $issues = $this->client->api('issues')->all($this->getCurrentProject()->id);
 

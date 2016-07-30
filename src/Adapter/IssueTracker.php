@@ -92,14 +92,11 @@ interface IssueTracker
      * Gets the issues as array.
      *
      * @param array $parameters
-     * @param int   $page
-     * @param int   $perPage
-     *
-     * @throws AdapterException when issues are disabled for the repository
+     * @param int   $limit
      *
      * @return array[] An array where each entry has the same structure as described in getIssue()
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30);
+    public function getIssues(array $parameters = [], $limit = 30);
 
     /**
      * Updates the state of an issue by id.
