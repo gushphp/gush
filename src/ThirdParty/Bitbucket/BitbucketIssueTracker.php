@@ -139,7 +139,7 @@ class BitbucketIssueTracker extends BaseIssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30)
+    public function getIssues(array $parameters = [], $limit = 30)
     {
         $this->client->getResultPager()->setPerPage(null);
         $this->client->getResultPager()->setPage(1);

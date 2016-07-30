@@ -44,16 +44,6 @@ interface Adapter
     public function isAuthenticated();
 
     /**
-     * Returns the URL for generating a token.
-     *
-     * If the adapter doesn't support tokens,
-     * this will return null instead.
-     *
-     * @return null|string
-     */
-    public function getTokenGenerationUrl();
-
-    /**
      * Creates a fork from upstream and returns an array
      * with the forked url.
      *
@@ -201,7 +191,6 @@ interface Adapter
      * "updated_at":    "DateTime Object"
      * "user":          "username"
      * "assignee":      "username"
-     * "merge_commit":  "e5bd3914e2e596debea16f433f57875b5b90bcd6"
      * "merged":        false
      * "merged_by":     "username"
      * "head": [
@@ -247,18 +236,6 @@ interface Adapter
     public function getPullRequestCommits($id);
 
     /**
-     * Merges a pull-request by id.
-     *
-     * @param int    $id
-     * @param string $message
-     *
-     * @throws AdapterException when merging failed
-     *
-     * @return string sha1 of the merge commit
-     */
-    public function mergePullRequest($id, $message);
-
-    /**
      * Updates the state of a pull-request by id.
      *
      * @param int   $id
@@ -295,15 +272,12 @@ interface Adapter
     /**
      * Gets the pull-requests.
      *
-     * @param string $state   Only get pull-requests with this state (use getPullRequestStates() supported states)
-     * @param int    $page
-     * @param int    $perPage
-     *
-     * @throws AdapterException when state is unsupported
+     * @param string $state Only get pull-requests with this state (use getPullRequestStates() for supported states)
+     * @param int    $limit
      *
      * @return array[] An array where each entry has the same structure as described in getPullRequest()
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30);
+    public function getPullRequests($state = null, $limit = 30);
 
     /**
      * Gets the supported pull-request states.

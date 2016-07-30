@@ -144,8 +144,6 @@ class TemplateHelper extends Helper implements InputAwareInterface
      * input, then binds the parameters to the template.
      *
      * @param TemplateInterface $template Template to render
-     *
-     * @internal param OutputInterface $output Output from the command
      */
     public function parameterize(TemplateInterface $template)
     {

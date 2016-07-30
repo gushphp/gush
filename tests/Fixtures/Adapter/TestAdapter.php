@@ -62,14 +62,6 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getTokenGenerationUrl()
-    {
-        return;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createFork($org)
     {
         return [
@@ -187,7 +179,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30)
+    public function getIssues(array $parameters = [], $limit = 30)
     {
         return [
             [
@@ -325,7 +317,6 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             'updated_at' => new \DateTime(),
             'user' => 'cordoval',
             'assignee' => null,
-            'merge_commit' => null,
             'merged' => false,
             'merged_by' => null,
             'head' => [
@@ -379,7 +370,6 @@ class TestAdapter extends BaseAdapter implements IssueTracker
             'updated_at' => new \DateTime('1969-12-31T10:00:00+0100'),
             'user' => 'weaverryan',
             'assignee' => 'cordoval',
-            'merge_commit' => null, // empty as the pull request is not merged
             'merged' => false,
             'merged_by' => null,
             'head' => [
@@ -466,7 +456,7 @@ class TestAdapter extends BaseAdapter implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30)
+    public function getPullRequests($state = null, $limit = 30)
     {
         return [
             [
@@ -481,7 +471,6 @@ class TestAdapter extends BaseAdapter implements IssueTracker
                 'updated_at' => new \DateTime('2014-04-14T17:24:12+0100'),
                 'user' => 'pierredup',
                 'assignee' => 'cordoval',
-                'merge_commit' => null, // empty as the pull request is not merged
                 'merged' => false,
                 'merged_by' => null,
                 'head' => [

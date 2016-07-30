@@ -221,7 +221,7 @@ class BitbucketRepoAdapter extends BaseAdapter
             ],
         ];
 
-        if (null !== $this->getUsername() && $sourceOrg !== $this->getUsername()) {
+        if ($sourceOrg !== $this->getUsername()) {
             $params['source']['repository'] = [
                 'full_name' => $sourceOrg.'/'.$this->getRepository(),
             ];
@@ -305,26 +305,6 @@ class BitbucketRepoAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function mergePullRequest($id, $message)
-    {
-        $response = $this->client->apiPullRequests()->accept(
-            $this->getUsername(),
-            $this->getRepository(),
-            $id,
-            ['message' => $message]
-        );
-
-        $resultArray = json_decode($response->getContent(), true);
-        if ('MERGED' !== $resultArray['state']) {
-            throw new AdapterException($response->getContent());
-        }
-
-        return $resultArray['merge_commit']['hash'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function updatePullRequest($id, array $parameters)
     {
         // BitBucket requires the existing values to be passed with it
@@ -400,7 +380,7 @@ class BitbucketRepoAdapter extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function getPullRequests($state = null, $page = 1, $perPage = 30)
+    public function getPullRequests($state = null, $limit = 30)
     {
         $this->client->getResultPager()->setPerPage(null);
         $this->client->getResultPager()->setPage(1);
@@ -522,7 +502,6 @@ class BitbucketRepoAdapter extends BaseAdapter
             'updated_at' => !empty($pr['updated_on']) ? new \DateTime($pr['updated_on']) : null,
             'user' => $pr['author']['username'],
             'assignee' => null, // unsupported, only multiple
-            'merge_commit' => $pr['merge_commit'],
             'merged' => 'merged' === strtolower($pr['state']) && isset($pr['closed_by']),
             'merged_by' => isset($pr['closed_by']) ? $pr['closed_by'] : '',
             'head' => [

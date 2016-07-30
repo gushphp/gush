@@ -35,14 +35,6 @@ class TestIssueTracker implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getTokenGenerationUrl()
-    {
-        return;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function openIssue($subject, $body, array $options = [])
     {
         return 77;
@@ -81,7 +73,7 @@ class TestIssueTracker implements IssueTracker
     /**
      * {@inheritdoc}
      */
-    public function getIssues(array $parameters = [], $page = 1, $perPage = 30)
+    public function getIssues(array $parameters = [], $limit = 30)
     {
         return [
             [

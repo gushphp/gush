@@ -69,21 +69,6 @@ trait BitbucketAdapter
         return $this->authenticated;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTokenGenerationUrl()
-    {
-        if (isset($this->configuration['authentication'])) {
-            return sprintf(
-                'https://bitbucket.org/account/user/%s/api',
-                $this->configuration['authentication']['username']
-            );
-        }
-
-        return;
-    }
-
     protected function prepareParameters(array $parameters)
     {
         foreach ($parameters as $k => $v) {
