@@ -31,18 +31,8 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeatu
             ->setName('pull-request:pat-on-the-back')
             ->setDescription('Gives a pat on the back to a PR\'s author')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull request number')
-            ->addOption(
-                'pat',
-                'p',
-                InputOption::VALUE_REQUIRED,
-                'A pat name'
-            )
-            ->addOption(
-                'random',
-                null,
-                InputOption::VALUE_NONE,
-                'Use a random pat'
-            )
+            ->addOption('pat', 'p', InputOption::VALUE_REQUIRED, 'A pat name')
+            ->addOption('random', null, InputOption::VALUE_NONE, 'Use a random pat')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command gives pat on the back to a PR's

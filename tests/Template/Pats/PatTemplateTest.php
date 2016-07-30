@@ -18,7 +18,7 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
     const TEST_AUTHOR = 'cslucano';
 
     /**
-     * @var \Gush\Template\Pats\PatTemplate
+     * @var PatTemplate
      */
     protected $template;
 
@@ -40,9 +40,6 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @test
-     */
     public function testWrongPatName()
     {
         $this->template->bind(['author' => self::TEST_AUTHOR, 'pat' => 'nonexistent']);

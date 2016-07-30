@@ -77,12 +77,7 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
             }
         );
 
-        $this->setExpectedCommandInput(
-            $command,
-            [
-                'beers'
-            ]
-        );
+        $this->setExpectedCommandInput($command, ['beers']);
 
         $tester->execute(['pr_number' => 10]);
 
@@ -96,10 +91,7 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
     public function testPatOnTheBackWithWrongOptions()
     {
-        $command = new PullRequestPatOnTheBackCommand();
-        $tester = $this->getCommandTester(
-            $command
-        );
+        $tester = $this->getCommandTester(new PullRequestPatOnTheBackCommand());
 
         $this->setExpectedException(
             'Gush\Exception\UserException',
