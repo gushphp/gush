@@ -35,26 +35,22 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeatu
             ->addOption('random', null, InputOption::VALUE_NONE, 'Use a random pat')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command gives pat on the back to a PR's
-author:
+The <info>%command.name%</info> command gives pat on the back to a PR's author:
 
     <info>$ gush %command.name% 12</info>
 
-If you know which pat you want to use, you can pass it with the <comment>--pat</comment>
-option:
+If you know which pat you want to use, you can pass it with the <comment>--pat</comment> option:
 
     <info>$ gush %command.name% 12 --pat=thank_you</info>
 
-Note: You can configure you own pat templates in your local <comment>.gush.yml</comment>
-file like:
+Note: You can configure you own pat templates in your local <comment>.gush.yml</comment> file like:
 <comment>
 pats:
     you_are_great: 'You are great @{{ author }}.'
     nice_catch: 'Very nice catch, thanks @{{ author }}.'
 </comment>
 
-You can let gush choose a random path using the <comment>--random</comment>
-option:
+You can let gush choose a random path using the <comment>--random</comment> option:
 
     <info>$ gush %command.name% 12 --random</info>
 EOF
@@ -89,13 +85,7 @@ EOF
 
         $patMessage = $this
             ->getHelper('template')
-            ->bindAndRender([
-                    'pat' => $pat,
-                    'author' => $pr['user']
-                ],
-                'pats',
-                'general'
-            )
+            ->bindAndRender(['pat' => $pat, 'author' => $pr['user']], 'pats', 'general')
         ;
 
         $adapter->createComment($prNumber, $patMessage);
