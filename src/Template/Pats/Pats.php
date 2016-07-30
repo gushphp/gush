@@ -45,14 +45,8 @@ EOT;
 :beers: @{{ author }}.
 EOT;
 
-    /**
-     * @var string[]
-     */
     protected static $pats = [];
 
-    /**
-     * @return string[]
-     */
     public static function getPats()
     {
         if (!self::$pats) {
@@ -68,21 +62,11 @@ EOT;
         return self::$pats;
     }
 
-    /**
-     * @param string[] $pats
-     */
     public static function addPats(array $pats)
     {
         self::$pats = $pats + self::getPats();
     }
 
-    /**
-     * @param string $name
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string
-     */
     public static function get($name)
     {
         $pats = self::getPats();
@@ -93,9 +77,6 @@ EOT;
         return $pats[$name];
     }
 
-    /**
-     * @return string
-     */
     public static function getRandomPatName()
     {
         $pats = self::getPats();
