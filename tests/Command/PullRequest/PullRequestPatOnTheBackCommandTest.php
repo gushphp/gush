@@ -36,11 +36,9 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
         $tester->execute(['pr_number' => 10], ['interactive' => false]);
 
-        $display = $tester->getDisplay();
-
         $this->assertCommandOutputMatches(
             'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
-            $display
+            $tester->getDisplay()
         );
     }
 
@@ -57,11 +55,9 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
         $tester->execute(['pr_number' => 10, '--pat' => 'thanks'], ['interactive' => false]);
 
-        $display = $tester->getDisplay();
-
         $this->assertCommandOutputMatches(
             'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
-            $display
+            $tester->getDisplay()
         );
     }
 
@@ -81,11 +77,9 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
         $tester->execute(['pr_number' => 10]);
 
-        $display = $tester->getDisplay();
-
         $this->assertCommandOutputMatches(
             'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
-            $display
+            $tester->getDisplay()
         );
     }
 
