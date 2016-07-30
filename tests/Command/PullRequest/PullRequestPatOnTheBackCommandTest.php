@@ -87,10 +87,7 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
     {
         $tester = $this->getCommandTester(new PullRequestPatOnTheBackCommand());
 
-        $this->setExpectedException(
-            'Gush\Exception\UserException',
-            '`--pat` and `--random` options cannot be used together'
-        );
+        $this->setExpectedException('Gush\Exception\UserException', '`--pat` and `--random` options cannot be used together');
 
         $tester->execute(['pr_number' => 10, '--pat' => 'thanks', '--random' => true], ['interactive' => false]);
     }

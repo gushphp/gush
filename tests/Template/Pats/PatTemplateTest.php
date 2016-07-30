@@ -34,10 +34,7 @@ class PatTemplateTest extends \PHPUnit_Framework_TestCase
     {
         $this->template->bind(['author' => self::TEST_AUTHOR, 'pat' => 'thank_you']);
 
-        $this->assertContains(
-            self::TEST_AUTHOR,
-            $this->template->render()
-        );
+        $this->assertContains(self::TEST_AUTHOR, $this->template->render());
     }
 
     public function testWrongPatName()

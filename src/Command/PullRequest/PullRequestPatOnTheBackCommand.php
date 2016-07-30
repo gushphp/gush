@@ -89,8 +89,7 @@ EOF
 
         $patMessage = $this
             ->getHelper('template')
-            ->bindAndRender(
-                [
+            ->bindAndRender([
                     'pat' => $pat,
                     'author' => $pr['user']
                 ],
