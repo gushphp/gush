@@ -251,6 +251,8 @@ EOF
                     'And please vote on https://gitlab.com/gitlab-org/gitlab-ce/issues/20456'
                 ]
             );
+
+            return false;
         }
 
         return true;
