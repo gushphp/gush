@@ -12,6 +12,7 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Config;
 use Gush\Exception\CannotSquashMultipleAuthors;
 use Gush\Exception\UserException;
 use Gush\Feature\GitDirectoryFeature;
@@ -226,6 +227,10 @@ EOF
 
     private function canUseApi(InputInterface $input)
     {
+        if (true === $this->getConfig()->get('disable_merge_api', Config::CONFIG_ALL, false)) {
+            return false;
+        }
+
         if ($input->getOption('squash') ||
             $input->getOption('force-squash') ||
             $input->getOption('switch') ||

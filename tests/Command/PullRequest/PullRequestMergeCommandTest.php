@@ -161,6 +161,36 @@ OET;
         $this->assertCommandOutputMatches([self::COMMAND_DISPLAY, self::COMMAND_DISPLAY_TARGET], $display);
     }
 
+    public function testMergePullRequestWithApiDisabled()
+    {
+        $command = new PullRequestMergeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            [
+                'disable_merge_api' => true,
+                'repo_adapter' => 'github_enterprise',
+                'issue_tracker' => 'github_enterprise',
+                'repo_org' => 'gushphp',
+                'repo_name' => 'gush',
+                'issue_project_org' => 'gushphp',
+                'issue_project_name' => 'gush',
+            ],
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'merge', 10))->reveal());
+            }
+        );
+
+        $tester->execute(
+            ['pr_number' => 10],
+            ['interactive' => false]
+        );
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches([self::COMMAND_DISPLAY, self::COMMAND_DISPLAY_TARGET], $display);
+    }
+
     public function testMergePullRequestWithNoComments()
     {
         $command = new PullRequestMergeCommand();
