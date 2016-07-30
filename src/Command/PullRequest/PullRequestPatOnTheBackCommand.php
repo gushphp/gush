@@ -104,11 +104,6 @@ EOF
         }
     }
 
-    /**
-     * @param array $pats
-     *
-     * @return string
-     */
     private function choosePat(array $pats)
     {
         return $this->getHelper('gush_style')->choice('Please, choose a pat ', $pats, reset($pats));
