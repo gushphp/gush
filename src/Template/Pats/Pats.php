@@ -73,7 +73,7 @@ EOT;
      */
     public static function addPats(array $pats)
     {
-        self::$pats = $pats + self::$pats;
+        self::$pats = $pats + self::getPats();
     }
 
     /**
@@ -85,11 +85,12 @@ EOT;
      */
     public static function get($name)
     {
-        if (!isset(self::$pats[$name])) {
+        $pats = self::getPats();
+        if (!isset($pats[$name])) {
             throw new \InvalidArgumentException(sprintf('Pat named "%s" doesn\'t exist', $name));
         }
 
-        return self::$pats[$name];
+        return $pats[$name];
     }
 
     /**
@@ -97,6 +98,8 @@ EOT;
      */
     public static function getRandomPatName()
     {
-        return self::$pats[array_rand(array_keys(self::$pats))];
+        $pats = self::getPats();
+
+        return array_rand($pats);
     }
 }
