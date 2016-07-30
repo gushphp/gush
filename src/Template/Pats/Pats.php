@@ -13,47 +13,72 @@ namespace Gush\Template\Pats;
 
 class Pats
 {
-    const SIZE = 8;
-
-    const PAT1 = <<<EOT
+    const GOOD_JOB = <<<EOT
 Good job @{{ author }}.
 EOT;
 
-    const PAT2 = <<<EOT
+    const YOU_WERE_FAST = <<<EOT
 You were fast on this one, thanks @{{ author }}.
 EOT;
 
-    const PAT3 = <<<EOT
+    const PATCH = <<<EOT
 Good catch @{{ author }}, thanks for the patch.
 EOT;
 
-    const PAT4 = <<<EOT
+    const THANK_YOU = <<<EOT
 Thank you @{{ author }}.
 EOT;
 
-    const PAT5 = <<<EOT
+    const GOOD_CATCH_THANKS = <<<EOT
 Good catch, thanks @{{ author }}.
 EOT;
 
-    const PAT6 = <<<EOT
+    const THANKS_FOR_PR = <<<EOT
 Thanks @{{ author }} for the pull request!
 EOT;
 
-    const PAT7 = <<<EOT
+    const WELL_DONE = <<<EOT
 Well done @{{ author }}.
 EOT;
 
-    const PAT8 = <<<EOT
+    const BEERS = <<<EOT
 :beers: @{{ author }}.
 EOT;
 
-    public static function get($name)
+    protected static $pats = [];
+
+    public static function getPats()
     {
-        return constant('self::'.strtoupper($name));
+        if (!self::$pats) {
+            $r = new \ReflectionClass(get_class());
+            $pats = array_flip($r->getConstants());
+            array_walk($pats, function(&$value) {
+                $value = strtolower($value);
+            });
+
+            self::$pats = array_flip($pats);
+        }
+
+        return self::$pats;
     }
 
-    public static function getRandom()
+    public static function addPats(array $pats)
     {
-        return self::get('PAT'.rand(1, self::SIZE));
+        self::$pats = $pats + self::getPats();
+    }
+
+    public static function get($name)
+    {
+        $pats = self::getPats();
+        if (!isset($pats[$name])) {
+            throw new \InvalidArgumentException(sprintf('Pat named "%s" doesn\'t exist', $name));
+        }
+
+        return $pats[$name];
+    }
+
+    public static function getRandomPatName()
+    {
+        return array_rand(self::getPats());
     }
 }

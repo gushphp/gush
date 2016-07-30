@@ -17,7 +17,11 @@ use Symfony\Component\Console\Helper\HelperSet;
 
 class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 {
-    const TEMPLATE_STRING = 'Good catch @weaverryan, thanks for the patch.';
+    private static $pats = [
+        'good_job' => 'Good catch @weaverryan, thanks for the patch.',
+        'thanks' => 'Thanks @weaverryan.',
+        'beers' => ':beers: @weaverryan.',
+    ];
 
     public function testPatContributorOfPullRequestOnTheBack()
     {
@@ -32,15 +36,63 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
         $tester->execute(['pr_number' => 10], ['interactive' => false]);
 
-        $display = $tester->getDisplay();
-
         $this->assertCommandOutputMatches(
             'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
-            $display
+            $tester->getDisplay()
         );
     }
 
-    private function getTemplateHelper()
+    public function testPatOnTheBackWithOption()
+    {
+        $tester = $this->getCommandTester(
+            new PullRequestPatOnTheBackCommand(),
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getTemplateHelper('thanks'));
+            }
+        );
+
+        $tester->execute(['pr_number' => 10, '--pat' => 'thanks'], ['interactive' => false]);
+
+        $this->assertCommandOutputMatches(
+            'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
+            $tester->getDisplay()
+        );
+    }
+
+    public function testChoosePatOnTheBack()
+    {
+        $command = new PullRequestPatOnTheBackCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getTemplateHelper('beers'));
+            }
+        );
+
+        $this->setExpectedCommandInput($command, ['beers']);
+
+        $tester->execute(['pr_number' => 10]);
+
+        $this->assertCommandOutputMatches(
+            'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
+            $tester->getDisplay()
+        );
+    }
+
+    public function testPatOnTheBackWithWrongOptions()
+    {
+        $tester = $this->getCommandTester(new PullRequestPatOnTheBackCommand());
+
+        $this->setExpectedException('Gush\Exception\UserException', '`--pat` and `--random` options cannot be used together');
+
+        $tester->execute(['pr_number' => 10, '--pat' => 'thanks', '--random' => true], ['interactive' => false]);
+    }
+
+    private function getTemplateHelper($pat = 'good_job')
     {
         $template = $this->getMockBuilder('Gush\Helper\TemplateHelper')
             ->disableOriginalConstructor()
@@ -50,8 +102,8 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
         $template->expects($this->once())
             ->method('bindAndRender')
-            ->with(['author' => 'weaverryan'], 'pats', 'general')
-            ->will($this->returnValue(self::TEMPLATE_STRING))
+            ->with(['author' => 'weaverryan', 'pat' => $pat], 'pats', 'general')
+            ->will($this->returnValue(self::$pats[$pat]))
         ;
 
         return $template;

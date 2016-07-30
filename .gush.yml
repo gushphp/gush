@@ -19,3 +19,12 @@ repo_org: gushphp
 repo_name: gush
 issue_project_org: gushphp
 issue_project_name: gush
+pats:
+    good_job: 'Good job @{{ author }}.'
+    you_were_fast: 'You were fast on this one, thanks @{{ author }}.'
+    good_catch: 'Good catch @{{ author }}, thanks for the patch.'
+    thank_you: 'Thank you @{{ author }}.'
+    good_catch_thanks: 'Good catch, thanks @{{ author }}.'
+    thanks_for_pr: 'Thanks @{{ author }} for the pull request!'
+    well_done: 'Well done @{{ author }}.'
+    beers: ':beers: @{{ author }}.'

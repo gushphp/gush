@@ -13,8 +13,11 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Feature\GitRepoFeature;
+use Gush\Template\Pats\Pats;
+use Gush\Exception\UserException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeature
@@ -28,12 +31,28 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeatu
             ->setName('pull-request:pat-on-the-back')
             ->setDescription('Gives a pat on the back to a PR\'s author')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull request number')
+            ->addOption('pat', 'p', InputOption::VALUE_REQUIRED, 'A pat name')
+            ->addOption('random', null, InputOption::VALUE_NONE, 'Use a random pat')
             ->setHelp(
                 <<<EOF
-The <info>%command.name%</info> command gives a pat on the back to a PR's author with a random template:
+The <info>%command.name%</info> command gives a pat on the back to a PR's author:
 
     <info>$ gush %command.name% 12</info>
 
+If you know which pat you want to use, you can pass it with the <comment>--pat</comment> option:
+
+    <info>$ gush %command.name% 12 --pat=thank_you</info>
+
+Note: You can configure your own pat templates in your local <comment>.gush.yml</comment> file like:
+<comment>
+pats:
+    you_are_great: 'You are great @{{ author }}.'
+    nice_catch: 'Very nice catch, thanks @{{ author }}.'
+</comment>
+
+You can let gush choose a random pat using the <comment>--random</comment> option:
+
+    <info>$ gush %command.name% 12 --random</info>
 EOF
             )
         ;
@@ -48,14 +67,25 @@ EOF
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
+        $config = $this->getConfig();
+
+        if ($customPats = $config->get('pats')) {
+            Pats::addPats($customPats);
+        }
+
+        $pats = Pats::getPats();
+
+        if ($optionPat = $input->getOption('pat')) {
+            $pat = $optionPat;
+        } elseif ($input->getOption('random')) {
+            $pat = Pats::getRandomPatName();
+        } else {
+            $pat = $this->choosePat($pats);
+        }
 
         $patMessage = $this
             ->getHelper('template')
-            ->bindAndRender(
-                ['author' => $pr['user']],
-                'pats',
-                'general'
-            )
+            ->bindAndRender(['pat' => $pat, 'author' => $pr['user']], 'pats', 'general')
         ;
 
         $adapter->createComment($prNumber, $patMessage);
@@ -64,5 +94,18 @@ EOF
         $this->getHelper('gush_style')->success("Pat on the back pushed to {$url}");
 
         return self::COMMAND_SUCCESS;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        parent::initialize($input, $output);
+        if ($input->getOption('pat') && $input->getOption('random')) {
+            throw new UserException('`--pat` and `--random` options cannot be used together');
+        }
+    }
+
+    private function choosePat(array $pats)
+    {
+        return $this->getHelper('gush_style')->choice('Please, choose a pat ', $pats, reset($pats));
     }
 }
