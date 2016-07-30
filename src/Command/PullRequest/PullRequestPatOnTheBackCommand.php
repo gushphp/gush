@@ -43,14 +43,14 @@ If you know which pat you want to use, you can pass it with the <comment>--pat</
 
     <info>$ gush %command.name% 12 --pat=thank_you</info>
 
-Note: You can configure you own pat templates in your local <comment>.gush.yml</comment> file like:
+Note: You can configure your own pat templates in your local <comment>.gush.yml</comment> file like:
 <comment>
 pats:
     you_are_great: 'You are great @{{ author }}.'
     nice_catch: 'Very nice catch, thanks @{{ author }}.'
 </comment>
 
-You can let gush choose a random path using the <comment>--random</comment> option:
+You can let gush choose a random pat using the <comment>--random</comment> option:
 
     <info>$ gush %command.name% 12 --random</info>
 EOF
