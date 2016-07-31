@@ -21,3 +21,8 @@ prophecy fulfillment in the New Testament at the cross when Jesus was opened on 
 water and blood.
 
 Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
+
+```bash
+docker build -t gush .
+docker run -it --rm gush --help
+```
