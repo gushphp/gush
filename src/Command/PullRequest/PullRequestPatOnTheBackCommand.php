@@ -12,9 +12,9 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
+use Gush\Exception\UserException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Template\Pats\Pats;
-use Gush\Exception\UserException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,7 +32,6 @@ class PullRequestPatOnTheBackCommand extends BaseCommand implements GitRepoFeatu
             ->setDescription('Gives a pat on the back to a PR\'s author')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull request number')
             ->addOption('pat', 'p', InputOption::VALUE_REQUIRED, 'A pat name')
-            ->addOption('random', null, InputOption::VALUE_NONE, 'Use a random pat')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> command gives a pat on the back to a PR's author:
@@ -50,9 +49,11 @@ pats:
     nice_catch: 'Very nice catch, thanks @{{ author }}.'
 </comment>
 
-You can let gush choose a random pat using the <comment>--random</comment> option:
+You can let gush choose a random pat using <comment>random</comment> pat option:
 
-    <info>$ gush %command.name% 12 --random</info>
+    <info>$ gush %command.name% 12 --pat=random</info>
+
+<comment>The command will terminate in a failure if the pull request is authored by yourself!</comment>
 EOF
             )
         ;
@@ -67,6 +68,11 @@ EOF
 
         $adapter = $this->getAdapter();
         $pr = $adapter->getPullRequest($prNumber);
+
+        if ($pr['user'] === $this->getParameter($input, 'authentication')['username']) {
+            throw new UserException('You cannot pat yourself');
+        }
+
         $config = $this->getConfig();
 
         if ($customPats = $config->get('pats')) {
@@ -75,10 +81,10 @@ EOF
 
         $pats = Pats::getPats();
 
-        if ($optionPat = $input->getOption('pat')) {
-            $pat = $optionPat;
-        } elseif ($input->getOption('random')) {
-            $pat = Pats::getRandomPatName();
+        if ($pat = $input->getOption('pat')) {
+            if ('random' === $pat) {
+                $pat = Pats::getRandomPatName();
+            }
         } else {
             $pat = $this->choosePat($pats);
         }
@@ -94,14 +100,6 @@ EOF
         $this->getHelper('gush_style')->success("Pat on the back pushed to {$url}");
 
         return self::COMMAND_SUCCESS;
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        parent::initialize($input, $output);
-        if ($input->getOption('pat') && $input->getOption('random')) {
-            throw new UserException('`--pat` and `--random` options cannot be used together');
-        }
     }
 
     private function choosePat(array $pats)

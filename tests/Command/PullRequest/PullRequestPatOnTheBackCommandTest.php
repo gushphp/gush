@@ -83,13 +83,16 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
         );
     }
 
-    public function testPatOnTheBackWithWrongOptions()
+    public function testPatOnTheBackWithRandomOption()
     {
         $tester = $this->getCommandTester(new PullRequestPatOnTheBackCommand());
 
-        $this->setExpectedException('Gush\Exception\UserException', '`--pat` and `--random` options cannot be used together');
+        $tester->execute(['pr_number' => 10, '--pat' => 'random'], ['interactive' => false]);
 
-        $tester->execute(['pr_number' => 10, '--pat' => 'thanks', '--random' => true], ['interactive' => false]);
+        $this->assertCommandOutputMatches(
+            'Pat on the back pushed to https://github.com/gushphp/gush/pull/10',
+            $tester->getDisplay()
+        );
     }
 
     private function getTemplateHelper($pat = 'good_job')
