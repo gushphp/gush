@@ -1,0 +1,28 @@
+#
+# This file is part of Gush.
+#
+# (c) Luis Cordova <cordoval@gmail.com>
+#
+# This source file is subject to the MIT license that is bundled
+# with this source code in the file LICENSE.
+#
+
+language: php
+
+php:
+    - 7.0
+
+matrix:
+    include:
+        - php: 7.0
+          env: GUSH_USE_FS=true
+    fast_finish: true
+
+sudo: false
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+script:
+    - phpunit --configuration phpunit.xml.dist --verbose
