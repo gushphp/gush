@@ -177,4 +177,117 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($hash, $this->unitGit->mergeBranch($base, $sourceBranch, null, true));
     }
+
+    public function testBranchExists()
+    {
+        $sourceBranch = 'my-feat-10';
+        $list = <<<'EOL'
+  my-feat-10
+EOL;
+
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $processHelper->runCommand(['git', 'branch', '--list', $sourceBranch], true)->willReturn($list);
+        $processHelper->runCommand(['git', 'branch', '--list', 'nonexistent-feat'], true)->willReturn('');
+
+        $this->assertTrue($this->unitGit->branchExists($sourceBranch));
+        $this->assertFalse($this->unitGit->branchExists('nonexistent-feat'));
+    }
+
+    public function testBranchExistsException()
+    {
+        $sourceBranch = 'my-feat-10';
+        $list = <<<'EOL'
+  my-feat-10
+  my-feat-10
+EOL;
+
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $processHelper->runCommand(['git', 'branch', '--list', $sourceBranch], true)->willReturn($list);
+
+        $this->setExpectedException('\RuntimeException', sprintf('Invalid list of local branches found while searching for "%s"', $sourceBranch));
+        $this->assertTrue($this->unitGit->branchExists($sourceBranch));
+    }
+
+    public function testRemoteBranchExists()
+    {
+        $remote = 'phansys';
+        $sourceBranch = 'my-feat-10';
+        $remoteList = <<<'EOL'
+8b64e4ecb74f2d2df582c0ab03a5c1ae890c43fb	HEAD
+299aaa49cc5e1de3382c77d901736dcfd909d681	refs/heads/0.1
+2ef49b196a50f481a4547b02817d9ee08dd8a0d4	refs/heads/0.2
+d152871fd334619019df578a407b83ccb2c93ed7	refs/heads/0.3
+5a7dbfd02ca80d5122827da832c579b116c29547	refs/heads/1.0
+ae9c5ee4509cc5c141e5fd9d70c083936dc9a108	refs/heads/2.0
+b735c63268579326c3187e7a21ea46947b12a163	refs/heads/my-feat
+538b6ba0a3b9943641657c30f9eea702bbe3b6dd	refs/heads/my-feat-1
+bb590a7055e6338943346f9c445f298d89fb9ce9	refs/heads/my-feat-10
+144c0c98ab5d216f4b208cf702838357d3fdb811	refs/heads/my-feat-100
+704a8bc7030da0dd56f17fd8c736e620c26c42ef	refs/heads/my-feat-1001
+ce8bafdd18a5d1753d7a9872d3f402657873f249	refs/heads/new-my-feat-10
+70cc7f22e4d937621dee3bbbb79b2913f6037137	refs/heads/my-feat-2
+611fedc6cc77fd9a0c0b96eadce375cb28937204	refs/heads/my-feat-200
+eafa079bb55453b44fe02b98f7420703c532b849	refs/heads/my-feat-2000
+EOL;
+
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $processHelper->runCommand(['git', 'ls-remote', $remote], true)->willReturn($remoteList);
+
+        $this->assertTrue($this->unitGit->remoteBranchExists($remote, $sourceBranch));
+        $this->assertFalse($this->unitGit->remoteBranchExists($remote, 'nonexistent-feat'));
+    }
+
+    public function testRemoteBranchExistsException()
+    {
+        $remote = 'phansys';
+        $sourceBranch = 'my-feat-10';
+        $remoteList = <<<'EOL'
+8b64e4ecb74f2d2df582c0ab03a5c1ae890c43fb	HEAD
+299aaa49cc5e1de3382c77d901736dcfd909d681	refs/heads/0.1
+2ef49b196a50f481a4547b02817d9ee08dd8a0d4	refs/heads/0.2
+d152871fd334619019df578a407b83ccb2c93ed7	refs/heads/0.3
+5a7dbfd02ca80d5122827da832c579b116c29547	refs/heads/1.0
+ae9c5ee4509cc5c141e5fd9d70c083936dc9a108	refs/heads/2.0
+48e2a3a490abcad8e484d9189f001e9a222a48da	refs/heads/my-feat-10
+b735c63268579326c3187e7a21ea46947b12a163	refs/heads/my-feat
+538b6ba0a3b9943641657c30f9eea702bbe3b6dd	refs/heads/my-feat-1
+bb590a7055e6338943346f9c445f298d89fb9ce9	refs/heads/my-feat-10
+144c0c98ab5d216f4b208cf702838357d3fdb811	refs/heads/my-feat-100
+704a8bc7030da0dd56f17fd8c736e620c26c42ef	refs/heads/my-feat-1001
+ce8bafdd18a5d1753d7a9872d3f402657873f249	refs/heads/new-my-feat-10
+70cc7f22e4d937621dee3bbbb79b2913f6037137	refs/heads/my-feat-2
+611fedc6cc77fd9a0c0b96eadce375cb28937204	refs/heads/my-feat-200
+eafa079bb55453b44fe02b98f7420703c532b849	refs/heads/my-feat-2000
+EOL;
+
+        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $processHelper->runCommand(['git', 'ls-remote', $remote], true)->willReturn($remoteList);
+
+        $this->setExpectedException('\RuntimeException', sprintf('Invalid refs found while searching for remote branch at "refs/heads/%s"', $sourceBranch));
+        $this->assertTrue($this->unitGit->remoteBranchExists($remote, $sourceBranch));
+    }
 }
