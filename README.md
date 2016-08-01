@@ -22,7 +22,3 @@ water and blood.
 
 Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
-```bash
-docker build -t gush .
-docker run -it -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub -v ~/.ssh/id_rsa:/root/.ssh/id_rsa -e GUSH_CONFIG=`cat ~/.gush/.gush.yml | base64` gush -vvvv p:create
-```
