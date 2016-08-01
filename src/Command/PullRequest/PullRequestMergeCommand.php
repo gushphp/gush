@@ -18,6 +18,7 @@ use Gush\Feature\GitFolderFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
+use Gush\Template\Pats\Pats;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,43 +35,15 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature, Git
             ->setName('pull-request:merge')
             ->setDescription('Merges the pull request given')
             ->addArgument('pr_number', InputArgument::REQUIRED, 'Pull Request number')
-            ->addArgument(
-                'pr_type',
-                InputArgument::OPTIONAL,
-                'Pull Request type eg. bug, feature (default is merge)'
-            )
-            ->addOption(
-                'no-comments',
-                null,
-                InputOption::VALUE_NONE,
-                'Avoid adding PR comments to the merge commit message'
-            )
-            ->addOption(
-                'fast-forward',
-                null,
-                InputOption::VALUE_NONE,
-                'Merge pull-request using fast forward (no merge commit will be created)'
-            )
-            ->addOption(
-                'squash',
-                null,
-                InputOption::VALUE_NONE,
-                'Squash the PR before merging'
-            )
-            ->addOption(
-                'force-squash',
-                null,
-                InputOption::VALUE_NONE,
-                'Force squashing the PR, even if there are multiple authors (this will implicitly use --squash)'
-            )
-            ->addOption(
-                'switch',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Switch the base of the pull request before merging'
-            )
+            ->addArgument('pr_type', InputArgument::OPTIONAL, 'Pull Request type eg. bug, feature (default is merge)')
+            ->addOption('no-comments', null, InputOption::VALUE_NONE, 'Avoid adding PR comments to the merge commit message')
+            ->addOption('fast-forward', null, InputOption::VALUE_NONE, 'Merge pull-request using fast forward (no merge commit will be created)')
+            ->addOption('squash', null, InputOption::VALUE_NONE, 'Squash the PR before merging')
+            ->addOption('force-squash', null, InputOption::VALUE_NONE, 'Force squashing the PR, even if there are multiple authors (this will implicitly use --squash)')
+            ->addOption('switch', null, InputOption::VALUE_REQUIRED, 'Switch the base of the pull request before merging')
+            ->addOption('pat', null, InputOption::VALUE_REQUIRED, 'Give the PR\'s author a pat on the back after the merge')
             ->setHelp(
-                <<<EOF
+                <<<'EOF'
 The <info>%command.name%</info> command merges the given pull request:
 
     <info>$ gush %command.name% 12</info>
@@ -105,6 +78,27 @@ option. Note that no merge-message is available and the changes are merged as if
 the target branch directly!
 
     <info>$ gush %command.name% --fast-forward 12</info>
+
+After the pull request is merged, you can give a pat on the back to its author using the <comment>--pat</comment>.
+This option accepts the name of any configured pat's name:
+
+    <info>$ gush %command.name% --pat=thank_you 12</info>
+
+If you omit it, you'll be prompted to choose one (default is <comment>none</comment>), but you can also choose to
+not be prompted using <comment>--pat=none</comment>.
+Additionally you can let gush use a random pat with <comment>--pat=random</comment>.
+
+    <info>$ gush %command.name% --pat=random 12</info>
+
+This option can be configured from your local <comment>.gush.yml</comment> file within this directive:
+<comment>
+pat_on_merge: thank_you # or null, none, random, etc.
+</comment>
+
+When this directive is configured, the configured pat will be used at least you use this <comment>--pat</comment> option,
+which has precedence to the predefined configuration.
+
+<comment>The whole pat configuration will be ignored and no pat will be placed if the pull request is authored by yourself!</comment>
 EOF
             )
         ;
@@ -148,12 +142,7 @@ EOF
         }
 
         $styleHelper->title(sprintf('Merging pull-request #%d - %s', $prNumber, $pr['title']));
-        $styleHelper->text(
-            [
-                sprintf('Source: %s/%s', $sourceRemote, $sourceBranch),
-                $targetLabel,
-            ]
-        );
+        $styleHelper->text([sprintf('Source: %s/%s', $sourceRemote, $sourceBranch), $targetLabel]);
 
         if ($squash) {
             $styleHelper->note('This pull-request will be squashed before merging.');
@@ -208,16 +197,21 @@ EOF
                 $this->addClosedPullRequestNote($pr, $mergeCommit, $squash, $input->getOption('switch'));
             }
 
+            if ($pr['user'] !== $this->getParameter($input, 'authentication')['username']) {
+                $patComment = $this->givePatToPullRequestAuthor($pr, $input->getOption('pat'));
+                if ($patComment) {
+                    $styleHelper->note(sprintf('Pat given to @%s at %s.', $pr['user'], $patComment));
+                }
+            }
+
             $styleHelper->success([$mergeNote, $pr['url']]);
 
             return self::COMMAND_SUCCESS;
         } catch (CannotSquashMultipleAuthors $e) {
-            $styleHelper->error(
-                [
-                    'Unable to squash commits when there are multiple authors.',
-                    'Use --force-squash to continue or ask the author to squash commits manually.',
-                ]
-            );
+            $styleHelper->error([
+                'Unable to squash commits when there are multiple authors.',
+                'Use --force-squash to continue or ask the author to squash commits manually.',
+            ]);
 
             $gitHelper->restoreStashedBranch();
 
@@ -248,14 +242,11 @@ EOF
         $commentText = '';
 
         foreach ($comments as $comment) {
-            $commentText .= $this->render(
-                'comment',
-                [
-                    'login' => $comment['user'],
-                    'created_at' => $comment['created_at']->format('Y-m-d H:i'),
-                    'body' => $comment['body'],
-                ]
-            );
+            $commentText .= $this->render('comment', [
+                'login' => $comment['user'],
+                'created_at' => $comment['created_at']->format('Y-m-d H:i'),
+                'body' => $comment['body'],
+            ]);
         }
 
         /** @var GitHelper $gitHelper */
@@ -387,5 +378,41 @@ EOF
         $template .= '_and_closed';
 
         $this->getAdapter()->createComment($pr['number'], $this->render($template, $params));
+    }
+
+    private function givePatToPullRequestAuthor(array $pr, $pat)
+    {
+        $config = $this->getConfig();
+        $configuredPat = $config->get('pat_on_merge');
+        if (in_array('none', [$pat, $configuredPat], true)) {
+            return;
+        }
+
+        if ($pats = $this->getConfig()->get('pats')) {
+            Pats::addPats($pats);
+        }
+
+        if ($pat) {
+            if ('random' === $pat) {
+                $pat = Pats::getRandomPatName();
+            }
+        } elseif ($configuredPat) {
+            $pat = $configuredPat;
+            if ('random' === $pat) {
+                $pat = Pats::getRandomPatName();
+            }
+        } else {
+            $pats = ['none' => '(!) This option wil omit the pat to the PR\'s author'] + Pats::getPats();
+            $pat = $this->getHelper('gush_style')->choice('Please, choose a pat ', $pats, reset($pats));
+        }
+
+        if ('none' !== $pat) {
+            $patMessage = $this
+                ->getHelper('template')
+                ->bindAndRender(['pat' => $pat, 'author' => $pr['user']], 'pats', 'general')
+            ;
+
+            return $this->getAdapter()->createComment($pr['number'], $patMessage);
+        }
     }
 }

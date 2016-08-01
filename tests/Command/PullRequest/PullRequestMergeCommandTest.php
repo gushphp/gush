@@ -20,6 +20,50 @@ class PullRequestMergeCommandTest extends CommandTestCase
 {
     const MERGE_HASH = '8ae59958a2632018275b8db9590e9a79331030cb';
 
+    const COMMAND_DISPLAY = <<<OET
+This PR was merged into the base_ref branch.
+OET;
+
+    const COMMAND_DISPLAY_TARGET = <<<OET
+Target: gushphp/base_ref
+OET;
+
+    const FAILURE_TYPE_DISPLAY = <<<OET
+Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug.
+OET;
+
+    const COMMAND_DISPLAY_SQUASHED = <<<OET
+This PR was squashed before being merged into the base_ref branch (closes #10).
+OET;
+
+    const COMMAND_SWITCH_BASE = <<<OET
+This PR was submitted for the base_ref branch but it was merged into the %s branch instead (closes #10).
+OET;
+
+    const COMMAND_SWITCH_BASE_TARGET = <<<OET
+New-target: %s/%s (was "%s")
+OET;
+
+    const MERGE_NOTE_SWITCHED_BASE_AND_CLOSED = <<<OET
+This PR was submitted for the `%s` branch but it was merged into the `%s` branch instead at @%s.
+OET;
+
+    const MERGE_NOTE_SQUASHED_AND_CLOSED = <<<OET
+This PR was squashed before being merged into the `%s` branch at @%s.
+OET;
+
+    const MERGE_NOTE_SWITCHED_BASE_AND_SQUASHED_AND_CLOSED = <<<OET
+This PR was submitted for the `%s` branch but it was squashed and merged into the `%s` branch instead at @%s.
+OET;
+
+    const COMMAND_DISPLAY_PAT_GIVEN = <<<OET
+Pat given to @%s at https://github.com/gushphp/gush/issues/%u#issuecomment-2.
+OET;
+
+    const MERGE_NOTE_PAT_THANK_YOU = <<<OET
+Thank you @%s.
+OET;
+
     private $mergeMessage = <<<OET
 %s #%d Write a behat test to launch strategy (cordoval)
 
@@ -68,42 +112,6 @@ Commits
 
 32fe234332fe234332fe234332fe234332fe2343 added merge pull request feature
 ab34567812345678123456781234567812345678 added final touches
-OET;
-
-    const COMMAND_DISPLAY = <<<OET
-This PR was merged into the base_ref branch.
-OET;
-
-    const COMMAND_DISPLAY_TARGET = <<<OET
-Target: gushphp/base_ref
-OET;
-
-    const FAILURE_TYPE_DISPLAY = <<<OET
-Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug.
-OET;
-
-    const COMMAND_DISPLAY_SQUASHED = <<<OET
-This PR was squashed before being merged into the base_ref branch (closes #10).
-OET;
-
-    const COMMAND_SWITCH_BASE = <<<OET
-This PR was submitted for the base_ref branch but it was merged into the %s branch instead (closes #10).
-OET;
-
-    const COMMAND_SWITCH_BASE_TARGET = <<<OET
-New-target: %s/%s (was "%s")
-OET;
-
-    const MERGE_NOTE_SWITCHED_BASE_AND_CLOSED = <<<OET
-This PR was submitted for the `%s` branch but it was merged into the `%s` branch instead at @%s.
-OET;
-
-     const MERGE_NOTE_SQUASHED_AND_CLOSED = <<<OET
-This PR was squashed before being merged into the `%s` branch at @%s.
-OET;
-
-     const MERGE_NOTE_SWITCHED_BASE_AND_SQUASHED_AND_CLOSED = <<<OET
-This PR was submitted for the `%s` branch but it was squashed and merged into the `%s` branch instead at @%s.
 OET;
 
     private $commits = [
@@ -384,6 +392,51 @@ OET;
             ['pr_number' => 10, 'pr_type' => 'feat'],
             ['interactive' => false]
         );
+    }
+
+    public function testMergePullRequestWithOptionPat()
+    {
+        $prAuthor = 'weaverryan';
+        $command = new PullRequestMergeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'merge', 10))->reveal());
+            }
+        );
+
+        $tester->execute(['pr_number' => 10, '--pat' => 'thank_you'], ['interactive' => false]);
+        $this->assertCommandOutputMatches([
+            self::COMMAND_DISPLAY, self::COMMAND_DISPLAY_TARGET, sprintf(self::COMMAND_DISPLAY_PAT_GIVEN, $prAuthor, 10),
+        ], $tester->getDisplay());
+        $this->assertSame(sprintf(self::MERGE_NOTE_PAT_THANK_YOU, $prAuthor), $command->getAdapter()->getComments(2)['body']);
+
+        $tester->execute(['pr_number' => 10, '--pat' => 'random'], ['interactive' => false]);
+        $this->assertCommandOutputMatches([
+            self::COMMAND_DISPLAY, self::COMMAND_DISPLAY_TARGET, sprintf(self::COMMAND_DISPLAY_PAT_GIVEN, $prAuthor, 10),
+        ], $tester->getDisplay());
+        $this->assertContains('@'.$prAuthor, $command->getAdapter()->getComments(2)['body']);
+    }
+
+    public function testMergePullRequestWithOptionPatNone()
+    {
+        $prAuthor = 'weaverryan';
+        $command = new PullRequestMergeCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getLocalGitHelper(sprintf($this->mergeMessage, 'merge', 10))->reveal());
+            }
+        );
+
+        $tester->execute(['pr_number' => 10, '--pat' => 'none'], ['interactive' => false]);
+        $this->assertNotContains('Pat given to @', $tester->getDisplay());
+        $prComments = $command->getAdapter()->getComments(2);
+        $this->assertTrue(!isset($prComments['body']) || false === strpos($prComments['body'], '@'.$prAuthor));
     }
 
     protected function getGitConfigHelper($notes = true)
