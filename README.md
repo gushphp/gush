@@ -22,3 +22,10 @@ water and blood.
 
 Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
+Gush is a free shipped docker container, just adapt the running script:
+```bash
+cp gush.dist /usr/bin/gush
+gush -vvv
+```
+
+Enjoy!

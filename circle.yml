@@ -1,0 +1,35 @@
+#
+# This file is part of Gush.
+#
+# (c) Luis Cordova <cordoval@gmail.com>
+#
+# This source file is subject to the MIT license that is bundled
+# with this source code in the file LICENSE.
+#
+
+machine:
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+    - sudo curl -L -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.6.0/docker-compose-`uname -s`-`uname -m`
+    - sudo chmod +x /usr/local/bin/docker-compose
+  services:
+    - docker
+dependencies:
+  cache_directories:
+    - "~/docker"
+  override:
+    - docker build -t gush .
+test:
+  override:
+    #env: GUSH_USE_FS=true
+    - phpunit --configuration phpunit.xml.dist --verbose
+    - docker build -t gush .
+  post:
+    - docker run -it -e GUSH_CONFIG=`cat ~/.gush/.gush.yml | base64` gush -vvvv issues:list
+deployment:
+  master:
+    branch: master
+    commands:
+      #- docker login -u coder20078 -p $DOCKER_HUB_PASSWORD -e coder20078@gmail.com
+      - docker tag -f gush coder20078/gush
+      - docker push coder20078/gush
