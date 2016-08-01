@@ -93,8 +93,8 @@ class ConfigFactory
             $localConfig = self::loadFileOrEmpty($localHome.'/.gush.yml');
         }
 
-        if (empty($localConfig)) {
-            $localConfig = Yaml::parse((base64_decode(getenv('GUSH_CONFIG'))));
+        if (empty($systemConfig)) {
+            $systemConfig = Yaml::parse((base64_decode(getenv('GUSH_CONFIG'))));
         }
 
         return new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
