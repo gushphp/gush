@@ -94,8 +94,8 @@ class ConfigFactory
         }
 
         if (empty($localConfig)) {
-            $localConfig = json_decode(base64_decode(getenv('GUSH_CONFIG')), true);
-        }ladybug_dump()
+            $localConfig = Yaml::parse((base64_decode(getenv('GUSH_CONFIG'))));
+        }
 
         return new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
     }
