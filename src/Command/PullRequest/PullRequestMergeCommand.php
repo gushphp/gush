@@ -380,7 +380,7 @@ EOF
     {
         $config = $this->getConfig();
         $configuredPat = $config->get('pat_on_merge');
-        if ('none' === $pat || ($configuredPat && 'none' === $configuredPat)) {
+        if (in_array('none', [$pat, $configuredPat], true)) {
             return;
         }
 
