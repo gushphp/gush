@@ -29,7 +29,7 @@ test:
     - phpunit --configuration phpunit.xml.dist --verbose
     - docker build -t gush .
   post:
-    - docker run -it -e GUSH_CONFIG=`cat ~/.gush/.gush.yml | base64` gush -vvvv issues:list
+    - docker run -it -e GUSH_CONFIG=`cat ./.gush.yml | base64` gush -vvvv --help
 deployment:
   master:
     branch: master
