@@ -70,7 +70,7 @@ EOF
         $pr = $adapter->getPullRequest($prNumber);
 
         if ($pr['user'] === $this->getParameter($input, 'authentication')['username']) {
-            throw new UserException('You cannot pat yourself');
+            throw new UserException('You cannot pat yourself.');
         }
 
         $config = $this->getConfig();
