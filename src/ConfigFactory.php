@@ -89,32 +89,15 @@ class ConfigFactory
 
         $systemConfig = self::loadFileOrEmpty($home.'/.gush.yml');
 
-        // Remove old unsupported configuration format
-        // this forces a clean config structure
-        if (isset($systemConfig['parameters']) && 1 === count($systemConfig)) {
-            $systemConfig = [];
-        }
-
         if (null !== $localHome) {
             $localConfig = self::loadFileOrEmpty($localHome.'/.gush.yml');
         }
 
-        $config = new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
+        if (empty($localConfig)) {
+            $localConfig = json_decode(base64_decode(getenv('GUSH_CONFIG')), true);
+        }ladybug_dump()
 
-        $fs = self::getFilesystem();
-
-        // Protect directory against web access. Since HOME could be
-        // the www-data's user home and be web-accessible it is a
-        // potential security risk
-        foreach ([$home, $cacheDir] as $dir) {
-            if (!file_exists($dir.'/.htaccess')) {
-                $fs->mkdir($dir);
-
-                file_put_contents($dir.'/.htaccess', 'Deny from all');
-            }
-        }
-
-        return $config;
+        return new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
     }
 
     /**

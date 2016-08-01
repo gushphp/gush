@@ -25,4 +25,6 @@ Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic
 ```bash
 docker build -t gush .
 docker run -it --rm gush --help
+
+EXPERIMENT=`cat ~/.gush/.gush.yml | base64`
 ```
