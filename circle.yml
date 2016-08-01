@@ -21,7 +21,9 @@ dependencies:
     - docker build -t gush .
 test:
   override:
-    #env: GUSH_USE_FS=true
+    - curl -s https://getcomposer.org/installer | php
+    - chmod +x composer.phar && mv composer.phar /usr/bin/composer
+    - composer install
     - phpunit --configuration phpunit.xml.dist --verbose
     - docker build -t gush .
   post:
