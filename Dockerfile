@@ -12,4 +12,4 @@ RUN curl -s https://getcomposer.org/installer | php \
     && chmod +x composer.phar && mv composer.phar /usr/bin/composer \
     && composer install
 
-ENTRYPOINT ["./start.sh"]
+ENTRYPOINT ["/usr/src/gush/gush"]
