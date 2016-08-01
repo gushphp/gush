@@ -197,10 +197,11 @@ EOF
                 $this->addClosedPullRequestNote($pr, $mergeCommit, $squash, $input->getOption('switch'));
             }
 
-            if ($pr['user'] !== $this->getParameter($input, 'authentication')['username'] &&
-                $patComment = $this->givePatToPullRequestAuthor($pr, $input->getOption('pat'))
-            ) {
-                $styleHelper->note(sprintf('Pat given to @%s at %s.', $pr['user'], $patComment));
+            if ($pr['user'] !== $this->getParameter($input, 'authentication')['username']) {
+                $patComment = $this->givePatToPullRequestAuthor($pr, $input->getOption('pat'));
+                if ($patComment) {
+                    $styleHelper->note(sprintf('Pat given to @%s at %s.', $pr['user'], $patComment));
+                }
             }
 
             $styleHelper->success([$mergeNote, $pr['url']]);
