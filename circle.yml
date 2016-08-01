@@ -8,6 +8,8 @@
 #
 
 machine:
+  php:
+    version: 7.0.4
   pre:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
     - sudo curl -L -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.6.0/docker-compose-`uname -s`-`uname -m`
@@ -21,9 +23,7 @@ dependencies:
     - docker build -t gush .
 test:
   override:
-    - curl -s https://getcomposer.org/installer | php
-    - chmod +x composer.phar
-    - ./composer.phar install
+    - composer install
     - phpunit --configuration phpunit.xml.dist --verbose
     - docker build -t gush .
   post:
