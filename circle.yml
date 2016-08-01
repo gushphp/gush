@@ -22,8 +22,8 @@ dependencies:
 test:
   override:
     - curl -s https://getcomposer.org/installer | php
-    - chmod +x composer.phar && mv composer.phar /usr/bin/composer
-    - composer install
+    - chmod +x composer.phar
+    - ./composer.phar install
     - phpunit --configuration phpunit.xml.dist --verbose
     - docker build -t gush .
   post:
