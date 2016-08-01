@@ -16,6 +16,8 @@ machine:
     - sudo chmod +x /usr/local/bin/docker-compose
   services:
     - docker
+  environment:
+    GUSH_USE_FS: true
 dependencies:
   cache_directories:
     - "~/docker"
