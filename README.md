@@ -1,7 +1,6 @@
 <img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="90px"/>
 
 [![Gitter chat](https://badges.gitter.im/gushphp/gush.png)](https://gitter.im/gushphp/gush)
-[![Build Status](https://travis-ci.org/gushphp/gush.png?branch=master)](https://travis-ci.org/gushphp/gush)
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush)
 [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush)
 
