@@ -35,6 +35,6 @@ deployment:
   master:
     branch: master
     commands:
-      #- docker login -u coder20078 -p $DOCKER_HUB_PASSWORD -e coder20078@gmail.com
+      - docker login -u coder20078 -p $DOCKER_HUB_PASSWORD -e coder20078@gmail.com
       - docker tag -f gush coder20078/gush
       - docker push coder20078/gush
