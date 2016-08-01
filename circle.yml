@@ -26,7 +26,8 @@ dependencies:
 test:
   override:
     - composer install
-    - phpunit --configuration phpunit.xml.dist --verbose
+    - wget https://phar.phpunit.de/phpunit.phar && chmod +x phpunit.phar
+    - php phpunit.phar --configuration phpunit.xml.dist --verbose
     - docker build -t gush .
   post:
     - docker run -it -e GUSH_CONFIG=`cat ./.gush.yml | base64` gush -vvvv --help
