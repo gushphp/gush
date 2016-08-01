@@ -155,15 +155,18 @@ EOF
             $mergeNote = $this->getMergeNote($pr, $squash, $input->getOption('switch'));
             $commits = $adapter->getPullRequestCommits($prNumber);
             $messageCallback = function ($base, $tempBranch) use ($prType, $pr, $mergeNote, $gitHelper, $commits) {
-                return $this->render('merge', [
-                    'type' => $prType,
-                    'authors' => $this->getPrAuthors($commits, $pr['user']),
-                    'prNumber' => $pr['number'],
-                    'prTitle' => trim($pr['title']),
-                    'mergeNote' => $mergeNote,
-                    'prBody' => trim($pr['body']),
-                    'commits' => $this->getCommitsString($gitHelper->getLogBetweenCommits($base, $tempBranch)),
-                ]);
+                return $this->render(
+                    'merge',
+                    [
+                        'type' => $prType,
+                        'authors' => $this->getPrAuthors($commits, $pr['user']),
+                        'prNumber' => $pr['number'],
+                        'prTitle' => trim($pr['title']),
+                        'mergeNote' => $mergeNote,
+                        'prBody' => trim($pr['body']),
+                        'commits' => $this->getCommitsString($gitHelper->getLogBetweenCommits($base, $tempBranch)),
+                    ]
+                );
             };
 
             $mergeOperation = $gitHelper->createRemoteMergeOperation();
