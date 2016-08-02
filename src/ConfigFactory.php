@@ -142,7 +142,7 @@ class ConfigFactory
             $filename = $config->get('local_config');
 
             if (null === $filename) {
-                throw new \RuntimeException('Local configuration is not loaded and therefor cannot be dumped.');
+                throw new \RuntimeException('Local configuration is not loaded and therefore it cannot be dumped.');
             }
         } elseif ($type === Config::CONFIG_SYSTEM) {
             $filename = $config->get('home_config');
