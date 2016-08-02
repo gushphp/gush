@@ -9,7 +9,8 @@ RUN set -xe \
     openssh-client
 
 RUN curl -s https://getcomposer.org/installer | php \
-    && chmod +x composer.phar && mv composer.phar /usr/bin/composer \
-    && composer install
+    && chmod +x composer.phar \
+    && php composer.phar install --prefer-dist --optimize-autoloader --no-interaction --no-dev \
+    && rm composer.phar
 
 ENTRYPOINT ["/usr/src/gush/gush"]
