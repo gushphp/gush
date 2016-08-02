@@ -28,7 +28,7 @@ test:
   override:
     - composer install --prefer-dist --optimize-autoloader --no-interaction --no-scripts
     - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
-    - vendor/bin/phpunit --configuration phpunit.xml.dist --verbose --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
+    - vendor/bin/phpunit --verbose --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
     - docker run -it -e GUSH_CONFIG=`cat ./.gush.yml | base64` gush -vvvv --help
   post:
     - echo 'succeeded!'
