@@ -1,6 +1,9 @@
 FROM php:7.0.8-alpine
 
-COPY . /usr/src/gush
+COPY ./src /usr/src/gush/src
+COPY ./gush /usr/src/gush/gush
+COPY ./composer.json /usr/src/gush/composer.json
+
 WORKDIR /usr/src/gush
 
 RUN set -xe \
@@ -11,6 +14,7 @@ RUN set -xe \
 RUN curl -s https://getcomposer.org/installer | php \
     && chmod +x composer.phar \
     && php composer.phar install --prefer-dist --optimize-autoloader --no-interaction --no-dev \
-    && rm composer.phar
+    && rm composer.phar \
+    && rm composer.json
 
 ENTRYPOINT ["/usr/src/gush/gush"]
