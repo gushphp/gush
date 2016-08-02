@@ -29,5 +29,3 @@ pats:
     well_done: 'Well done @{{ author }}.'
     beers: ':beers: @{{ author }}.'
 pat_on_merge: thank_you
-adapters:
-    github: { base_url: 'https://api.github.com/', repo_domain_url: 'https://github.com', authentication: { username: coder20078, token: something }}
