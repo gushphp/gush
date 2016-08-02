@@ -17,18 +17,6 @@ use Gush\ConfigFactory;
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-$process = new Symfony\Component\Process\Process('git --version', getcwd());
-$process->run();
-
-if (!$process->isSuccessful()) {
-    throw new \RuntimeException('Git is required.');
-}
-
-$version = trim(explode(' ', $process->getOutput())[2]);
-if (version_compare($version, '1.9.1', 'lt')) {
-    throw new \RuntimeException('It is advisable to upgrade your version of GIT to 1.9.1 or latest.');
-}
-
 $adapterFactory = new Gush\Factory\AdapterFactory();
 
 $adapters = [
