@@ -11,6 +11,7 @@ machine:
   php:
     version: 7.0.4
   pre:
+    - mkdir -p $HOME/docker
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
     - sudo curl -L -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.6.0/docker-compose-`uname -s`-`uname -m`
     - sudo chmod +x /usr/local/bin/docker-compose
@@ -20,15 +21,15 @@ machine:
     GUSH_USE_FS: true
 dependencies:
   cache_directories:
-    - "~/docker"
+    - "$HOME/docker"
   override:
     - docker build -t gush .
 test:
   override:
-    - composer install
-    - wget https://phar.phpunit.de/phpunit.phar && chmod +x phpunit.phar
-    - php phpunit.phar --verbose
-    #- docker run -it -e GUSH_CONFIG=`cat ./.gush.yml | base64` gush -vvvv --help
+    - composer install --prefer-dist --optimize-autoloader --no-interaction
+    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+    - vendor/bin/phpunit --verbose --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
+    - docker run --interactive --tty --env GUSH_CONFIG="$(cat $HOME/gush/.gush.yml | base64)" gush -vvvv --help
   post:
     - echo 'succeeded!'
 deployment:
