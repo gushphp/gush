@@ -42,4 +42,10 @@ foreach ($adapters as $adapterName => $adapter) {
     $adapterFactory->register($adapterName, $adapter[1], $adapter[0]);
 }
 
+if ('' !== (string) getenv('GUSH_CONFIG')) {
+    $config = ConfigFactory::createConfigFromEnv((string) getenv('GUSH_CONFIG'), (string) getenv('GUSH_LOCAL_CONFIG'));
+} else {
+    $config = ConfigFactory::createConfig(getcwd());
+}
+
 (new Gush\Application($adapterFactory, ConfigFactory::createConfig(getcwd())))->run();

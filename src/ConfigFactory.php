@@ -68,13 +68,11 @@ class ConfigFactory
     }
 
     /**
-     * Create a new Config object with the system and (optional) local configuration
-     * loaded.
+     * Create a new Config object using the local filesystem.
      *
      * Note that any missing config file is ignored.
      *
      * When the home or cache folder doesn't exist it's created.
-     * This also ensures the directories are protected from web access.
      *
      * @param string|null $localHome Local home folder to load extra configuration from
      *                               when null this is ignored
@@ -93,11 +91,38 @@ class ConfigFactory
             $localConfig = self::loadFileOrEmpty($localHome.'/.gush.yml');
         }
 
-        if (empty($systemConfig)) {
-            $systemConfig = Yaml::parse((base64_decode(getenv('GUSH_CONFIG'))));
+        return new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
+    }
+
+    /**
+     * Create a new Config object using the ENV configuration.
+     *
+     * Note that any missing config file is ignored.
+     *
+     * When the home or cache folder doesn't exist it's created.
+     * This also ensures the directories are protected from web access.
+     *
+     * @param string $systemConfigEnv
+     * @param string $localConfigEnv
+     *
+     * @return Config
+     */
+    public static function createConfigFromEnv($systemConfigEnv = null, $localConfigEnv = null)
+    {
+        $cacheDir = '/tmp';
+
+        $systemConfig = [];
+        $localConfig = [];
+
+        if (!empty($localConfigEnv)) {
+            $systemConfig = Yaml::parse((base64_decode($systemConfigEnv)));
         }
 
-        return new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
+        if (!empty($localConfigEnv)) {
+            $localConfig = Yaml::parse((base64_decode($localConfigEnv)));
+        }
+
+        return new Config(null, $cacheDir, $systemConfig, null, $localConfig);
     }
 
     /**
