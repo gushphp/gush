@@ -3,5 +3,6 @@
 docker run -it \
     -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub \
     -v ~/.ssh/id_rsa:/root/.ssh/id_rsa \
-    -e GUSH_CONFIG="$(cat ~/.gush/.gush.yml | base64)" \
+    -e GUSH_CONFIG=`cat ~/.gush/.gush.yml | base64` \
+    -e GUSH_LOCAL_CONFIG=`cat $(pwd)/.gush.yml | base64` \
     coder20078/gush "$@"
