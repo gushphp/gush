@@ -1,5 +1,2 @@
-/bin/*
-!/bin/gush
 /vendor
-phpunit.xml
-*.lock
+/*.lock
