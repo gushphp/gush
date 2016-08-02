@@ -23,7 +23,7 @@ Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic
 
 Gush is a free shipped docker container, just adapt the running script:
 ```bash
-cp gush.dist /usr/bin/gush
+wget https://raw.githubusercontent.com/gushphp/gush/master/gush.dist && mv ./gush.dist /usr/local/bin/gush
 gush -vvv
 ```
 
