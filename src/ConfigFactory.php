@@ -110,6 +110,7 @@ class ConfigFactory
     public static function createConfigFromEnv($systemConfigEnv = null, $localConfigEnv = null)
     {
         $cacheDir = '/tmp';
+        $localHome = null;
 
         $systemConfig = [];
         $localConfig = [];
@@ -120,9 +121,10 @@ class ConfigFactory
 
         if (!empty($localConfigEnv)) {
             $localConfig = Yaml::parse((base64_decode($localConfigEnv)));
+            $localHome = 'env:';
         }
 
-        return new Config(null, $cacheDir, $systemConfig, null, $localConfig);
+        return new Config('env:home', $cacheDir, $systemConfig, $localHome, $localConfig);
     }
 
     /**
