@@ -203,7 +203,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10, 'pr_type' => 'feat'],
+            ['pr_number' => 10, 'pr_type' => 'feat', '--pat' => 'none'],
             ['interactive' => false]
         );
 
@@ -226,7 +226,7 @@ OET;
         $this->setExpectedCommandInput($command, "feature\n");
 
         $tester->execute(
-            ['pr_number' => 10],
+            ['pr_number' => 10, '--pat' => 'none'],
             ['interactive' => true]
         );
 
@@ -362,7 +362,7 @@ OET;
         );
 
         $this->setExpectedCommandInput($command, "feature\n");
-        $tester->execute(['pr_number' => 10]);
+        $tester->execute(['pr_number' => 10, '--pat' => 'none']);
 
         $display = $tester->getDisplay();
         $this->assertCommandOutputMatches(self::COMMAND_DISPLAY, $display);
