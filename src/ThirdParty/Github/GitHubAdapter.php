@@ -13,13 +13,12 @@ namespace Gush\ThirdParty\Github;
 
 use Github\Client;
 use Github\Exception\ValidationFailedException;
-use Github\HttpClient\CachedHttpClient;
+use Github\HttpClient\HttpClient;
 use Github\ResultPager;
 use Gush\Adapter\BaseAdapter;
 use Gush\Adapter\IssueTracker;
 use Gush\Adapter\SupportsDynamicLabels;
 use Gush\Config;
-use Gush\Exception\AdapterException;
 use Gush\Exception\UserException;
 use Gush\Util\ArrayUtil;
 use Guzzle\Plugin\Log\LogPlugin;
@@ -93,14 +92,8 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
      */
     protected function buildGitHubClient()
     {
-        $cachedClient = new CachedHttpClient(
-            [
-                'cache_dir' => $this->globalConfig->get('cache-dir'),
-                'base_url' => $this->config['base_url'],
-            ]
-        );
-
-        $client = new Client($cachedClient);
+        $httpClient = new HttpClient(['base_url' => $this->config['base_url']]);
+        $client = new Client($httpClient);
 
         if (false !== getenv('GITHUB_DEBUG')) {
             $logPlugin = LogPlugin::getDebugPlugin();

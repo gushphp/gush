@@ -360,7 +360,6 @@ class GitRepoSubscriberTest extends BaseTestCase
     ) {
         $config = new Config(
             '/home/user',
-            '/temp/gush',
             [
                 'adapters' => [
                     'github' => [

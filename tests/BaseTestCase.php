@@ -78,7 +78,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected function getApplication(Config $config = null, $helperSetManipulator = null)
     {
         if (null === $config) {
-            $config = new Config('/home/user', '/temp/gush');
+            $config = new Config('/home/user');
         }
 
         $adapterFactory = new AdapterFactory();

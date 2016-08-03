@@ -159,7 +159,6 @@ EOF
     {
         $config = new Config(
             '/home/user',
-            '/temp/gush',
             [],
             '/data/repo-dir',
             ['table-pr' => $requirements]

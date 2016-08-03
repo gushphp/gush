@@ -72,7 +72,7 @@ class ConfigFactory
      *
      * Note that any missing config file is ignored.
      *
-     * When the home or cache folder doesn't exist it's created.
+     * When the home folder doesn't exist it's created.
      *
      * @param string|null $localHome Local home folder to load extra configuration from
      *                               when null this is ignored
@@ -82,7 +82,6 @@ class ConfigFactory
     public static function createConfig($localHome = null)
     {
         $home = static::getHomedir();
-        $cacheDir = self::getCacheDir($home);
         $localConfig = [];
 
         $systemConfig = self::loadFileOrEmpty($home.'/.gush.yml');
@@ -91,7 +90,7 @@ class ConfigFactory
             $localConfig = self::loadFileOrEmpty($localHome.'/.gush.yml');
         }
 
-        return new Config($home, $cacheDir, $systemConfig, $localHome, $localConfig);
+        return new Config($home, $systemConfig, $localHome, $localConfig);
     }
 
     /**
@@ -109,7 +108,6 @@ class ConfigFactory
      */
     public static function createConfigFromEnv($systemConfigEnv = null, $localConfigEnv = null)
     {
-        $cacheDir = '/tmp';
         $localHome = null;
 
         $systemConfig = [];
@@ -124,7 +122,7 @@ class ConfigFactory
             $localHome = 'env:';
         }
 
-        return new Config('env:home', $cacheDir, $systemConfig, $localHome, $localConfig);
+        return new Config('env:home', $systemConfig, $localHome, $localConfig);
     }
 
     /**
@@ -183,24 +181,6 @@ class ConfigFactory
         }
 
         return $fs;
-    }
-
-    /**
-     * @param string $homedir
-     *
-     * @return string
-     */
-    private static function getCacheDir($homedir)
-    {
-        if (!$cacheDir = (string) getenv('GUSH_CACHE_DIR')) {
-            $cacheDir = $homedir.'/cache';
-        }
-
-        if (!file_exists($cacheDir)) {
-            self::getFilesystem()->mkdir($cacheDir, 0744);
-        }
-
-        return $cacheDir;
     }
 
     /**
