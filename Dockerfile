@@ -13,7 +13,7 @@ RUN set -xe \
 
 RUN curl -s https://getcomposer.org/installer | php \
     && chmod +x composer.phar \
-    && php composer.phar install --prefer-dist --optimize-autoloader --no-interaction --no-dev \
+    && COMPOSER_ALLOW_SUPERUSER=1 php composer.phar install --prefer-dist --optimize-autoloader --no-interaction --no-dev \
     && rm composer.phar \
     && rm composer.json \
     && rm composer.lock
