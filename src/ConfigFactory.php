@@ -81,7 +81,9 @@ class ConfigFactory
      */
     public static function createConfig($home = null, $localHome = null)
     {
-        $home = static::getHomedir();
+        if (null === $home) {
+            $home = static::getHomedir();
+        }
 
         $localConfig = [];
 
