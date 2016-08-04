@@ -109,7 +109,6 @@ class CommandTestCase extends BaseTestCase
         if ($this->requiresRealConfigDir()) {
             $config = new Config(
                 $this->getNewTmpFolder('home'),
-                $this->getNewTmpFolder('cache'),
                 $systemConfig,
                 $this->getNewTmpFolder('repo-dir'),
                 $localConfig
@@ -117,7 +116,7 @@ class CommandTestCase extends BaseTestCase
         } else {
             try {
                 // Note. The paths must be invalid to always trigger the exception
-                $config = new Config(':?/temp/user', ':?/temp/gush', $systemConfig, ':?/temp/repo-dir', $localConfig);
+                $config = new Config(':?/temp/user', $systemConfig, ':?/temp/repo-dir', $localConfig);
             } catch (IOException $e) {
                 echo sprintf(
                     "Test-class \"%s\" seems to use the filesystem! \nOverwrite requiresRealConfigDir() with 'return ".

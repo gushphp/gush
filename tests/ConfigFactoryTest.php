@@ -45,7 +45,6 @@ class ConfigFactoryTest extends BaseTestCase
                 'adapters' => [],
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
-                'cache-dir' => $this->homedir.'/cache',
             ],
             $config->toArray()
         );
@@ -67,7 +66,6 @@ class ConfigFactoryTest extends BaseTestCase
                 'adapters' => [],
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
-                'cache-dir' => $cacheDir,
             ],
             $config->toArray()
         );
@@ -103,7 +101,6 @@ EOT;
                 ],
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
-                'cache-dir' => $this->homedir.'/cache',
             ],
             $config->toArray(Config::CONFIG_ALL)
         );
@@ -171,7 +168,6 @@ EOT;
                 'repo_adapter' => 'bitbucket',
                 'home' => $this->homedir,
                 'home_config' => $this->homedir.'/.gush.yml',
-                'cache-dir' => $this->homedir.'/cache',
                 'local' => $localDir,
                 'local_config' => $localDir.'/.gush.yml',
             ],

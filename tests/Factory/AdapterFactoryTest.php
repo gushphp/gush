@@ -33,7 +33,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->adapterFactory = new AdapterFactory();
-        $this->config = new Config('/home/user', '/tmp');
+        $this->config = new Config('/home/user');
     }
 
     public function testRegisterAdapterFactoryObject()

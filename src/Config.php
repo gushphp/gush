@@ -44,7 +44,6 @@ final class Config
     private static $protectedConfig = [
         'home',
         'home_config',
-        'cache-dir',
         'local',
         'local_config',
     ];
@@ -74,13 +73,12 @@ final class Config
         self::CONFIG_LOCAL => [],
     ];
 
-    public function __construct($homedir, $cacheDir, array $config = [], $localHome = null, array $localConfig = [])
+    public function __construct($homedir, array $config = [], $localHome = null, array $localConfig = [])
     {
         $this->config[self::CONFIG_SYSTEM] = array_merge(static::$defaultConfig, $config);
         $this->config[self::CONFIG_ALL] = $this->config[self::CONFIG_SYSTEM];
         $this->config[self::CONFIG_ALL]['home'] = $homedir;
         $this->config[self::CONFIG_ALL]['home_config'] = $homedir.'/.gush.yml';
-        $this->config[self::CONFIG_ALL]['cache-dir'] = $cacheDir;
 
         if (null !== $localHome) {
             $this->config[self::CONFIG_ALL]['local'] = $localHome;

@@ -344,7 +344,6 @@ LOGO;
             new Cmd\Branch\BranchRemoteAddCommand(),
             new Cmd\Core\CoreConfigureCommand(),
             new Cmd\Core\CoreAliasCommand(),
-            new Cmd\Core\CoreClearCommand(),
             new Cmd\Core\InitCommand(),
             new Cmd\Core\AutocompleteCommand(),
             new Cmd\Repository\RepositoryCreateCommand(),

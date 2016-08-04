@@ -33,7 +33,6 @@ class ConfigTest extends BaseTestCase
                 'adapters' => [],
                 'home' => $this->homedir.'/gush',
                 'home_config' => $this->homedir.'/gush/.gush.yml',
-                'cache-dir' => $this->homedir.'/gush/cache',
             ],
             $config->toArray(Config::CONFIG_ALL)
         );
@@ -65,7 +64,6 @@ class ConfigTest extends BaseTestCase
                 ],
                 'home' => $this->homedir.'/gush',
                 'home_config' => $this->homedir.'/gush/.gush.yml',
-                'cache-dir' => $this->homedir.'/gush/cache',
             ],
             $config->toArray(Config::CONFIG_ALL)
         );
@@ -102,7 +100,6 @@ class ConfigTest extends BaseTestCase
                 ],
                 'home' => $this->homedir.'/gush',
                 'home_config' => $this->homedir.'/gush/.gush.yml',
-                'cache-dir' => $this->homedir.'/gush/cache',
                 'local' => $this->homedir.'/local-gush',
                 'local_config' => $this->homedir.'/local-gush/.gush.yml',
                 'repo_adapter' => ['name' => 'github'],
@@ -290,7 +287,6 @@ class ConfigTest extends BaseTestCase
 
         return new Config(
             $this->homedir.'/gush',
-            $this->homedir.'/gush/cache',
             $config,
             $localHome,
             $localConfig
