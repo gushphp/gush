@@ -28,11 +28,6 @@ class ProcessHelper extends Helper implements OutputAwareInterface
     protected $output;
 
     /**
-     * @var array
-     */
-    protected $cache = [];
-
-    /**
      * @param OutputInterface $output
      */
     public function setOutput(OutputInterface $output)
@@ -53,23 +48,14 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      *
      * @param string|array $command
      * @param bool         $allowFailures
-     * @param \Closure     $callback           Callback for Process (e.g. for logging output in realtime)
-     * @param bool         $cacheMultipleCalls Call multiple calls with this command (to speed-up execution)
-     *
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @param \Closure     $callback Callback for Process (e.g. for logging output in realtime)
      *
      * @return string
      */
-    public function runCommand($command, $allowFailures = false, $callback = null, $cacheMultipleCalls = false)
+    public function runCommand($command, $allowFailures = false, $callback = null)
     {
         if (is_string($command)) {
             $command = $this->parseProcessArguments($command);
-        }
-
-        $cacheKey = getcwd().implode(' ', $command);
-        if ($cacheMultipleCalls && isset($this->cache[$cacheKey])) {
-            return $this->cache[$cacheKey];
         }
 
         $builder = new ProcessBuilder($command);
@@ -95,12 +81,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        $result = trim($process->getOutput());
-        if ($cacheMultipleCalls) {
-            $this->cache[$cacheKey] = $result;
-        }
-
-        return $result;
+        return trim($process->getOutput());
     }
 
     /**
@@ -127,9 +108,8 @@ class ProcessHelper extends Helper implements OutputAwareInterface
      * Run a series of shell command through a Process.
      *
      * @param array $commands
-     * @param bool  $cacheMultipleCalls
      */
-    public function runCommands(array $commands, $cacheMultipleCalls = false)
+    public function runCommands(array $commands)
     {
         $output = $this->output;
 
@@ -142,7 +122,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         };
 
         foreach ($commands as $command) {
-            $this->runCommand($command['line'], $command['allow_failures'], $callback, $cacheMultipleCalls);
+            $this->runCommand($command['line'], $command['allow_failures'], $callback);
         }
     }
 
@@ -172,14 +152,6 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         }
 
         return $fixer;
-    }
-
-    /**
-     * Clears the process-results cache.
-     */
-    public function clearCache()
-    {
-        $this->cache = [];
     }
 
     /**

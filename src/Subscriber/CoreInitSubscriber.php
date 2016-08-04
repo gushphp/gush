@@ -104,7 +104,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
         ;
     }
 
-    /** 
+    /**
      * Use this for detecting the org and repo.
      *
      * Add the options to decorateDefinition.
@@ -119,7 +119,7 @@ class CoreInitSubscriber extends BaseGitRepoSubscriber
             return;
         }
 
-        if (!$this->gitHelper->isGitFolder()) {
+        if (!$this->gitHelper->isGitDir()) {
             throw new UserException(
                 sprintf(
                     'You can only run the "%s" command when you are in a Git directory.',

@@ -223,7 +223,7 @@ OET;
         return new MetaHelper($metasSupported);
     }
 
-    protected function getGitHelper($isGitFolder = true)
+    protected function getGitHelper($isGitDir = true)
     {
         $files = [
             $this->srcDir.'/metatest.php',
@@ -232,7 +232,7 @@ OET;
             $this->srcDir.'/metatest.twig',
         ];
 
-        $helper = parent::getGitHelper($isGitFolder);
+        $helper = parent::getGitHelper($isGitDir);
         $helper->listFiles()->willReturn($files);
 
         return $helper;
