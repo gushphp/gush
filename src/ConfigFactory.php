@@ -79,9 +79,12 @@ class ConfigFactory
      *
      * @return Config
      */
-    public static function createConfig($localHome = null)
+    public static function createConfig($home = null, $localHome = null)
     {
-        $home = static::getHomedir();
+        if (null === $home) {
+            $home = static::getHomedir();
+        }
+
         $localConfig = [];
 
         $systemConfig = self::loadFileOrEmpty($home.'/.gush.yml');
@@ -91,38 +94,6 @@ class ConfigFactory
         }
 
         return new Config($home, $systemConfig, $localHome, $localConfig);
-    }
-
-    /**
-     * Create a new Config object using the ENV configuration.
-     *
-     * Note that any missing config file is ignored.
-     *
-     * When the home or cache folder doesn't exist it's created.
-     * This also ensures the directories are protected from web access.
-     *
-     * @param string $systemConfigEnv
-     * @param string $localConfigEnv
-     *
-     * @return Config
-     */
-    public static function createConfigFromEnv($systemConfigEnv = null, $localConfigEnv = null)
-    {
-        $localHome = null;
-
-        $systemConfig = [];
-        $localConfig = [];
-
-        if (!empty($localConfigEnv)) {
-            $systemConfig = Yaml::parse((base64_decode($systemConfigEnv)));
-        }
-
-        if (!empty($localConfigEnv)) {
-            $localConfig = Yaml::parse((base64_decode($localConfigEnv)));
-            $localHome = 'env:';
-        }
-
-        return new Config('env:home', $systemConfig, $localHome, $localConfig);
     }
 
     /**
