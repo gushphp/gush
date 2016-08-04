@@ -17,4 +17,7 @@ RUN curl -s https://getcomposer.org/installer | php \
     && rm composer.phar \
     && rm composer.json
 
+RUN mkdir /root/project
+WORKDIR /root/project
+
 ENTRYPOINT ["/usr/src/gush/gush"]
