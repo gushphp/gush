@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 docker run -it \
-    -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub \
     -v ~/.ssh/id_rsa:/root/.ssh/id_rsa \
-    -v ~/.ssh/known_hosts:/root/.ssh/known_hosts \
+    -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub \
     -v ~/.gush:/root/.gush \
     -v "$(pwd)":/root/project \
     -e GUSH_CONFIG=/root/.gush \
