@@ -14,12 +14,12 @@ namespace Gush\Command\Util;
 use Gush\Command\BaseCommand;
 use Gush\Config;
 use Gush\ConfigFactory;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-class MetaConfigureCommand extends BaseCommand implements GitFolderFeature
+class MetaConfigureCommand extends BaseCommand implements GitDirectoryFeature
 {
     /**
      * {@inheritdoc}

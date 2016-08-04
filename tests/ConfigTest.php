@@ -21,7 +21,7 @@ class ConfigTest extends BaseTestCase
     {
         parent::setUp();
 
-        $this->homedir = $this->getNewTmpFolder('home');
+        $this->homedir = $this->getNewTmpDirectory('home');
     }
 
     public function testCreateEmptyConfigWithDefaults()

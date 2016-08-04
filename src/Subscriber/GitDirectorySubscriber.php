@@ -14,12 +14,12 @@ namespace Gush\Subscriber;
 use Gush\Command\BaseCommand;
 use Gush\Event\GushEvents;
 use Gush\Exception\UserException;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Helper\GitHelper;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class GitFolderSubscriber implements EventSubscriberInterface
+class GitDirectorySubscriber implements EventSubscriberInterface
 {
     private $gitHelper;
 
@@ -37,10 +37,10 @@ class GitFolderSubscriber implements EventSubscriberInterface
 
     public function initialize(ConsoleCommandEvent $event)
     {
-        /** @var GitFolderFeature|BaseCommand $command */
+        /** @var GitDirectoryFeature|BaseCommand $command */
         $command = $event->getCommand();
 
-        if (!$command instanceof GitFolderFeature) {
+        if (!$command instanceof GitDirectoryFeature) {
             return;
         }
 

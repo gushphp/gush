@@ -20,8 +20,8 @@
 
         <!--
             Uncomment the "GUSH_USE_FS" env-option to use the real filesystem.
-            This will use the system temp-folder for storing the configuration
-            and the creating the cache folder.
+            This will use the system temp-directory for storing the configuration
+            and the creating the cache directory.
 
             This should only be done when you need to read the raw configuration
             content or when you are using a virtual environment for testing.

@@ -39,7 +39,7 @@ OET;
     {
         parent::setUp();
 
-        $this->srcDir = $this->getNewTmpFolder('src');
+        $this->srcDir = $this->getNewTmpDirectory('src');
 
         // set-up the working dir
         (new Filesystem())->mirror(realpath(__DIR__.'/../../Fixtures/meta'), $this->srcDir);

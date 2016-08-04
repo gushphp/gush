@@ -108,9 +108,9 @@ class CommandTestCase extends BaseTestCase
 
         if ($this->requiresRealConfigDir()) {
             $config = new Config(
-                $this->getNewTmpFolder('home'),
+                $this->getNewTmpDirectory('home'),
                 $systemConfig,
-                $this->getNewTmpFolder('repo-dir'),
+                $this->getNewTmpDirectory('repo-dir'),
                 $localConfig
             );
         } else {

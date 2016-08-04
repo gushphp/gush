@@ -18,7 +18,7 @@ namespace Gush;
  * merged into the "all" type which is only used for getting and not
  * setting.
  *
- * Note that the Config class does not check if the provided folders
+ * Note that the Config class does not check if the provided directorys
  * are valid or even exist. This class is only for holding configuration.
  */
 final class Config

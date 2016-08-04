@@ -24,7 +24,7 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigFactory
 {
     /**
-     * Get the home folder of Gush.
+     * Get the home directory of Gush.
      *
      * This checks multiple environment variables:
      * * GUSH_HOME
@@ -32,7 +32,7 @@ class ConfigFactory
      * * HOME
      *
      * @throws \RuntimeException when no environment variable was found
-     * @throws IOException       the missing home-folder cannot be created
+     * @throws IOException       the missing home-directory cannot be created
      *
      * @return string
      */
@@ -52,7 +52,7 @@ class ConfigFactory
 
         if ('' === $home) {
             throw new \RuntimeException(
-                'Unable to determine the home folder of your Gush config.'."\n".
+                'Unable to determine the home directory of your Gush config.'."\n".
                 'Neither the "GUSH_HOME", "HOME" or "APPDATA" (Windows only) environment variables were set.'."\n".
                 'Set the "GUSH_HOME" environment variable for Gush to run correctly.'
             );
@@ -72,9 +72,9 @@ class ConfigFactory
      *
      * Note that any missing config file is ignored.
      *
-     * When the home folder doesn't exist it's created.
+     * When the home directory doesn't exist it's created.
      *
-     * @param string|null $localHome Local home folder to load extra configuration from
+     * @param string|null $localHome Local home directory to load extra configuration from
      *                               when null this is ignored
      *
      * @return Config

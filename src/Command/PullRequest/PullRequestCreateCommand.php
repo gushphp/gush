@@ -13,7 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Exception\UserException;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\GitConfigHelper;
@@ -23,7 +23,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, TemplateFeature, GitFolderFeature
+class PullRequestCreateCommand extends BaseCommand implements GitRepoFeature, TemplateFeature, GitDirectoryFeature
 {
     /**
      * {@inheritdoc}
