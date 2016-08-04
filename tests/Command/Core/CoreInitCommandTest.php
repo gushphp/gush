@@ -417,7 +417,7 @@ class CoreInitCommandTest extends CommandTestCase
         $this->setExpectedException(
             'Gush\Exception\UserException',
             sprintf(
-                'The "%s" command can only be executed from a the root of a Git repository.',
+                'The "%s" command can only be executed from the root of a Git repository.',
                 $command->getName()
             )
         );
