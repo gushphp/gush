@@ -13,17 +13,21 @@
 require __DIR__.'/vendor/autoload.php';
 
 use Gush\ConfigFactory;
+use Gush\ThirdParty\Bitbucket\BitbucketFactory;
+use Gush\ThirdParty\Github\GitHubEnterpriseFactory;
+use Gush\ThirdParty\Github\GitHubFactory;
+use Gush\ThirdParty\Gitlab\GitLabFactory;
 
-error_reporting(-1);
+error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $adapterFactory = new Gush\Factory\AdapterFactory();
 
 $adapters = [
-    'github' => ['Gush\ThirdParty\Github\GitHubFactory', 'GitHub'],
-    'github_enterprise' => ['Gush\ThirdParty\Github\GitHubEnterpriseFactory', 'GitHub Enterprise'],
-    'bitbucket' => ['Gush\ThirdParty\Bitbucket\BitbucketFactory', 'Bitbucket'],
-    'gitlab' => ['Gush\ThirdParty\Gitlab\GitLabFactory', 'GitLab']
+    'github' => [GitHubFactory::class, 'GitHub'],
+    'github_enterprise' => [GitHubEnterpriseFactory::class, 'GitHub Enterprise'],
+    'bitbucket' => [BitbucketFactory::class, 'Bitbucket'],
+    'gitlab' => [GitLabFactory::class, 'GitLab']
 ];
 
 foreach ($adapters as $adapterName => $adapter) {
