@@ -27,8 +27,8 @@ class GitDirectorySubscriberTest extends \PHPUnit_Framework_TestCase
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
-            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
-            $this->getMock('Symfony\Component\Console\Output\OutputInterface')
+            $this->createMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->createMock('Symfony\Component\Console\Output\OutputInterface')
         );
 
         $helper = $this->getGitHelper();
@@ -48,8 +48,8 @@ class GitDirectorySubscriberTest extends \PHPUnit_Framework_TestCase
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
-            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
-            $this->getMock('Symfony\Component\Console\Output\OutputInterface')
+            $this->createMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->createMock('Symfony\Component\Console\Output\OutputInterface')
         );
 
         $helper = $this->getGitHelper(false);
@@ -69,8 +69,8 @@ class GitDirectorySubscriberTest extends \PHPUnit_Framework_TestCase
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
-            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
-            $this->getMock('Symfony\Component\Console\Output\OutputInterface')
+            $this->createMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->createMock('Symfony\Component\Console\Output\OutputInterface')
         );
 
         $helper = $this->getGitHelper(false);

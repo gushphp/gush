@@ -29,7 +29,7 @@ test:
     - composer install --prefer-dist --optimize-autoloader --no-interaction
     - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
     - vendor/bin/phpunit --verbose --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
-    - docker run --interactive --tty --env GUSH_CONFIG="$(cat $HOME/gush/.gush.yml | base64)" gush -vvvv --help
+    - docker run --tty -e GUSH_CONFIG=/root/.gush -e GUSH_LOCAL_CONFIG=/root/project gush -vvvv --help
   post:
     - echo 'succeeded!'
 deployment:

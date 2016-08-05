@@ -12,6 +12,7 @@
 namespace Gush\Tests\Helper;
 
 use Gush\Helper\MetaHelper;
+use Gush\Meta\Meta;
 
 class MetaHelperTest extends \PHPUnit_Framework_TestCase
 {
@@ -260,7 +261,7 @@ EOT;
      */
     private function getMetaForPhp()
     {
-        $meta = $this->getMock('Gush\Meta\Meta');
+        $meta = $this->createMock(Meta::class);
 
         $meta
             ->expects($this->any())
