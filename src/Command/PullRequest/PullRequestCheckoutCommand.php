@@ -13,7 +13,7 @@ namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
 use Gush\Exception\UserException;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Feature\GitRepoFeature;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestCheckoutCommand extends BaseCommand implements GitRepoFeature, GitFolderFeature
+class PullRequestCheckoutCommand extends BaseCommand implements GitRepoFeature, GitDirectoryFeature
 {
     /**
      * {@inheritdoc}

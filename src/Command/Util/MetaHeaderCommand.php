@@ -12,7 +12,7 @@
 namespace Gush\Command\Util;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Feature\TemplateFeature;
 use Gush\Helper\MetaHelper;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class MetaHeaderCommand extends BaseCommand implements TemplateFeature, GitFolderFeature
+class MetaHeaderCommand extends BaseCommand implements TemplateFeature, GitDirectoryFeature
 {
     /**
      * {@inheritdoc}
@@ -55,7 +55,7 @@ Add the following to your local <comment>.gush.yml</comment> file.
 <comment>
 meta-exclude:
     - lib/      # excludes all the files in the lib/ directory
-    - meta/*.js # excludes all the js-files in the meta-folder
+    - meta/*.js # excludes all the js-files in the meta-directory
 </comment>
 
 Each value in the "meta-exclude" is either a Glob or complete regexp pattern
@@ -63,7 +63,7 @@ which excludes the path from being updated by the %command.name% command.
 
 Please keep the following in mind with using patterns:
 
-- paths are relative to your repository root-folder
+- paths are relative to your repository root-directory
 - patterns are case-sensitive (unless you use regexp with the 'i' (insensitive) flag like "/lib\//i")
 - patterns are applied to both directories and file-names (end related patterns with '/' to restrict to directories)
 

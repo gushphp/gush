@@ -28,7 +28,7 @@ class CoreConfigureCommand extends BaseCommand
     {
         $this
             ->setName('core:configure')
-            ->setDescription('Configure adapter credentials and the cache folder')
+            ->setDescription('Configure adapter credentials and the cache directory')
             ->setHelp(
                 <<<EOF
 The <info>%command.name%</info> configure settings Gush will use (including adapters and issue trackers):

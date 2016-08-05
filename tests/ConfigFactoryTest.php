@@ -27,7 +27,7 @@ class ConfigFactoryTest extends BaseTestCase
     {
         parent::setUp();
 
-        $this->homedir = $this->getNewTmpFolder('gush-home');
+        $this->homedir = $this->getNewTmpDirectory('gush-home');
 
         putenv('GUSH_HOME='.$this->homedir);
         putenv('GUSH_CACHE_DIR');
@@ -52,7 +52,7 @@ class ConfigFactoryTest extends BaseTestCase
 
     public function testCreateConfigWithCustomCacheDir()
     {
-        $cacheDir = $this->getNewTmpFolder('gush-cache');
+        $cacheDir = $this->getNewTmpDirectory('gush-cache');
 
         putenv('GUSH_CACHE_DIR='.$cacheDir);
 
@@ -145,7 +145,7 @@ EOT;
 repo_adapter: bitbucket
 EOT;
 
-        $localDir = $this->getNewTmpFolder('gush-local');
+        $localDir = $this->getNewTmpDirectory('gush-local');
         file_put_contents($localDir.'/.gush.yml', $localContent);
 
         $config = ConfigFactory::createConfig($localDir);
@@ -222,7 +222,7 @@ EOT;
 
     public function testDumpConfigToLocalFile()
     {
-        $localDir = $this->getNewTmpFolder('gush-local');
+        $localDir = $this->getNewTmpDirectory('gush-local');
 
         $config = ConfigFactory::createConfig($localDir);
         $config->merge(

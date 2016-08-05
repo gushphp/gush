@@ -20,7 +20,7 @@ use Gush\Helper as Helpers;
 use Gush\Helper\OutputAwareInterface;
 use Gush\Subscriber\CommandEndSubscriber;
 use Gush\Subscriber\CoreInitSubscriber;
-use Gush\Subscriber\GitFolderSubscriber;
+use Gush\Subscriber\GitDirectorySubscriber;
 use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
@@ -100,7 +100,7 @@ LOGO;
         $helperSet = $this->getHelperSet();
 
         $this->dispatcher->addSubscriber(new TableSubscriber());
-        $this->dispatcher->addSubscriber(new GitFolderSubscriber($helperSet->get('git')));
+        $this->dispatcher->addSubscriber(new GitDirectorySubscriber($helperSet->get('git')));
         $this->dispatcher->addSubscriber(
             new GitRepoSubscriber(
                 $this,

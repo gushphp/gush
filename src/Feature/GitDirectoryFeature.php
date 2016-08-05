@@ -12,10 +12,10 @@
 namespace Gush\Feature;
 
 /**
- * Implement GitFolderFeature for commands that require a Git folder.
+ * Implement GitDirectoryFeature for commands that require a Git directory.
  *
- * The GitFolderSubscriber will act on classes implementing this interface.
+ * The GitDirectorySubscriber will act on classes implementing this interface.
  */
-interface GitFolderFeature
+interface GitDirectoryFeature
 {
 }

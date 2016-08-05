@@ -131,22 +131,22 @@ class GitHelper extends Helper
     }
 
     /**
-     * Returns whether the current working dir is a Git folder.
+     * Returns whether the current working dir is a Git directory.
      *
-     * @param bool $requireRoot Require folder is the root of the Git repository,
+     * @param bool $requireRoot Require directory is the root of the Git repository,
      *                          default is true.
      *
      * @return bool
      */
     public function isGitDir($requireRoot = true)
     {
-        $folder = $this->getGitDir();
+        $directory = $this->getGitDir();
 
-        if ('' === $folder) {
+        if ('' === $directory) {
             return false;
         }
 
-        if ($requireRoot && str_replace('\\', '/', getcwd()) !== $folder) {
+        if ($requireRoot && str_replace('\\', '/', getcwd()) !== $directory) {
             return false;
         }
 

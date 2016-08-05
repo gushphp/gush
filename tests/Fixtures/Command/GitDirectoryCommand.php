@@ -12,13 +12,12 @@
 namespace Gush\Tests\Fixtures\Command;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitFolderFeature;
-use Gush\Feature\GitRepoFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GitFolderCommand extends BaseCommand implements IssueTrackerRepoFeature, GitFolderFeature
+class GitDirectoryCommand extends BaseCommand implements IssueTrackerRepoFeature, GitDirectoryFeature
 {
     /**
      * {@inheritdoc}
@@ -27,7 +26,7 @@ class GitFolderCommand extends BaseCommand implements IssueTrackerRepoFeature, G
     {
         $this
             ->setName('test:git-command')
-            ->setDescription('Command that implements GitFolderFeature')
+            ->setDescription('Command that implements GitDirectoryFeature')
             ->setHelp('')
         ;
     }

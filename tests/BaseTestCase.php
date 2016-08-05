@@ -48,14 +48,14 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             $this->tmpFs = sys_get_temp_dir();
 
             if (!$this->tmpFs) {
-                $this->markTestSkipped('No system temp folder configured.');
+                $this->markTestSkipped('No system temp directory configured.');
             }
         } else {
             $this->tmpFs = vfsStream::setup();
         }
     }
 
-    protected function getNewTmpFolder($name)
+    protected function getNewTmpDirectory($name)
     {
         if ('true' === getenv('GUSH_USE_FS')) {
             $path = $this->tmpFs.'/'.$name.(++self::$dirCounter).microtime(true);
@@ -88,7 +88,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
         $helperSetClosure = function (HelperSet $helperSet) use ($helperSetManipulator) {
             // Fake all system helpers to prevent actual execution
-            $helperSet->set(new FilesystemHelper($this->getNewTmpFolder('tmp')));
+            $helperSet->set(new FilesystemHelper($this->getNewTmpDirectory('tmp')));
 
             // Set maximum attempt to prevent inf loop.
             $helperSet->get('gush_question')->setMaxAttempts(2);

@@ -402,7 +402,7 @@ class CoreInitCommandTest extends CommandTestCase
         $this->assertEquals($expected, $command->getConfig()->toArray(Config::CONFIG_LOCAL));
     }
 
-    public function testGivesErrorWhenNotInGitFolder()
+    public function testGivesErrorWhenNotInGitDirectory()
     {
         $command = new InitCommand();
         $tester = $this->getCommandTester(

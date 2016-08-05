@@ -12,14 +12,14 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Helper\GitHelper;
 use Gush\Helper\ProcessHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PullRequestFixerCommand extends BaseCommand implements GitFolderFeature
+class PullRequestFixerCommand extends BaseCommand implements GitDirectoryFeature
 {
     const DEFAULT_FIXER_LINE = 'php-cs-fixer fix .';
 

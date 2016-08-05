@@ -14,14 +14,14 @@ namespace Gush\Command\Core;
 use Gush\Command\BaseCommand;
 use Gush\Config;
 use Gush\ConfigFactory;
-use Gush\Feature\GitFolderFeature;
+use Gush\Feature\GitDirectoryFeature;
 use Gush\Helper\GitHelper;
 use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InitCommand extends BaseCommand implements GitFolderFeature
+class InitCommand extends BaseCommand implements GitDirectoryFeature
 {
     /**
      * Configures the current command.

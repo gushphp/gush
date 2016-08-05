@@ -11,19 +11,19 @@
 
 namespace Gush\Tests\Subscriber;
 
-use Gush\Subscriber\GitFolderSubscriber;
-use Gush\Tests\Fixtures\Command\GitFolderCommand;
+use Gush\Subscriber\GitDirectorySubscriber;
+use Gush\Tests\Fixtures\Command\GitDirectoryCommand;
 use Gush\Tests\Fixtures\Command\GitRepoCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
+class GitDirectorySubscriberTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
-    public function fire_no_error_when_in_git_folder()
+    public function fire_no_error_when_in_git_directory()
     {
-        $command = new GitFolderCommand();
+        $command = new GitDirectoryCommand();
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
@@ -33,7 +33,7 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $helper = $this->getGitHelper();
 
-        $subscriber = new GitFolderSubscriber($helper);
+        $subscriber = new GitDirectorySubscriber($helper);
         $subscriber->initialize($commandEvent);
 
         $this->assertTrue($helper->isGitDir());
@@ -54,7 +54,7 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $helper = $this->getGitHelper(false);
 
-        $subscriber = new GitFolderSubscriber($helper);
+        $subscriber = new GitDirectorySubscriber($helper);
         $subscriber->initialize($commandEvent);
 
         $this->assertFalse($helper->isGitDir());
@@ -63,9 +63,9 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function throws_user_exception_when_not_in_git_folder()
+    public function throws_user_exception_when_not_in_git_directory()
     {
-        $command = new GitFolderCommand();
+        $command = new GitDirectoryCommand();
 
         $commandEvent = new ConsoleCommandEvent(
             $command,
@@ -75,7 +75,7 @@ class GitFolderSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $helper = $this->getGitHelper(false);
 
-        $subscriber = new GitFolderSubscriber($helper);
+        $subscriber = new GitDirectorySubscriber($helper);
 
         $this->setExpectedException('Gush\Exception\UserException');
 
