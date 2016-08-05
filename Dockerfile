@@ -19,7 +19,6 @@ COPY ./composer.json /usr/src/gush/composer.json
 WORKDIR /usr/src/gush
 
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --prefer-dist --optimize-autoloader --no-interaction --no-dev \
-    && rm composer.phar \
     && rm composer.json \
     && rm composer.lock
 
