@@ -727,11 +727,7 @@ class GitHelper extends Helper
             return $this->topDir;
         }
 
-        try {
-            $this->topDir = $this->processHelper->runCommand(['git', 'rev-parse', '--show-toplevel']);
-        } catch (\RuntimeException $e) {
-            $this->topDir = '';
-        }
+        $this->topDir = $this->processHelper->runCommand(['git', 'rev-parse', '--show-toplevel']);
 
         return $this->topDir;
     }
