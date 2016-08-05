@@ -23,7 +23,7 @@ dependencies:
   cache_directories:
     - "$HOME/docker"
   override:
-    - docker build -t gush .
+    - docker build --rm=false -t gush .
 test:
   override:
     - composer install --prefer-dist --optimize-autoloader --no-interaction
