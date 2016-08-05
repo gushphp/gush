@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 docker run -it \
+    -v ~/.gitconfig:/root/.gitconfig \
     -v ~/.ssh/id_rsa:/root/.ssh/id_rsa \
     -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub \
     -v ~/.gush:/root/.gush \
