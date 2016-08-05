@@ -52,7 +52,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->processHelper = $this->getMock('Gush\Helper\ProcessHelper');
+        $this->processHelper = $this->createMock(ProcessHelper::class);
 
         $this->filesystemHelper = $this->prophesize('Gush\Helper\FilesystemHelper');
         $this->filesystemHelper->getName()->willReturn('filesystem');

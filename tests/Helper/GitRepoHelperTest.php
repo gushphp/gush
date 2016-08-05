@@ -48,7 +48,7 @@ class GitRepoHelperTest extends \PHPUnit_Framework_TestCase
             'state' => 'open',
         ];
 
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
         $input
             ->expects($this->any())
             ->method('getOption')
