@@ -2,11 +2,11 @@
 
 docker run -it \
     -v ~/.gitconfig:/root/.gitconfig \
-    -v $SSH_AUTH_SOCK:/ssh-agent \
+    -v $SSH_AUTH_SOCK:/root/ssh-agent \
     -v ~/.ssh/known_hosts:/root/.ssh/known_hosts \
     -v ~/.gush:/root/.gush \
     -v "$(pwd)":/root/project \
-    -e SSH_AUTH_SOCK=/ssh-agent \
+    -e SSH_AUTH_SOCK=/root/ssh-agent \
     -e GUSH_CONFIG=/root/.gush \
     -e GUSH_LOCAL_CONFIG=/root/project \
     coder20078/gush "$@"
