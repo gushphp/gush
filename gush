@@ -12,7 +12,9 @@
 
 require __DIR__.'/vendor/autoload.php';
 
+use Gush\Application;
 use Gush\ConfigFactory;
+use Gush\Factory\AdapterFactory;
 use Gush\ThirdParty\Bitbucket\BitbucketFactory;
 use Gush\ThirdParty\Github\GitHubEnterpriseFactory;
 use Gush\ThirdParty\Github\GitHubFactory;
@@ -21,7 +23,7 @@ use Gush\ThirdParty\Gitlab\GitLabFactory;
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$adapterFactory = new Gush\Factory\AdapterFactory();
+$adapterFactory = new AdapterFactory();
 
 $adapters = [
     'github' => [GitHubFactory::class, 'GitHub'],
@@ -40,4 +42,4 @@ if (false !== getenv('GUSH_CONFIG')) {
     $config = ConfigFactory::createConfig(null, getcwd());
 }
 
-(new Gush\Application($adapterFactory, $config))->run();
+(new Application($adapterFactory, $config))->run();
