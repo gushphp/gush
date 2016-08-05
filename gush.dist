@@ -9,4 +9,4 @@ docker run -it \
     -e SSH_AUTH_SOCK=/root/ssh-agent \
     -e GUSH_CONFIG=/root/.gush \
     -e GUSH_LOCAL_CONFIG=/root/project \
-    coder20078/gush "$@"
+    gush "$@"
