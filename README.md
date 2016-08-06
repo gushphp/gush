@@ -7,7 +7,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/gushphp/gush/v/unstable.png)](https://packagist.org/packages/gushphp/gush)
 
 It automates common maintainer and contributor tasks and has
-backend support for GitHub, Enterprise Github, and more! See [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
+backend support for GitHub, Enterprise GitHub, and more! See [here](https://vimeo.com/88283752) and [here](https://vimeo.com/85439368)!
 
 *Logo explanation is best presented from this passage in Psalms 78*:
 
