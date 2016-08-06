@@ -1,4 +1,4 @@
-<img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo"  width="90px"/>
+<img src="https://f.cloud.github.com/assets/328359/1930603/3bd6fec6-7eb0-11e3-9945-f41820336d8c.png" alt="Gush logo" width="90px"/>
 
 [![Gitter chat](https://badges.gitter.im/gushphp/gush.png)](https://gitter.im/gushphp/gush)
 [![Latest Stable Version](https://poser.pugx.org/gushphp/gush/v/stable.png)](https://packagist.org/packages/gushphp/gush)
@@ -21,9 +21,11 @@ water and blood.
 
 Logo idea by [@cordoval](http://twitter.com/cordoval) and design by [@kotosharic](https://twitter.com/kotosharic) and [@maxakawizard](https://twitter.com/MAXakaWIZARD)
 
-Gush is a free shipped docker container, just adapt the running script:
+Gush is a free shipped docker container, in order to use it you must have [Docker](https://docs.docker.com/engine/installation/) installed on your system.
+Download and adapt the running script under your own needs:
 ```bash
-wget https://raw.githubusercontent.com/gushphp/gush/master/gush.dist && mv ./gush.dist /usr/local/bin/gush
+sudo wget https://raw.githubusercontent.com/gushphp/gush/master/gush.dist -O /usr/local/bin/gush
+sudo chmod +x /usr/local/bin/gush
 gush -vvv
 ```
 
