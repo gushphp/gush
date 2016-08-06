@@ -10,8 +10,8 @@ backend support for GitHub, Enterprise GitHub, and more! See [here](https://vime
 
 *Logo explanation is best presented from this passage in Psalms 78*:
 
-> True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
-> Can he supply meat for his people?” When the Lord heard them, he was furious; his fire broke out against
+> "True, he struck the rock, and water gushed out, streams flowed abundantly, but can he also give us bread?
+> Can he supply meat for his people?" When the Lord heard them, he was furious; his fire broke out against
 > Jacob, and his wrath rose against Israel, for they did not believe in God or trust in his deliverance.
 
 The first thread is of blood and the following threads are water gushing out of the rock, connecting the Old Testament
