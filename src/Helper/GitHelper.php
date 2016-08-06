@@ -27,7 +27,9 @@ class GitHelper extends Helper
     const UNDEFINED_REPO = "repo-autodetected\0";
     const UNDEFINED_ADAPTER = "adapter-autodetected\0";
 
-    /** @var ProcessHelper */
+    /**
+     * @var ProcessHelper
+     */
     private $processHelper;
 
     /**
@@ -140,7 +142,15 @@ class GitHelper extends Helper
      */
     public function isGitDir($requireRoot = true)
     {
-        $directory = $this->getGitDir();
+        try {
+            $directory = $this->getGitDir();
+        } catch (\RuntimeException $e) {
+            if (128 === $e->getCode() && 'fatal: Not a git repository (or any of the parent directories): .git' === $e->getMessage()) {
+                return false;
+            }
+
+            throw $e;
+        }
 
         if ('' === $directory) {
             return false;
