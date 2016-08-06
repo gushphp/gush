@@ -158,7 +158,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
         $message = "Black-box testing 123\n\n\nAah!";
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -197,7 +197,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $sourceBranch = 'amazing-feature';
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -220,7 +220,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
   my-feat-10
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -242,7 +242,7 @@ EOL;
   my-feat-10
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -277,7 +277,7 @@ ce8bafdd18a5d1753d7a9872d3f402657873f249	refs/heads/new-my-feat-10
 eafa079bb55453b44fe02b98f7420703c532b849	refs/heads/my-feat-2000
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -313,7 +313,7 @@ ce8bafdd18a5d1753d7a9872d3f402657873f249	refs/heads/new-my-feat-10
 eafa079bb55453b44fe02b98f7420703c532b849	refs/heads/my-feat-2000
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -324,5 +324,14 @@ EOL;
 
         $this->setExpectedException('\RuntimeException', sprintf('Invalid refs found while searching for remote branch at "refs/heads/%s"', $sourceBranch));
         $this->assertTrue($this->unitGit->remoteBranchExists($remote, $sourceBranch));
+    }
+
+    public function testGetGitDirThrowingException()
+    {
+        chdir(sys_get_temp_dir());
+
+        $this->assertFalse($this->git->isGitDir());
+        $this->setExpectedException('\RuntimeException', 'fatal: Not a git repository (or any of the parent directories): .git', 128);
+        $this->git->getGitDir();
     }
 }
