@@ -102,15 +102,14 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @runInSeparateProcess
      */
-    public function returns_false_for_non_git_dir()
+    public function testThrowExceptionForNonGitDir()
     {
         chdir(sys_get_temp_dir());
 
+        $this->setExpectedExceptionRegExp('\RuntimeException', '#^fatal: Not a git repository \(or any of the parent directories\): \.git$#', 128);
         $this->assertFalse($this->git->isGitDir());
-        $this->assertFalse($this->git->isGitDir(false));
     }
 
     /**
