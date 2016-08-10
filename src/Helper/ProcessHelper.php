@@ -78,7 +78,7 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         $process->run($callback);
 
         if (!$process->isSuccessful() && !$allowFailures) {
-            throw new \RuntimeException($process->getErrorOutput());
+            throw new \RuntimeException(trim($process->getErrorOutput()), (int) $process->getExitCode());
         }
 
         return trim($process->getOutput());
