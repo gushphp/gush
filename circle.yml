@@ -9,7 +9,7 @@
 
 machine:
   php:
-    version: 7.0.7
+    version: 7.0.4
   pre:
     - mkdir -p $HOME/docker
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
