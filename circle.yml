@@ -11,7 +11,7 @@ machine:
   php:
     version: 7.0.7
   pre:
-    - mkdir -p $HOME/docker
+    - mkdir -p ~/docker
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
   services:
     - docker
@@ -19,7 +19,7 @@ machine:
     GUSH_USE_FS: true
 dependencies:
   cache_directories:
-    - "$HOME/docker"
+    - ~/docker
   override:
     - docker build --rm=false -t gush .
 test:
