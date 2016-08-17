@@ -22,7 +22,6 @@ Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->notName('OutputFixtures.php')
-    ->notName('phar-stub.php')
     ->in(
         [
             __DIR__.'/src',
