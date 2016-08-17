@@ -34,10 +34,5 @@
     },
     "autoload-dev": {
         "psr-4": {"Gush\\Tests\\": "tests"}
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.19-dev"
-        }
     }
 }

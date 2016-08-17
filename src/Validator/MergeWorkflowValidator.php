@@ -12,7 +12,6 @@
 namespace Gush\Validator;
 
 use Gush\Exception\MergeWorkflowException;
-use Gush\Exception\UserException;
 use Gush\Util\StringUtil;
 
 final class MergeWorkflowValidator
