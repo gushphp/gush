@@ -15,7 +15,6 @@ use Gush\Command\BaseCommand;
 use Gush\Config;
 use Gush\ConfigFactory;
 use Gush\Factory\AdapterFactory;
-use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

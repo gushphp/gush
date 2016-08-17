@@ -343,7 +343,6 @@ LOGO;
             new Cmd\Branch\BranchChangelogCommand(),
             new Cmd\Branch\BranchRemoteAddCommand(),
             new Cmd\Core\CoreConfigureCommand(),
-            new Cmd\Core\CoreAliasCommand(),
             new Cmd\Core\InitCommand(),
             new Cmd\Core\AutocompleteCommand(),
             new Cmd\Repository\RepositoryCreateCommand(),
