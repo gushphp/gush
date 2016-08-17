@@ -318,7 +318,6 @@ LOGO;
             new Cmd\PullRequest\PullRequestFixerCommand(),
             new Cmd\PullRequest\PullRequestCheckoutCommand(),
             new Cmd\Util\DocumentationCommand(),
-            new Cmd\Util\FabbotIoCommand(),
             new Cmd\Util\StyleCIPatchCommand(),
             new Cmd\Util\MetaHeaderCommand(),
             new Cmd\Util\MetaConfigureCommand(),
