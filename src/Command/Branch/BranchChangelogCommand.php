@@ -55,7 +55,7 @@ For example, if your issues are prefixed with "DC-", use the following:
 
     <info>$ gush %command.name% --search="{DC-(?P<id>[0-9]+)}i"</info>
 
-Note: It's important the regex has a "named capturing group" like <comment>(?P<id>[0-9]+)</comment>.
+Note: It's important the regex has a "named capturing group" identified by "id" like <comment>(?P<id>[0-9]+)</comment>.
 This named group must (only) match the issue number and nothing else.
 
 To learn more about composing your own regex patterns see:
@@ -92,6 +92,7 @@ EOF
             try {
                 $issue = $adapter->getIssue($id);
             } catch (\Exception $e) {
+                $output->writeln(sprintf('<error>%s</error>', $e->getMessage()), OutputInterface::VERBOSITY_DEBUG);
                 continue;
             }
 
