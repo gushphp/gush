@@ -9,4 +9,4 @@ docker run -it \
     -v "$(pwd)":/root/project \
     -e GUSH_CONFIG=/root/.gush \
     -e GUSH_LOCAL_CONFIG=/root/project \
-    gush "$@"
+    coder20078/gush "$@"
