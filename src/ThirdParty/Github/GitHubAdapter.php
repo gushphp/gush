@@ -484,7 +484,7 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
     {
         $api = $this->client->api('pull_request');
 
-        $api->update(
+        return $api->update(
             $this->getUsername(),
             $this->getRepository(),
             $id,
@@ -623,6 +623,31 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
         );
 
         return $asset['id'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function switchPullRequestBase($prNumber, $newBase, $newHead, $forceNewPr = false)
+    {
+        if ($forceNewPr) {
+            $pr = $this->getPullRequest($prNumber);
+
+            $newPr = $this->openPullRequest(
+                $newBase,
+                $newHead,
+                $pr['title'],
+                $pr['body']
+            );
+
+            $this->closePullRequest($prNumber);
+
+            return $newPr;
+        }
+
+        $pr = $this->updatePullRequest($prNumber, ['base' => $newBase]);
+
+        return ['number' => $prNumber, 'html_url' => $pr['html_url']];
     }
 
     protected function adaptIssueStructure(array $issue)

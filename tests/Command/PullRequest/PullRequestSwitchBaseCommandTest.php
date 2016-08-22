@@ -48,7 +48,7 @@ class PullRequestSwitchBaseCommandTest extends CommandTestCase
             null,
             null,
             function (HelperSet $helperSet) {
-                $helperSet->set($this->getLocalGitHelper()->reveal());
+                $helperSet->set($this->getLocalGitHelper('develop', true)->reveal());
             }
         );
 
@@ -96,9 +96,25 @@ class PullRequestSwitchBaseCommandTest extends CommandTestCase
         );
     }
 
-    private function getLocalGitHelper($baseBranch = 'develop')
+    private function getLocalGitHelper($baseBranch = 'develop', $forceNew = false)
     {
         $helper = $this->getGitHelper();
+
+        if (!$forceNew) {
+            if ('base_ref' !== $baseBranch) {
+                $helper->remoteUpdate('cordoval')->shouldBeCalled();
+                $helper->remoteUpdate('gushphp')->shouldBeCalled();
+                $helper->switchBranchBase(
+                    'head_ref',
+                    'gushphp/base_ref',
+                    'gushphp/'.$baseBranch
+                )->shouldBeCalled();
+
+                $helper->pushToRemote('cordoval', 'head_ref', false, true)->shouldBeCalled();
+            }
+
+            return $helper;
+        }
 
         if ('base_ref' !== $baseBranch) {
             $helper->remoteUpdate('cordoval')->shouldBeCalled();

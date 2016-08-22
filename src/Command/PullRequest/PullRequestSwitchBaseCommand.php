@@ -34,9 +34,8 @@ class PullRequestSwitchBaseCommand extends BaseCommand implements GitRepoFeature
             ->addArgument('pr_number', InputArgument::REQUIRED, 'PR number to be switched')
             ->addArgument(
                 'base_branch',
-                InputArgument::OPTIONAL,
-                'Name of the new base branch to switch the PR to',
-                'master'
+                InputArgument::REQUIRED,
+                'Name of the new base branch to switch the PR to'
             )
             ->addOption(
                 'force-new-pr',
@@ -96,26 +95,41 @@ EOF
         $gitHelper = $this->getHelper('git');
         $gitHelper->remoteUpdate($sourceOrg);
         $gitHelper->remoteUpdate($pr['base']['user']);
-        $gitHelper->switchBranchBase(
-            $branchName,
-            $pr['base']['user'].'/'.$currentBase,
-            $pr['base']['user'].'/'.$baseBranch,
-            $branchName.'-switched'
-        );
 
-        $gitHelper->pushToRemote($sourceOrg, $branchName.'-switched', true);
-        $gitHelper->pushToRemote($sourceOrg, ':'.$branchName);
+        if ($input->getOption('force-new-pr')) {
+            $gitHelper->switchBranchBase(
+                $branchName,
+                $pr['base']['user'].'/'.$currentBase,
+                $pr['base']['user'].'/'.$baseBranch,
+                $branchName.'-switched'
+            );
 
-        $switchPr = $adapter->switchPullRequestBase(
-            $prNumber,
-            $baseBranch,
-            $sourceOrg.':'.$branchName.'-switched',
-            $input->getOption('force-new-pr')
-        );
+            $gitHelper->pushToRemote($sourceOrg, $branchName.'-switched', true);
+            $gitHelper->pushToRemote($sourceOrg, ':'.$branchName);
+
+            $switchPr = $adapter->switchPullRequestBase(
+                $prNumber,
+                $baseBranch,
+                $sourceOrg.':'.$branchName.'-switched',
+                true
+            );
+        } else {
+            $gitHelper->switchBranchBase(
+                $branchName,
+                $pr['base']['user'].'/'.$currentBase,
+                $pr['base']['user'].'/'.$baseBranch
+            );
+
+            $gitHelper->pushToRemote($sourceOrg, $branchName, false, true);
+
+            $switchPr = $adapter->switchPullRequestBase(
+                $prNumber,
+                $baseBranch,
+                $sourceOrg.':'.$branchName
+            );
+        }
 
         if ($prNumber === $switchPr['number']) {
-            $adapter->createComment($prNumber, sprintf('(PR base switched to %s)', $baseBranch));
-
             $this->getHelper('gush_style')->success('Pull-request base-branch has been switched!');
         } else {
             $adapter->createComment($prNumber, sprintf('(PR replaced by %s)', $switchPr['html_url']));
