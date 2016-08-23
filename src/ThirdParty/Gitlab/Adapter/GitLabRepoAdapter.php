@@ -51,10 +51,8 @@ class GitLabRepoAdapter extends BaseAdapter
     public function getPullRequestUrl($id)
     {
         return sprintf(
-            '%s/%s/%s/merge_requests/%d',
+            '%s/merge_requests/%d',
             $this->configuration['repo_domain_url'],
-            $this->getUsername(),
-            $this->getRepository(),
             $this->getPullRequest($id)['iid']
         );
     }
@@ -80,13 +78,16 @@ class GitLabRepoAdapter extends BaseAdapter
      */
     public function getComments($id)
     {
-        $issue = MergeRequest::fromArray(
-            $this->client,
-            $this->getCurrentProject(),
-            $this->client->api('merge_requests')->show($this->getCurrentProject()->id, $id)
-        );
-
-        return $issue->showComments();
+        $comments = $this->client->api('merge_requests')->showNotes($this->getCurrentProject()->id, $id);
+        return array_filter(array_map(function($note) {
+            return [
+                'id' => $note['id'],
+                'user' => $note['author']['username'],
+                'body' => $note['body'],
+                'created_at' => !empty($note['created_at']) ? new \DateTime($note['created_at']) : null,
+                'updated_at' => !empty($note['updated_at']) ? new \DateTime($note['updated_at']) : null,
+            ];
+        }, $comments));
     }
 
     /**
@@ -174,7 +175,7 @@ class GitLabRepoAdapter extends BaseAdapter
             $this->client->api('merge_requests')->show($this->getCurrentProject()->id, $id)
         );
 
-        return array_merge(
+        $data = array_merge(
             $mr->toArray(),
             [
                 'url' => sprintf(
@@ -186,6 +187,9 @@ class GitLabRepoAdapter extends BaseAdapter
                 ),
             ]
         );
+        $data['milestone'] = $data['milestone']->title;
+        $data['user'] = $data['author'];
+        return $data;
     }
 
     /**
