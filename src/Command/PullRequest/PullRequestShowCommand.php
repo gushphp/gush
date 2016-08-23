@@ -12,7 +12,6 @@
 namespace Gush\Command\PullRequest;
 
 use Gush\Command\BaseCommand;
-use Gush\Exception\InvalidStateException;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\TableFeature;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,6 +46,12 @@ class PullRequestShowCommand extends BaseCommand implements TableFeature, GitRep
                 null,
                 InputOption::VALUE_NONE,
                 'Display comments from this pull request'
+            )
+            ->addOption(
+                'with-commits',
+                null,
+                InputOption::VALUE_NONE,
+                'Display commits from this pull request'
             )
             ->setDescription('Retrieve detail for a specific pull request')
             ->setHelp(
@@ -95,6 +100,20 @@ EOF
         $styleHelper->section('Body');
         $styleHelper->text(explode("\n", $pr['body']));
 
+        if (true === $input->getOption('with-commits')) {
+            $commits = $adapter->getPullRequestCommits($id);
+            $styleHelper->section('Commits');
+            foreach ($commits as $commit) {
+                $styleHelper->text(sprintf(
+                    '<fg=white>Commit #%s</> by %s',
+                    $commit['sha'],
+                    $commit['user']
+                ));
+                $styleHelper->text(explode("\n", wordwrap($commit['message'], 100)));
+                $styleHelper->text([]);
+            }
+        }
+
         if (true === $input->getOption('with-comments')) {
             $comments = $adapter->getComments($id);
             $styleHelper->section('Comments');
@@ -103,7 +122,7 @@ EOF
                     '<fg=white>Comment #%s</> by %s on %s',
                     $comment['id'],
                     $comment['user'],
-                    empty($comment['created_at'])?'':$comment['created_at']->format('r')
+                    empty($comment['created_at']) ? '' : $comment['created_at']->format('r')
                 ));
                 $styleHelper->detailsTable([
                     ['Link', $comment['url']],

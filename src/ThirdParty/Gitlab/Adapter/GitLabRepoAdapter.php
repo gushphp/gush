@@ -204,12 +204,13 @@ class GitLabRepoAdapter extends BaseAdapter
     public function getPullRequestCommits($id)
     {
         $commits = $this->client->api('merge_requests')->commits($this->getCurrentProject()->id, $id);
-        return array_map(function($commit) {
+
+        return array_map(function ($commit) {
             return [
                 'sha' => $commit['id'],
                 'short_sha' => $commit['short_id'],
                 'user' => $commit['author_name'].' <'.$commit['author_email'].'>',
-                'message' => trim($commit['message'])
+                'message' => trim($commit['message']),
             ];
         }, $commits);
     }
