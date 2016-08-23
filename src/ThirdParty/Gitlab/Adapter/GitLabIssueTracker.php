@@ -188,29 +188,22 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function getComments($id)
     {
-        $issue = Issue::fromArray(
-            $this->client,
-            $this->getCurrentProject(),
-            $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
-        );
-
-        $comments = [];
-        array_map(function ($comment) use (&$comments) {
-            $comments[] = [
-                'id' => $comment->id,
+        $comments = $this->client->api('issues')->showComments($this->getCurrentProject()->id, $id);
+        return array_map(function ($comment) {
+            return [
+                'id' => $comment['id'],
                 'url' => sprintf(
                     '%s/issues/%d/#note_%d',
                     $this->getCurrentProject()->web_url,
-                    $comment->parent->iid,
-                    $comment->id
+                    $comment['parent']['iid'],
+                    $comment['id']
                 ),
-                'user' => ['login' => $comment->author->username],
-                'body' => $comment->body,
-                'created_at' => new \DateTime($comment->created_at),
+                'user' => $comment['author']['username'],
+                'body' => $comment['body'],
+                'created_at' => !empty($comment['created_at']) ? new \DateTime($comment['created_at']) : null,
+                'updated_at' => !empty($comment['updated_at']) ? new \DateTime($comment['updated_at']) : null,
             ];
-        }, $issue->showComments());
-
-        return $comments;
+        }, $comments);
     }
 
     /**
