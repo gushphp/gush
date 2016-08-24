@@ -12,9 +12,7 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Exception\UserException;
 use Gush\Feature\IssueTrackerRepoFeature;
-use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -60,9 +58,6 @@ EOF
         $comments = [];
         $tracker = $this->getIssueTracker();
         $issue = $tracker->getIssue($issueNumber);
-        if (true === $input->getOption('with-comments')) {
-            $comments = $tracker->getComments($issueNumber);
-        }
 
         $styleHelper = $this->getHelper('gush_style');
         $styleHelper->title(
@@ -89,20 +84,19 @@ EOF
         $styleHelper->section('Body');
         $styleHelper->text(explode("\n", $issue['body']));
 
-        if (true === $input->getOption('with-comments') && count($comments) > 0) {
+        if (true === $input->getOption('with-comments')) {
+            $comments = $tracker->getComments($issueNumber);
             $styleHelper->section('Comments');
             foreach ($comments as $comment) {
-                $styleHelper->listing([
-                    sprintf(
-                        'Comment #%s by %s on %s',
-                        $comment['id'],
-                        $comment['user'],
-                        $comment['created_at']->format('r')
-                    ),
-                    'Link: '.$comment['url'],
-                    '',
-                    wordwrap($comment['body'], 100),
-                ]);
+                $styleHelper->text(sprintf(
+                    '<fg=white>Comment #%s</> by %s on %s',
+                    $comment['id'],
+                    $comment['user'],
+                    $comment['created_at']->format('r')
+                ));
+                $styleHelper->detailsTable([['Link', $comment['url']]]);
+                $styleHelper->text(explode("\n", wordwrap($comment['body'], 100)));
+                $styleHelper->text([]);
             }
         }
 

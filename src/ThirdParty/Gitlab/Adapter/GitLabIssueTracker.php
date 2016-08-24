@@ -141,19 +141,19 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function updateIssue($id, array $parameters)
     {
-        $issue = $this->client->api('issues')->show($this->getCurrentProject()->id, $id);
-        $issue = Issue::fromArray($this->client, $this->getCurrentProject(), $issue);
-
         if (isset($parameters['assignee'])) {
             $assignee = $this->client->api('users')->search($parameters['assignee']);
-
             if (count($assignee) === 0) {
                 throw new \InvalidArgumentException(sprintf('Could not find user %s', $parameters['assignee']));
             }
 
-            $issue->update([
-                'assignee_id' => current($assignee)['id'],
-            ]);
+            $this->client
+                ->api('issues')
+                ->update(
+                    $this->getCurrentProject()->id,
+                    $id,
+                    ['assignee_id' => current($assignee)['id']]
+                );
         }
     }
 
@@ -162,9 +162,9 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function closeIssue($id)
     {
-        $issue = $this->client->api('issues')->show($this->getCurrentProject()->id, $id);
-
-        Issue::fromArray($this->client, $this->getCurrentProject(), $issue);
+        $this->client
+            ->api('issues')
+            ->update($this->getCurrentProject()->id, $id, ['state_event' => 'close']);
     }
 
     /**
@@ -172,15 +172,11 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function createComment($id, $message)
     {
-        $issue = Issue::fromArray(
-            $this->client,
-            $this->getCurrentProject(),
-            $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
-        );
+        $comment = $this
+            ->api('issues')
+            ->addComment($this->getCurrentProject()->id, $id, ['body' => $message]);
 
-        $comment = $issue->addComment($message);
-
-        return sprintf('%s#note_%d', $this->getIssueUrl($id), $comment->id);
+        return sprintf('%s#note_%d', $this->getIssueUrl($id), $comment['id']);
     }
 
     /**
@@ -188,29 +184,23 @@ class GitLabIssueTracker extends BaseIssueTracker
      */
     public function getComments($id)
     {
-        $issue = Issue::fromArray(
-            $this->client,
-            $this->getCurrentProject(),
-            $this->client->api('issues')->show($this->getCurrentProject()->id, $id)
-        );
+        $comments = $this->client->api('issues')->showComments($this->getCurrentProject()->id, $id);
 
-        $comments = [];
-        array_map(function ($comment) use (&$comments) {
-            $comments[] = [
-                'id' => $comment->id,
+        return array_map(function ($comment) {
+            return [
+                'id' => $comment['id'],
                 'url' => sprintf(
                     '%s/issues/%d/#note_%d',
                     $this->getCurrentProject()->web_url,
-                    $comment->parent->iid,
-                    $comment->id
+                    $comment['parent']['iid'],
+                    $comment['id']
                 ),
-                'user' => ['login' => $comment->author->username],
-                'body' => $comment->body,
-                'created_at' => new \DateTime($comment->created_at),
+                'user' => $comment['author']['username'],
+                'body' => $comment['body'],
+                'created_at' => !empty($comment['created_at']) ? new \DateTime($comment['created_at']) : null,
+                'updated_at' => !empty($comment['updated_at']) ? new \DateTime($comment['updated_at']) : null,
             ];
-        }, $issue->showComments());
-
-        return $comments;
+        }, $comments);
     }
 
     /**
