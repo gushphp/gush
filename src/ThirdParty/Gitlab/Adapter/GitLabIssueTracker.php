@@ -189,6 +189,7 @@ class GitLabIssueTracker extends BaseIssueTracker
     public function getComments($id)
     {
         $comments = $this->client->api('issues')->showComments($this->getCurrentProject()->id, $id);
+
         return array_map(function ($comment) {
             return [
                 'id' => $comment['id'],

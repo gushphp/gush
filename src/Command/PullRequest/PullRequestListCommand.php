@@ -47,7 +47,7 @@ class PullRequestListCommand extends BaseCommand implements TableFeature, GitRep
                 <<<EOF
 The <info>%command.name%</info> command lists all the pull requests:
 
-    <info>$ gush %command.name% 12</info>
+    <info>$ gush %command.name%</info>
 
 EOF
             )

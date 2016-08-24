@@ -12,9 +12,7 @@
 namespace Gush\Command\Issue;
 
 use Gush\Command\BaseCommand;
-use Gush\Exception\UserException;
 use Gush\Feature\IssueTrackerRepoFeature;
-use Gush\Helper\StyleHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -94,11 +92,9 @@ EOF
                     '<fg=white>Comment #%s</> by %s on %s',
                     $comment['id'],
                     $comment['user'],
-                    empty($comment['created_at'])?'':$comment['created_at']->format('r')
+                    $comment['created_at']->format('r')
                 ));
-                $styleHelper->detailsTable([
-                    ['Link', $comment['url']],
-                ]);
+                $styleHelper->detailsTable([['Link', $comment['url']]]);
                 $styleHelper->text(explode("\n", wordwrap($comment['body'], 100)));
                 $styleHelper->text([]);
             }

@@ -79,7 +79,8 @@ class GitLabRepoAdapter extends BaseAdapter
     public function getComments($id)
     {
         $comments = $this->client->api('merge_requests')->showNotes($this->getCurrentProject()->id, $id);
-        return array_filter(array_map(function($note) {
+
+        return array_filter(array_map(function ($note) {
             return [
                 'id' => $note['id'],
                 'user' => $note['author']['username'],
@@ -189,6 +190,7 @@ class GitLabRepoAdapter extends BaseAdapter
         );
         $data['milestone'] = $data['milestone']->title;
         $data['user'] = $data['author'];
+
         return $data;
     }
 
