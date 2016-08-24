@@ -13,7 +13,6 @@ namespace Gush\ThirdParty\Gitlab\Adapter;
 
 use Gush\Adapter\BaseAdapter;
 use Gush\Exception\UnsupportedOperationException;
-use Gush\ThirdParty\Gitlab\Model\Issue;
 use Gush\ThirdParty\Gitlab\Model\MergeRequest;
 use Gush\ThirdParty\Gitlab\Model\Project;
 use Gush\Util\ArrayUtil;
@@ -62,13 +61,9 @@ class GitLabRepoAdapter extends BaseAdapter
      */
     public function createComment($id, $message)
     {
-        $issue = MergeRequest::fromArray(
-            $this->client,
-            $this->getCurrentProject(),
-            $this->client->api('merge_requests')->show($this->getCurrentProject()->id, $id)
-        );
-
-        $comment = $issue->addComment($message);
+        $comment = $this
+            ->api('merge_requests')
+            ->addComment($this->getCurrentProject()->id, $id, ['body' => $message]);
 
         return sprintf('%s#note_%d', $this->getPullRequestUrl($id), $comment->id);
     }
@@ -115,9 +110,6 @@ class GitLabRepoAdapter extends BaseAdapter
      */
     public function updatePullRequest($id, array $parameters)
     {
-        $issue = $this->client->api('merge_requests')->show($this->getCurrentProject()->id, $id);
-        $issue = Issue::fromArray($this->client, $this->getCurrentProject(), $issue);
-
         if (isset($parameters['assignee'])) {
             $assignee = $this->client->api('users')->search($parameters['assignee']);
 
@@ -125,9 +117,13 @@ class GitLabRepoAdapter extends BaseAdapter
                 throw new \InvalidArgumentException(sprintf('Could not find user %s', $parameters['assignee']));
             }
 
-            $issue->update([
-                'assignee_id' => current($assignee)['id'],
-            ]);
+            $this->client
+                ->api('merge_requests')
+                ->update(
+                    $this->getCurrentProject()->id,
+                    $id,
+                    ['assignee_id' => current($assignee)['id']]
+                );
         }
     }
 
@@ -136,13 +132,9 @@ class GitLabRepoAdapter extends BaseAdapter
      */
     public function closePullRequest($id)
     {
-        $mr = MergeRequest::fromArray(
-            $this->client,
-            $this->getCurrentProject(),
-            $this->client->api('merge_requests')->show($this->getCurrentProject()->id, $id)
-        );
-
-        return $mr->close()->id;
+        $this->client
+            ->api('merge_requests')
+            ->update($this->getCurrentProject()->id, $id, ['state_event' => 'close']);
     }
 
     /**
