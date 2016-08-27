@@ -638,6 +638,16 @@ class GitHelper extends Helper
                 '-author' => $author,
             ]
         );
+
+        try {
+            // Ensure squashed commits don't introduce regressions at base branch
+            $this->processHelper->runCommand(['git', 'pull', '--rebase', $base]);
+        } catch (\Exception $e) {
+            // Error, abort the rebase process
+            $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
+
+            throw new \RuntimeException(sprintf('Git rebase failed while trying to synchronize history against "%s".', $base), 0, $e);
+        }
     }
 
     public function syncWithRemote($remote, $branchName = null)
