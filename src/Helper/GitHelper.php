@@ -603,13 +603,6 @@ class GitHelper extends Helper
             $base.'..'.$branchName,
         ]))[0];
 
-        $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $base]);
-        $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $base, $branchName]);
-
-        if ($currentBaseHeadCommit !== $lastKnownCommonCommit) {
-            throw new MergeWorkflowException(sprintf('Failed while trying to perform merge against "%s", history is out of sync.', $base));
-        }
-
         // 0=author anything higher then 0 is the full body
         $commitData = StringUtil::splitLines(
             $this->processHelper->runCommand(

@@ -31,6 +31,8 @@ class RemoteMergeOperation
     private $performed = false;
     private $fastForward = false;
     private $withLog = false;
+    private $rebase = false;
+    private $guardSync = false;
 
     public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper)
     {
@@ -80,6 +82,8 @@ class RemoteMergeOperation
     public function useFastForward($fastForward = true)
     {
         $this->fastForward = (bool) $fastForward;
+
+        return $this;
     }
 
     public function performMerge()
@@ -143,6 +147,21 @@ class RemoteMergeOperation
         $this->gitHelper->pushToRemote($this->targetRemote, $target);
     }
 
+    public function rebase(bool $rebase = false)
+    {
+        $this->rebase = $rebase;
+        $this->guardSync = !$rebase;
+
+        return $this;
+    }
+
+    public function guardSync(bool $guardSync = false)
+    {
+        $this->guardSync = $guardSync;
+
+        return $this;
+    }
+
     private function createBaseBranch()
     {
         $targetBranch = null !== $this->switchBase ? $this->switchBase : $this->targetBranch;
@@ -171,7 +190,31 @@ class RemoteMergeOperation
         }
 
         if ($this->squash) {
-            $this->gitHelper->squashCommits($this->targetBase, $sourceBranch, $this->forceSquash);
+            $this->gitHelper->squashCommits($this->targetBase, $sourceBranch, $this->forceSquash, $this->guardSync);
+        }
+
+        $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $this->targetBase]);
+        $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $this->targetBase, $sourceBranch]);
+
+        if ($currentBaseHeadCommit !== $lastKnownCommonCommit) {
+            if ($this->rebase) {
+                try {
+                    $this->processHelper->runCommand(['git', 'pull', '--rebase', $this->targetBase]);
+                } catch (\Exception $e) {
+                    // Error, abort the rebase operation
+                    $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
+
+                    throw new MergeWorkflowException(sprintf('Git rebase failed while trying to synchronize history against "%s".', $this->targetBase), 0, $e);
+                }
+
+                // Retrieve the commits again
+                $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $this->targetBase]);
+                $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $this->targetBase, $sourceBranch]);
+            }
+
+            if ($this->guardSync && $currentBaseHeadCommit !== $lastKnownCommonCommit) {
+                throw new MergeWorkflowException(sprintf('Failed while trying to perform merge against "%s", history is out of sync.', $this->targetBase));
+            }
         }
 
         // Allow a callback to allow late commits list composition
