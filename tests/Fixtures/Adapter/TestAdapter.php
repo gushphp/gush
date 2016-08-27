@@ -544,6 +544,11 @@ class TestAdapter extends BaseAdapter implements IssueTracker
         return self::RELEASE_ASSET_NUMBER;
     }
 
+    public function removePullRequestSourceBranch($id)
+    {
+        return [];
+    }
+
     /**
      * {@inheritdoc}
      */
