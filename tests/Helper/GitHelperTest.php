@@ -176,7 +176,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
                     'allow_failures' => false,
                 ],
                 [
-                    'line' => ['git', 'commit', '-F', $tmpName],
+                    'line' => ['git', 'commit', '--file', $tmpName],
                     'allow_failures' => false,
                 ],
             ]

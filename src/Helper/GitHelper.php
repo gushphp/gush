@@ -12,6 +12,7 @@
 namespace Gush\Helper;
 
 use Gush\Exception\CannotSquashMultipleAuthors;
+use Gush\Exception\MergeWorkflowException;
 use Gush\Exception\UserException;
 use Gush\Exception\WorkingTreeIsNotReady;
 use Gush\Operation\RemoteMergeOperation;
@@ -386,7 +387,7 @@ class GitHelper extends Helper
                     'allow_failures' => false,
                 ],
                 [
-                    'line' => ['git', 'commit', '-F', $tmpName],
+                    'line' => ['git', 'commit', '--file', $tmpName],
                     'allow_failures' => false,
                 ],
             ]
@@ -433,7 +434,7 @@ class GitHelper extends Helper
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
 
-        $this->processHelper->runCommand(['git', 'commit', '-F', $tmpName]);
+        $this->processHelper->runCommand(['git', 'commit', '--file', $tmpName]);
 
         return trim($this->processHelper->runCommand('git rev-parse HEAD'));
     }
@@ -443,15 +444,7 @@ class GitHelper extends Helper
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $notes);
 
-        $commands = [
-            'git',
-            'notes',
-            '--ref='.$ref,
-            'add',
-            '-F',
-            $tmpName,
-            $commitHash,
-        ];
+        $commands = ['git', 'notes', '--ref='.$ref, 'add', '--file', $tmpName, $commitHash];
 
         $this->processHelper->runCommand($commands, true);
     }
@@ -596,21 +589,26 @@ class GitHelper extends Helper
         // Get commits only in the branch but not in base (in reverse order)
         // we can't use --max-count here because that is applied before the reversing!
         //
-        // using git-log works better then finding the fork-point with git-merge-base
+        // using git-log works better than finding the fork-point with git-merge-base
         // because this protects against edge cases were there is no valid fork-point
 
-        $firstCommitHash = StringUtil::splitLines($this->processHelper->runCommand(
-            [
-                'git',
-                '--no-pager',
-                'log',
-                '--oneline',
-                '--no-color',
-                '--format=%H',
-                '--reverse',
-                $base.'..'.$branchName,
-            ]
-        ))[0];
+        $firstCommitHash = StringUtil::splitLines($this->processHelper->runCommand([
+            'git',
+            '--no-pager',
+            'log',
+            '--oneline',
+            '--no-color',
+            '--format=%H',
+            '--reverse',
+            $base.'..'.$branchName,
+        ]))[0];
+
+        $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $base]);
+        $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $base, $branchName]);
+
+        if ($currentBaseHeadCommit !== $lastKnownCommonCommit) {
+            throw new MergeWorkflowException(sprintf('Failed while trying to perform merge against "%s", history is out of sync.', $base));
+        }
 
         // 0=author anything higher then 0 is the full body
         $commitData = StringUtil::splitLines(
@@ -631,23 +629,7 @@ class GitHelper extends Helper
         $message = implode("\n", $commitData);
 
         $this->reset($base);
-        $this->commit(
-            $message,
-            [
-                'a',
-                '-author' => $author,
-            ]
-        );
-
-        try {
-            // Ensure squashed commits don't introduce regressions at base branch
-            $this->processHelper->runCommand(['git', 'pull', '--rebase', $base]);
-        } catch (\Exception $e) {
-            // Error, abort the rebase process
-            $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
-
-            throw new \RuntimeException(sprintf('Git rebase failed while trying to synchronize history against "%s".', $base), 0, $e);
-        }
+        $this->commit($message, ['all', 'author' => $author]);
     }
 
     public function syncWithRemote($remote, $branchName = null)
@@ -681,9 +663,17 @@ class GitHelper extends Helper
 
         foreach ($options as $option => $value) {
             if (is_int($option)) {
-                $params[] = '-'.$value;
+                if (1 === strlen($value)) {
+                    $params[] = '-'.$value;
+                } else {
+                    $params[] = '--'.$value;
+                }
             } else {
-                $params[] = '-'.$option;
+                if (1 === strlen($option)) {
+                    $params[] = '-'.$option;
+                } else {
+                    $params[] = '--'.$option;
+                }
                 $params[] = $value;
             }
         }
@@ -691,7 +681,7 @@ class GitHelper extends Helper
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $message);
 
-        $this->processHelper->runCommand(array_merge(['git', 'commit', '-F', $tmpName], $params));
+        $this->processHelper->runCommand(array_merge(['git', 'commit', '--file', $tmpName], $params));
     }
 
     /**
