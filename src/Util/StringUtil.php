@@ -18,25 +18,25 @@ namespace Gush\Util;
  */
 final class StringUtil
 {
-    public static function splitLines($input)
+    public static function splitLines(string $input): array
     {
         $input = trim($input);
 
-        return ((string) $input === '') ? [] : preg_split('{\r?\n}', $input);
+        return ('' === $input) ? [] : preg_split('{\r?\n}', $input);
     }
 
     /**
      * Concatenates the words to an uppercased wording.
      *
-     * Converts 'git-flow' to 'GitFlow'.
+     * Converts 'git flow', 'git-flow' and 'git_flow' to 'GitFlow'.
      *
      * @param string $word The word to transform.
      *
      * @return string The transformed word.
      */
-    public static function concatWords($word)
+    public static function concatWords(string $word): string
     {
-        return str_replace(' ', '', ucwords(strtr($word, '_-', '  ')));
+        return str_replace([' ', '-', '_'], '', ucwords($word, '_- '));
     }
 
     /**
@@ -48,7 +48,7 @@ final class StringUtil
      *
      * @return string The camelized word.
      */
-    public static function camelize($word)
+    public static function camelize(string $word): string
     {
         return lcfirst(self::concatWords($word));
     }
