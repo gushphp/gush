@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestPatOnTheBackCommand;
+use Gush\Helper\TemplateHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -97,7 +98,7 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
 
     private function getTemplateHelper($pat = 'good_job')
     {
-        $template = $this->getMockBuilder('Gush\Helper\TemplateHelper')
+        $template = $this->getMockBuilder(TemplateHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['bindAndRender'])
             ->getMock()

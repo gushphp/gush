@@ -15,7 +15,10 @@ use Gush\Config;
 use Gush\Event\GushEvents;
 use Gush\Factory\AdapterFactory;
 use Gush\Helper\FilesystemHelper;
+use Gush\Helper\GitConfigHelper;
+use Gush\Helper\GitHelper;
 use Gush\Helper\OutputAwareInterface;
+use Gush\Helper\ProcessHelper;
 use Gush\Tests\Fixtures\Adapter\TestAdapterFactory;
 use Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory;
 use org\bovigo\vfs\vfsStream;
@@ -150,7 +153,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getGitHelper($isGitDir = true)
     {
-        $gitHelper = $this->prophesize('Gush\Helper\GitHelper');
+        $gitHelper = $this->prophesize(GitHelper::class);
         $gitHelper->setHelperSet(Argument::any())->willReturn();
         $gitHelper->clearTempBranches()->willReturn(null);
         $gitHelper->getName()->willReturn('git');
@@ -164,7 +167,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getGitConfigHelper()
     {
-        $helper = $this->prophesize('Gush\Helper\GitConfigHelper');
+        $helper = $this->prophesize(GitConfigHelper::class);
         $helper->setHelperSet(Argument::any())->willReturn();
         $helper->getName()->willReturn('git_config');
 
@@ -176,7 +179,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getProcessHelper()
     {
-        $helper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $helper = $this->prophesize(ProcessHelper::class);
         $helper->setHelperSet(Argument::any())->willReturn();
         $helper->setOutput(Argument::any())->willReturn();
         $helper->getName()->willReturn('process');

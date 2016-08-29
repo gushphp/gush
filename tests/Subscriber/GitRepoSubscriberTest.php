@@ -13,6 +13,7 @@ namespace Gush\Tests\Subscriber;
 
 use Gush\Command\BaseCommand;
 use Gush\Config;
+use Gush\Exception\UserException;
 use Gush\Tests\BaseTestCase;
 use Gush\Tests\Fixtures\Command\GitRepoCommand;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -235,7 +236,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_on_invalid_repo_adapter()
     {
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Adapter "noop-noop" (for repository-management) is not supported'
         );
 
@@ -253,7 +254,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_on_invalid_issue_adapter()
     {
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Adapter "noop-noop" (for issue-tracking) is not supported'
         );
 
@@ -271,7 +272,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_when_not_configured_and_no_remote_is_set_for_auto_detection()
     {
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Unable to get the repository information, Git remote "origin" should be set for automatic detection'
         );
 
@@ -292,7 +293,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_when_no_options_given_and_not_in_git_dir()
     {
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Provide the --org and --repo options when your are outside of a Git directory.'
         );
 
@@ -313,7 +314,7 @@ class GitRepoSubscriberTest extends BaseTestCase
     public function throws_error_when_adapter_is_supported_but_not_configured()
     {
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Adapter "gitlab" (for issue-tracking) is not configured yet.'
         );
 

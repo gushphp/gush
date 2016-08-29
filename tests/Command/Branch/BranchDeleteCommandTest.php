@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchDeleteCommand;
+use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -98,7 +99,7 @@ class BranchDeleteCommandTest extends CommandTestCase
 
         $this->setExpectedCommandInput($command, "\n"); // default is no
 
-        $this->setExpectedException('Gush\Exception\UserException', 'User aborted.');
+        $this->setExpectedException(UserException::class, 'User aborted.');
 
         $tester->execute();
     }

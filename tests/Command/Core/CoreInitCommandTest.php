@@ -13,6 +13,7 @@ namespace Gush\Tests\Command\Core;
 
 use Gush\Command\Core\InitCommand;
 use Gush\Config;
+use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestConfigurator;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -415,7 +416,7 @@ class CoreInitCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             sprintf(
                 'The "%s" command can only be executed from the root of a Git repository.',
                 $command->getName()

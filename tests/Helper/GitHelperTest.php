@@ -54,10 +54,10 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     {
         $this->processHelper = $this->createMock(ProcessHelper::class);
 
-        $this->filesystemHelper = $this->prophesize('Gush\Helper\FilesystemHelper');
+        $this->filesystemHelper = $this->prophesize(FilesystemHelper::class);
         $this->filesystemHelper->getName()->willReturn('filesystem');
 
-        $this->gitConfigHelper = $this->prophesize('Gush\Helper\GitConfigHelper');
+        $this->gitConfigHelper = $this->prophesize(GitConfigHelper::class);
         $this->gitConfigHelper->setHelperSet(Argument::any());
         $this->gitConfigHelper->getName()->willReturn('git_config');
 
@@ -157,7 +157,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
         $message = "Black-box testing 123\n\n\nAah!";
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -196,7 +196,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $sourceBranch = 'amazing-feature';
         $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -219,7 +219,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
   my-feat-10
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -241,7 +241,7 @@ EOL;
   my-feat-10
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -276,7 +276,7 @@ ce8bafdd18a5d1753d7a9872d3f402657873f249	refs/heads/new-my-feat-10
 eafa079bb55453b44fe02b98f7420703c532b849	refs/heads/my-feat-2000
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),
@@ -312,7 +312,7 @@ ce8bafdd18a5d1753d7a9872d3f402657873f249	refs/heads/new-my-feat-10
 eafa079bb55453b44fe02b98f7420703c532b849	refs/heads/my-feat-2000
 EOL;
 
-        $processHelper = $this->prophesize('Gush\Helper\ProcessHelper');
+        $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
             $processHelper->reveal(),
             $this->gitConfigHelper->reveal(),

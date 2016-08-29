@@ -11,6 +11,8 @@
 
 namespace Gush\Tests\Subscriber;
 
+use Gush\Exception\UserException;
+use Gush\Helper\GitHelper;
 use Gush\Subscriber\GitDirectorySubscriber;
 use Gush\Tests\Fixtures\Command\GitDirectoryCommand;
 use Gush\Tests\Fixtures\Command\GitRepoCommand;
@@ -77,14 +79,14 @@ class GitDirectorySubscriberTest extends \PHPUnit_Framework_TestCase
 
         $subscriber = new GitDirectorySubscriber($helper);
 
-        $this->setExpectedException('Gush\Exception\UserException');
+        $this->setExpectedException(UserException::class);
 
         $subscriber->initialize($commandEvent);
     }
 
     private function getGitHelper($isGitDir = true)
     {
-        $helper = $this->prophesize('Gush\Helper\GitHelper');
+        $helper = $this->prophesize(GitHelper::class);
         $helper->isGitDir()->willReturn($isGitDir);
 
         return $helper->reveal();

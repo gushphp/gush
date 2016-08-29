@@ -12,6 +12,8 @@
 namespace Gush\Tests\Factory;
 
 use Gush\Adapter\Adapter;
+use Gush\Adapter\Configurator;
+use Gush\Adapter\IssueTracker;
 use Gush\Config;
 use Gush\Factory\AdapterFactory;
 use Gush\Tests\Fixtures\Adapter\TestAdapterFactory;
@@ -55,7 +57,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test',
             'Testing',
-            'Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory'
+            TestIssueTrackerFactory::class
         );
 
         $this->assertTrue($this->adapterFactory->has('test'));
@@ -77,7 +79,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test2',
             'Testing2',
-            'Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory'
+            TestIssueTrackerFactory::class
         );
 
         $this->assertEquals(
@@ -89,7 +91,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => false,
                 ],
                 'test2' => [
-                    'factory' => 'Gush\Tests\Fixtures\Adapter\TestIssueTrackerFactory',
+                    'factory' => TestIssueTrackerFactory::class,
                     'label' => 'Testing2',
                     AdapterFactory::SUPPORT_REPOSITORY_MANAGER => false,
                     AdapterFactory::SUPPORT_ISSUE_TRACKER => true,
@@ -124,7 +126,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory->register(
             'test',
             'Testing',
-            'Gush\Tests\Fixtures\Adapter\TestAdapterFactory'
+            TestAdapterFactory::class
         );
 
         $createdAdapter = $this->adapterFactory->createRepositoryManager(
@@ -133,7 +135,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf('Gush\Adapter\Adapter', $createdAdapter);
+        $this->assertInstanceOf(Adapter::class, $createdAdapter);
     }
 
     public function testCreateConfigurator()
@@ -152,7 +154,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf('Gush\Adapter\Configurator', $createdConfigurator);
+        $this->assertInstanceOf(Configurator::class, $createdConfigurator);
     }
 
     public function testCreateRepositoryManagerAdapter()
@@ -171,7 +173,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf('Gush\Adapter\Adapter', $createdAdapter);
+        $this->assertInstanceOf(Adapter::class, $createdAdapter);
     }
 
     public function testCreateIssueTrackerAdapter()
@@ -190,7 +192,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             $this->config
         );
 
-        $this->assertInstanceOf('Gush\Adapter\IssueTracker', $createdAdapter);
+        $this->assertInstanceOf(IssueTracker::class, $createdAdapter);
     }
 
     public function testCannotCreateUnregisteredAdapter()

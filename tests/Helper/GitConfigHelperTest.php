@@ -11,6 +11,7 @@
 
 namespace Gush\Tests\Helper;
 
+use Gush\Application;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\ProcessHelper;
 
@@ -31,7 +32,7 @@ final class GitConfigHelperTest extends \PHPUnit_Framework_TestCase
         $this->processHelper = $this->createMock(ProcessHelper::class);
         $this->gitConfigHelper = new GitConfigHelper(
             $this->processHelper,
-            $this->getMockBuilder('Gush\Application')->disableOriginalConstructor()->getMock()
+            $this->getMockBuilder(Application::class)->disableOriginalConstructor()->getMock()
         );
     }
 

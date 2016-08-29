@@ -13,6 +13,7 @@ namespace Gush\Tests\Helper;
 
 use Gush\Helper\StyleHelper;
 use Gush\Helper\TemplateHelper;
+use Gush\Template\TemplateInterface;
 use Gush\Tests\BaseTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -50,7 +51,7 @@ class TemplateHelperTest extends BaseTestCase
     {
         parent::setUp();
 
-        $this->template = $this->prophesize('Gush\Template\TemplateInterface');
+        $this->template = $this->prophesize(TemplateInterface::class);
 
         $inputDef = new InputDefinition();
         $inputDef->addOption(new InputOption('test-option', null, InputOption::VALUE_OPTIONAL));
@@ -94,7 +95,7 @@ class TemplateHelperTest extends BaseTestCase
 
         $res = $this->helper->getTemplate($parts[0], $parts[1]);
 
-        $this->assertInstanceOf('Gush\Template\TemplateInterface', $res);
+        $this->assertInstanceOf(TemplateInterface::class, $res);
     }
 
     public function provideGetNamesForDomain()
@@ -126,7 +127,7 @@ class TemplateHelperTest extends BaseTestCase
     public function gets_names_for_domain($templateRegistrations, $domain, $expectedNames, $exception = false)
     {
         foreach ($templateRegistrations as $templateRegistration) {
-            $template = $this->prophesize('Gush\Template\TemplateInterface');
+            $template = $this->prophesize(TemplateInterface::class);
             $template->getName()->willReturn($templateRegistration);
 
             $this->helper->registerTemplate($template->reveal());
@@ -159,7 +160,7 @@ class TemplateHelperTest extends BaseTestCase
     {
         $res = $this->helper->getTemplate($domain, $name);
 
-        $this->assertInstanceof('Gush\Template\TemplateInterface', $res);
+        $this->assertInstanceof(TemplateInterface::class, $res);
     }
 
     /**

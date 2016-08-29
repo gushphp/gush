@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\Branch;
 
 use Gush\Command\Branch\BranchMergeCommand;
+use Gush\Operation\RemoteMergeOperation;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -200,7 +201,7 @@ class BranchMergeCommandTest extends CommandTestCase
     {
         $helper = parent::getGitHelper();
 
-        $mergeOperation = $this->prophesize('Gush\Operation\RemoteMergeOperation');
+        $mergeOperation = $this->prophesize(RemoteMergeOperation::class);
         $mergeOperation->setTarget('gushphp', 'master')->shouldBeCalled();
         $mergeOperation->setSource('gushphp', 'develop')->shouldBeCalled();
         $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();
