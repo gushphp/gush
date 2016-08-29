@@ -444,7 +444,7 @@ class GitHelper extends Helper
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $notes);
 
-        $commands = ['git', 'notes', '--ref='.$ref, 'add', '--file', $tmpName, $commitHash];
+        $commands = ['git', 'notes', '--ref=', $ref, 'add', '--file', $tmpName, $commitHash];
 
         $this->processHelper->runCommand($commands, true);
     }
