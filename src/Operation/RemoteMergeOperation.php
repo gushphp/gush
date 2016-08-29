@@ -150,7 +150,6 @@ class RemoteMergeOperation
     public function rebase(bool $rebase = false)
     {
         $this->rebase = $rebase;
-        $this->guardSync = !$rebase;
 
         return $this;
     }
@@ -206,13 +205,7 @@ class RemoteMergeOperation
 
                     throw new MergeWorkflowException(sprintf('Git rebase failed while trying to synchronize history against "%s".', $this->targetBase), 0, $e);
                 }
-
-                // Retrieve the commits again
-                $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $this->targetBase]);
-                $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $this->targetBase, $sourceBranch]);
-            }
-
-            if ($this->guardSync && $currentBaseHeadCommit !== $lastKnownCommonCommit) {
+            } elseif ($this->guardSync) {
                 throw new MergeWorkflowException(sprintf('Failed while trying to perform merge against "%s", history is out of sync.', $this->targetBase));
             }
         }
