@@ -11,6 +11,7 @@
 
 namespace Gush\Tests\Validator;
 
+use Gush\Exception\MergeWorkflowException;
 use Gush\Validator\MergeWorkflowValidator;
 
 final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
@@ -54,7 +55,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new MergeWorkflowValidator(MergeWorkflowValidator::PRESET_SEMVER);
 
         $this->setExpectedException(
-            'Gush\Exception\MergeWorkflowException',
+            MergeWorkflowException::class,
             sprintf(
                 'Semver: %1$s version of source "%2$s" is higher then %1$s version of target "%3$s".',
                 $invalidPart,
@@ -119,7 +120,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new MergeWorkflowValidator(MergeWorkflowValidator::PRESET_GIT_FLOW);
 
         $this->setExpectedException(
-            'Gush\Exception\MergeWorkflowException',
+            MergeWorkflowException::class,
             'Git-flow: Only "develop", "hotfix-" or "release-" branches are allowed to be merged into master.'
         );
 
@@ -179,7 +180,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new MergeWorkflowValidator(MergeWorkflowValidator::PRESET_NONE, $restrictions);
 
         $this->setExpectedException(
-            'Gush\Exception\MergeWorkflowException',
+            MergeWorkflowException::class,
             sprintf(
                 'Branches: Only branches "%s" are allowed to be merged into "%s".',
                 implode('", "', $restrictions[$source]),
@@ -216,7 +217,7 @@ final class MergeWorkflowValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($validator->validate('develop', 'new-feature'));
 
         $this->setExpectedException(
-            'Gush\Exception\MergeWorkflowException',
+            MergeWorkflowException::class,
             'No branch constraint is set for source "new-feature" and policy denies merging unknown branches.'
         );
 

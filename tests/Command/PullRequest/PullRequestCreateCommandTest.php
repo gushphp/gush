@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCreateCommand;
+use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
@@ -259,7 +260,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Cannot open pull-request, remote branch "not-my-branch" does not exist in "someone/gush".'
         );
 
@@ -286,7 +287,7 @@ class PullRequestCreateCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Cannot open pull-request because there are no commits between current branch ("not-my-branch") and "gushphp/gush:master".'
         );
 

@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueTakeCommand;
+use Gush\Helper\TextHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Prophecy\Argument;
@@ -128,7 +129,7 @@ class IssueTakeCommandTest extends CommandTestCase
 
     private function expectTextHelper()
     {
-        $text = $this->prophesize('Gush\Helper\TextHelper');
+        $text = $this->prophesize(TextHelper::class);
         $text->setHelperSet(Argument::any())->shouldBeCalled();
         $text->getName()->willReturn('text');
 

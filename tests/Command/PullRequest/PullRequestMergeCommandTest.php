@@ -12,6 +12,8 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestMergeCommand;
+use Gush\Exception\UserException;
+use Gush\Operation\RemoteMergeOperation;
 use Gush\Tests\Command\CommandTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -384,7 +386,7 @@ OET;
         $this->setExpectedCommandInput($command, "feature\n");
 
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             "Pull-request type 'feat' is not accepted, choose of one of: security, feature, bug."
         );
 
@@ -464,7 +466,7 @@ OET;
         }
 
         if (null !== $message) {
-            $mergeOperation = $this->prophesize('Gush\Operation\RemoteMergeOperation');
+            $mergeOperation = $this->prophesize(RemoteMergeOperation::class);
             $mergeOperation->setTarget('gushphp', 'base_ref')->shouldBeCalled();
             $mergeOperation->setSource('cordoval', 'head_ref')->shouldBeCalled();
             $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();

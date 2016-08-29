@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueShowCommand;
+use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -88,7 +89,7 @@ class IssueShowCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'Unable to extract issue-number from the current branch name.'
         );
 

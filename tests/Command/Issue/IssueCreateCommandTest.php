@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\Issue;
 
 use Gush\Command\Issue\IssueCreateCommand;
+use Gush\Helper\EditorHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Gush\Tests\Fixtures\Adapter\TestAdapter;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -109,7 +110,7 @@ class IssueCreateCommandTest extends CommandTestCase
 
     private function getEditorHelper($useEditor = false)
     {
-        $editor = $this->getMockBuilder('Gush\Helper\EditorHelper')
+        $editor = $this->getMockBuilder(EditorHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['fromString'])
             ->getMock()

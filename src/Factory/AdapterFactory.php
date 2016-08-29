@@ -204,8 +204,8 @@ class AdapterFactory
         $adapterFactoryClass = is_object($adapterFactory) ? get_class($adapterFactory) : $adapterFactory;
         $classImplements = class_implements($adapterFactoryClass);
 
-        $repositoryManager = in_array('Gush\Factory\RepositoryManagerFactory', $classImplements, true);
-        $issueTracker = in_array('Gush\Factory\IssueTrackerFactory', $classImplements, true);
+        $repositoryManager = in_array(RepositoryManagerFactory::class, $classImplements, true);
+        $issueTracker = in_array(IssueTrackerFactory::class, $classImplements, true);
 
         if (!$repositoryManager && !$issueTracker) {
             throw new \InvalidArgumentException(

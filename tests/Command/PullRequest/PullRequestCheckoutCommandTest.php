@@ -12,6 +12,7 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestCheckoutCommand;
+use Gush\Exception\UserException;
 use Gush\Tests\Command\CommandTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -80,7 +81,7 @@ class PullRequestCheckoutCommandTest extends CommandTestCase
         );
 
         $this->setExpectedException(
-            'Gush\Exception\UserException',
+            UserException::class,
             'A local branch named "head_ref" already exists but it\'s remote is not "cordoval"'
         );
 
