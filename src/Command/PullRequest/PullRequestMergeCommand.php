@@ -42,7 +42,8 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature, Git
             ->addOption('force-squash', null, InputOption::VALUE_NONE, 'Force squashing the PR, even if there are multiple authors (this will implicitly use --squash)')
             ->addOption('switch', null, InputOption::VALUE_REQUIRED, 'Switch the base of the pull request before merging')
             ->addOption('pat', null, InputOption::VALUE_REQUIRED, 'Give the PR\'s author a pat on the back after the merge')
-            ->addOption('remove-source-branch', null, InputOption::VALUE_REQUIRED, 'Remove remote source branch after merging own pull request', 'no')
+            ->addOption('remove-source-branch', null, InputOption::VALUE_NONE, 'Remove remote source branch after merging own pull request')
+            ->addOption('no-remove-source-branch', null, InputOption::VALUE_NONE, 'Don\'t remove remote source branch after merging own pull request')
             ->setHelp(
                 <<<'EOF'
 The <info>%command.name%</info> command merges the given pull request:
@@ -101,11 +102,13 @@ which has precedence to the predefined configuration.
 
 <comment>The whole pat configuration will be ignored and no pat will be placed if the pull request is authored by yourself!</comment>
 
-If you are the author of the pull request, you'll be prompted  if the remote source
-branch will be removed after a successful merge.
-Also, you can pass your choice for this action with the <comment>--remove-source-branch</comment> option:
+If you are the author of the pull request, you'll be prompted  if the remote source branch will be removed after a successful merge.
+Also, you can pass your choice for this action with the <comment>--remove-source-branch</comment> and <comment>--no-remove-source-branch</comment>
+options:
 
-    <info>$ gush %command.name% --remove-source-branch=[yes|no]</info>
+    <info>$ gush %command.name% --remove-source-branch</info>
+
+    <info>$ gush %command.name% --no-remove-source-branch</info>
 EOF
             )
         ;
@@ -150,7 +153,7 @@ EOF
 
         $authenticatedUser = $this->getParameter($input, 'authentication')['username'];
         $removeSourceBranch = $input->getOption('remove-source-branch');
-        if ('yes' === $removeSourceBranch && $pr['user'] !== $authenticatedUser) {
+        if ($removeSourceBranch && $pr['user'] !== $authenticatedUser) {
             throw new UserException(sprintf('`--remove-source-branch` option cannot be used with pull requests that aren\'t owned by the authenticated user (%s)', $authenticatedUser));
         }
 
@@ -214,10 +217,7 @@ EOF
 
             // Post merge options
             if ($pr['user'] === $authenticatedUser) {
-                if ('yes' !== $removeSourceBranch) {
-                    $removeSourceBranch = $this->getHelper('gush_style')->choice('Delete source branch?', ['yes', 'no'], 'no');
-                }
-                if ('yes' === $removeSourceBranch) {
+                if (!$input->getOption('no-remove-source-branch') && 'yes' === $this->getHelper('gush_style')->choice('Delete source branch?', ['yes', 'no'], 'no')) {
                     $adapter->removePullRequestSourceBranch($pr['number']);
                     $styleHelper->note(sprintf('Remote source branch %s:%s has been removed.', $sourceRemote, $sourceBranch));
                 }
@@ -432,6 +432,15 @@ EOF
             ;
 
             return $this->getAdapter()->createComment($pr['number'], $patMessage);
+        }
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        parent::initialize($input, $output);
+
+        if ($input->getOption('remove-source-branch') && $input->getOption('no-remove-source-branch')) {
+            throw new UserException('Options `--remove-source-branch` and `--no-remove-source-branch` cannot be used toghether');
         }
     }
 }
