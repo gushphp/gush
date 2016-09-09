@@ -217,7 +217,7 @@ EOF
 
             // Post merge options
             if ($pr['user'] === $authenticatedUser) {
-                if (!$input->getOption('no-remove-source-branch') && 'yes' === $this->getHelper('gush_style')->choice('Delete source branch?', ['yes', 'no'], 'no')) {
+                if ($removeSourceBranch || (!$input->getOption('no-remove-source-branch') && 'yes' === $this->getHelper('gush_style')->choice('Delete source branch?', ['yes', 'no'], 'no'))) {
                     $adapter->removePullRequestSourceBranch($pr['number']);
                     $styleHelper->note(sprintf('Remote source branch %s:%s has been removed.', $sourceRemote, $sourceBranch));
                 }
