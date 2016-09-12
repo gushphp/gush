@@ -13,11 +13,13 @@ namespace Gush\Operation;
 
 use Gush\Helper\FilesystemHelper;
 use Gush\Helper\GitHelper;
+use Gush\Helper\ProcessHelper;
 
 class RemoteMergeOperation
 {
     private $gitHelper;
     private $filesystemHelper;
+    private $processHelper;
 
     private $sourceBranch;
     private $sourceRemote;
@@ -34,10 +36,11 @@ class RemoteMergeOperation
     private $rebase = false;
     private $guardSync = false;
 
-    public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper)
+    public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper, ProcessHelper $processHelper)
     {
         $this->gitHelper = $gitHelper;
         $this->filesystemHelper = $filesystemHelper;
+        $this->processHelper = $processHelper;
     }
 
     public function setSource($remote, $branch)

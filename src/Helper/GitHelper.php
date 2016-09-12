@@ -343,7 +343,7 @@ class GitHelper extends Helper
      */
     public function createRemoteMergeOperation()
     {
-        return new RemoteMergeOperation($this, $this->filesystemHelper);
+        return new RemoteMergeOperation($this, $this->filesystemHelper, $this->processHelper);
     }
 
     /**
