@@ -24,8 +24,6 @@ use Gush\Subscriber\GitDirectorySubscriber;
 use Gush\Subscriber\GitRepoSubscriber;
 use Gush\Subscriber\TableSubscriber;
 use Gush\Subscriber\TemplateSubscriber;
-use KevinGH\Amend\Command as UpdateCommand;
-use KevinGH\Amend\Helper as UpdateHelper;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
@@ -39,8 +37,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Application extends BaseApplication
 {
-    const MANIFESTO_FILE_URL = 'http://gushphp.org/manifest.json';
-
     const GUSH_LOGO = <<<LOGO
    _____ _    _  _____ _    _
   / ____| |  | |/ ____| |  | |
@@ -150,7 +146,6 @@ LOGO;
         $helperSet->set(new Helpers\MetaHelper($this->getSupportedMetaFiles()));
         $helperSet->set(new Helpers\DownloadHelper($helperSet->get('filesystem')));
         $helperSet->set(new Helpers\AutocompleteHelper());
-        $helperSet->set(new UpdateHelper());
 
         return $helperSet;
     }
@@ -298,11 +293,7 @@ LOGO;
      */
     public function getCommands()
     {
-        $updateCommand = new UpdateCommand('core:update');
-        $updateCommand->setManifestUri(self::MANIFESTO_FILE_URL);
-
         return [
-            $updateCommand,
             new Cmd\HelpCommand(),
             new Cmd\PullRequest\PullRequestCreateCommand(),
             new Cmd\PullRequest\PullRequestMergeCommand(),
