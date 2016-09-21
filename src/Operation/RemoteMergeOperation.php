@@ -191,10 +191,6 @@ class RemoteMergeOperation
             $this->targetBranch = $this->switchBase;
         }
 
-        if ($this->squash) {
-            $this->gitHelper->squashCommits($this->targetBase, $sourceBranch, $this->forceSquash, $this->guardSync);
-        }
-
         $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $this->targetBase]);
         $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $this->targetBase, $sourceBranch]);
 
@@ -211,6 +207,10 @@ class RemoteMergeOperation
             } elseif ($this->guardSync) {
                 throw new MergeWorkflowException(sprintf('Failed while trying to perform merge against "%s", history is out of sync.', $this->targetBase));
             }
+        }
+
+        if ($this->squash) {
+            $this->gitHelper->squashCommits($this->targetBase, $sourceBranch, $this->forceSquash);
         }
 
         // Allow a callback to allow late commits list composition
