@@ -78,10 +78,11 @@ LOGO;
             $version = ltrim($version, 'v');
         }
 
-        parent::__construct('Gush', $version);
-
+        // One of the Helpers requires the Config, parent constructor loads the Helpers.
         $this->adapterFactory = $adapterFactory;
         $this->config = $config;
+
+        parent::__construct('Gush', $version);
 
         // The parent dispatcher is private and has
         // no accessor, so we set it here to make it accessible.
@@ -126,6 +127,22 @@ LOGO;
      */
     protected function getDefaultHelperSet()
     {
+        $twigService = function () {
+            $loader = new \Twig_Loader_Filesystem();
+            $loader->setPaths(__DIR__.'/Resources/Templates', 'gush');
+            $loader->setPaths($this->config->get('local'), 'local');
+
+            $twig = new \Twig_Environment($loader, [
+                'autoescape' => false,
+                'strict_variables' => true,
+                'cache' => false,
+            ]);
+
+            $twig->addExtension(new \Twig_Extension_StringLoader());
+
+            return $twig;
+        };
+
         $helperSet = parent::getDefaultHelperSet();
         $helperSet->set(new Helpers\FilesystemHelper());
         $helperSet->set(new Helpers\TextHelper());
@@ -135,6 +152,7 @@ LOGO;
         $helperSet->set(new Helpers\ProcessHelper());
         $helperSet->set(new Helpers\EditorHelper());
         $helperSet->set(new Helpers\GitConfigHelper($helperSet->get('process'), $this));
+        $helperSet->set(new Helpers\TemplateRenderHelper($twigService, $this->config));
         $helperSet->set(
             new Helpers\GitHelper(
                 $helperSet->get('process'),

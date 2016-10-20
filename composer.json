@@ -16,6 +16,7 @@
         "symfony/finder": "~2.8.0",
         "symfony/yaml": "~2.8.0",
         "symfony/event-dispatcher": "~2.8.0",
+        "twig/twig": "~1.26.1",
         "knplabs/github-api": "~1.3.1",
         "ddd/slug": "~1.0.0",
         "herrera-io/version": "~1.1.1",

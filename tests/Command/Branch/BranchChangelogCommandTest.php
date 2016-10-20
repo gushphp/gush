@@ -19,6 +19,11 @@ class BranchChangelogCommandTest extends CommandTestCase
 {
     const TEST_TAG_NAME = '1.2.3';
 
+    protected function requiresRealConfigDir()
+    {
+        return true;
+    }
+
     public function testFailsWhenNoTagsAreFoundOnBranch()
     {
         $command = new BranchChangelogCommand();
@@ -55,9 +60,42 @@ class BranchChangelogCommandTest extends CommandTestCase
         $display = $tester->getDisplay();
 
         $this->assertCommandOutputMatches(
-            '#123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123',
+            '* Write a behat test to launch strategy ([#123](https://github.com/gushphp/gush/issues/123))',
             $display
         );
+    }
+
+    public function testShowChangelogInCustomFormat()
+    {
+        $command = new BranchChangelogCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            array_merge(
+                self::$localConfig,
+                [
+                    'templates' => [
+                        'changelog' => '{% for item in items %}* {{ item.title }} ([{{ item.id }}]({{ item.url }})) by {{ item.user }}<br>{% endfor %}',
+                    ],
+                ]
+            ),
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitHelper()->reveal());
+            }
+        );
+
+        $tester->execute(['--search' => ['/#(?P<id>[0-9]+)/i', '/GITHUB-(?P<id>[0-9]+)/i']]);
+
+        $display = $tester->getDisplay();
+
+        $this->assertCommandOutputMatches(
+            [
+                '* Write a behat test to launch strategy ([#123](https://github.com/gushphp/gush/issues/123)) by weaverryan<br>',
+                '* Write a behat test to launch strategy ([GITHUB-500](https://github.com/gushphp/gush/issues/500)) by weaverryan<br>',
+            ],
+            $display
+        );
+
     }
 
     public function testSearchWithIssuePattern()
@@ -71,8 +109,8 @@ class BranchChangelogCommandTest extends CommandTestCase
 
         $this->assertCommandOutputMatches(
             [
-                '#123: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/123',
-                'GITHUB-500: Write a behat test to launch strategy   https://github.com/gushphp/gush/issues/500',
+                '* Write a behat test to launch strategy ([#123](https://github.com/gushphp/gush/issues/123))',
+                '* Write a behat test to launch strategy ([GITHUB-500](https://github.com/gushphp/gush/issues/500))',
             ],
             $display
         );
