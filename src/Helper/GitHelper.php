@@ -27,6 +27,11 @@ class GitHelper extends Helper
     const UNDEFINED_REPO = "repo-autodetected\0";
     const UNDEFINED_ADAPTER = "adapter-autodetected\0";
 
+    const STATUS_UP_TO_DATE = 'up-to-date';
+    const STATUS_NEED_PULL = 'need_pull';
+    const STATUS_NEED_PUSH = 'up-to-date';
+    const STATUS_DIVERGED = 'diverged';
+
     /** @var ProcessHelper */
     private $processHelper;
 
@@ -364,6 +369,45 @@ class GitHelper extends Helper
     public function createRemotePatchOperation()
     {
         return new RemotePatchOperation($this, $this->processHelper);
+    }
+
+    /**
+     * Gets the diff status of the remote and local.
+     *
+     * @param string $remoteName
+     * @param string $localBranch
+     * @param string $remoteBranch
+     *
+     * @return string Returns the value of one of the following constants:
+     *                GitHelper::STATUS_UP_TO_DATE, GitHelper::STATUS_NEED_PULL
+     *                GitHelper::STATUS_NEED_PUSH, GitHelper::STATUS_DIVERGED.
+     *
+     * @link https://gist.github.com/WebPlatformDocs/437f763b948c926ca7ba
+     * @link https://stackoverflow.com/questions/3258243/git-check-if-pull-needed
+     */
+    public function getRemoteDiffStatus($remoteName, $localBranch, $remoteBranch = null)
+    {
+        if (null === $remoteBranch) {
+            $remoteBranch = $localBranch;
+        }
+
+        $localRef = $this->processHelper->runCommand(['git', 'rev-parse', $localBranch]);
+        $remoteRef = $this->processHelper->runCommand(['git', 'rev-parse', $remoteName.'/'.$remoteBranch]);
+        $baseRef = $this->processHelper->runCommand(['git', 'merge-base', $remoteBranch, $remoteName.'/'.$remoteBranch]);
+
+        if ($localRef === $remoteRef) {
+            return self::STATUS_UP_TO_DATE;
+        }
+
+        if ($localRef === $baseRef) {
+            return self::STATUS_NEED_PULL;
+        }
+
+        if ($remoteRef === $baseRef) {
+            return self::STATUS_NEED_PUSH;
+        }
+
+        return self::STATUS_DIVERGED;
     }
 
     /**
