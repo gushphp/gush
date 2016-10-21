@@ -532,7 +532,7 @@ class GitHelper extends Helper
 
     public function pullRemote($remote, $ref = null)
     {
-        $command = ['git', 'pull', $remote];
+        $command = ['git', 'pull', '--rebase', $remote];
 
         if ($ref) {
             $command[] = $ref;

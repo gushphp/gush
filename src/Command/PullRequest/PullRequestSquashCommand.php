@@ -32,12 +32,6 @@ class PullRequestSquashCommand extends BaseCommand implements GitRepoFeature, Gi
         $this
             ->setName('pull-request:squash')
             ->setDescription('Squashes all commits of a pull request')
-            ->addOption(
-                'no-local-sync',
-                null,
-                InputOption::VALUE_NONE,
-                'Do not sync the local branch with the squashed version'
-            )
             ->addArgument('pr_number', InputArgument::REQUIRED, 'pull-request number to squash')
             ->setHelp(
                 <<<EOF
@@ -48,9 +42,9 @@ The <info>%command.name%</info> command squashes all commits of a pull-request:
 Make sure you are the pull-requests\'s source-branch repository owner
 or have been granted push access to the repository.
 
-Note: This will squash all commits in the pull-request and (when a local branch exists with
-the same name) sync your local source branch with the squashed version.
-You can skip this sync-process using the <comment>--no-local-sync</> option.
+Note: This will squash all commits in the pull-request, if a local branch
+exists with the same name this branch is used for the operation.
+Else the remote branch is checked out locally.
 EOF
             )
         ;
@@ -85,16 +79,14 @@ EOF
         $gitHelper->remoteUpdate($sourceOrg);
 
         $gitHelper->stashBranchName();
-        $gitHelper->checkout($sourceBranch);
-        $gitHelper->checkout($tmpBranch = $gitHelper->createTempBranch($sourceBranch), true);
-        $gitHelper->squashCommits($baseOrg.'/'.$baseBranch, $tmpBranch);
-        $gitHelper->pushToRemote($sourceOrg, $tmpBranch.':'.$sourceBranch, false, true);
 
-        if (!$input->getOption('no-local-sync') && $gitHelper->branchExists($sourceBranch)) {
-            $gitHelper->checkout($sourceBranch);
-            $gitHelper->reset($tmpBranch, 'hard');
+        if ($gitHelper->branchExists($sourceBranch)) {
+            $this->squashLocalBranch($sourceOrg, $sourceBranch, $baseOrg.'/'.$baseBranch);
+        } else {
+            $this->squashRemoteBranch($sourceOrg, $sourceBranch, $baseOrg.'/'.$baseBranch);
         }
 
+        $gitHelper->pushToRemote($sourceOrg, $sourceBranch, false, true);
         $gitHelper->restoreStashedBranch();
 
         $adapter->createComment($prNumber, '(PR squashed)');
@@ -130,4 +122,42 @@ EOF
             throw new UserException('User aborted.');
         }
     }
+
+    private function squashLocalBranch($remote, $sourceBranch, $base, bool $ignoreMultipleAuthors = false)
+    {
+        /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+        $gitHelper->checkout($sourceBranch);
+
+        $status = $gitHelper->getRemoteDiffStatus($remote, $sourceBranch);
+
+        if (GitHelper::STATUS_NEED_PULL === $status) {
+            $this->getHelper('gush_style')->note(
+                sprintf('Your local branch "%s" is outdated, running git pull.', $sourceBranch)
+            );
+
+            $gitHelper->pullRemote($remote, $sourceBranch);
+        } elseif (GitHelper::STATUS_DIVERGED === $status) {
+            $gitHelper->restoreStashedBranch();
+
+            throw new UserException([
+                'Cannot safely perform the squash operation.',
+                sprintf('Your local and remote version of branch "%s" have differed.', $sourceBranch),
+                'Please resolve this problem manually.'
+            ]);
+        }
+
+        $gitHelper->squashCommits($base, $sourceBranch, $ignoreMultipleAuthors);
+    }
+
+    private function squashRemoteBranch($remote, $sourceBranch, $base, bool $ignoreMultipleAuthors = false)
+    {
+        /** @var GitHelper $gitHelper */
+        $gitHelper = $this->getHelper('git');
+        $gitHelper->checkout($remote.'/'.$sourceBranch);
+        $gitHelper->checkout($sourceBranch, true);
+
+        $gitHelper->squashCommits($base, $sourceBranch, $ignoreMultipleAuthors);
+    }
+
 }

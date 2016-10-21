@@ -12,6 +12,8 @@
 namespace Gush\Tests\Command\PullRequest;
 
 use Gush\Command\PullRequest\PullRequestSquashCommand;
+use Gush\Exception\UserException;
+use Gush\Helper\GitHelper;
 use Gush\Tests\Command\CommandTestCase;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -25,24 +27,7 @@ class PullRequestSquashCommandTest extends CommandTestCase
         $this->assertCommandOutputMatches('Pull-request has been squashed!', $tester->getDisplay());
     }
 
-    public function testDoNotResetLocalBranch()
-    {
-        $command = new PullRequestSquashCommand();
-        $tester = $this->getCommandTester(
-            $command,
-            null,
-            null,
-            function (HelperSet $helperSet) {
-                $helperSet->set($this->getGitHelper(true, true, false)->reveal());
-            }
-        );
-
-        $tester->execute(['pr_number' => 10, '--no-local-sync' => true]);
-
-        $this->assertCommandOutputMatches('Pull-request has been squashed!', $tester->getDisplay());
-    }
-
-    public function testDoNotResetLocalBranchWhenIsMissing()
+    public function testDoNotUseLocalBranchWhenIsMissing()
     {
         $command = new PullRequestSquashCommand();
         $tester = $this->getCommandTester(
@@ -57,6 +42,47 @@ class PullRequestSquashCommandTest extends CommandTestCase
         $tester->execute(['pr_number' => 10]);
 
         $this->assertCommandOutputMatches('Pull-request has been squashed!', $tester->getDisplay());
+    }
+
+    public function testInformPullIsPerformed()
+    {
+        $command = new PullRequestSquashCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitHelper(true, true, GitHelper::STATUS_NEED_PULL)->reveal());
+            }
+        );
+
+        $tester->execute(['pr_number' => 10]);
+
+        $this->assertCommandOutputMatches(
+            [
+                'Pull-request has been squashed!',
+                'Your local branch "head_ref" is outdated, running git pull',
+            ],
+            $tester->getDisplay()
+        );
+    }
+
+    public function testFailsWhenBranchHasDiverged()
+    {
+        $command = new PullRequestSquashCommand();
+        $tester = $this->getCommandTester(
+            $command,
+            null,
+            null,
+            function (HelperSet $helperSet) {
+                $helperSet->set($this->getGitHelper(true, true, GitHelper::STATUS_DIVERGED)->reveal());
+            }
+        );
+
+        $this->expectException(UserException::class);
+        $this->expectExceptionMessage('Your local and remote version of branch "head_ref" have differed.');
+
+        $tester->execute(['pr_number' => 10]);
     }
 
     public function testWarnPossibleAccessDenied()
@@ -136,28 +162,37 @@ class PullRequestSquashCommandTest extends CommandTestCase
         return $helper;
     }
 
-    protected function getGitHelper($isGitDir = true, $branchExists = true, $localSync = true)
+    protected function getGitHelper($isGitDir = true, $branchExists = true, $status = GitHelper::STATUS_UP_TO_DATE)
     {
         $helper = parent::getGitHelper($isGitDir);
         $helper->remoteUpdate('gushphp')->shouldBeCalled();
         $helper->remoteUpdate('cordoval')->shouldBeCalled();
 
         $helper->stashBranchName()->shouldBeCalled();
-        $helper->checkout('head_ref')->shouldBeCalled();
-
-        $helper->createTempBranch('head_ref')->willReturn('temp--head_ref');
-        $helper->checkout('temp--head_ref', true)->shouldBeCalled();
-
-        $helper->squashCommits('gushphp/base_ref', 'temp--head_ref')->shouldBeCalled();
-        $helper->pushToRemote('cordoval', 'temp--head_ref:head_ref', false, true)->shouldBeCalled();
-
         $helper->branchExists('head_ref')->willReturn($branchExists);
 
-        if ($localSync) {
-            $helper->reset('temp--head_ref', 'hard')->shouldBeCalled();
+        $helper->restoreStashedBranch()->shouldBeCalled();
+
+        if ($branchExists) {
+            $helper->checkout('head_ref')->shouldBeCalled();
+            $helper->getRemoteDiffStatus("cordoval", "head_ref")->willReturn($status);
+
+            // Return when this status is given because expectations are checked after
+            // An exception was expected.
+            if (GitHelper::STATUS_DIVERGED === $status) {
+                return $helper;
+            }
+
+            if (GitHelper::STATUS_NEED_PULL === $status) {
+                $helper->pullRemote('cordoval', 'head_ref')->shouldBeCalled();
+            }
+        } else {
+            $helper->checkout('cordoval/head_ref')->shouldBeCalled();
+            $helper->checkout('head_ref', true)->shouldBeCalled();
         }
 
-        $helper->restoreStashedBranch()->shouldBeCalled();
+        $helper->squashCommits('gushphp/base_ref', 'head_ref', false)->shouldBeCalled();
+        $helper->pushToRemote('cordoval', 'head_ref', false, true)->shouldBeCalled();
 
         return $helper;
     }
