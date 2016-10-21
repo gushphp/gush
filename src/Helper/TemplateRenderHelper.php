@@ -83,7 +83,7 @@ class TemplateRenderHelper extends Helper
     public function renderTemplate(array $template, array $vars): string
     {
         if (self::TYPE_STRING === $template[1]) {
-            return $this->getTwig()->render('@gush/string_renderer.twig', ['template' => $template[0], 'vars' => $vars]);
+            return $this->getTwig()->createTemplate($template[0])->render($vars);
         }
 
         return $this->getTwig()->render($template[0], $vars);
