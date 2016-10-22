@@ -471,7 +471,7 @@ class GitHelper extends Helper
 
     public function pushToRemote($remote, $ref, $setUpstream = false, $force = false)
     {
-        $command = ['git', 'push', $remote];
+        $command = ['git', 'push'];
 
         if ($setUpstream) {
             $command[] = '-u';
@@ -481,6 +481,7 @@ class GitHelper extends Helper
             $command[] = '--force';
         }
 
+        $command[] = $remote;
         $command[] = $ref;
 
         $this->processHelper->runCommand($command);
