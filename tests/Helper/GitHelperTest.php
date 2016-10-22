@@ -194,7 +194,6 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     {
         $base = 'master';
         $sourceBranch = 'amazing-feature';
-        $hash = '8ae59958a2632018275b8db9590e9a79331030cb';
 
         $processHelper = $this->prophesize(ProcessHelper::class);
         $this->unitGit = new GitHelper(
@@ -207,9 +206,8 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
         $processHelper->runCommand('git rev-parse --abbrev-ref HEAD')->willReturn('master');
         $processHelper->runCommand(['git', 'checkout', 'master'])->shouldBeCalled();
         $processHelper->runCommand(['git', 'merge', '--ff', 'amazing-feature'])->shouldBeCalled();
-        $processHelper->runCommand('git rev-parse HEAD')->willReturn($hash);
 
-        $this->assertNull($this->unitGit->mergeBranch($base, $sourceBranch, null, true));
+        $this->assertNull($this->unitGit->mergeBranchFastForward($base, $sourceBranch));
     }
 
     /**

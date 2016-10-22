@@ -28,15 +28,11 @@ class GitHelper extends Helper
     const PUSH_FORCE = 2;
     const ALLOW_DELETE = 4;
 
-    // Merge
-    const MERGE_FF = 8;
-    const MERGE_NO_FF = 16;
-
     // Squash
-    const IGNORE_MULTIPLE_AUTHORS = 32;
+    const IGNORE_MULTIPLE_AUTHORS = 8;
 
     // Various
-    const COMMIT_ALL = 64;
+    const COMMIT_ALL = 16;
 
     /** @var ProcessHelper */
     private $processHelper;
@@ -366,24 +362,17 @@ class GitHelper extends Helper
      * @param string $base          The base branch name
      * @param string $sourceBranch  The source branch name
      * @param string $commitMessage Commit message to use for the merge-commit
-     * @param int    $options       Bitmask options (self::MERGE_FF or self::MERGE_NO_FF)
      *
      * @throws WorkingTreeIsNotReady
      *
-     * @return null|string The merge-commit hash or null when fast-forward was used
+     * @return string
      */
-    public function mergeBranch($base, $sourceBranch, $commitMessage, $options = self::MERGE_NO_FF)
+    public function mergeBranch($base, $sourceBranch, $commitMessage)
     {
         $this->guardWorkingTreeReady();
         $this->stashBranchName();
 
         $this->checkout($base);
-
-        if ($options & self::MERGE_FF) {
-            $this->processHelper->runCommand(['git', 'merge', '--ff', $sourceBranch]);
-
-            return trim($this->processHelper->runCommand('git rev-parse HEAD'));
-        }
 
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $commitMessage);
@@ -402,6 +391,22 @@ class GitHelper extends Helper
         );
 
         return trim($this->processHelper->runCommand('git rev-parse HEAD'));
+    }
+
+    /**
+     * @param string $base          The base branch name
+     * @param string $sourceBranch  The source branch name
+     *
+     * @throws WorkingTreeIsNotReady
+     */
+    public function mergeBranchFastForward($base, $sourceBranch)
+    {
+        $this->guardWorkingTreeReady();
+        $this->stashBranchName();
+
+        $this->checkout($base);
+
+        $this->processHelper->runCommand(['git', 'merge', '--ff', $sourceBranch]);
     }
 
     /**

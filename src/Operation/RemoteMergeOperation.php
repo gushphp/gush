@@ -115,12 +115,16 @@ class RemoteMergeOperation
                 $this->message,
                 $this->sourceBranch
             );
+        } elseif ($this->fastForward) {
+            $mergeHash = $this->gitHelper->mergeBranchFastForward(
+                $this->targetBase,
+                $tempSourceBranch
+            );
         } else {
             $mergeHash = $this->gitHelper->mergeBranch(
                 $this->targetBase,
                 $tempSourceBranch,
-                $this->message,
-                $this->fastForward ? GitHelper::MERGE_FF : GitHelper::MERGE_NO_FF
+                $this->message
             );
         }
 
