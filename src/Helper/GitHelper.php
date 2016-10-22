@@ -474,7 +474,7 @@ class GitHelper extends Helper
         $command = ['git', 'push'];
 
         if ($setUpstream) {
-            $command[] = '-u';
+            $command[] = '--set-upstream';
         }
 
         if ($force) {
