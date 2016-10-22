@@ -472,12 +472,9 @@ class GitHelper extends Helper
 
     public function pushToRemote($remote, $ref, $options = 0)
     {
-        if (!($options & self::ALLOW_DELETE) && ':' === $ref[0]) {
+        if (':' === $ref[0]) {
             throw new \RuntimeException(
-                sprintf(
-                    'Push target "%s" does not include a local branch and deletion is not enabled, please report this bug!',
-                    $ref
-                )
+                sprintf('Push target "%s" does not include a local branch, please report this bug!', $ref)
             );
         }
 
@@ -494,6 +491,11 @@ class GitHelper extends Helper
         $command[] = $ref;
 
         $this->processHelper->runCommand($command);
+    }
+
+    public function deleteRemoteBranch($remote, $ref)
+    {
+        $this->processHelper->runCommand(['git', 'push', $remote, ':'.$ref]);
     }
 
     public function pullRemote($remote, $ref = null)

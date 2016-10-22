@@ -119,9 +119,9 @@ class BranchDeleteCommandTest extends CommandTestCase
         $helper->getActiveBranchName()->willReturn($branchName);
 
         if ($pushed) {
-            $helper->pushToRemote($remote, ':'.$deletedBranch, GitHelper::ALLOW_DELETE)->shouldBeCalled();
+            $helper->deleteRemoteBranch($remote, $deletedBranch)->shouldBeCalled();
         } else {
-            $helper->pushToRemote($remote, ':'.$deletedBranch, GitHelper::ALLOW_DELETE)->shouldNotBeCalled();
+            $helper->deleteRemoteBranch($remote, $deletedBranch)->shouldNotBeCalled();
         }
 
         return $helper;

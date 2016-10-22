@@ -217,7 +217,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'RuntimeException',
-            'Push target ":master" does not include a local branch and deletion is not enabled, please report this bug!'
+            'Push target ":master" does not include a local branch, please report this bug!'
         );
 
         $this->unitGit->pushToRemote('my-org', ':master');
@@ -237,7 +237,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
             $this->filesystemHelper->reveal()
         );
 
-        $this->unitGit->pushToRemote('my-org', ':master', GitHelper::ALLOW_DELETE);
+        $this->unitGit->deleteRemoteBranch('my-org', 'master');
     }
 
     public function testBranchExists()

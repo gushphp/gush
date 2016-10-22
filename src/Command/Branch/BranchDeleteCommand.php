@@ -102,7 +102,7 @@ EOF
 
         $this->guardProtectedBranches($input, $branchName);
 
-        $this->getHelper('git')->pushToRemote($org, ':'.$branchName, GitHelper::ALLOW_DELETE);
+        $this->getHelper('git')->deleteRemoteBranch($org, $branchName);
 
         $this->getHelper('gush_style')->success(
             sprintf('Branch %s/%s has been deleted!', $org, $branchName)
