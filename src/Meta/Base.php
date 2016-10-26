@@ -42,6 +42,6 @@ class Base implements Meta
      */
     public function getStartTokenRegex()
     {
-        return '{^(<\?(php)?\s+)|<%|(<\?xml[^>]+)}i';
+        return '{^(<\?(php)?\s+(?:declare\(\s*\w+\s*=\s*[\w\d\'"-]+\s*\);\s+)*)|<%|(<\?xml[^>]+)}is';
     }
 }

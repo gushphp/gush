@@ -181,9 +181,7 @@ class MetaHelper extends Helper
             $fileContent = implode("\n", $lines);
         }
 
-        $newContent = $startContent.$header.ltrim($fileContent);
-
-        return $newContent;
+        return $startContent.$header.ltrim($fileContent);
     }
 
     /**
