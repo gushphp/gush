@@ -37,7 +37,19 @@ class GitLabRepoAdapter extends BaseAdapter
      */
     public function createFork($org)
     {
-        throw new UnsupportedOperationException('Forking is not supported by Gitlab');
+        if ($this->configuration['authentication']['username'] !== $org) {
+            throw new UnsupportedOperationException(
+                'Gitlab can only fork repositories to currently logged in username'
+            );
+        }
+
+        $result = $this->client->api('projects')->fork($this->getCurrentProject()->id);
+
+        return [
+            'git_url' => $result['ssh_url_to_repo'],
+            'html_url' => $result['http_url_to_repo'],
+            'web_url' => $result['web_url'],
+        ];
     }
 
     public function getRepositoryInfo($org, $repository)
