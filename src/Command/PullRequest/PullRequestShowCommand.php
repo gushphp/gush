@@ -86,6 +86,10 @@ EOF
             )
         );
 
+        if ($pr['milestone'] && $pr['milestone'] instanceof Gitlab\Model\Milestone) {
+            $pr['milestone'] = $pr['milestone']->title;
+        }
+
         $styleHelper->detailsTable(
             [
                 ['Org/Repo', $input->getOption('org').'/'.$input->getOption('repo')],
