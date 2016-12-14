@@ -308,6 +308,7 @@ LOGO;
             new Cmd\PullRequest\PullRequestMilestoneListCommand(),
             new Cmd\PullRequest\PullRequestFixerCommand(),
             new Cmd\PullRequest\PullRequestCheckoutCommand(),
+            new Cmd\PullRequest\PullRequestShowCommand(),
             new Cmd\Util\DocumentationCommand(),
             new Cmd\Util\StyleCIPatchCommand(),
             new Cmd\Util\MetaHeaderCommand(),
