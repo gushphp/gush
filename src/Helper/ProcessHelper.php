@@ -66,7 +66,10 @@ class ProcessHelper extends Helper implements OutputAwareInterface
         $process = $builder->getProcess();
 
         $remover = function ($untrimmed) {
-            return ltrim(rtrim($untrimmed, "'"), "'");
+            $removedSingleQuotes = ltrim(rtrim($untrimmed, "'"), "'");
+            $removedDoubleuotes = ltrim(rtrim($removedSingleQuotes, '"'), '"');
+
+            return $removedDoubleuotes;
         };
         if ($this->output instanceof OutputInterface) {
             if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
