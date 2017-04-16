@@ -72,7 +72,6 @@ class MetaHelper extends Helper
             $out[] = $prefix.' '.$class->getDelimiter().($line ? ' '.$line : '');
         }
         $out[] = $prefix.' '.$class->getEndDelimiter();
-        $out[] = $prefix."\n";
 
         return implode("\n", $out);
     }
