@@ -41,6 +41,12 @@ class BranchChangelogCommand extends BaseCommand implements IssueTrackerRepoFeat
                 'Regex pattern to use for searching',
                 ['/#(?P<id>[0-9]+)/i']
             )
+            ->addOption(
+                'format',
+                'p',
+                InputOption::VALUE_REQUIRED,
+                'Pattern to use for lines default is: #id Title url'
+            )
             ->setHelp(
                 <<<EOF
 Reports what got fixed or closed since the last release on the given branch.
@@ -61,6 +67,21 @@ This named group must (only) match the issue number and nothing else.
 To learn more about composing your own regex patterns see:
 http://php.net/manual/reference.pcre.pattern.syntax.php
 http://www.regular-expressions.info/
+
+The default display format of a changelog is: #id Title url, you can customize this
+to your desired format using the <comment>--format</comment> option with the following
+pattern options:
+
+* %id: ID of the closed issue (like #00 or JIRA-00)
+* %an: Issue author-name
+* %nn: Issue author-nickname (displayed as @name)
+* %ts: Issue title in short (72 chars max)
+* %tf: Issue title in full
+* %wc: Web URL to the issue
+* %ms: Full description (message) of the issue
+
+Note: Because of how the changelog gets formatted each issue is only listed once,
+even if it is matched in multiple commits.
 EOF
             )
         ;
