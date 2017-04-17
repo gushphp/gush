@@ -19,6 +19,7 @@ use Gush\Factory\AdapterFactory;
 use Gush\Feature\GitRepoFeature;
 use Gush\Feature\IssueTrackerRepoFeature;
 use Gush\Helper\GitHelper;
+use Gush\Util\ConfigUtil;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,6 +53,16 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
                     $this->getSupportedAdapters(AdapterFactory::SUPPORT_REPOSITORY_MANAGER)
                 ),
                 $this->application->getConfig()->get('repo_adapter', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER)
+            )
+        ;
+
+        $command
+            ->addOption(
+                'repo-adapter-config',
+                'rac',
+                InputOption::VALUE_REQUIRED,
+                'Config of the repository-manager',
+                $this->application->getConfig()->get('repo_adapter_config', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER)
             )
         ;
 
@@ -112,6 +123,13 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
                 $issueTracker
             )
             ->addOption(
+                'issue-adapter-config',
+                'iac',
+                InputOption::VALUE_REQUIRED,
+                'Config of the issue-tracker',
+                $this->application->getConfig()->get('issue_adapter_config', Config::CONFIG_LOCAL, GitHelper::UNDEFINED_ADAPTER)
+            )
+            ->addOption(
                 'issue-org',
                 'io',
                 InputOption::VALUE_REQUIRED,
@@ -163,7 +181,7 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         $this->validateAdaptersConfig($input);
 
-        $adapter = $this->getAdapter($adapterName);
+        $adapter = $this->getAdapter($adapterName, $input->getOption('repo-adapter-config'));
         $org = GitHelper::undefinedToDefault($input->getOption('org'));
         $repo = GitHelper::undefinedToDefault($input->getOption('repo'));
 
@@ -207,11 +225,13 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
     private function validateAdaptersConfig(InputInterface $input)
     {
         $repositoryManager = $input->getOption('repo-adapter');
+        $repositoryManagerConfig = $input->getOption('repo-adapter-config');
 
         $errors = [];
 
         $this->checkAdapterConfigured(
             $repositoryManager,
+            $repositoryManagerConfig,
             'repository-management',
             AdapterFactory::SUPPORT_REPOSITORY_MANAGER,
             $errors
@@ -219,9 +239,11 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         if ($input->hasOption('issue-adapter')) {
             $issueTracker = $input->getOption('issue-adapter');
+            $issueTrackerConfig = $input->getOption('issue-adapter-config');
 
             $this->checkAdapterConfigured(
                 $issueTracker,
+                $issueTrackerConfig,
                 'issue-tracking',
                 AdapterFactory::SUPPORT_ISSUE_TRACKER,
                 $errors
@@ -237,11 +259,12 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
     /**
      * @param string   $adapter
+     * @param array    $adapterConfig
      * @param string   $typeLabel
      * @param string   $supports
      * @param string[] $errors
      */
-    private function checkAdapterConfigured($adapter, $typeLabel, $supports, array &$errors)
+    private function checkAdapterConfigured($adapter, $adapterConfig, $typeLabel, $supports, array &$errors)
     {
         $adapterFactory = $this->application->getAdapterFactory();
 
@@ -256,10 +279,11 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
             return;
         }
 
+        $identifier = ConfigUtil::generateConfigurationIdentifier($adapter, $adapterConfig);
         $config = $this->application->getConfig();
 
-        if (!$config->has(['adapters', $adapter], Config::CONFIG_SYSTEM)) {
-            $errors[] = sprintf('Adapter "%s" (for %s) is not configured yet.', $adapter, $typeLabel);
+        if (!$config->has(['adapters', $identifier], Config::CONFIG_SYSTEM)) {
+            $errors[] = sprintf('Adapter "%s" (for %s) is not configured yet.', $identifier, $typeLabel);
         }
     }
 
@@ -267,21 +291,22 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
      * @param ConsoleCommandEvent $event
      * @param string              $org
      * @param string              $repo
-     * @param string              $adapterName
+     * @param string              $adapterConfig
      */
-    private function initializeIssueTracker(ConsoleCommandEvent $event, $org, $repo, $adapterName)
+    private function initializeIssueTracker(ConsoleCommandEvent $event, $org, $repo, $adapterConfig)
     {
         $input = $event->getInput();
 
         $issueOrg = GitHelper::undefinedToDefault($input->getOption('issue-org'), $org);
         $issueRepo = GitHelper::undefinedToDefault($input->getOption('issue-project'), $repo);
-        $issueAdapterName = $input->getOption('issue-adapter') ?: $adapterName;
+        $issueAdapterName = $input->getOption('issue-adapter') ?: $adapterConfig;
 
         $input->setOption('issue-org', $issueOrg);
         $input->setOption('issue-project', $issueRepo);
         $input->setOption('issue-adapter', $issueAdapterName);
 
-        $config = $this->application->getConfig()->get(['adapters', $issueAdapterName], Config::CONFIG_SYSTEM);
+        $identifier = ConfigUtil::generateConfigurationIdentifier($issueAdapterName, $input->getOption('issue-adapter-config'));
+        $config = $this->application->getConfig()->get(['adapters', $identifier], Config::CONFIG_SYSTEM);
 
         /** @var \Gush\Adapter\BaseIssueTracker $issueTracker */
         $issueTracker = $this->application->getAdapterFactory()->createIssueTracker(
@@ -355,4 +380,5 @@ class GitRepoSubscriber extends BaseGitRepoSubscriber
 
         throw new UserException($exceptionMessage);
     }
+
 }

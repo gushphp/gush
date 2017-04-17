@@ -37,4 +37,11 @@ interface Configurator
      * @return array Validated and normalized configuration as associative array
      */
     public function interact(InputInterface $input, OutputInterface $output);
+
+    /**
+     * Get the unique name for a configured adapter.
+     *
+     * @return string
+     */
+    public function getConfigurationIdentifier($adapter, $config);
 }

@@ -18,6 +18,7 @@ use Gush\Exception\UserException;
 use Gush\Helper\GitConfigHelper;
 use Gush\Helper\GitHelper;
 use Gush\Helper\StyleHelper;
+use Gush\Util\ConfigUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
@@ -51,9 +52,11 @@ abstract class BaseGitRepoSubscriber implements EventSubscriberInterface
      *
      * @return \Gush\Adapter\BaseAdapter
      */
-    protected function getAdapter($adapterName)
+    protected function getAdapter($adapterName, $config)
     {
-        $config = $this->application->getConfig()->get(['adapters', $adapterName], Config::CONFIG_SYSTEM);
+        $identifier = ConfigUtil::generateConfigurationIdentifier($adapterName, $config);
+
+        $config = $this->application->getConfig()->get(['adapters', $identifier], Config::CONFIG_SYSTEM);
         $adapter = $this->application->getAdapterFactory()->createRepositoryManager(
             $adapterName,
             $config,

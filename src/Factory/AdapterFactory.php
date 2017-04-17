@@ -41,7 +41,7 @@ class AdapterFactory
             throw new \InvalidArgumentException(sprintf('An adapter with name "%s" is already registered.', $name));
         }
 
-        $this->adapters[$name] = $this->guardFactoryClassImplementation($adapterFactory, $label);
+        $this->adapters[$name] = $this->guardFactoryClassImplementation($name, $label, $adapterFactory);
     }
 
     /**
@@ -199,7 +199,7 @@ class AdapterFactory
         return $this->adapters[$name]['factory'];
     }
 
-    private function guardFactoryClassImplementation($adapterFactory, $label)
+    private function guardFactoryClassImplementation($name, $label, $adapterFactory)
     {
         $adapterFactoryClass = is_object($adapterFactory) ? get_class($adapterFactory) : $adapterFactory;
         $classImplements = class_implements($adapterFactoryClass);
@@ -218,10 +218,12 @@ class AdapterFactory
         }
 
         return [
-            'factory' => $adapterFactory,
+            'name' => $name,
             'label' => $label,
+            'factory' => $adapterFactory,
             self::SUPPORT_REPOSITORY_MANAGER => $repositoryManager,
             self::SUPPORT_ISSUE_TRACKER => $issueTracker,
         ];
     }
+
 }

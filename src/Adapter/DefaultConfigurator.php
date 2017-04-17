@@ -11,6 +11,7 @@
 
 namespace Gush\Adapter;
 
+use Gush\Util\ConfigUtil;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -175,5 +176,15 @@ class DefaultConfigurator implements Configurator
         }
 
         return $url;
+    }
+
+    /**
+     * Get the unique name of a configured adapter.
+     *
+     * @return string
+     */
+    public function getConfigurationIdentifier($adapter, $config)
+    {
+        return ConfigUtil::generateConfigurationIdentifier($adapter, $config);
     }
 }
