@@ -625,6 +625,14 @@ class GitHubAdapter extends BaseAdapter implements IssueTracker, SupportsDynamic
         return $asset['id'];
     }
 
+    public function removePullRequestSourceBranch($id)
+    {
+        $api = $this->client->api('git_data')->references();
+        $pr = $this->getPullRequest($id);
+
+        return $api->remove($pr['user'], $pr['head']['repo'], 'heads/'.$pr['head']['ref']);
+    }
+
     protected function adaptIssueStructure(array $issue)
     {
         return [

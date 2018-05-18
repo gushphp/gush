@@ -369,4 +369,13 @@ interface Adapter
      * @throws AdapterException when deleting of release failed
      */
     public function removeRelease($id);
+
+    /**
+     * Deletes the remote source branch used in a pull request.
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function removePullRequestSourceBranch($id);
 }

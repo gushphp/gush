@@ -278,4 +278,12 @@ class GitLabRepoAdapter extends BaseAdapter
     {
         throw new UnsupportedOperationException('Releases are not supported by Gitlab.');
     }
+
+    public function removePullRequestSourceBranch($id)
+    {
+        $api = $this->client->api('repo');
+        $pr = $this->getPullRequest($id);
+
+        return $api->deleteBranch($this->getCurrentProject()->id, $pr['head']['ref']);
+    }
 }

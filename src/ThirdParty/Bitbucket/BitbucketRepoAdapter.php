@@ -13,6 +13,7 @@ namespace Gush\ThirdParty\Bitbucket;
 
 use Gush\Adapter\BaseAdapter;
 use Gush\Exception\AdapterException;
+use Gush\Exception\UnsupportedOperationException;
 use Herrera\Version\Parser;
 use Herrera\Version\Validator as VersionValidator;
 
@@ -518,5 +519,11 @@ class BitbucketRepoAdapter extends BaseAdapter
                 'user' => $targetOrg,
             ],
         ];
+    }
+
+    public function removePullRequestSourceBranch($id)
+    {
+        /** @link https://developer.atlassian.com/static/rest/bitbucket-server/4.7.1/bitbucket-branch-rest.html#idp45632 REST Resources Provided By: Bitbucket Server - Branch */
+        throw new UnsupportedOperationException('Bitbucket client "gentle/bitbucket-api" doesn\'t support references.');
     }
 }

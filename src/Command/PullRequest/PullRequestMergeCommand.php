@@ -42,6 +42,8 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature, Git
             ->addOption('force-squash', null, InputOption::VALUE_NONE, 'Force squashing the PR, even if there are multiple authors (this will implicitly use --squash)')
             ->addOption('switch', null, InputOption::VALUE_REQUIRED, 'Switch the base of the pull request before merging')
             ->addOption('pat', null, InputOption::VALUE_REQUIRED, 'Give the PR\'s author a pat on the back after the merge')
+            ->addOption('remove-source-branch', null, InputOption::VALUE_NONE, 'Remove remote source branch after merging own pull request')
+            ->addOption('no-remove-source-branch', null, InputOption::VALUE_NONE, 'Don\'t remove remote source branch after merging own pull request')
             ->setHelp(
                 <<<'EOF'
 The <info>%command.name%</info> command merges the given pull request:
@@ -99,6 +101,14 @@ When this directive is configured, the configured pat will be used at least you 
 which has precedence to the predefined configuration.
 
 <comment>The whole pat configuration will be ignored and no pat will be placed if the pull request is authored by yourself!</comment>
+
+If you are the author of the pull request, you'll be prompted  if the remote source branch will be removed after a successful merge.
+Also, you can pass your choice for this action with the <comment>--remove-source-branch</comment> and <comment>--no-remove-source-branch</comment>
+options:
+
+    <info>$ gush %command.name% --remove-source-branch</info>
+
+    <info>$ gush %command.name% --no-remove-source-branch</info>
 EOF
             )
         ;
@@ -139,6 +149,12 @@ EOF
             $targetLabel = sprintf('New-target: %s/%s (was "%s")', $targetRemote, $input->getOption('switch'), $targetBranch);
         } else {
             $targetLabel = sprintf('Target: %s/%s', $targetRemote, $targetBranch);
+        }
+
+        $authenticatedUser = $this->getParameter($input, 'authentication')['username'];
+        $removeSourceBranch = $input->getOption('remove-source-branch');
+        if ($removeSourceBranch && $pr['user'] !== $authenticatedUser) {
+            throw new UserException(sprintf('`--remove-source-branch` option cannot be used with pull requests that aren\'t owned by the authenticated user (%s)', $authenticatedUser));
         }
 
         $styleHelper->title(sprintf('Merging pull-request #%d - %s', $prNumber, $pr['title']));
@@ -197,14 +213,17 @@ EOF
                 $this->addClosedPullRequestNote($pr, $mergeCommit, $squash, $input->getOption('switch'));
             }
 
-            if ($pr['user'] !== $this->getParameter($input, 'authentication')['username']) {
-                $patComment = $this->givePatToPullRequestAuthor($pr, $input->getOption('pat'));
-                if ($patComment) {
-                    $styleHelper->note(sprintf('Pat given to @%s at %s.', $pr['user'], $patComment));
-                }
-            }
-
             $styleHelper->success([$mergeNote, $pr['url']]);
+
+            // Post merge options
+            if ($pr['user'] === $authenticatedUser) {
+                if ($removeSourceBranch || (!$input->getOption('no-remove-source-branch') && 'yes' === $this->getHelper('gush_style')->choice('Delete source branch?', ['yes', 'no'], 'no'))) {
+                    $adapter->removePullRequestSourceBranch($pr['number']);
+                    $styleHelper->note(sprintf('Remote source branch %s:%s has been removed.', $sourceRemote, $sourceBranch));
+                }
+            } elseif ($patComment = $this->givePatToPullRequestAuthor($pr, $input->getOption('pat'))) {
+                $styleHelper->note(sprintf('Pat given to @%s at %s.', $pr['user'], $patComment));
+            }
 
             return self::COMMAND_SUCCESS;
         } catch (CannotSquashMultipleAuthors $e) {
@@ -413,6 +432,15 @@ EOF
             ;
 
             return $this->getAdapter()->createComment($pr['number'], $patMessage);
+        }
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        parent::initialize($input, $output);
+
+        if ($input->getOption('remove-source-branch') && $input->getOption('no-remove-source-branch')) {
+            throw new UserException('Options `--remove-source-branch` and `--no-remove-source-branch` cannot be used toghether');
         }
     }
 }
