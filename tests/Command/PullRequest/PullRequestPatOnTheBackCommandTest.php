@@ -104,10 +104,11 @@ class PullRequestPatOnTheBackCommandTest extends CommandTestCase
             ->getMock()
         ;
 
-        $template->expects($this->once())
+        $template
             ->method('bindAndRender')
-            ->with(['author' => 'weaverryan', 'pat' => $pat], 'pats', 'general')
-            ->will($this->returnValue(self::$pats[$pat]))
+            ->will($this->returnValueMap([[
+                ['author' => 'weaverryan', 'pat' => $pat], 'pats', 'general', self::$pats[$pat],
+            ]]))
         ;
 
         return $template;
