@@ -153,7 +153,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10],
+            ['pr_number' => 10, '--pat' => 'none'],
             ['interactive' => false]
         );
 
@@ -184,7 +184,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10, '--no-comments' => true],
+            ['pr_number' => 10, '--no-comments' => true, '--pat' => 'none'],
             ['interactive' => false]
         );
 
@@ -251,7 +251,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10, '--squash' => true, 'pr_type' => 'merge'],
+            ['pr_number' => 10, '--squash' => true, 'pr_type' => 'merge', '--pat' => 'none'],
             ['interactive' => false]
         );
 
@@ -275,7 +275,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10, '--force-squash' => true, 'pr_type' => 'merge'],
+            ['pr_number' => 10, '--force-squash' => true, 'pr_type' => 'merge', '--pat' => 'none'],
             ['interactive' => false]
         );
 
@@ -304,7 +304,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10, '--switch' => 'develop', 'pr_type' => 'merge'],
+            ['pr_number' => 10, '--switch' => 'develop', 'pr_type' => 'merge', '--pat' => 'none'],
             ['interactive' => false]
         );
 
@@ -343,7 +343,7 @@ OET;
         );
 
         $tester->execute(
-            ['pr_number' => 10, '--fast-forward' => true, 'pr_type' => 'merge'],
+            ['pr_number' => 10, '--fast-forward' => true, 'pr_type' => 'merge', '--pat' => 'none'],
             ['interactive' => false]
         );
 
