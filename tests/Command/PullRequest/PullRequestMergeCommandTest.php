@@ -455,7 +455,7 @@ OET;
         return $helper;
     }
 
-    private function getLocalGitHelper($message = null, $squash = false, $forceSquash = false, $switch = null, $withComments = true, $fastForward = false)
+    private function getLocalGitHelper($message = null, $squash = false, $forceSquash = false, $switch = null, $withComments = true, $fastForward = false, $guardSync = false, $rebase = false)
     {
         $helper = parent::getGitHelper();
 
@@ -470,6 +470,8 @@ OET;
             $mergeOperation->setTarget('gushphp', 'base_ref')->shouldBeCalled();
             $mergeOperation->setSource('cordoval', 'head_ref')->shouldBeCalled();
             $mergeOperation->squashCommits($squash, $forceSquash)->shouldBeCalled();
+            $mergeOperation->guardSync($guardSync)->shouldBeCalled();
+            $mergeOperation->rebase($rebase)->shouldBeCalled();
             $mergeOperation->switchBase($switch)->shouldBeCalled();
             $mergeOperation->useFastForward($fastForward)->shouldBeCalled();
             $mergeOperation->setMergeMessage(

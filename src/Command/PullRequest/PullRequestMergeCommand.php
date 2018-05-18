@@ -40,6 +40,8 @@ class PullRequestMergeCommand extends BaseCommand implements GitRepoFeature, Git
             ->addOption('fast-forward', null, InputOption::VALUE_NONE, 'Merge pull-request using fast forward (no merge commit will be created)')
             ->addOption('squash', null, InputOption::VALUE_NONE, 'Squash the PR before merging')
             ->addOption('force-squash', null, InputOption::VALUE_NONE, 'Force squashing the PR, even if there are multiple authors (this will implicitly use --squash)')
+            ->addOption('rebase', null, InputOption::VALUE_NONE, 'Rebase the PR before merging')
+            ->addOption('ensure-sync', null, InputOption::VALUE_NONE, 'Ensure that the pull request history is up to date before merging')
             ->addOption('switch', null, InputOption::VALUE_REQUIRED, 'Switch the base of the pull request before merging')
             ->addOption('pat', null, InputOption::VALUE_REQUIRED, 'Give the PR\'s author a pat on the back after the merge')
             ->setHelp(
@@ -78,6 +80,16 @@ option. Note that no merge-message is available and the changes are merged as if
 the target branch directly!
 
     <info>$ gush %command.name% --fast-forward 12</info>
+
+If you want to perform an automatic rebase against the base branch before merging, the <comment>--rebase</comment> option can be used
+in order to try that operation:
+
+    <info>$ gush %command.name% --rebase 12</info>
+
+A synchronization check against the base branch can be done before the merge, passing the <comment>--ensure-sync</comment> option; so
+if this check fails, the operation will be aborted:
+
+    <info>$ gush %command.name% --ensure-sync 12</info>
 
 After the pull request is merged, you can give a pat on the back to its author using the <comment>--pat</comment>.
 This option accepts the name of any configured pat's name:
@@ -173,6 +185,8 @@ EOF
             $mergeOperation->setTarget($targetRemote, $targetBranch);
             $mergeOperation->setSource($sourceRemote, $sourceBranch);
             $mergeOperation->squashCommits($squash, $input->getOption('force-squash'));
+            $mergeOperation->guardSync($input->getOption('ensure-sync'));
+            $mergeOperation->rebase($input->getOption('rebase'));
             $mergeOperation->switchBase($input->getOption('switch'));
             $mergeOperation->setMergeMessage($messageCallback);
             $mergeOperation->useFastForward($input->getOption('fast-forward'));

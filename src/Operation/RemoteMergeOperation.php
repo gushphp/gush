@@ -13,11 +13,13 @@ namespace Gush\Operation;
 
 use Gush\Helper\FilesystemHelper;
 use Gush\Helper\GitHelper;
+use Gush\Helper\ProcessHelper;
 
 class RemoteMergeOperation
 {
     private $gitHelper;
     private $filesystemHelper;
+    private $processHelper;
 
     private $sourceBranch;
     private $sourceRemote;
@@ -31,11 +33,14 @@ class RemoteMergeOperation
     private $performed = false;
     private $fastForward = false;
     private $withLog = false;
+    private $rebase = false;
+    private $guardSync = false;
 
-    public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper)
+    public function __construct(GitHelper $gitHelper, FilesystemHelper $filesystemHelper, ProcessHelper $processHelper)
     {
         $this->gitHelper = $gitHelper;
         $this->filesystemHelper = $filesystemHelper;
+        $this->processHelper = $processHelper;
     }
 
     public function setSource($remote, $branch)
@@ -80,6 +85,8 @@ class RemoteMergeOperation
     public function useFastForward($fastForward = true)
     {
         $this->fastForward = (bool) $fastForward;
+
+        return $this;
     }
 
     public function performMerge()
@@ -143,6 +150,20 @@ class RemoteMergeOperation
         $this->gitHelper->pushToRemote($this->targetRemote, $target);
     }
 
+    public function rebase(bool $rebase = false)
+    {
+        $this->rebase = $rebase;
+
+        return $this;
+    }
+
+    public function guardSync(bool $guardSync = false)
+    {
+        $this->guardSync = $guardSync;
+
+        return $this;
+    }
+
     private function createBaseBranch()
     {
         $targetBranch = null !== $this->switchBase ? $this->switchBase : $this->targetBranch;
@@ -168,6 +189,24 @@ class RemoteMergeOperation
             );
 
             $this->targetBranch = $this->switchBase;
+        }
+
+        $currentBaseHeadCommit = $this->processHelper->runCommand(['git', 'rev-parse', $this->targetBase]);
+        $lastKnownCommonCommit = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $this->targetBase, $sourceBranch]);
+
+        if ($currentBaseHeadCommit !== $lastKnownCommonCommit) {
+            if ($this->rebase) {
+                try {
+                    $this->processHelper->runCommand(['git', 'pull', '--rebase', $this->targetBase]);
+                } catch (\Exception $e) {
+                    // Error, abort the rebase operation
+                    $this->processHelper->runCommand(['git', 'rebase', '--abort'], true);
+
+                    throw new MergeWorkflowException(sprintf('Git rebase failed while trying to synchronize history against "%s".', $this->targetBase), 0, $e);
+                }
+            } elseif ($this->guardSync) {
+                throw new MergeWorkflowException(sprintf('Failed while trying to perform merge against "%s", history is out of sync.', $this->targetBase));
+            }
         }
 
         if ($this->squash) {
