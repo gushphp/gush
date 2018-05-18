@@ -108,7 +108,7 @@ class GitHelperTest extends \PHPUnit_Framework_TestCase
     {
         chdir(sys_get_temp_dir());
 
-        $this->setExpectedExceptionRegExp('\RuntimeException', '#^fatal: Not a git repository \(or any of the parent directories\): \.git$#', 128);
+        $this->setExpectedExceptionRegExp('\RuntimeException', '#^fatal: Not a git repository \(or any of the parent directories\): \.git$#i', 128);
         $this->assertFalse($this->git->isGitDir());
     }
 
@@ -323,5 +323,39 @@ EOL;
 
         $this->setExpectedException('\RuntimeException', sprintf('Invalid refs found while searching for remote branch at "refs/heads/%s"', $sourceBranch));
         $this->assertTrue($this->unitGit->remoteBranchExists($remote, $sourceBranch));
+    }
+
+    /**
+     * @dataProvider getCommits
+     */
+    public function testGetFirstCommitTitle($hash, $subject)
+    {
+        $base = 'upstream/master';
+        $sourceBranch = 'my-feat-10';
+        $forkPoint = 'f0e7e99d30f1fd09902984f7327aaaf1b1b5e6eb';
+        $list = <<<EOL
+$hash $subject
+EOL;
+
+        $processHelper = $this->prophesize(ProcessHelper::class);
+        $this->unitGit = new GitHelper(
+            $processHelper->reveal(),
+            $this->gitConfigHelper->reveal(),
+            $this->filesystemHelper->reveal()
+        );
+
+        $processHelper->runCommand(['git', 'merge-base', '--fork-point', $base, $sourceBranch])->willReturn($forkPoint);
+        $processHelper->runCommand(['git', 'rev-list', $forkPoint.'..'.$sourceBranch, '--reverse', '--oneline'])->willReturn($list);
+
+        $this->assertSame($subject, $this->unitGit->getFirstCommitTitle($base, $sourceBranch));
+    }
+
+    public function getCommits()
+    {
+        return [
+            ['a26d2e5', 'My commit message'],
+            ['a26d2e5ce', 'My commit message'],
+            ['a26d2e5cef7a364e68d53eaf625f7a1b038156ed', 'My commit message'],
+        ];
     }
 }
