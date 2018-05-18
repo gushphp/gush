@@ -313,23 +313,10 @@ class GitHelper extends Helper
     public function getFirstCommitTitle($base, $sourceBranch)
     {
         try {
-            $forkPoint = $this->processHelper->runCommand(
-                sprintf(
-                    'git merge-base --fork-point %s %s',
-                    $base,
-                    $sourceBranch
-                )
-            );
+            $forkPoint = $this->processHelper->runCommand(['git', 'merge-base', '--fork-point', $base, $sourceBranch]);
+            $lines = $this->processHelper->runCommand(['git', 'rev-list', $forkPoint.'..'.$sourceBranch, '--reverse', '--oneline']);
 
-            $lines = $this->processHelper->runCommand(
-                sprintf(
-                    'git rev-list %s..%s --reverse --oneline',
-                    $forkPoint,
-                    $sourceBranch
-                )
-            );
-
-            return substr(strtok($lines, "\n"), 8);
+            return trim(strstr(strtok($lines, "\n"), ' '));
         } catch (\RuntimeException $e) {
             return '';
         }
