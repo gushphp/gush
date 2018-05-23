@@ -667,7 +667,7 @@ class GitHelper extends Helper
 
     public function commit($message, array $options = [])
     {
-        $params = '';
+        $params = [];
 
         foreach ($options as $option => $value) {
             if (is_int($option)) {
@@ -681,7 +681,7 @@ class GitHelper extends Helper
         $tmpName = $this->filesystemHelper->newTempFilename();
         file_put_contents($tmpName, $message);
 
-        $this->processHelper->runCommand(array_merge(['git', 'commit', '-F', $tmpName], $params));
+        $this->processHelper->runCommand(array_merge(['git', 'commit', '--file', $tmpName], $params));
     }
 
     /**
