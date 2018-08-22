@@ -1,14 +1,11 @@
-FROM php:7.0.8-alpine
+FROM php:7.2.8-cli-alpine
 
 RUN set -xe \
     && apk add --no-cache \
     git \
     openssh-client
 
-RUN curl -s https://getcomposer.org/installer | php \
-    && chmod +x composer.phar \
-    && mv composer.phar /usr/bin/composer
-
+COPY --from=composer:1.6 /usr/bin/composer /usr/bin/composer
 COPY ./src /usr/src/gush/src
 COPY ./gush /usr/src/gush/gush
 COPY ./composer.json /usr/src/gush/composer.json

@@ -1,0 +1,61 @@
+version: 2
+jobs:
+    build:
+        # uncomment later
+        # docker_layer_caching: true
+        working_directory: ~/gush
+        docker:
+            - image: circleci/php:7.2-cli
+        steps:
+            - setup_remote_docker
+            - checkout
+            - run:
+                name: "Build Docker container"
+                command: |
+                    docker build --rm=false -t gush .
+            - restore_cache:
+                keys:
+                  - composer-v2.0.0-{{ checksum "composer.json" }}
+                  - composer-v2.0.0-
+            - run:
+                name: "Install dependencies from Composer"
+                command: |
+                    cd ~/gush
+                    composer install --prefer-dist --optimize-autoloader --no-interaction
+            - save_cache:
+                key: composer-v2.0.0-{{ checksum "composer.json" }}
+                paths:
+                  - /tmp/.composer/cache/files
+            - restore_cache:
+                key: phpunit-v2.0.0-{{ checksum "composer.json" }}
+                paths:
+                  - /tmp/phpunit
+            - run:
+                name: "Running 'phpunit'"
+                command: |
+                    cd ~/gush
+                    mkdir -p ~/gush/var/circle-test-reports/phpunit
+                    vendor/bin/phpunit --verbose --log-junit var/circle-test-reports/phpunit/junit.xml
+            - save_cache:
+                key: phpunit-v2.0.0-{{ checksum "composer.json" }}
+                paths:
+                  - /tmp/phpunit
+            - store_test_results:
+                path: ~/gush/var/circle-test-reports
+            - store_artifacts:
+                path: ~/gush/var/circle-test-reports
+            - run:
+                name: "Running Docker container"
+                environment:
+                    GUSH_CONFIG: /root/.gush
+                    GUSH_LOCAL_CONFIG: /root/project
+                    GUSH_USE_FS: true
+                command: docker run --tty gush -vvv --help
+            - deploy:
+                filters:
+                    branches:
+                        only: master
+                command: |
+                    docker login -u coder20078 -p $DOCKER_HUB_PASSWORD -e coder20078@gmail.com
+                    docker tag -f gush coder20078/gush
+                    docker push coder20078/gush
