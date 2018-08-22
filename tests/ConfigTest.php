@@ -249,7 +249,7 @@ class ConfigTest extends BaseTestCase
     {
         return [
             [new \stdClass()],
-            [imagecreate(1, 1)],
+            [curl_init()],
         ];
     }
 
